@@ -18,57 +18,56 @@ class LdapiCommands
 
     const URL_VERIFY_PASSWORD = 'verify-password';
 
-    public static function getAllUsers() {
-        return Ldapi::call('get', self::USERS_BASE_URL . self::URL_PART_GET_ALL);
+    public static function getAllUsers($languageDepotUsername) {
+        return Ldapi::call($languageDepotUsername, 'get', self::USERS_BASE_URL . self::URL_PART_GET_ALL);
     }
 
-    public static function searchUsers(string $searchText) {
-        return Ldapi::call('get', self::SEARCHUSERS_BASE_URL . '/' . $searchText);
+    public static function searchUsers($languageDepotUsername, string $searchText) {
+        return Ldapi::call($languageDepotUsername, 'get', self::SEARCHUSERS_BASE_URL . '/' . $searchText);
     }
 
-    public static function getAllProjects() {
-        return Ldapi::call('get', self::PROJECTS_BASE_URL . self::URL_PART_GET_ALL);
+    public static function getAllProjects($languageDepotUsername) {
+        return Ldapi::call($languageDepotUsername, 'get', self::PROJECTS_BASE_URL . self::URL_PART_GET_ALL);
     }
 
-    public static function getUser(string $username) {
-        return Ldapi::call('get', self::USERS_BASE_URL . '/' . $username);
+    public static function getUser($languageDepotUsername, string $username) {
+        return Ldapi::call($languageDepotUsername, 'get', self::USERS_BASE_URL . '/' . $username);
     }
 
-    public static function updateUser(string $username, Array $userdetails) {
-        return Ldapi::call('put', self::USERS_BASE_URL . '/' . $username, $userdetails);
+    public static function updateUser($languageDepotUsername, string $username, Array $userdetails) {
+        return Ldapi::call($languageDepotUsername, 'put', self::USERS_BASE_URL . '/' . $username, $userdetails);
     }
 
-    public static function checkUserPassword(string $username, string $password) {
+    public static function checkUserPassword($languageDepotUsername, string $username, string $password) {
         $loginData = ['username' => $username, 'password' => $password];
-        return Ldapi::call('post', self::URL_VERIFY_PASSWORD, $loginData);
+        return Ldapi::call($languageDepotUsername, 'post', self::URL_VERIFY_PASSWORD, $loginData);
     }
 
-    public static function getProject(string $projectCode) {
-        return Ldapi::call('get', self::PROJECTS_BASE_URL . '/' . $projectCode);
+    public static function getProject($languageDepotUsername, string $projectCode) {
+        return Ldapi::call($languageDepotUsername, 'get', self::PROJECTS_BASE_URL . '/' . $projectCode);
     }
 
-    public static function getProjectsForUser(string $username) {
-        return Ldapi::call('get', self::USERS_BASE_URL . '/' . $username . '/' . self::URL_PART_GET_PROJECTS);
+    public static function getProjectsForUser($languageDepotUsername, string $username) {
+        return Ldapi::call($languageDepotUsername, 'get', self::USERS_BASE_URL . '/' . $username . '/' . self::URL_PART_GET_PROJECTS);
     }
 
-    public static function updateUserRoleInProject(string $projectCode, string $username, string $role) {
+    public static function updateUserRoleInProject($languageDepotUsername, string $projectCode, string $username, string $role) {
         $addRequest = ['username' => $username, 'role' => $role];
-        // API wants an array of requests even if there is only one request
-        $apiParams = ['add' => [$addRequest]];
-        return Ldapi::call('patch', self::PROJECTS_BASE_URL . '/' . $projectCode, $apiParams);
+        $apiParams = ['add' => $addRequest];
+        return Ldapi::call($languageDepotUsername, 'patch', self::PROJECTS_BASE_URL . '/' . $projectCode, $apiParams);
     }
 
-    public static function removeUserFromProject(string $projectCode, string $username) {
+    public static function removeUserFromProject($languageDepotUsername, string $projectCode, string $username) {
         $apiParams = ['removeUser' => $username];
-        return Ldapi::call('patch', self::PROJECTS_BASE_URL . '/' . $projectCode, $apiParams);
+        return Ldapi::call($languageDepotUsername, 'patch', self::PROJECTS_BASE_URL . '/' . $projectCode, $apiParams);
     }
 
-    public static function isUserManagerOfProject(string $username, string $projectCode) {
-        return Ldapi::call('get', self::USERS_BASE_URL . '/' . $username . '/isManagerOfProject/' . $projectCode);
+    public static function isUserManagerOfProject($languageDepotUsername, string $username, string $projectCode) {
+        return Ldapi::call($languageDepotUsername, 'get', self::USERS_BASE_URL . '/' . $username . '/isManagerOfProject/' . $projectCode);
     }
 
-    public static function getAllRoles() {
-        return Ldapi::call('get', self::ROLES_BASE_URL . self::URL_PART_GET_ALL);
+    public static function getAllRoles($languageDepotUsername) {
+        return Ldapi::call($languageDepotUsername, 'get', self::ROLES_BASE_URL . self::URL_PART_GET_ALL);
     }
 }
 

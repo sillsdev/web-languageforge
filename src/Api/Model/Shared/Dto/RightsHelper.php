@@ -375,58 +375,13 @@ class RightsHelper
             case 'ldapi_project_updateUserRole':
             case 'ldapi_project_removeUser':
             case 'ldapi_user_is_manager_of_project':
-                return true;  // Handled in userCanAccessMethodWithParams
+                return true;  // Handled server-side via JWT
 
             default:
                 throw new \Exception("API method '$methodName' has no security policy defined in RightsHelper::userCanAccessMethod()");
         }
     }
 
-    public function firstParamIsCurrentUser($params) {
-        if (isset($this->_userId, $params[0])) {
-            $userModel = new UserModel($this->_userId);
-            $username = $params[0];
-            if ($userModel->username === $username) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    // Not yet needed, though we'll probably want it later
-    public function projectIsOwnedByUser($params) {
-        if (isset($params[0], $params[1])) {
-            $projectCode = $params[0];
-            $username = $params[1];
-            $projectModel = ProjectModel::getById($projectCode);
-            if (!isset($projectModel) || !isset($projectModel->ownerRef)) {
-                return false;
-            }
-            $userModel = new UserModel();
-            $userModel->readByUserName($username);
-            if (!isset($userModel) || !isset($userModel->$userId)) {
-                return false;
-            }
-            return ($projectModel->ownerRef->id === $userModel->$userId->id);
-        }
-        return false;
-    }
-
-    public function userIsManagerOfProject($username, $projectCode) {
-        $result = LdapiCommands::isUserManagerOfProject($username, $projectCode);
-        error_log(print_r($result, true));
-        // return $result;
-        return true;
-    }
-
-    public function currentUserIsManagerOfProject($projectCode) {
-        $userModel = new UserModel($this->_userId);
-        if (isset($userModel) && isset($userModel->username)) {
-            return $this->userIsManagerOfProject($userModel->username, $projectCode);
-        } else {
-            return false;
-        }
-    }
     /**
      * @param string $methodName
      * @param array $params parameters passed to the method
@@ -435,43 +390,6 @@ class RightsHelper
      */
     public function userCanAccessMethodWithParams($methodName, $params)
     {
-        switch ($methodName) {
-            case 'ldapi_check_user_password':
-            case 'ldapi_get_user':
-            case 'ldapi_update_user':
-            case 'ldapi_get_projects_for_user':
-                if ($this->firstParamIsCurrentUser($params)) {
-                    return $this->userHasSiteRight(Domain::USERS + Operation::VIEW_OWN);
-                } else {
-                    return $this->userHasSiteRight(Domain::USERS + Operation::VIEW);
-                }
-            break;
-
-            case 'ldapi_get_all_projects':
-                return $this->userHasSiteRight(Domain::PROJECTS + Operation::VIEW);
-
-            case 'ldapi_user_is_manager_of_project':
-                return true;
-
-            case 'ldapi_get_project':
-            case 'ldapi_project_updateUserRole':
-            case 'ldapi_project_removeUser':
-                // CAUTION: This only works if LF usernames line up with LD usernames.
-                // TODO: Make this work by email address as well (if the current LF user has an email address)
-                $projectCode = isset($params[0]) ? $params[0] : null;
-                return isset($projectCode) ? $this->currentUserIsManagerOfProject($projectCode) : false;
-
-            case 'ldapi_search_users':
-                return true;
-
-            case 'ldapi_get_all_users':
-                return true; // $this->userHasSiteRight(Domain::USERS + Operation::VIEW);
-
-            case 'ldapi_get_all_roles':
-                return true;
-
-            default:
-                return true; // Method names have already been checked in userCanAccessMethod
-        }
+        return true; // Server now handles this via the JWT we'll pass it
     }
 }

@@ -935,52 +935,76 @@ class Sf
     }
 
     // ----------------------------------- Language Depot Api -------------------------------------
+    public function get_ldapi_username()
+    {
+        if ($this->userId) {
+            $user = new UserModel($this->userId);
+        } else {
+            return '';
+        }
+        if ($user->languageDepotUsername) {
+            return $user->languageDepotUsername;
+        }
+        if ($user->email) {
+            $ldUsers = LdapiCommands::searchUsers('', $user->email);
+            if (count($ldUsers) == 1) {
+                $username = $ldUsers[0]['username'];
+                if ($username) {
+                    $user->languageDepotUsername = $username;
+                    $user->write();
+                    return $username;
+                }
+            }
+        }
+        return '';
+    }
+
     public function ldapi_check_user_password($username, $password) {
-        return LdapiCommands::checkUserPassword($username, $password);
+        return LdapiCommands::checkUserPassword($this->get_ldapi_username(), $username, $password);
     }
 
     public function ldapi_get_all_users() {
-        return LdapiCommands::getAllUsers();
+        return LdapiCommands::getAllUsers($this->get_ldapi_username());
     }
 
     public function ldapi_search_users($searchText) {
-        return LdapiCommands::searchUsers($searchText);
+        return LdapiCommands::searchUsers($this->get_ldapi_username(), $searchText);
     }
 
     public function ldapi_get_user($username) {
-        return LdapiCommands::getUser($username);
+        return LdapiCommands::getUser($this->get_ldapi_username(), $username);
     }
 
     public function ldapi_update_user($username, $userdata) {
-        return LdapiCommands::updateUser($username, $userdata);
+        return LdapiCommands::updateUser($this->get_ldapi_username(), $username, $userdata);
     }
 
     public function ldapi_get_all_projects() {
-        return LdapiCommands::getAllProjects();
+        return LdapiCommands::getAllProjects($this->get_ldapi_username());
     }
 
     public function ldapi_get_project($projectCode) {
-        return LdapiCommands::getProject($projectCode);
+        return LdapiCommands::getProject($this->get_ldapi_username(), $projectCode);
     }
 
     public function ldapi_get_projects_for_user($username) {
-        return LdapiCommands::getProjectsForUser($username);
+        return LdapiCommands::getProjectsForUser($this->get_ldapi_username(), $username);
     }
 
     public function ldapi_user_is_manager_of_project($username, $projectCode) {
-        return LdapiCommands::isUserManagerOfProject($username, $projectCode);
+        return LdapiCommands::isUserManagerOfProject($this->get_ldapi_username(), $username, $projectCode);
     }
 
     public function ldapi_project_updateUserRole($projectCode, $username, $role) {
-        return LdapiCommands::updateUserRoleInProject($projectCode, $username, $role);
+        return LdapiCommands::updateUserRoleInProject($this->get_ldapi_username(), $projectCode, $username, $role);
     }
 
     public function ldapi_project_removeUser($projectCode, $username) {
-        return LdapiCommands::removeUserFromProject($projectCode, $username);
+        return LdapiCommands::removeUserFromProject($this->get_ldapi_username(), $projectCode, $username);
     }
 
     public function ldapi_get_all_roles() {
-        return LdapiCommands::getAllRoles();
+        return LdapiCommands::getAllRoles($this->get_ldapi_username());
     }
 
     // ---------------------------------------------------------------
