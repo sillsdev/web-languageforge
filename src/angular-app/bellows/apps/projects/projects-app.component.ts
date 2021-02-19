@@ -8,7 +8,6 @@ import { HelpHeroService } from '../../core/helphero.service';
 import { NoticeService } from '../../core/notice/notice.service';
 import { SessionService } from '../../core/session.service';
 import { Project } from '../../shared/model/project.model';
-import { LdapiProjectInfo } from '../siteadmin/ldapi-projects-view';
 import { UserService } from '../../core/api/user.service';
 import { RolesService } from '../../core/api/roles.service';
 
@@ -89,19 +88,20 @@ export class ProjectsAppController implements angular.IController {
 
   queryProjectsForUser() {
     this.projectService.list().then(projects => {
-      this.projects = projects;
+      const projectsArr = Array.isArray(projects) ? projects : [];
+      this.projects = projectsArr;
 
       this.sessionService.getSession().then(session => {
-        const username = session.username();  // TODO: Handle cases where LF username and LD username differ
+        const username = session.username();  // TODO: Handle cases where LF username and LD username differ (search by email address)
         this.userService.getProjectsForUser(username).then(result => {
           if (result.ok) {
-            angular.forEach<[LdapiProjectInfo, string]>(result.data, ([ldapiProject, role]) => {
+            angular.forEach(result.data, ({projectCode, name, role}) => {
               this.rolesService.ldRoleToLfRole(role).then(convertedRole => {
                 const project: ViewModelProject = {
-                  id: ldapiProject.projectCode,
-                  projectName: ldapiProject.name,
+                  id: projectCode,
+                  projectName: name,
                   appName: 'ldproject',
-                  role: convertedRole.name,
+                  role: convertedRole.key,
                 };
                 if (this.isManager(project)) {
                   this.projects.push(project);
@@ -114,7 +114,7 @@ export class ProjectsAppController implements angular.IController {
 
       // Is this perhaps wrong? Maybe not all projects are included in the JSONRPC response?
       // That might explain the existance of the previous result.data.count
-      this.projectCount = projects.length;
+      this.projectCount = projectsArr.length;
       this.finishedLoading = true;
     }).catch(console.error);
   }

@@ -1,20 +1,10 @@
 import * as angular from 'angular';
-import * as ngTable from 'ng-table';
 import {ProjectService} from '../../core/api/project.service';
 import { NgTableParams } from 'ng-table';
-// import {LdapiProjectDto} from '../../../languageforge/ldproject/ldproject-app.component';
-import { LdapiProjectDto, LdapiProjectMembership } from '../../../bellows/shared/model/ldapi.model';
-
-// TODO: move this and LdapiProjectInfo to an ldapi-models.ts file
-
-export interface LdapiProjectInfo {
-  projectCode: string;
-  description: string;
-  name: string;
-}
+import { LdapiProjectDto, LdapiProjectInfo } from '../../../bellows/shared/model/ldapi.model';
 
 export class LdapiProjectsController implements angular.IController {
-  loadedProjects: LdapiProjectInfo[];  // TODO: Replace with LdapiProjectDto if possible. TODO: Rename to just "projects"
+  loadedProjects: LdapiProjectInfo[];  // TODO: Rename to just "projects"
   tableParams: NgTableParams<LdapiProjectInfo>;
   selectedProject: LdapiProjectDto;
 
@@ -47,5 +37,5 @@ export const LdapiProjectsComponent: angular.IComponentOptions = {
     something: '<',
   },
   controller: LdapiProjectsController,
-  templateUrl: '/angular-app/bellows/apps/siteadmin/ldapi-projects-view.html' // '/angular-app/languageforge/core/ldapi-projects/ldapi-projects-view.html'
+  templateUrl: '/angular-app/bellows/apps/siteadmin/ldapi-projects-view.html'
 };

@@ -1,7 +1,6 @@
 import * as angular from 'angular';
 import 'angular-sanitize';
 import uiRouter from 'angular-ui-router';
-// import './new-project/lexicon-new-project.module';
 
 import {ApiService} from '../../bellows/core/api/api.service';
 import {SiteWideNoticeModule} from '../../bellows/core/site-wide-notice-service';
@@ -28,7 +27,7 @@ export const LdProjectAppModule = angular
            'apiServiceProvider',
            'rolesServiceProvider',
     ($urlRouterProvider: angular.ui.IUrlRouterProvider,
-     $locationProvider: any, //angular.LocationProvider,
+     $locationProvider: any, // TODO: Change type to angular.ILocationProvider and ensure it still works
      apiService: ApiService,
      rolesServiceProvider: any) => {
       // $urlRouterProvider.otherwise('/');
