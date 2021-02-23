@@ -54,6 +54,7 @@
     "@types/intl-tel-input": "0.0.7",
     "@types/jasmine": "^2.8.4",
     "@types/jasminewd2": "^2.0.3",
+    "@types/jquery": "^3.3.31",
     "@types/karma": "^1.7.3",
     "@types/karma-coverage": "^0.5.32",
     "@types/ng-file-upload": "^12.2.1",
