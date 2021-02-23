@@ -1,9 +1,9 @@
 FROM lf-ui:latest
 
-WORKDIR /data
-
+# build/compile front-end app
 RUN gulp sass webpack-lf
 
+# copy in test folder
 COPY rune2e.sh /data/
 COPY test/ /data/test/
 
