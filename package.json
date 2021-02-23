@@ -35,6 +35,7 @@
     "moment": "^2.18.1",
     "ng-drag-to-reorder": "^1.0.8",
     "ng-file-upload": "12.0.4",
+    "ng-table": "^3.0.1",
     "oclazyload": "^1.1.0",
     "offline-js": "0.7.11",
     "popper.js": "^1.12.5",

@@ -1,16 +1,6 @@
 # https://docs.docker.com/compose/compose-file
 version: '3.9'
 services:
-  db:
-    image: mongo:4.0
-    container_name: lf-db
-    ports:
-      # exposed this to host for admin tools
-      - 27017:27017
-    volumes:
-      - mongo-data:/data/db
-    restart: always
-
   ui:
     build:
       context: ..
@@ -20,6 +10,10 @@ services:
     depends_on:
       - api
     volumes:
+      # share dist folder between ui and api containers
+      - webpack-dist-folder:/data/src/dist
+
+      # for developer convenience
       - ../src:/data/src
       - ../typings:/data/typings
       - ../webpack.config.js:/data/webpack.config.js
@@ -35,37 +29,15 @@ services:
       - db
       - mail
     volumes:
-      - user-data-assets:/var/www/html/assets
-      # because the composer vendor dependencies are build inside the container but reside in /var/www/html,
-      # we have to manually mount each src folder and file in.
-      # TODO: make the application run without having the vendor and src folders tied together so closely
-      # This could probably be accomplished with a fancy Apache rewrite script
-      # ALTERNATIVE: many of these files could be COPYed in at build time, but then the image would need to be
-      # rebuilt if these files were modified (many are unlikely to be modified regularly)
-      - ../src/index.php:/var/www/html/index.php
-      - ../src/angular-app:/var/www/html/angular-app
-      - ../src/Api:/var/www/html/Api
-      - ../src/Site:/var/www/html/Site
-      - ../src/dist:/var/www/html/dist
-      - ../src/appManifest:/var/www/html/appManifest
-      - ../src/help:/var/www/html/help
-      - ../src/js:/var/www/html/js
-      - ../src/json:/var/www/html/json
-      - ../src/releasenotes:/var/www/html/releasenotes
-      - ../src/resources:/var/www/html/resources
-      - ../src/.htaccess:/var/www/html/.htaccess
-      - ../src/app_dependencies.json:/var/www/html/app_dependencies.json
-      - ../src/config.php:/var/www/html/config.php
-      - ../src/favicon.ico:/var/www/html/favicon.ico
-      - ../src/offline.html:/var/www/html/offline.html
-      - ../src/offlineCheck.txt:/var/www/html/offlineCheck.txt
-      - ../src/site_wide_notices.json:/var/www/html/site_wide_notices.json
-      - ../src/version.php:/var/www/html/version.php
-      # the scripts directory is used by db-reset but not the application itself
-      - ../scripts/:/var/www/scripts
-      # these directories are used for tests but not the application itself
-      - ../test:/var/www/test
-      - ../docs:/var/www/docs
+      # share dist folder between ui and api containers
+      - webpack-dist-folder:/var/www/src/dist
+
+      # persist user data uploads and assets
+      - user-data-assets:/var/www/src/assets
+
+      # for developer convenience
+      - ../src/Api:/var/www/src/Api
+      - ../src/Site:/var/www/src/Site
 
   ssl:
     image: caddy
@@ -88,6 +60,16 @@ services:
       dockerfile: mail/Dockerfile
     image: lf-mail
     container_name: lf-mail
+
+  db:
+    image: mongo:4.0
+    container_name: lf-db
+    ports:
+      # exposed this to host for admin tools
+      - 27017:27017
+    volumes:
+      - mongo-data:/data/db
+    restart: always
 
   # TODO: still needs to be built/run/tested, etc.
   # lfmerge:
@@ -115,6 +97,9 @@ services:
     depends_on:
       - selenium
       - e2e-api
+    volumes:
+      # share dist folder between ui and api containers
+      - webpack-dist-folder:/var/www/src/dist
 
   e2e-api:
     build:
@@ -125,6 +110,35 @@ services:
     depends_on:
       - mail
       - db
+    volumes:
+      # share dist folder between ui and api containers
+      - webpack-dist-folder:/var/www/src/dist
+
+  test-api:
+    # TODO: get XDebug working with VSCode
+    build:
+      context: ..
+      dockerfile: docker/test-api/Dockerfile
+    image: test-api
+    container_name: test-api
+    depends_on:
+      - mail
+      - db
+    volumes:
+      # for developer convenience
+      - ../test:/var/www/test
+
+  db-reset:
+    build:
+      context: ..
+      dockerfile: docker/db-reset/Dockerfile
+    volumes:
+      # for developer convenience
+      - ../scripts/:/var/www/scripts
+    depends_on:
+      - mail
+      - db
+
 
 
 volumes:
@@ -132,4 +146,5 @@ volumes:
   caddy_data:
   mongo-data:
   user-data-assets:
+  webpack-dist-folder:
   # lfmerge-data:

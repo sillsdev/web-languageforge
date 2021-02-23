@@ -1,11 +1,7 @@
 FROM lf-api:latest
 
-RUN mv /var/www/html/vendor /vendor
-COPY src /var/www/html/
-RUN mv /vendor /var/www/html/vendor
 COPY test /var/www/test/
-RUN ln -s /var/www/html /var/www/src
-RUN cp /var/www/src/config.php.fortest /var/www/src/config.php
+COPY src/config.php.fortest /var/www/src/config.php
 
 # Add docker-compose-wait tool -------------------
 # see https://www.datanovia.com/en/courses/docker-compose-wait-for-dependencies/
@@ -23,7 +19,6 @@ ADD https://github.com/ufoscout/docker-compose-wait/releases/download/$WAIT_VERS
 RUN chmod +x /wait
 
 COPY docker/e2e-api/run.sh /run.sh
-RUN chmod +x /run.sh
 
 WORKDIR /var/www/test/app
 CMD ["/run.sh"]
