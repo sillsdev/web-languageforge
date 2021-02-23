@@ -30,14 +30,14 @@ services:
       - mail
     volumes:
       # share dist folder between ui and api containers
-      - webpack-dist-folder:/data/src/dist
+      - webpack-dist-folder:/var/www/src/dist
 
       # persist user data uploads and assets
-      - user-data-assets:/var/www/html/assets
+      - user-data-assets:/var/www/src/assets
 
       # for developer convenience
-      - ../src/Api:/var/www/html/Api
-      - ../src/Site:/var/www/html/Site
+      - ../src/Api:/var/www/src/Api
+      - ../src/Site:/var/www/src/Site
 
   ssl:
     image: caddy
@@ -97,6 +97,9 @@ services:
     depends_on:
       - selenium
       - e2e-api
+    volumes:
+      # share dist folder between ui and api containers
+      - webpack-dist-folder:/var/www/src/dist
 
   e2e-api:
     build:
@@ -107,6 +110,9 @@ services:
     depends_on:
       - mail
       - db
+    volumes:
+      # share dist folder between ui and api containers
+      - webpack-dist-folder:/var/www/src/dist
 
   test-api:
     # TODO: get XDebug working with VSCode
@@ -119,6 +125,7 @@ services:
       - mail
       - db
     volumes:
+      # for developer convenience
       - ../test:/var/www/test
 
   db-reset:
@@ -126,6 +133,7 @@ services:
       context: ..
       dockerfile: docker/db-reset/Dockerfile
     volumes:
+      # for developer convenience
       - ../scripts/:/var/www/scripts
     depends_on:
       - mail
