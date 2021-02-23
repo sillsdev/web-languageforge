@@ -5,6 +5,7 @@ namespace Api\Service;
 use Api\Library\Shared\SilexSessionHelper;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use Silex\Application;
@@ -73,8 +74,9 @@ class Ldapi
 
     public static function callNodeJsServer($languageDepotUsername, $method, $url, array $jsonData = null)
     {
-        $url = 'http://localhost:3000/api/v2/' . $url;     // Node.js server
-        // Should eventually be: $url = 'https://admin.languagedepot.org/api/' . $url;
+        $baseUrl = 'http://localhost:3000/api/v2/';     // Node.js server
+        // $baseUrl = 'http://172.17.0.1:3000/api/v2/';     // Node.js server on localhost (Docker internal IP for localhost is 172.17.0.1)
+        // Should eventually be: $baseUrl = 'https://admin.languagedepot.org/api/';
 
         if ($languageDepotUsername) {
             $jwtPayload = [
@@ -118,7 +120,14 @@ class Ldapi
         //         break;
         //     }
         // }
-        $response = $client->request($method, $url, $opts);
+        try {
+            $response = $client->request($method, $baseUrl . $url, $opts);
+        } catch (ConnectException $e) {
+            if (ENVIRONMENT == 'development' && (strpos($baseUrl, '172.17.0.1') !== false || strpos($baseUrl, 'localhost') !== false)) {
+                // Ignore "connection refused" errors, as that just means local LDAPI dev environment isn't running
+                return '';
+            }
+        }
 
         if (isset($response)) {
             $body = $response->getBody();
