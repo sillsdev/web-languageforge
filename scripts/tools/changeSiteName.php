@@ -21,7 +21,7 @@ class ChangeSiteName
             if ($target == "qa") {
                 return "qa.languageforge.org";
             }
-            return "languageforge.localhost";
+            return "localhost";
         }
         if (strpos($siteName, "scriptureforge") !== false) {
             if ($target == "qa") {

@@ -1,9 +1,0 @@
----
-
-- name: Linux Build Agent webserver
-  hosts: build_agents
-  become: yes
-
-- include: dependencies.yml
-  vars:
-    deploy: buildagent

@@ -67,14 +67,19 @@ class UserCommandsTest extends TestCase
     public function testDeleteUsers_NoId_Exception()
     {
         $this->expectException(Exception::class);
+        ini_set('display_errors', '0'); // do not show xdebug stack traces in PHPUnit output
         UserCommands::deleteUsers(null);
+        ini_set('display_errors', '1'); // do not show xdebug stack traces in PHPUnit output
     }
 
     /** @throws Exception */
     public function testBanUser_NoId_Exception()
     {
         $this->expectException(Exception::class);
+
+        ini_set('display_errors', '0'); // do not show xdebug stack traces in PHPUnit output
         UserCommands::banUser(null);
+        ini_set('display_errors', '1'); // do not show xdebug stack traces in PHPUnit output
     }
 
     /** @throws Exception */

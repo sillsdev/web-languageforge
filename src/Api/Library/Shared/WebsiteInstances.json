@@ -71,8 +71,8 @@
   ],
   "languageforge": [
     {
-      "__comment": "languageforge.localhost sites",
-      "domain": "languageforge.localhost",
+      "__comment": "languageforge local developer",
+      "domain": "localhost",
       "base": "Website::LANGUAGEFORGE",
       "name": "Language Forge",
       "ssl": "false",

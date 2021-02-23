@@ -1,12 +1,5 @@
 ---
 
-# begin install
-# NOTE: to install on a build-agent, or to merely reset the environment, run with --skip-tags "developer"
-- name: Linux Bionic local webserver
-  hosts: all
-  become: yes
-  tasks:
-
 - name: Deploy (development) environment for xForge (languageforge.org and scriptureforge.org)
   hosts: all
   become: yes
@@ -15,9 +8,13 @@
   vars_files:
     - "vars/config_{{config}}.yml"
   pre_tasks:
+    - name: Add PHP apt key
+      apt_key:
+        keyserver: hkp://keyserver.ubuntu.com:80
+        id: 14AA40EC0831756756D7F66C4F4EA0AAE5267A6C
     - name: Add PHP{{php_version}} ppa
       apt_repository:
-        repo: "deb http://ppa.launchpad.net/ondrej/php/ubuntu {{base_distribution_release}} Release"
+        repo: "deb http://ppa.launchpad.net/ondrej/php/ubuntu {{base_distribution_release}} main"
         state: present
     - name: add Mongo apt key
       apt_key:
@@ -33,7 +30,7 @@
         url: https://deb.nodesource.com/gpgkey/nodesource.gpg.key
     - name: add nodejs repo
       apt_repository:
-        repo: "deb https://deb.nodesource.com/node_10.x {{base_distribution_release}} main"
+        repo: "deb https://deb.nodesource.com/node_{{node_major_version}}.x {{base_distribution_release}} main"
     - name: add sil apt-key
       apt_key:
         url: http://linux.lsdev.sil.org/downloads/sil-testing.gpg
@@ -64,15 +61,17 @@
           - mongodb-org
           - nodejs
           - p7zip-full
+          - php{{php_version}}
           - php{{php_version}}-cli
           - php{{php_version}}-curl
           - php{{php_version}}-dev
           - php{{php_version}}-gd
           - php{{php_version}}-intl
           - php{{php_version}}-mbstring
+          - php{{php_version}}-xml
           - php-pear
           - postfix
-          - php-xdebug
+          - php{{php_version}}-xdebug
           - unzip
       tags: [ 'packages' ]
 
@@ -95,6 +94,9 @@
 
     - name: change npm version
       shell: "npm install -g npm@{{npm_version}}" # TODO: idempotent
+
+    - name: ensure system is using desired PHP version
+      shell: "update-alternatives --set php /usr/bin/php{{php_version}}"
 
     - name: install Composer
       shell: php -r "readfile('https://getcomposer.org/installer');" | php -- --install-dir=/usr/local/bin --filename=composer
@@ -408,8 +410,8 @@
 - name: post-install tasks
   hosts: all
   tasks:
-    - name: refresh dependencies (refreshDeps.sh)
-      shell: ./refreshDeps.sh
+    - name: build front-end
+      shell: "gulp dev-build --applicationName languageforge"
       args:
         chdir: ..
       tags: developer

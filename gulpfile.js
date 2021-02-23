@@ -568,7 +568,7 @@ gulp.task('test-e2e-env', function () {
       type: 'string' })
     .option('webserverHost', {
       demand: false,
-      default: 'languageforge.localhost',
+      default: 'localhost',
       type: 'string' })
     .fail(yargFailure)
     .argv;
@@ -636,7 +636,7 @@ gulp.task('test-e2e-doTest', function (cb) {
       type: 'string' })
     .help('?')
     .alias('?', 'help')
-    .example('$0 test-e2e-run --webserverHost languageforge.localhost',
+    .example('$0 test-e2e-run --webserverHost localhost',
       'Runs all the E2E tests for languageforge')
     .example('$0 test-e2e-run --webserverHost scriptureforge.localhost --specs projectSettingsPage',
       'Runs the scriptureforge E2E test for projectSettingsPage')
@@ -939,7 +939,7 @@ gulp.task('build-changeGroup').description =
 gulp.task('build-productionConfig', function () {
   // Pass Google client ID and secret via environment variables so they don't show up in the build
   // logs
-  var defaultMongodbConnection = 'localhost:27017';
+  var defaultMongodbConnection = 'db:27017';
 
   var googleClientId = process.env.GOOGLE_CLIENT_ID;
   if (googleClientId === undefined) {
@@ -1134,38 +1134,38 @@ gulp.task('build-upload', function (cb) {
 // ------------------------------------------
 // Create WebsiteInstances.php from template
 // ------------------------------------------
-gulp.task('build-createWebsiteDefsPhp', function () {
-  return gulp.src('src/Api/Library/Shared/WebsiteInstances.ejs')
-    .pipe(data(function () {
-      return JSON.parse(fs.readFileSync('src/Api/Library/Shared/WebsiteInstances.json'));
-    }))
-    .pipe(ejs())
-    .pipe(dest('src/Api/Library/Shared/:name.php'))
-    .pipe(gulp.dest('src/Api/Library/Shared/'));
-});
+// gulp.task('build-createWebsiteDefsPhp', function () {
+//   return gulp.src('src/Api/Library/Shared/WebsiteInstances.ejs')
+//     .pipe(data(function () {
+//       return JSON.parse(fs.readFileSync('src/Api/Library/Shared/WebsiteInstances.json'));
+//     }))
+//     .pipe(ejs())
+//     .pipe(dest('src/Api/Library/Shared/:name.php'))
+//     .pipe(gulp.dest('src/Api/Library/Shared/'));
+// });
 
 // ------------------------------------------
 // Create website-instances.generated-data.ts from template
 // ------------------------------------------
-gulp.task('build-createWebsiteDefsTs', function () {
-  return gulp.src('src/angular-app/bellows/core/website-instances.ejs')
-    .pipe(data(function () {
-      return JSON.parse(fs.readFileSync('src/Api/Library/Shared/WebsiteInstances.json'));
-    }))
-    .pipe(ejs())
-    .pipe(dest('src/angular-app/bellows/core/:name.generated-data.ts'))
-    .pipe(gulp.dest('src/angular-app/bellows/core/'));
-});
+// gulp.task('build-createWebsiteDefsTs', function () {
+//   return gulp.src('src/angular-app/bellows/core/website-instances.ejs')
+//     .pipe(data(function () {
+//       return JSON.parse(fs.readFileSync('src/Api/Library/Shared/WebsiteInstances.json'));
+//     }))
+//     .pipe(ejs())
+//     .pipe(dest('src/angular-app/bellows/core/:name.generated-data.ts'))
+//     .pipe(gulp.dest('src/angular-app/bellows/core/'));
+// });
 
 // ------------------------------------------
 // Create files from templates
 // ------------------------------------------
-gulp.task('build-createWebsiteDefs',
-  gulp.parallel(
-    'build-createWebsiteDefsPhp',
-    'build-createWebsiteDefsTs'
-  )
-);
+// gulp.task('build-createWebsiteDefs',
+//   gulp.parallel(
+//     'build-createWebsiteDefsPhp',
+//     'build-createWebsiteDefsTs'
+//   )
+// );
 
 // -------------------------------------
 //   Task: Build (General)
@@ -1179,7 +1179,7 @@ gulp.task('build',
       'build-productionConfig',
       'build-clearLocalCache',
       'build-remove-test-fixtures',
-      'build-createWebsiteDefs'
+      // 'build-createWebsiteDefs'
     ),
     'sass',
     'build-webpack',
@@ -1216,7 +1216,7 @@ gulp.task('dev-build',
 gulp.task('dev-dependencies-and-build',
   gulp.series(
     'get-dependencies',
-    'build-createWebsiteDefs',
+    // 'build-createWebsiteDefs',
     'dev-build'
   )
 );
