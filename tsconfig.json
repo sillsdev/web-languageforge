@@ -10,6 +10,7 @@
   "compileOnSave": false,
   "compilerOptions": {
     "alwaysStrict": true,
+    "baseUrl": ".",
     "downlevelIteration": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
@@ -19,7 +20,10 @@
     "moduleResolution": "node",
     "noImplicitAny": true,
     "outDir": "src/dist",
-    "rootDir": ".",
+    "paths": {
+      "@node_modules/*": ["node_modules/*"],
+    },
+    // "rootDir": "src",
     "sourceMap": true,
     "suppressImplicitAnyIndexErrors": true,
     "target": "es5",

@@ -491,9 +491,9 @@ export class EditorDataService {
             field = config.entry.fields.senses.fields[fieldKey];
           }
 
-          angular.forEach(config.entry.fields, (entryField, entryFieldKey) => {
+          angular.forEach(config.entry.fields, (entryField, entryFieldKey:string) => {
             if (entryField.type === 'multitext') {
-              angular.forEach(entry[entryFieldKey], (fieldNode, ws) => {
+              angular.forEach(entry[entryFieldKey], (fieldNode, ws:string) => {
                   if (ws && UtilityService.isAudio(ws) && fieldNode.value !== '') {
                     containsData = true;
                   }
