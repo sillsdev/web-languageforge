@@ -37,7 +37,9 @@ module.exports = function (env) {
         { from: './node_modules/jquery/dist/', to: 'jquery' },
         { from: './node_modules/offline-js/offline.min.js', to: 'offline-js' },
         { from: './node_modules/rangy/lib/', to: 'rangy' },
-        { from: './node_modules/zxcvbn/dist/', to: 'zxcvbn' }
+        { from: './node_modules/zxcvbn/dist/', to: 'zxcvbn' },
+        { from: './node_modules/ng-table/bundles/ng-table.min.css', to: 'ng-table' },
+        { from: './node_modules/ng-table/bundles/ng-table.min.css.map', to: 'ng-table' },
       ]),
       new webpack.ContextReplacementPlugin(
 
@@ -64,7 +66,8 @@ module.exports = function (env) {
           use: 'url-loader?limit=10000'
         },
         { test: /\.(ttf|eot|svg)(\?[\s\S]+)?$/, use: 'file-loader' },
-        { test: /\.(png|jpg)$/, use: 'url-loader?limit=8192' }
+        { test: /\.(png|jpg)$/, use: 'url-loader?limit=8192' },
+        { test: /ng-table\/.*\.html$/, use: ['ngtemplate-loader?requireAngular&relativeTo=/src/browser/&prefix=ng-table/', 'html-loader'] }
       ]
     }
 

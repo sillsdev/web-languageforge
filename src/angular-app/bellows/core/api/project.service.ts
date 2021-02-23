@@ -39,7 +39,8 @@ export class ProjectService {
         sfchecks: 'Community Scripture Checking',
         webtypesetting: 'Typesetting',
         semdomtrans: 'Semantic Domain Translation',
-        lexicon: 'Dictionary'
+        lexicon: 'Dictionary',
+        ldproject: 'Language Depot'
       },
       projectTypesBySite: () => {
         return this.projectTypesBySite;
@@ -50,7 +51,8 @@ export class ProjectService {
       const types = {
         // 'languageforge': ['lexicon', 'semdomtrans'],
         languageforge: ['lexicon'],
-        scriptureforge: ['sfchecks']
+        scriptureforge: ['sfchecks'],
+        languagedepot: ['ldproject']
       };
 
       this.projectTypesBySite = types[session.baseSite()];
@@ -166,4 +168,19 @@ export class ProjectService {
     return this.api.call('project_insights_csv');
   }
 
+  getLdapiProjectDto(projectCode: string, callback?: JsonRpcCallback) {
+    return this.api.call('ldapi_get_project', [projectCode], callback);
+  }
+
+  getAllLdapiProjects(callback?: JsonRpcCallback) {
+    return this.api.call('ldapi_get_all_projects', [], callback);
+  }
+
+  updateLdapiUserRole(projectCode: string, username: string, role: string, callback?: JsonRpcCallback) {
+    return this.api.call('ldapi_project_updateUserRole', [projectCode, username, role], callback);
+  }
+
+  removeUserFromLdapiProject(projectCode: string, username: string, callback?: JsonRpcCallback) {
+    return this.api.call('ldapi_project_removeUser', [projectCode, username], callback);
+  }
 }

@@ -229,6 +229,8 @@ export class UserProfileAppController implements angular.IController {
         }
       }
     });
+
+    this.userService.updateLdapiUser(this.originalUsername, this.user);
   }
 
   static getAvatarUrl(avatarRef: string): string {

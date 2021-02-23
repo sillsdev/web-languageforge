@@ -7,6 +7,7 @@ import {ApiService} from './api/api.service';
 import {JsonRpcModule} from './api/json-rpc.service';
 import {ProjectService} from './api/project.service';
 import {UserService} from './api/user.service';
+import {RolesService} from './api/roles.service';
 import {ApplicationHeaderService} from './application-header.service';
 import {ExceptionOverrideModule} from './exception-handling.service';
 import {BytesFilter, EncodeURIFilter, RelativeTimeFilter} from './filters';
@@ -28,6 +29,7 @@ export const CoreModule = angular
   ])
   .service('projectService', ProjectService)
   .service('userService', UserService)
+  .service('rolesService', RolesService)
   .service('activityService', ActivityService)
   .service('apiService', ApiService)
   .service('sessionService', SessionService)

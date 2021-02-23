@@ -72,6 +72,7 @@ class JsonRpcServer
             $api->checkPermissions($request->request->get('method'));
             if (method_exists($api, $request->request->get('method'))) {
                 $orderedParams = InternationalUtility::arrayNormalize($request->request->get('params')['orderedParams']);
+                $api->checkPermissionsWithParams($request->request->get('method'), $orderedParams);
                 $result = call_user_func_array([$api, $request->request->get('method')], $orderedParams);
                 $response = [
                     'jsonrpc' => '2.0',

@@ -1,4 +1,5 @@
 import { ApiService, JsonRpcCallback } from './api.service';
+import { User } from '../../shared/model/user.model';
 
 export class UserService {
   static $inject: string[] = ['apiService'];
@@ -75,6 +76,52 @@ export class UserService {
 
   sendInvite(toEmail: string, roleKey: string, callback?: JsonRpcCallback) {
     return this.api.call('user_sendInvite', [toEmail, roleKey], callback);
+  }
+
+  checkLdapiUserPassword(username: string, password: string, callback?: JsonRpcCallback) {
+    return this.api.call('ldapi_check_user_password', [username, password], callback);
+  }
+
+  getLdapiUser(username: string, callback?: JsonRpcCallback) {
+    return this.api.call('ldapi_get_user', [username], callback);
+  }
+
+  getAllLdapiUsers(callback?: JsonRpcCallback) {
+    return this.api.call('ldapi_get_all_users', [], callback);
+  }
+
+  getProjectsForUser(username: string, callback?: JsonRpcCallback) {
+    return this.api.call('ldapi_get_projects_for_user', [username], callback);
+  }
+
+  ldapiUserIsManagerOfProject(username: string, projectCode: string, callback?: JsonRpcCallback) {
+    return this.api.call('ldapi_user_is_manager_of_project', [username, projectCode], callback);
+  }
+
+  searchLdapiUsers(searchText: string, callback?: JsonRpcCallback) {
+    return this.api.call('ldapi_search_users', [searchText], callback);
+  }
+
+  updateLdapiUser(username: string, userDetails: User, callback?: JsonRpcCallback) {
+    const nameParts = this.splitName(userDetails.name);
+    const apiUser = {
+      username: userDetails.username,
+      firstname: nameParts[0],
+      lastname: nameParts[1],
+      emailAddress: userDetails.email,
+      password: '',  // This means "no change" in the API
+      mustChangePassword: false
+    };
+    return this.api.call('ldapi_update_user', [username, apiUser], callback);
+  }
+
+  private splitName(fullName: string): string[] {
+    const parts = fullName.split(' ', 2);
+    // A single name (no space) will be treated as a *last* name, not a first name
+    while (parts.length < 2) {
+      parts.unshift('');
+    }
+    return parts;
   }
 
 }

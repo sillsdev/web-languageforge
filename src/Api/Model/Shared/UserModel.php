@@ -110,6 +110,9 @@ class UserModel extends MapperModel
     /** @var ArrayOf<string> */
     public $facebookOAuthIds;
 
+    /** @var string */
+    public $languageDepotUsername;
+
     /** @var boolean */
     public $active;
 

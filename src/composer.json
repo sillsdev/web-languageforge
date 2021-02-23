@@ -29,7 +29,8 @@
     "symfony/twig-bridge": "^2.7",
     "twig/twig": "^2.0",
     "twig/extensions": "~1.3.0",
-    "twilio/sdk": "dev-master"
+    "twilio/sdk": "dev-master",
+    "firebase/php-jwt": "^5.2"
   },
   "require-dev": {
     "phpunit/phpunit": "^8.0",

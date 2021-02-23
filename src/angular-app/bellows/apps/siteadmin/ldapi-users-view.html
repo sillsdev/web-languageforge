@@ -1,0 +1,24 @@
+<div id="ldapiUsersView" class="animate-switch">
+    <div class="col col-lg-6">
+        <table id="ldapiUsersGrid" ng-table="$ctrl.tableParams" class="table table-bordered table-sm table-striped" show-filter="true">
+            <thead>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Username</th>
+                <th>Email</th>
+            </thead>
+            <tbody>
+                <tr ng-repeat="user in $data">
+                    <td title="'First Name'" filter="{ firstname: 'text'}" sortable="'firstname'">
+                        {{user.firstname}}</td>
+                    <td title="'Last Name'" filter="{ lastname: 'text'}" sortable="'lastname'">
+                        {{user.lastname}}</td>
+                    <td title="'username'" filter="{ username: 'text'}" sortable="'username'">
+                        {{user.username}}</td>
+                    <td title="'email'" filter="{ email: 'text'}" sortable="'email'">
+                        {{user.email}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
