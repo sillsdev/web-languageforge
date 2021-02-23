@@ -1,0 +1,21 @@
+<div id="ldapiProjectsView" class="animate-switch">
+    <div class="row">
+      <div class="col col-lg-4">
+          <table id="ldapiProjectsGrid" ng-table="$ctrl.tableParams" class="table table-bordered table-sm table-striped" show-filter="true">
+                  <tr ng-repeat="project in $data">
+                      <td title="'Name'" filter="{ name: 'text'}" sortable="'name'" ng-click="$ctrl.select(project)">
+                          {{project.name}}</td>
+                      <td title="'Code'" filter="{ code: 'text'}" sortable="'projectCode'" ng-click="$ctrl.select(project)">
+                          {{project.projectCode}}</td>
+                  </tr>
+          </table>
+      </div>
+      <div class="col col-lg-8">
+        <div ng-if="$ctrl.selectedProject">
+          <div class="card">
+            <ldprojectmembers is-admin="true" project="$ctrl.selectedProject"></ldprojectmembers>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>

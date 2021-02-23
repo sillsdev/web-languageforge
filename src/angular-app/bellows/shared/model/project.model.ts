@@ -37,3 +37,10 @@ export class ProjectRoles {
   static TECH_SUPPORT: ProjectRole = { name: 'Tech Support', key: 'tech_support' };
   static NONE: ProjectRole = { name: 'none', key: 'none' };
 }
+
+export class LanguageDepotProjectRoles {
+  static MANAGER: ProjectRole = { name: 'Manager', key: 'Manager' };
+  static CONTRIBUTOR: ProjectRole = { name: 'Contributor', key: 'Contributor' };
+  static TECH_SUPPORT: ProjectRole = { name: 'Tech Support', key: 'LanguageDepotProgrammer' };
+  static NONE: ProjectRole = { name: 'none', key: 'none' };
+}

@@ -3,6 +3,7 @@
 namespace Api\Model\Shared\Dto;
 
 use Api\Library\Shared\Website;
+use Api\Model\Shared\Command\LdapiCommands;
 use Api\Model\Shared\Rights\Domain;
 use Api\Model\Shared\Rights\Operation;
 use Api\Model\Shared\Rights\SiteRoles;
@@ -361,8 +362,34 @@ class RightsHelper
             case 'semdomtrans_export_all_projects':
                 return $this->userHasSiteRight(Domain::PROJECTS + Operation::EDIT);
 
+                    // Language Depot API access
+            case 'ldapi_check_user_password':
+            case 'ldapi_get_user':
+            case 'ldapi_update_user':
+            case 'ldapi_search_users':
+            case 'ldapi_get_all_projects':
+            case 'ldapi_get_all_users':
+            case 'ldapi_get_all_roles':
+            case 'ldapi_get_project':
+            case 'ldapi_get_projects_for_user':
+            case 'ldapi_project_updateUserRole':
+            case 'ldapi_project_removeUser':
+            case 'ldapi_user_is_manager_of_project':
+                return true;  // Handled server-side via JWT
+
             default:
                 throw new \Exception("API method '$methodName' has no security policy defined in RightsHelper::userCanAccessMethod()");
         }
+    }
+
+    /**
+     * @param string $methodName
+     * @param array $params parameters passed to the method
+     * @return bool
+     * @throws \Exception
+     */
+    public function userCanAccessMethodWithParams($methodName, $params)
+    {
+        return true; // Server now handles this via the JWT we'll pass it
     }
 }

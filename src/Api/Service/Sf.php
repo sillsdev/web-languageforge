@@ -37,6 +37,7 @@ use Api\Model\Shared\Command\MessageCommands;
 use Api\Model\Shared\Command\ProjectCommands;
 use Api\Model\Shared\Command\SessionCommands;
 use Api\Model\Shared\Command\UserCommands;
+use Api\Model\Shared\Command\LdapiCommands;
 use Api\Model\Shared\Communicate\EmailSettings;
 use Api\Model\Shared\Communicate\SmsSettings;
 use Api\Model\Shared\Dto\ActivityListDto;
@@ -933,6 +934,79 @@ class Sf
         return ['exportUrl' => '/sampledownload.zip'];
     }
 
+    // ----------------------------------- Language Depot Api -------------------------------------
+    public function get_ldapi_username()
+    {
+        if ($this->userId) {
+            $user = new UserModel($this->userId);
+        } else {
+            return '';
+        }
+        if ($user->languageDepotUsername) {
+            return $user->languageDepotUsername;
+        }
+        if ($user->email) {
+            $ldUsers = LdapiCommands::searchUsers('', $user->email);
+            if (count($ldUsers) == 1) {
+                $username = $ldUsers[0]['username'];
+                if ($username) {
+                    $user->languageDepotUsername = $username;
+                    $user->write();
+                    return $username;
+                }
+            }
+        }
+        return '';
+    }
+
+    public function ldapi_check_user_password($username, $password) {
+        return LdapiCommands::checkUserPassword($this->get_ldapi_username(), $username, $password);
+    }
+
+    public function ldapi_get_all_users() {
+        return LdapiCommands::getAllUsers($this->get_ldapi_username());
+    }
+
+    public function ldapi_search_users($searchText) {
+        return LdapiCommands::searchUsers($this->get_ldapi_username(), $searchText);
+    }
+
+    public function ldapi_get_user($username) {
+        return LdapiCommands::getUser($this->get_ldapi_username(), $username);
+    }
+
+    public function ldapi_update_user($username, $userdata) {
+        return LdapiCommands::updateUser($this->get_ldapi_username(), $username, $userdata);
+    }
+
+    public function ldapi_get_all_projects() {
+        return LdapiCommands::getAllProjects($this->get_ldapi_username());
+    }
+
+    public function ldapi_get_project($projectCode) {
+        return LdapiCommands::getProject($this->get_ldapi_username(), $projectCode);
+    }
+
+    public function ldapi_get_projects_for_user($username) {
+        return LdapiCommands::getProjectsForUser($this->get_ldapi_username(), $username);
+    }
+
+    public function ldapi_user_is_manager_of_project($username, $projectCode) {
+        return LdapiCommands::isUserManagerOfProject($this->get_ldapi_username(), $username, $projectCode);
+    }
+
+    public function ldapi_project_updateUserRole($projectCode, $username, $role) {
+        return LdapiCommands::updateUserRoleInProject($this->get_ldapi_username(), $projectCode, $username, $role);
+    }
+
+    public function ldapi_project_removeUser($projectCode, $username) {
+        return LdapiCommands::removeUserFromProject($this->get_ldapi_username(), $projectCode, $username);
+    }
+
+    public function ldapi_get_all_roles() {
+        return LdapiCommands::getAllRoles($this->get_ldapi_username());
+    }
+
     // ---------------------------------------------------------------
     // Private Utility Functions
     // ---------------------------------------------------------------
@@ -966,6 +1040,23 @@ class Sf
             }
             $rightsHelper = new RightsHelper($this->userId, $projectModel, $this->website);
             if (! $rightsHelper->userCanAccessMethod($methodName)) {
+                throw new UserUnauthorizedException("Insufficient privileges accessing API method '$methodName'");
+            }
+        }
+    }
+
+    public function checkPermissionsWithParams($methodName, $params = null) {
+        if (! self::isAnonymousMethod($methodName)) {
+            if (! $this->userId) {
+                throw new UserNotAuthenticatedException("Your session has timed out.  Please login again.");
+            }
+            try {
+                $projectModel = ProjectModel::getById($this->projectId);
+            } catch (\Exception $e) {
+                $projectModel = null;
+            }
+            $rightsHelper = new RightsHelper($this->userId, $projectModel, $this->website);
+            if (! $rightsHelper->userCanAccessMethodWithParams($methodName, $params)) {
                 throw new UserUnauthorizedException("Insufficient privileges accessing API method '$methodName'");
             }
         }
