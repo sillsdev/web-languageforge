@@ -520,17 +520,6 @@ gulp.task('test-e2e-teardownTestEnvironment', function (cb) {
 });
 
 // -------------------------------------
-//   Task: Test Restart Webserver
-// -------------------------------------
-gulp.task('test-restart-webserver', function (cb) {
-  execute(
-    'sudo service apache2 restart',
-    null,
-    cb
-  );
-});
-
-// -------------------------------------
 //   Task: Remote Restart PHP-FPM
 // -------------------------------------
 gulp.task('remote-restart-php-fpm', function (cb) {
@@ -681,22 +670,11 @@ gulp.task('test-e2e-doTest', function (cb) {
 
   // Generate list of specs to test (glob format so protractor will test whatever files exist)
   var specString = (params.specs) ? params.specs : '*';
-  var specs = ['test/app/allspecs/**/*.e2e-spec.js'];
-  if (specString === '*') {
-    specs.push('test/app/bellows/**/*-traversal.e2e-spec.js');
-    if (params.webserverHost.includes('languageforge')) {
-      specs.push('test/app/languageforge/**/*-traversal.e2e-spec.js');
-    } else {
-      specs.push('test/app/scriptureforge/**/*-traversal.e2e-spec.js');
-    }
-  }
-
-  specs.push('test/app/bellows/**/' + specString + '.e2e-spec.js');
-  if (params.webserverHost.includes('languageforge')) {
-    specs.push('test/app/languageforge/**/' + specString + '.e2e-spec.js');
-  } else {
-    specs.push('test/app/scriptureforge/**/' + specString + '.e2e-spec.js');
-  }
+  var specs = [
+    "test/app/allspecs/**/*.e2e-spec.js",
+    "test/app/bellows/**/" + specString + ".e2e-spec.js",
+    "test/app/languageforge/**/" + specString + ".e2e-spec.js",
+  ];
 
   // Get the selenium server address
   if (params.seleniumAddress && params.seleniumAddress.length > 0) {
@@ -760,8 +738,7 @@ gulp.task('test-e2e-clean-compile',
 // -------------------------------------
 gulp.task('test-e2e-teardownForLocalDev', gulp.series(
   'test-e2e-teardownTestEnvironment',
-  'test-e2e-useLiveConfig',
-  'test-restart-webserver')
+  'test-e2e-useLiveConfig')
 );
 
 // -------------------------------------
@@ -771,7 +748,6 @@ gulp.task('test-e2e-run',
   gulp.series(
     'test-e2e-clean-compile',
     'test-e2e-useTestConfig',
-    'test-restart-webserver',
     'test-e2e-setupTestEnvironment',
     'test-e2e-doTest')
 );
@@ -780,12 +756,10 @@ gulp.task('test-e2e-run').description = 'Run the E2E test on local developer env
 gulp.task('test-e2e-local-lf', gulp.series(
     'test-e2e-clean-compile',
     'test-e2e-useTestConfig',
-    'test-restart-webserver',
     'test-e2e-setupTestEnvironment',
     'test-e2e-doTest',
     'test-e2e-teardownTestEnvironment',
-    'test-e2e-useLiveConfig',
-    'test-restart-webserver')
+    'test-e2e-useLiveConfig')
 );
 
 //endregion
@@ -1255,8 +1229,7 @@ gulp.task('build-and-test',
   gulp.series(
     'build',
     'test-php',
-    'test-ts',
-    'test-restart-webserver'
+    'test-ts'
   )
 );
 gulp.task('build-and-test').description =

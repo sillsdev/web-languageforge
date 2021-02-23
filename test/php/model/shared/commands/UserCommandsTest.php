@@ -566,35 +566,6 @@ class UserCommandsTest extends TestCase
     }
 
     /** @throws Exception */
-    public function testRegister_CrossSiteEnabled_UserHasSiteRole()
-    {
-        $validCode = 'validCode';
-        $params = [
-            'id' => '',
-            'username' => 'jsmith',
-            'name' => 'joe smith',
-            'email' => 'joe@smith.com',
-            'password' => 'somepassword',
-            'captcha' => $validCode
-        ];
-        $website = Website::get(self::CROSS_SITE_DOMAIN);
-        $captcha_info = ['code' => $validCode];
-        $delivery = new MockUserCommandsDelivery();
-        // Register user to default website
-        UserCommands::register($params, self::$environ->website, $captcha_info, $delivery);
-        $joeUser = new UserModel();
-        $joeUser->readByEmail('joe@smith.com');
-        $this->assertFalse($joeUser->hasRoleOnSite($website));
-
-        // Register user to cross-site
-        $result = UserCommands::register($params, $website, $captcha_info, $delivery);
-
-        $joeUser->readByEmail('joe@smith.com');
-        $this->assertEquals($result, 'login');
-        $this->assertTrue($joeUser->hasRoleOnSite($website));
-    }
-
-    /** @throws Exception */
     public function testRegister_ExistingGoogleUser_Deny()
     {
         $gmail = 'someone@gmail.com';

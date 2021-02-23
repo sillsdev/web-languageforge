@@ -3,35 +3,27 @@
 .PHONY: start
 start:
   # starts the entire runtime infrastructure
-	docker-compose up -d ssl
+	docker-compose up -d ssl && docker-compose logs -f ui
 
-.PHONY: db
-db:
-	docker-compose up -d db
-
-.PHONY: ui
-ui:
-	docker-compose up -d ui
-
-.PHONY: api
-api:
-	docker-compose up -d api
-
-.PHONY: ssl
-ssl: # http://localhost => https://localhost
-	docker-compose up -d ssl
-
-.PHONY: mail
-mail:
-	docker-compose up -d mail
+.PHONY: e2e
+e2e:
+	docker-compose run e2e-ui
 
 .PHONY: tests
 tests:
-	docker-compose run --workdir="/var/www" api sh -c "/wait && ln -s html src && html/vendor/bin/phpunit --configuration test/php/phpunit.xml"
+	docker-compose run test-api
+
+.PHONY: build
+build:
+	docker-compose build api ui
+
+.PHONY: e2e-build
+e2e-build:
+	docker-compose build e2e-api e2e-ui
 
 .PHONY: db-reset
 db-reset:
-	docker-compose run --workdir="/var/www/scripts/tools" api sh -c "/wait && php FactoryReset.php run"
+	docker-compose run db-reset
 
 .PHONY: clean
 clean:

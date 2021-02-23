@@ -61,41 +61,6 @@ class LfSessionTestEnvironment extends SessionTestEnvironment {
 
 class SessionCommandsTest extends TestCase
 {
-    /**
-     * @throws Exception
-     */
-    public function testSessionData_userIsNotPartOfProject()
-    {
-        $environ = new SessionTestEnvironment();
-        $environ->create();
-        $data = SessionCommands::getSessionData($environ->projectId, $environ->userId, $environ->website);
-
-        // Session data should contain a userId but not a projectId
-        $this->assertArrayHasKey('userId', $data);
-        $this->assertTrue(is_string($data['userId']));
-        $this->assertEquals($environ->userId, $data['userId']);
-
-        // Session data should also contain "site", a string...
-        $this->assertArrayHasKey('baseSite', $data);
-        $this->assertTrue(is_string($data['baseSite']));
-        // ... and "fileSizeMax", an integer
-        $this->assertArrayHasKey('fileSizeMax', $data);
-        $this->assertTrue(is_integer($data['fileSizeMax']));
-
-        // Session data should not contain project or projectSettings, an associative array
-        $this->assertArrayNotHasKey('project', $data);
-        $this->assertArrayNotHasKey('projectSettings', $data);
-
-        // Session data should contain user site rights, an array of integers
-        $this->assertArrayHasKey('userSiteRights', $data);
-        $this->assertTrue(is_array($data['userSiteRights']));
-        // ... which should not be empty
-        $this->assertFalse(empty($data['userSiteRights']));
-        $this->assertTrue(is_integer($data['userSiteRights'][0]));
-
-        // Session data should contain user project rights, an array of integers
-        $this->assertArrayNotHasKey('userProjectRights', $data);
-    }
 
     /**
      * @throws Exception

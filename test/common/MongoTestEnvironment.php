@@ -17,7 +17,7 @@ use Palaso\Utilities\FileUtilities;
 
 class MongoTestEnvironment
 {
-    public function __construct($domain = 'scriptureforge.org')
+    public function __construct($domain = 'languageforge.org')
     {
         $this->db = MongoStore::connect(SF_DATABASE);
         $this->website = Website::get($domain);
@@ -104,12 +104,8 @@ class MongoTestEnvironment
         $projectModel->siteName = $this->website->domain;
         if ($appName != '') {
             $projectModel->appName = $appName;
-        }  else if ($this->website->base == Website::SCRIPTUREFORGE) {
-            $projectModel->appName = 'sfchecks';
-        } elseif ($this->website->base == Website::LANGUAGEFORGE) {
-            $projectModel->appName = 'lexicon';
         } else {
-            $projectModel->appName = 'rapuma';
+            $projectModel->appName = 'lexicon';
         }
         $this->cleanProjectEnvironment($projectModel);
         $projectModel->write();
