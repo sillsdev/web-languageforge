@@ -3,7 +3,7 @@
 .PHONY: start
 start:
   # starts the entire runtime infrastructure
-	docker-compose up -d ssl
+	docker-compose up -d ssl && docker-compose logs -f ui
 
 .PHONY: e2e
 e2e:
@@ -12,6 +12,14 @@ e2e:
 .PHONY: tests
 tests:
 	docker-compose run test-api
+
+.PHONY: build
+build:
+	docker-compose build api ui
+
+.PHONY: e2e-build
+e2e-build:
+	docker-compose build e2e-api e2e-ui
 
 .PHONY: db-reset
 db-reset:
