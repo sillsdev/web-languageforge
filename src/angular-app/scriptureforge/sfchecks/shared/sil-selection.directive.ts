@@ -1,5 +1,5 @@
 // tslint:disable-next-line:no-reference
-///<reference path="../../../../../node_modules/@types/rangy/rangy-classapplier.d.ts"/>
+///<reference types="rangy/rangy-classapplier"/>
 import * as angular from 'angular';
 
 interface SelectionScope extends angular.IScope {
