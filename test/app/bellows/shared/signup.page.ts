@@ -2,11 +2,11 @@ import {browser, by, element} from 'protractor';
 
 export class SignupPage {
   static get() {
-    browser.get(browser.baseUrl + '/public/signup');
+    return browser.get(browser.baseUrl + '/public/signup');
   }
 
   static getPrefilledEmail(email: string) {
-    browser.get(browser.baseUrl + '/public/signup#!/?e=' + encodeURIComponent(email));
+    return browser.get(browser.baseUrl + '/public/signup#!/?e=' + encodeURIComponent(email));
   }
 
   signupForm = element(by.id('signupForm'));
@@ -28,9 +28,9 @@ export class SignupPage {
     yellowCircleButton: this.captchaDiv.element(by.id('captcha1')),
     redTriangleButton: this.captchaDiv.element(by.id('captcha2')),
 
-    setInvalidCaptcha: () => {
-      this.captcha.blueSquareButton.click();
-      this.captcha.expectedItemName.getText().then((result: string) => {
+    setInvalidCaptcha: async () => {
+      await this.captcha.blueSquareButton.click();
+      return this.captcha.expectedItemName.getText().then((result: string) => {
         if (result === 'Blue Square') {
           element(by.id('pui-captcha')).element(by.id('captcha1')).click();
         }
@@ -38,18 +38,15 @@ export class SignupPage {
     },
 
     setValidCaptcha: () => {
-      this.captcha.expectedItemName.getText().then((result: string) => {
+      return this.captcha.expectedItemName.getText().then((result: string) => {
         const captchaDiv = element(by.id('pui-captcha'));
         switch (result) {
           case 'Blue Square' :
-            captchaDiv.element(by.id('captcha0')).click();
-            break;
+            return captchaDiv.element(by.id('captcha0')).click();
           case 'Yellow Circle' :
-            captchaDiv.element(by.id('captcha1')).click();
-            break;
+            return captchaDiv.element(by.id('captcha1')).click();
           case 'Red Triangle' :
-            captchaDiv.element(by.id('captcha2')).click();
-            break;
+            return captchaDiv.element(by.id('captcha2')).click();
         }
       });
     }

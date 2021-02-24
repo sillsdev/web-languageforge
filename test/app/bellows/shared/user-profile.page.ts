@@ -8,19 +8,19 @@ export class SfUserProfilePage {
 
   // Navigate to the MyProfile page (defaults to My Account tab)
   get() {
-    browser.get(browser.baseUrl + this.userProfileURL);
+    return browser.get(browser.baseUrl + this.userProfileURL);
   }
 
   // Navigate to the MyProfile -> My Account page
   getMyAccount() {
-    this.get();
+    return this.get();
   }
 
   // Navigate to the MyProfile -> About Me page
-  getAboutMe() {
-    this.get();
-    this.tabs.aboutMe.click();
-    browser.wait(ExpectedConditions.visibilityOf(this.aboutMeTab.fullName), Utils.conditionTimeout);
+  async getAboutMe() {
+    await this.get();
+    await this.tabs.aboutMe.click();
+    return browser.wait(ExpectedConditions.visibilityOf(this.aboutMeTab.fullName), Utils.conditionTimeout);
   }
 
   tabs = {
@@ -52,33 +52,33 @@ export class SfUserProfilePage {
     saveBtn:          element(by.id('saveBtn')),
 
     selectColor: (newColor: string|RegExp) => {
-      Utils.clickDropdownByValue(this.myAccountTab.avatarColor, newColor);
+      return Utils.clickDropdownByValue(this.myAccountTab.avatarColor, newColor);
     },
     selectShape: (newShape: string|RegExp) => {
-      Utils.clickDropdownByValue(this.myAccountTab.avatarShape, newShape);
+      return Utils.clickDropdownByValue(this.myAccountTab.avatarShape, newShape);
     },
-    updateEmail: (newEmail: string) => {
-      browser.wait(ExpectedConditions.visibilityOf(this.myAccountTab.emailInput), Utils.conditionTimeout);
-      this.myAccountTab.emailInput.sendKeys(protractor.Key.chord(protractor.Key.CONTROL, 'a'));
-      this.myAccountTab.emailInput.sendKeys(newEmail);
+    updateEmail: async (newEmail: string) => {
+      await browser.wait(ExpectedConditions.visibilityOf(this.myAccountTab.emailInput), Utils.conditionTimeout);
+      await this.myAccountTab.emailInput.sendKeys(protractor.Key.chord(protractor.Key.CONTROL, 'a'));
+      await this.myAccountTab.emailInput.sendKeys(newEmail);
 
       // click another field to force validation
-      this.myAccountTab.username.click();
+      return this.myAccountTab.username.click();
     },
-    updateUsername: (newUsername: string) => {
-      browser.wait(ExpectedConditions.visibilityOf(this.myAccountTab.username), Utils.conditionTimeout);
-      this.myAccountTab.username.sendKeys(protractor.Key.chord(protractor.Key.CONTROL, 'a'));
-      this.myAccountTab.username.sendKeys(newUsername);
+    updateUsername: async (newUsername: string) => {
+      await browser.wait(ExpectedConditions.visibilityOf(this.myAccountTab.username), Utils.conditionTimeout);
+      await this.myAccountTab.username.sendKeys(protractor.Key.chord(protractor.Key.CONTROL, 'a'));
+      await this.myAccountTab.username.sendKeys(newUsername);
 
       // click another field to force validation
-      this.myAccountTab.emailInput.click();
+      return this.myAccountTab.emailInput.click();
     },
-    updateMobilePhone: (newPhone: string) => {
-      browser.wait(ExpectedConditions.visibilityOf(this.myAccountTab.mobilePhoneInput), Utils.conditionTimeout);
-      this.myAccountTab.mobilePhoneInput.sendKeys(newPhone);
+    updateMobilePhone: async (newPhone: string) => {
+      await browser.wait(ExpectedConditions.visibilityOf(this.myAccountTab.mobilePhoneInput), Utils.conditionTimeout);
+      return this.myAccountTab.mobilePhoneInput.sendKeys(newPhone);
     },
     updateContactPreference() {
-      this.bothBtn.click();
+      return this.bothBtn.click();
     }
   };
 
@@ -88,18 +88,18 @@ export class SfUserProfilePage {
     gender:   element(by.id('gender')),
     saveBtn:  element(by.id('saveBtn')),
 
-    updateFullName: (newFullName: string) => {
-      browser.wait(ExpectedConditions.visibilityOf(this.aboutMeTab.fullName), Utils.conditionTimeout);
-      this.aboutMeTab.fullName.sendKeys(protractor.Key.chord(protractor.Key.CONTROL, 'a'));
-      this.aboutMeTab.fullName.sendKeys(newFullName);
+    updateFullName: async (newFullName: string) => {
+      await browser.wait(ExpectedConditions.visibilityOf(this.aboutMeTab.fullName), Utils.conditionTimeout);
+      await this.aboutMeTab.fullName.sendKeys(protractor.Key.chord(protractor.Key.CONTROL, 'a'));
+      return this.aboutMeTab.fullName.sendKeys(newFullName);
     },
-    updateAge: (newAge: string) => {
-      browser.wait(ExpectedConditions.visibilityOf(this.aboutMeTab.age), Utils.conditionTimeout);
-      this.aboutMeTab.age.sendKeys(protractor.Key.chord(protractor.Key.CONTROL, 'a'));
-      this.aboutMeTab.age.sendKeys(newAge);
+    updateAge: async (newAge: string) => {
+      await browser.wait(ExpectedConditions.visibilityOf(this.aboutMeTab.age), Utils.conditionTimeout);
+      await this.aboutMeTab.age.sendKeys(protractor.Key.chord(protractor.Key.CONTROL, 'a'));
+      return this.aboutMeTab.age.sendKeys(newAge);
     },
     updateGender: (newGender: string) => {
-      Utils.clickDropdownByValue(this.aboutMeTab.gender, newGender);
+      return Utils.clickDropdownByValue(this.aboutMeTab.gender, newGender);
     }
   };
 }

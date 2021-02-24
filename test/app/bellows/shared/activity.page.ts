@@ -10,15 +10,15 @@ export class SfActivityPage {
 
   // Navigate to the Activity page
   get() {
-    browser.get(browser.baseUrl + this.activityURL);
+    return browser.get(browser.baseUrl + this.activityURL);
   }
 
   clickOnAllActivity() {
-    this.filterByUser.element(by.css('option:nth-child(1)')).click();
+    return this.filterByUser.element(by.css('option:nth-child(1)')).click();
   }
 
   clickOnShowOnlyMyActivity() {
-    this.filterByUser.element(by.css('option:nth-child(2)')).click();
+    return this.filterByUser.element(by.css('option:nth-child(2)')).click();
   }
 
   // Returns the number of items in the activity list
@@ -43,7 +43,7 @@ export class SfActivityPage {
   // Prints the entire activity list
   //noinspection JSUnusedGlobalSymbols
   printActivitiesNames() {
-    (this.activitiesList).each((names: ElementFinder) => {
+    return (this.activitiesList).each((names: ElementFinder) => {
       names.getText().then(console.log);
     });
   }

@@ -22,67 +22,67 @@ describe('Bellows E2E Page Traversal', () => {
   const siteAdminPage = new SiteAdminPage();
   const userProfilePage = new SfUserProfilePage();
 
-  it('Explore signup page' , () => {
-    BellowsLoginPage.logout();
-    SignupPage.get();
-    signupPage.emailInput.clear();
-    signupPage.nameInput.clear();
-    signupPage.passwordInput.clear();
-    signupPage.captcha.blueSquareButton.click();
-    signupPage.captcha.yellowCircleButton.click();
-    signupPage.captcha.redTriangleButton.click();
+  it('Explore signup page' , async () => {
+    await BellowsLoginPage.logout();
+    await SignupPage.get();
+    await signupPage.emailInput.clear();
+    await signupPage.nameInput.clear();
+    await signupPage.passwordInput.clear();
+    await signupPage.captcha.blueSquareButton.click();
+    await signupPage.captcha.yellowCircleButton.click();
+    await signupPage.captcha.redTriangleButton.click();
   });
 
-  it('Explore forgot password page', () => {
-    BellowsForgotPasswordPage.get();
-    forgotPasswordPage.usernameInput.clear();
-    forgotPasswordPage.submitButton.click();
+  it('Explore forgot password page', async () => {
+    await BellowsForgotPasswordPage.get();
+    await forgotPasswordPage.usernameInput.clear();
+    await forgotPasswordPage.submitButton.click();
   });
 
-  it('Explore reset password page', () => {
-    BellowsResetPasswordPage.get(constants.resetPasswordKey);
-    resetPasswordPage.passwordInput.clear();
-    resetPasswordPage.confirmPasswordInput.clear();
-    resetPasswordPage.resetButton.click();
+  it('Explore reset password page', async () => {
+    await BellowsResetPasswordPage.get(constants.resetPasswordKey);
+    await resetPasswordPage.passwordInput.clear();
+    await resetPasswordPage.confirmPasswordInput.clear();
+    await resetPasswordPage.resetButton.click();
   });
 
-  it('Explore login page', () => {
-    BellowsLoginPage.get();
-    loginPage.loginAsAdmin();
+  it('Explore login page', async () => {
+    await BellowsLoginPage.get();
+    await loginPage.loginAsAdmin();
   });
 
-  it('Explore change password page', () => {
-    changePasswordPage.get();
-    changePasswordPage.password.clear();
-    changePasswordPage.confirm.clear();
-    changePasswordPage.submitButton.click();
+  it('Explore change password page', async () => {
+    await changePasswordPage.get();
+    await changePasswordPage.password.clear();
+    await changePasswordPage.confirm.clear();
+    await changePasswordPage.submitButton.click();
   });
 
-  it('Explore activity page', () => {
-    activityPage.get();
-    activityPage.activitiesList.count();
+  it('Explore activity page', async () => {
+    await activityPage.get();
+    await activityPage.activitiesList.count();
   });
 
-  it('Explore project page', () => {
-    projectsPage.get();
-    projectsPage.projectsList.count();
-    projectsPage.projectNames.count();
-    projectsPage.projectTypes.count();
-    projectsPage.createBtn.click();
+  it('Explore project page', async () => {
+    await projectsPage.get();
+    await projectsPage.projectsList.count();
+    await projectsPage.projectNames.count();
+    await projectsPage.projectTypes.count();
+    await projectsPage.createBtn.click();
   });
 
-  it('Explore site admin page', () => {
-    siteAdminPage.get();
-    siteAdminPage.tabs.archivedProjects.click();
-    siteAdminPage.archivedProjectsTab.republishButton.click();
-    siteAdminPage.archivedProjectsTab.deleteButton.click();
-    siteAdminPage.archivedProjectsTab.projectsList.count();
+  it('Explore site admin page', async () => {
+    await siteAdminPage.get();
+    await siteAdminPage.tabs.archivedProjects.click();
+    await siteAdminPage.archivedProjectsTab.republishButton.click();
+    await siteAdminPage.archivedProjectsTab.deleteButton.click();
+    await siteAdminPage.archivedProjectsTab.projectsList.count();
   });
 
-  it('Explore user profile page', () => {
-    userProfilePage.get();
-    userProfilePage.activitiesList.count();
-    userProfilePage.tabs.aboutMe.click();
-    userProfilePage.tabs.myAccount.click();
+  it('Explore user profile page', async () => {
+    await userProfilePage.get();
+    await userProfilePage.activitiesList.count();
+    await userProfilePage.tabs.aboutMe.click();
+    await userProfilePage.tabs.myAccount.click();
   });
 });
