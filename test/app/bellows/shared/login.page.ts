@@ -4,7 +4,7 @@ export class BellowsLoginPage {
   private readonly constants = require('../../testConstants');
 
   static get() {
-    browser.get(browser.baseUrl + '/auth/login');
+    return browser.get(browser.baseUrl + '/auth/login');
   }
 
   form = element(by.id('login-loginForm'));
@@ -16,43 +16,43 @@ export class BellowsLoginPage {
   submit     = element(by.id('login-submit'));
   lexiconLoading = element(by.id('loadingMessage'));
 
-  login(username: string, password: string) {
-    browser.get(browser.baseUrl + '/auth/logout');
+  async login(username: string, password: string) {
+    await browser.get(browser.baseUrl + '/auth/logout');
 
-    BellowsLoginPage.get();
-    this.username.sendKeys(username);
-    this.password.sendKeys(password);
-    this.submit.click();
-    browser.wait(ExpectedConditions.not(ExpectedConditions.urlContains('/auth/login')),
+    await BellowsLoginPage.get();
+    await this.username.sendKeys(username);
+    await this.password.sendKeys(password);
+    await this.submit.click();
+    await browser.wait(ExpectedConditions.not(ExpectedConditions.urlContains('/auth/login')),
       this.constants.conditionTimeout);
-    browser.wait(ExpectedConditions.invisibilityOf(this.lexiconLoading), this.constants.conditionTimeout);
+    return browser.wait(ExpectedConditions.invisibilityOf(this.lexiconLoading), this.constants.conditionTimeout);
   }
 
   loginAsAdmin() {
-    this.login(this.constants.adminEmail, this.constants.adminPassword);
+    return this.login(this.constants.adminEmail, this.constants.adminPassword);
   }
 
   loginAsManager() {
-    this.login(this.constants.managerEmail, this.constants.managerPassword);
+    return this.login(this.constants.managerEmail, this.constants.managerPassword);
   }
 
   loginAsUser() {
-    this.login(this.constants.memberEmail, this.constants.memberPassword);
+    return this.login(this.constants.memberEmail, this.constants.memberPassword);
   }
 
   loginAsMember = this.loginAsUser;
 
   loginAsSecondUser() {
-    this.login(this.constants.member2Email, this.constants.member2Password);
+    return this.login(this.constants.member2Email, this.constants.member2Password);
   }
 
   loginAsSecondMember = this.loginAsSecondUser;
 
   loginAsObserver() {
-    this.login(this.constants.observerEmail, this.constants.observerPassword);
+    return this.login(this.constants.observerEmail, this.constants.observerPassword);
   }
 
   static logout() {
-    browser.get(browser.baseUrl + '/auth/logout');
+    return browser.get(browser.baseUrl + '/auth/logout');
   }
 }

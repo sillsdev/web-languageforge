@@ -10,7 +10,7 @@ export class Utils {
   setCheckbox(checkboxElement: ElementFinder, value: boolean) {
     // Ensure a checkbox element will be either checked (true) or unchecked (false), regardless of
     // what its current value is
-    checkboxElement.isSelected().then((checked: boolean) => {
+    return checkboxElement.isSelected().then((checked: boolean) => {
       if (checked !== value) {
         checkboxElement.click();
       }
@@ -24,7 +24,7 @@ export class Utils {
 
   static clickDropdownByValue(dropdownElement: ElementFinder, value: string|RegExp) {
     // Select an element of the dropdown based on its value (its text)
-    Utils.findDropdownByValue(dropdownElement, value).click();
+    return Utils.findDropdownByValue(dropdownElement, value).click();
   }
 
   findRowByFunc(elementArray: ElementArrayFinder, searchFunc: (rowText: string) => boolean): Promise<ElementFinder> {
@@ -62,7 +62,7 @@ export class Utils {
    * @param textString - string of text to set the value to
    */
   static sendText(elem: ElementFinder, textString: string) {
-    browser.executeScript('arguments[0].value = arguments[1];', elem.getWebElement(), textString);
+    return browser.executeScript('arguments[0].value = arguments[1];', elem.getWebElement(), textString);
   }
 
   //noinspection JSUnusedGlobalSymbols
@@ -97,23 +97,23 @@ export class Utils {
     }
   };
 
-  static checkModalTextMatches(expectedText: string) {
+  static async checkModalTextMatches(expectedText: string) {
     const modalBody = element(by.css('.modal-body'));
 
-    browser.wait(ExpectedConditions.visibilityOf(modalBody), Utils.conditionTimeout);
-    expect(modalBody.getText()).toMatch(expectedText);
+    await browser.wait(ExpectedConditions.visibilityOf(modalBody), Utils.conditionTimeout);
+    return expect(modalBody.getText()).toMatch(expectedText);
   }
 
-  static clickModalButton(buttonText: string) {
+  static async clickModalButton(buttonText: string) {
     const button = element(by.css('.modal-footer')).element(by.partialButtonText(buttonText));
 
-    browser.wait(ExpectedConditions.visibilityOf(button), Utils.conditionTimeout);
-    browser.wait(ExpectedConditions.elementToBeClickable(button), Utils.conditionTimeout);
-    button.click();
+    await browser.wait(ExpectedConditions.visibilityOf(button), Utils.conditionTimeout);
+    await browser.wait(ExpectedConditions.elementToBeClickable(button), Utils.conditionTimeout);
+    return button.click();
   }
 
   static clickBreadcrumb(breadcrumbTextOrRegex: string|RegExp) {
-    element(by.cssContainingText('.breadcrumb > li', breadcrumbTextOrRegex)).click();
+    return element(by.cssContainingText('.breadcrumb > li', breadcrumbTextOrRegex)).click();
   }
 
   static parent(child: ElementFinder) {
@@ -139,7 +139,7 @@ export class Utils {
   }
 
   static scrollTop() {
-    browser.executeScript('window.scroll(0,0)');
+    return browser.executeScript('window.scroll(0,0)');
   }
 
   static isAllCheckboxes(elementArray: ElementArrayFinder, state: boolean = true) {
