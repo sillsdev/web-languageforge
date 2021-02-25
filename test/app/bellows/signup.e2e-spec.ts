@@ -1,10 +1,10 @@
 import {browser, ExpectedConditions} from 'protractor';
 
-import {BellowsLoginPage} from '../shared/login.page';
-import {SignupPage} from '../shared/signup.page';
+import {BellowsLoginPage} from './shared/login.page';
+import {SignupPage} from './shared/signup.page';
 
 describe('Bellows E2E Signup app', () => {
-  const constants = require('../../testConstants.json');
+  const constants = require('./../testConstants.json');
   const page = new SignupPage();
   const loginPage = new BellowsLoginPage();
 
