@@ -99,7 +99,7 @@ services:
       - e2e-api
     volumes:
       # share dist folder between ui and api containers
-      - webpack-dist-folder:/var/www/src/dist
+      - webpack-dist-folder:/data/src/dist
 
   e2e-api:
     build:
