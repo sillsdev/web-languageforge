@@ -28,6 +28,9 @@ services:
     depends_on:
       - db
       - mail
+    environment:
+      - WAIT_HOSTS=db:27017, mail:25
+    command: sh -c "/wait && apache2-foreground"
     volumes:
       # share dist folder between ui and api containers
       - webpack-dist-folder:/var/www/src/dist
