@@ -98,8 +98,13 @@ services:
     image: e2e-ui
     container_name: e2e-ui
     depends_on:
-      - selenium
+      - db
       - e2e-api
+      - mail
+      - selenium
+    environment:
+      - WAIT_HOSTS=db:27017, mail:25, selenium:4444
+    command: sh -c "/wait && ./rune2e.sh"
     volumes:
       # share dist folder between ui and api containers
       - webpack-dist-folder:/data/src/dist
