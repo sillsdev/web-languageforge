@@ -17,10 +17,6 @@ tests:
 build: wait
 	docker-compose build
 
-.PHONY: e2e-build
-e2e-build:
-	docker-compose build e2e-api e2e-ui
-
 .PHONY: db-reset
 db-reset:
 	docker-compose run db-reset
