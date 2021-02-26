@@ -1,12 +1,12 @@
 import {browser, ExpectedConditions} from 'protractor';
 
-import {BellowsForgotPasswordPage} from '../shared/forgot-password.page';
-import {BellowsLoginPage} from '../shared/login.page';
-import {PageHeader} from '../shared/page-header.element';
-import {BellowsResetPasswordPage} from '../shared/reset-password.page';
+import {BellowsForgotPasswordPage} from './shared/forgot-password.page';
+import {BellowsLoginPage} from './shared/login.page';
+import {PageHeader} from './shared/page-header.element';
+import {BellowsResetPasswordPage} from './shared/reset-password.page';
 
 describe('Bellows E2E Reset Forgotten Password app', () => {
-  const constants = require('../../testConstants.json');
+  const constants = require('./../testConstants.json');
   const header = new PageHeader();
   const loginPage = new BellowsLoginPage();
   const resetPasswordPage = new BellowsResetPasswordPage();
