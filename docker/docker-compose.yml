@@ -111,8 +111,11 @@ services:
     image: e2e-api
     container_name: e2e-api
     depends_on:
-      - mail
       - db
+      - mail
+    environment:
+      - WAIT_HOSTS=db:27017, mail:25
+    command: sh -c "/wait && /run.sh"
     volumes:
       # share dist folder between ui and api containers
       - webpack-dist-folder:/var/www/src/dist
@@ -142,12 +145,9 @@ services:
       - mail
       - db
 
-
-
 volumes:
   caddy_config:
   caddy_data:
   mongo-data:
   user-data-assets:
   webpack-dist-folder:
-  # lfmerge-data:
