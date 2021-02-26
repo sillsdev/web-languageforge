@@ -11,10 +11,7 @@ e2e:
 
 .PHONY: tests
 tests:
-	docker-compose run --name phptests test-api
-
-	# copy test results out of container for use by teamcity
-	docker cp phptests:/var/www/PhpUnitTests.xml ..
+	docker-compose run test-api
 
 .PHONY: build
 build: wait
