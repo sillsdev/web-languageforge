@@ -1,7 +1,7 @@
 # https://docs.docker.com/compose/reference/overview
 
 .PHONY: start
-start:
+start: wait
   # starts the entire runtime infrastructure
 	docker-compose up -d ssl && docker-compose logs -f ui
 
@@ -14,16 +14,16 @@ tests:
 	docker-compose run test-api
 
 .PHONY: build
-build:
-	docker-compose build api ui
-
-.PHONY: e2e-build
-e2e-build:
-	docker-compose build e2e-api e2e-ui
+build: wait
+	docker-compose build
 
 .PHONY: db-reset
 db-reset:
 	docker-compose run db-reset
+
+.PHONY: wait
+wait:
+	docker build -t wait wait/.
 
 .PHONY: clean
 clean:

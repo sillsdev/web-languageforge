@@ -28,6 +28,9 @@ services:
     depends_on:
       - db
       - mail
+    environment:
+      - WAIT_HOSTS=db:27017, mail:25
+    command: sh -c "/wait && apache2-foreground"
     volumes:
       # share dist folder between ui and api containers
       - webpack-dist-folder:/var/www/src/dist
@@ -95,8 +98,13 @@ services:
     image: e2e-ui
     container_name: e2e-ui
     depends_on:
-      - selenium
+      - db
       - e2e-api
+      - mail
+      - selenium
+    environment:
+      - WAIT_HOSTS=db:27017, mail:25, selenium:4444
+    command: sh -c "/wait && /run.sh"
     volumes:
       # share dist folder between ui and api containers
       - webpack-dist-folder:/data/src/dist
@@ -108,8 +116,11 @@ services:
     image: e2e-api
     container_name: e2e-api
     depends_on:
-      - mail
       - db
+      - mail
+    environment:
+      - WAIT_HOSTS=db:27017, mail:25
+    command: sh -c "/wait && /run.sh"
     volumes:
       # share dist folder between ui and api containers
       - webpack-dist-folder:/var/www/src/dist
@@ -122,8 +133,11 @@ services:
     image: test-api
     container_name: test-api
     depends_on:
-      - mail
       - db
+      - mail
+    environment:
+      - WAIT_HOSTS=db:27017, mail:25
+    command: sh -c "/wait && /run.sh"
     volumes:
       # for developer convenience
       - ../test:/var/www/test
@@ -139,12 +153,9 @@ services:
       - mail
       - db
 
-
-
 volumes:
   caddy_config:
   caddy_data:
   mongo-data:
   user-data-assets:
   webpack-dist-folder:
-  # lfmerge-data:
