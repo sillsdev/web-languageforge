@@ -1,4 +1,5 @@
 #!/bin/bash
 
 cd /var/www/
-src/vendor/bin/phpunit --configuration test/php/phpunit.xml
+echo "##teamcity[importData type='junit' path='PhpUnitTests.xml']"
+src/vendor/bin/phpunit --configuration test/php/phpunit.xml --log-junit PhpUnitTests.xml
