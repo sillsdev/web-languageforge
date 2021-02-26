@@ -4,10 +4,12 @@ FROM lf-ui:latest
 RUN gulp sass webpack-lf
 
 # copy in test folder
-COPY rune2e.sh /data/
+COPY docker/e2e-ui/run.sh /
 COPY test/ /data/test/
+
+RUN gulp test-e2e-clean-compile
 
 # make wait available for container ochestration
 COPY --from=wait /wait /wait
 
-CMD ["./rune2e.sh"]
+CMD run.sh
