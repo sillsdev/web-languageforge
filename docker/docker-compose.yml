@@ -128,8 +128,11 @@ services:
     image: test-api
     container_name: test-api
     depends_on:
-      - mail
       - db
+      - mail
+    environment:
+      - WAIT_HOSTS=db:27017, mail:25
+    command: sh -c "/wait && /run.sh"
     volumes:
       # for developer convenience
       - ../test:/var/www/test
