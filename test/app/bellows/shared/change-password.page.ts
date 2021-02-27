@@ -4,9 +4,9 @@ export class BellowsChangePasswordPage {
   conditionTimeout: number = 3000;
 
   // TODO: this will likely change when we refactor the display of notifications - cjh 2014-06
-  get() {
-    browser.get(browser.baseUrl + '/app/changepassword');
-    browser.wait(ExpectedConditions.visibilityOf(this.password), this.conditionTimeout);
+  async get() {
+    await browser.get(browser.baseUrl + '/app/changepassword');
+    return browser.wait(ExpectedConditions.visibilityOf(this.password), this.conditionTimeout);
   }
 
   password = element(by.id('change-password-input'));

@@ -8,7 +8,7 @@ export class ProjectsPage {
 
   url = '/app/projects';
   get() {
-    browser.get(browser.baseUrl + this.url);
+    return browser.get(browser.baseUrl + this.url);
   }
 
   testProjectName = 'Test Project';
@@ -43,7 +43,7 @@ export class ProjectsPage {
   }
 
   clickOnProject(projectName: string) {
-    this.findProject(projectName).then((projectRow: any) => {
+    return this.findProject(projectName).then((projectRow: any) => {
       const projectLink = projectRow.element(by.css('a'));
       projectLink.getAttribute('href').then((url: string) => {
         browser.get(url);
@@ -56,9 +56,9 @@ export class ProjectsPage {
     element(by.id('userManagementLink')) : element(by.id('dropdown-project-settings'));
 
   addUserToProject(projectName: any, usersName: string, roleText: string) {
-    this.findProject(projectName).then((projectRow: any) => {
+    return this.findProject(projectName).then(async (projectRow: any) => {
       const projectLink = projectRow.element(by.css('a'));
-      projectLink.getAttribute('href').then((href: string) => {
+      await projectLink.getAttribute('href').then((href: string) => {
         const results = /app\/lexicon\/([0-9a-fA-F]+)\//.exec(href);
         expect(results).not.toBeNull();
         expect(results.length).toBeGreaterThan(1);
@@ -66,21 +66,21 @@ export class ProjectsPage {
         UserManagementPage.get(projectId);
       });
 
-      browser.wait(ExpectedConditions.visibilityOf(this.userManagementPage.addMembersBtn), Utils.conditionTimeout);
-      this.userManagementPage.addMembersBtn.click();
-      browser.wait(ExpectedConditions.visibilityOf(this.userManagementPage.userNameInput), Utils.conditionTimeout);
-      this.userManagementPage.userNameInput.sendKeys(usersName);
+      await browser.wait(ExpectedConditions.visibilityOf(this.userManagementPage.addMembersBtn), Utils.conditionTimeout);
+      await this.userManagementPage.addMembersBtn.click();
+      await browser.wait(ExpectedConditions.visibilityOf(this.userManagementPage.userNameInput), Utils.conditionTimeout);
+      await this.userManagementPage.userNameInput.sendKeys(usersName);
 
-      this.utils.findRowByText(this.userManagementPage.typeaheadItems, usersName).then((item: any) => {
+      await this.utils.findRowByText(this.userManagementPage.typeaheadItems, usersName).then((item: any) => {
         item.click();
       });
 
       // This should be unique no matter what
-      this.userManagementPage.newMembersDiv.element(by.id('addUserButton')).click();
+      await this.userManagementPage.newMembersDiv.element(by.id('addUserButton')).click();
 
       // Now set the user to member or manager, as needed
       let foundUserRow: any;
-      this.userManagementPage.projectMemberRows.map((row: any) => {
+      await this.userManagementPage.projectMemberRows.map((row: any) => {
         const nameColumn = row.element(by.binding('user.username'));
         nameColumn.getText().then((text: string) => {
           if (text === usersName) {
@@ -94,7 +94,7 @@ export class ProjectsPage {
         }
       });
 
-      this.get(); // After all is finished, reload projects page
+      return this.get(); // After all is finished, reload projects page
     });
   }
 

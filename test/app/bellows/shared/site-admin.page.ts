@@ -7,7 +7,7 @@ export class SiteAdminPage {
   url = browser.baseUrl + '/app/siteadmin';
   get() {
     // todo: refactor this to be a click recipe (as a user would click on the menu to navigate)
-    browser.get(this.url);
+    return browser.get(this.url);
   }
 
   activePane = element(by.css('div.tab-pane.active'));
@@ -24,7 +24,7 @@ export class SiteAdminPage {
     setCheckbox: (row: number, value: boolean) => {
       const projectRow = this.archivedProjectsTab.projectsList.get(row);
       const rowCheckbox = projectRow.element(by.css('input[type="checkbox"]'));
-      this.util.setCheckbox(rowCheckbox, value);
+      return this.util.setCheckbox(rowCheckbox, value);
     }
   };
 
@@ -45,11 +45,11 @@ export class SiteAdminPage {
   passwordInput = element(by.model('record.password'));
 
   //noinspection JSUnusedGlobalSymbols
-  clearForm() {
-    this.usernameInput.clear();
-    this.nameInput.clear();
-    this.emailInput.clear();
-    this.passwordInput.clear();
+  async clearForm() {
+    await this.usernameInput.clear();
+    await this.nameInput.clear();
+    await this.emailInput.clear();
+    return this.passwordInput.clear();
 
     // this.activeCheckbox.clear();
   }
