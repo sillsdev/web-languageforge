@@ -17,6 +17,11 @@ COPY docker/api/apache2.service /etc/systemd/system
 
 # copy src files into our image
 COPY src /var/www/html/
+
+# ensure assets and cache folders writable by Apache user
+RUN chmod -R g+w /var/www/html/assets /var/www/html/cache
+RUN chown -R :www-data /var/www/html/assets /var/www/html/cache
+
 RUN ln -s /var/www/html /var/www/src
 
 # run composer install
