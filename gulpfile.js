@@ -105,12 +105,8 @@ gulp.task('generate-language-picker-assets').description =
 var sassCommand = './node_modules/.bin/node-sass';
 
 gulp.task('sass', gulp.parallel(
-  function buildSiteDir(done) {
-    execute(sassCommand + ' src/Site/ -o src/Site/ --output-style compressed', null, done);
-  },
-
   function buildAngularAppDir(done) {
-    execute(sassCommand  + ' src/angular-app/ -o src/angular-app/ --output-style compressed',
+    execute(sassCommand  + ' src/sass -o src/dist/css',
       null, done);
   }
 ));
@@ -120,16 +116,11 @@ gulp.task('sass:watch', function () {
   if (!debug) console.info('Tip: run with --debug to generate source comments and source maps.');
 
   var watch = ' --watch --recursive';
-  var debugArgs = debug ? ' --source-comments --source-map-embed --source-map-contents' : '';
+  var debugArgs = debug ? ' --source-comments --source-map-embed' : '';
 
-  var a = sassCommand + ' src/Site -o src/Site' + debugArgs;
-  var b = sassCommand + ' src/angular-app -o src/angular-app' + debugArgs;
+  var a = sassCommand + ' src/sass -o src/dist/css' + debugArgs;
 
   return new Promise(function (resolve, reject) {
-    execute(b, null, function () {
-      execute(b + watch, null, reject);
-    });
-
     execute(a, null, function () {
       execute(a + watch, null, reject);
     });
