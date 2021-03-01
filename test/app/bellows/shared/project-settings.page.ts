@@ -10,13 +10,13 @@ export class BellowsProjectSettingsPage {
   projectSettingsLink = element(by.id('dropdown-project-settings'));
 
   // Get the projectSettings for project projectName
-  get(projectName: string) {
-    this.projectsPage.get();
-    this.projectsPage.clickOnProject(projectName);
-    browser.wait(ExpectedConditions.visibilityOf(this.settingsMenuLink), this.conditionTimeout);
-    this.settingsMenuLink.click();
-    browser.wait(ExpectedConditions.visibilityOf(this.projectSettingsLink), this.conditionTimeout);
-    this.projectSettingsLink.click();
+  async get(projectName: string) {
+    await this.projectsPage.get();
+    await this.projectsPage.clickOnProject(projectName);
+    await browser.wait(ExpectedConditions.visibilityOf(this.settingsMenuLink), this.conditionTimeout);
+    await this.settingsMenuLink.click();
+    await browser.wait(ExpectedConditions.visibilityOf(this.projectSettingsLink), this.conditionTimeout);
+    return this.projectSettingsLink.click();
   }
 
   noticeList = element.all(by.repeater('notice in $ctrl.notices()'));

@@ -13,205 +13,205 @@ describe('Lexicon E2E New Project wizard app', () => {
   const page = new NewLexProjectPage();
   const CHECK_PAUSE = 1000;
 
-  it('admin can get to wizard', () => {
-    loginPage.loginAsAdmin();
-    NewLexProjectPage.get();
-    expect(page.newLexProjectForm).toBeDefined();
-    expect<any>(page.chooserPage.createButton.isDisplayed()).toBe(true);
+  it('admin can get to wizard', async () => {
+    await loginPage.loginAsAdmin();
+    await NewLexProjectPage.get();
+    expect(await page.newLexProjectForm).toBeDefined();
+    expect<any>(await page.chooserPage.createButton.isDisplayed()).toBe(true);
   });
 
-  it('manager can get to wizard', () => {
-    loginPage.loginAsManager();
-    NewLexProjectPage.get();
-    expect(page.newLexProjectForm).toBeDefined();
-    expect<any>(page.chooserPage.createButton.isDisplayed()).toBe(true);
+  it('manager can get to wizard', async () => {
+    await loginPage.loginAsManager();
+    await NewLexProjectPage.get();
+    expect(await page.newLexProjectForm).toBeDefined();
+    expect<any>(await page.chooserPage.createButton.isDisplayed()).toBe(true);
   });
 
-  it('setup: user login and page contains a form', () => {
-    loginPage.loginAsUser();
-    NewLexProjectPage.get();
-    expect(page.newLexProjectForm).toBeDefined();
-    expect<any>(page.chooserPage.createButton.isDisplayed()).toBe(true);
+  it('setup: user login and page contains a form', async () => {
+    await loginPage.loginAsUser();
+    await NewLexProjectPage.get();
+    expect(await page.newLexProjectForm).toBeDefined();
+    expect<any>(await page.chooserPage.createButton.isDisplayed()).toBe(true);
   });
 
   describe('Chooser page', () => {
 
-    it('cannot see Back or Next buttons', () => {
-      expect<any>(page.backButton.isDisplayed()).toBe(false);
-      expect<any>(page.nextButton.isDisplayed()).toBe(false);
-      page.formStatus.expectHasNoError();
+    it('cannot see Back or Next buttons', async () => {
+      expect<any>(await page.backButton.isDisplayed()).toBe(false);
+      expect<any>(await page.nextButton.isDisplayed()).toBe(false);
+      await page.formStatus.expectHasNoError();
     });
 
-    it('can create a new project', () => {
-      expect<any>(page.chooserPage.createButton.isEnabled()).toBe(true);
-      page.chooserPage.createButton.click();
-      expect<any>(page.namePage.projectNameInput.isDisplayed()).toBe(true);
+    it('can create a new project', async () => {
+      expect<any>(await page.chooserPage.createButton.isEnabled()).toBe(true);
+      await page.chooserPage.createButton.click();
+      expect<any>(await page.namePage.projectNameInput.isDisplayed()).toBe(true);
     });
 
-    it('can go back to Chooser page', () => {
-      expect<any>(page.backButton.isDisplayed()).toBe(true);
-      page.backButton.click();
-      expect<any>(page.chooserPage.sendReceiveButton.isDisplayed()).toBe(true);
+    it('can go back to Chooser page', async () => {
+      expect<any>(await page.backButton.isDisplayed()).toBe(true);
+      await page.backButton.click();
+      expect<any>(await page.chooserPage.sendReceiveButton.isDisplayed()).toBe(true);
     });
 
-    it('can select Send and Receive', () => {
-      expect<any>(page.chooserPage.sendReceiveButton.isEnabled()).toBe(true);
-      page.chooserPage.sendReceiveButton.click();
-      expect<any>(page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
+    it('can select Send and Receive', async () => {
+      expect<any>(await page.chooserPage.sendReceiveButton.isEnabled()).toBe(true);
+      await page.chooserPage.sendReceiveButton.click();
+      expect<any>(await page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
     });
 
-    it('can go back to Chooser page', () => {
-      expect<any>(page.backButton.isDisplayed()).toBe(true);
-      page.backButton.click();
-      expect<any>(page.chooserPage.sendReceiveButton.isDisplayed()).toBe(true);
+    it('can go back to Chooser page', async () => {
+      expect<any>(await page.backButton.isDisplayed()).toBe(true);
+      await page.backButton.click();
+      expect<any>(await page.chooserPage.sendReceiveButton.isDisplayed()).toBe(true);
     });
 
   });
 
   describe('Send Receive Credentials page', () => {
 
-    it('can get back to Send and Receive Credentials page', () => {
-      page.chooserPage.sendReceiveButton.click();
-      expect<any>(page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
-      expect<any>(page.srCredentialsPage.loginInput.getAttribute('value')).toEqual(constants.memberUsername);
-      expect<any>(page.srCredentialsPage.passwordInput.isDisplayed()).toBe(true);
-      expect<any>(page.srCredentialsPage.projectSelect().isPresent()).toBe(false);
+    it('can get back to Send and Receive Credentials page', async () => {
+      await page.chooserPage.sendReceiveButton.click();
+      expect<any>(await page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
+      expect<any>(await page.srCredentialsPage.loginInput.getAttribute('value')).toEqual(constants.memberUsername);
+      expect<any>(await page.srCredentialsPage.passwordInput.isDisplayed()).toBe(true);
+      expect<any>(await page.srCredentialsPage.projectSelect().isPresent()).toBe(false);
     });
 
-    it('cannot move on if Password is empty', () => {
-      page.formStatus.expectHasNoError();
-      expect<any>(page.nextButton.isEnabled()).toBe(true);
-      page.nextButton.click();
-      expect<any>(page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
-      expect<any>(page.srCredentialsPage.projectSelect().isPresent()).toBe(false);
-      page.formStatus.expectContainsError('Password cannot be empty.');
+    it('cannot move on if Password is empty', async () => {
+      await page.formStatus.expectHasNoError();
+      expect<any>(await page.nextButton.isEnabled()).toBe(true);
+      await page.nextButton.click();
+      expect<any>(await page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
+      expect<any>(await page.srCredentialsPage.projectSelect().isPresent()).toBe(false);
+      await page.formStatus.expectContainsError('Password cannot be empty.');
     });
 
-    it('cannot move on if username is incorrect', () => {
+    it('cannot move on if username is incorrect', async () => {
       // passwordInvalid is, incredibly, an invalid password.
       // It's valid only in the sense that it follows the password rules
-      page.srCredentialsPage.passwordInput.sendKeys(constants.passwordValid);
-      browser.wait(ExpectedConditions.visibilityOf(page.srCredentialsPage.credentialsInvalid),
+      await page.srCredentialsPage.passwordInput.sendKeys(constants.passwordValid);
+      await browser.wait(ExpectedConditions.visibilityOf(page.srCredentialsPage.credentialsInvalid),
         constants.conditionTimeout);
-      expect<any>(page.srCredentialsPage.credentialsInvalid.isDisplayed()).toBe(true);
-      page.formStatus.expectHasNoError();
-      page.nextButton.click();
-      expect<any>(page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
-      expect<any>(page.srCredentialsPage.projectSelect().isPresent()).toBe(false);
-      page.formStatus.expectContainsError('The username or password isn\'t valid on LanguageDepot.org.');
+      expect<any>(await page.srCredentialsPage.credentialsInvalid.isDisplayed()).toBe(true);
+      await page.formStatus.expectHasNoError();
+      await page.nextButton.click();
+      expect<any>(await page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
+      expect<any>(await page.srCredentialsPage.projectSelect().isPresent()).toBe(false);
+      await page.formStatus.expectContainsError('The username or password isn\'t valid on LanguageDepot.org.');
     });
 
-    it('can go back to Chooser page, user and pass preserved', () => {
-      expect<any>(page.backButton.isDisplayed()).toBe(true);
-      page.backButton.click();
-      expect<any>(page.chooserPage.sendReceiveButton.isDisplayed()).toBe(true);
-      page.chooserPage.sendReceiveButton.click();
-      expect<any>(page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
-      expect(page.srCredentialsPage.loginInput.getAttribute('value')).toEqual(constants.memberUsername);
-      expect(page.srCredentialsPage.passwordInput.getAttribute('value')).toEqual(constants.passwordValid);
-      page.srCredentialsPage.passwordInput.clear();
+    it('can go back to Chooser page, user and pass preserved', async () => {
+      expect<any>(await page.backButton.isDisplayed()).toBe(true);
+      await page.backButton.click();
+      expect<any>(await page.chooserPage.sendReceiveButton.isDisplayed()).toBe(true);
+      await page.chooserPage.sendReceiveButton.click();
+      expect<any>(await page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
+      expect(await page.srCredentialsPage.loginInput.getAttribute('value')).toEqual(constants.memberUsername);
+      expect(await page.srCredentialsPage.passwordInput.getAttribute('value')).toEqual(constants.passwordValid);
+      await page.srCredentialsPage.passwordInput.clear();
     });
 
-    it('cannot move on if Login is empty', () => {
-      page.srCredentialsPage.loginInput.clear();
-      expect<any>(page.nextButton.isEnabled()).toBe(true);
-      page.nextButton.click();
-      expect<any>(page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
-      expect<any>(page.srCredentialsPage.projectSelect().isPresent()).toBe(false);
-      page.formStatus.expectContainsError('Login cannot be empty.');
+    it('cannot move on if Login is empty', async () => {
+      await page.srCredentialsPage.loginInput.clear();
+      expect<any>(await page.nextButton.isEnabled()).toBe(true);
+      await page.nextButton.click();
+      expect<any>(await page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
+      expect<any>(await page.srCredentialsPage.projectSelect().isPresent()).toBe(false);
+      await page.formStatus.expectContainsError('Login cannot be empty.');
     });
 
-    it('cannot move on if credentials are invalid', () => {
-      page.srCredentialsPage.loginInput.sendKeys(constants.srUsername);
-      page.srCredentialsPage.passwordInput.sendKeys(constants.passwordValid);
-      browser.wait(ExpectedConditions.visibilityOf(page.srCredentialsPage.credentialsInvalid),
+    it('cannot move on if credentials are invalid', async () => {
+      await page.srCredentialsPage.loginInput.sendKeys(constants.srUsername);
+      await page.srCredentialsPage.passwordInput.sendKeys(constants.passwordValid);
+      await browser.wait(ExpectedConditions.visibilityOf(page.srCredentialsPage.credentialsInvalid),
         constants.conditionTimeout);
-      expect<any>(page.srCredentialsPage.loginOk.isPresent()).toBe(false);
-      browser.wait(ExpectedConditions.visibilityOf(page.srCredentialsPage.credentialsInvalid),
+      expect<any>(await page.srCredentialsPage.loginOk.isPresent()).toBe(false);
+      await browser.wait(ExpectedConditions.visibilityOf(page.srCredentialsPage.credentialsInvalid),
         constants.conditionTimeout);
-      expect<any>(page.srCredentialsPage.credentialsInvalid.isDisplayed()).toBe(true);
-      page.formStatus.expectHasNoError();
-      page.nextButton.click();
-      expect<any>(page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
-      expect<any>(page.srCredentialsPage.projectSelect().isPresent()).toBe(false);
+      expect<any>(await page.srCredentialsPage.credentialsInvalid.isDisplayed()).toBe(true);
+      await page.formStatus.expectHasNoError();
+      await page.nextButton.click();
+      expect<any>(await page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
+      expect<any>(await page.srCredentialsPage.projectSelect().isPresent()).toBe(false);
     });
 
-    it('can move on when the credentials are valid', () => {
-      page.srCredentialsPage.passwordInput.clear();
-      page.srCredentialsPage.passwordInput.sendKeys(constants.srPassword);
-      browser.wait(ExpectedConditions.visibilityOf(page.srCredentialsPage.passwordOk), constants.conditionTimeout);
-      expect<any>(page.srCredentialsPage.loginOk.isDisplayed()).toBe(true);
-      expect<any>(page.srCredentialsPage.passwordOk.isDisplayed()).toBe(true);
-      expect<any>(page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
-      expect<any>(page.srCredentialsPage.projectSelect().isDisplayed()).toBe(true);
-      page.formStatus.expectHasNoError();
+    it('can move on when the credentials are valid', async () => {
+      await page.srCredentialsPage.passwordInput.clear();
+      await page.srCredentialsPage.passwordInput.sendKeys(constants.srPassword);
+      await browser.wait(ExpectedConditions.visibilityOf(page.srCredentialsPage.passwordOk), constants.conditionTimeout);
+      expect<any>(await page.srCredentialsPage.loginOk.isDisplayed()).toBe(true);
+      expect<any>(await page.srCredentialsPage.passwordOk.isDisplayed()).toBe(true);
+      expect<any>(await page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
+      expect<any>(await page.srCredentialsPage.projectSelect().isDisplayed()).toBe(true);
+      await page.formStatus.expectHasNoError();
     });
 
-    it('cannot move on if no project is selected', () => {
-      page.nextButton.click();
-      expect<any>(page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
-      expect<any>(page.srCredentialsPage.projectSelect().isDisplayed()).toBe(true);
-      page.formStatus.expectContainsError('Please select a Project.');
+    it('cannot move on if no project is selected', async () => {
+      await page.nextButton.click();
+      expect<any>(await page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
+      expect<any>(await page.srCredentialsPage.projectSelect().isDisplayed()).toBe(true);
+      await page.formStatus.expectContainsError('Please select a Project.');
     });
 
-    it('cannot move on if not a manager of the project', () => {
-      Utils.clickDropdownByValue(page.srCredentialsPage.projectSelect(), 'mock-name2');
-      expect<any>(page.srCredentialsPage.projectNoAccess.isDisplayed()).toBe(true);
-      page.formStatus.expectContainsError('select a Project that you are the Manager of');
+    it('cannot move on if not a manager of the project', async () => {
+      await Utils.clickDropdownByValue(page.srCredentialsPage.projectSelect(), 'mock-name2');
+      expect<any>(await page.srCredentialsPage.projectNoAccess.isDisplayed()).toBe(true);
+      await page.formStatus.expectContainsError('select a Project that you are the Manager of');
     });
 
-    it('can move on when a managed project is selected', () => {
-      Utils.clickDropdownByValue(page.srCredentialsPage.projectSelect(), 'mock-name4');
-      expect<any>(page.srCredentialsPage.projectOk.isDisplayed()).toBe(true);
-      page.formStatus.expectHasNoError();
-      page.expectFormIsValid();
+    it('can move on when a managed project is selected', async () => {
+      await Utils.clickDropdownByValue(page.srCredentialsPage.projectSelect(), 'mock-name4');
+      expect<any>(await page.srCredentialsPage.projectOk.isDisplayed()).toBe(true);
+      await page.formStatus.expectHasNoError();
+      await page.expectFormIsValid();
     });
 
   });
 
   describe('Send Receive Verify page', () => {
 
-    it('can clone project', () => {
-      page.nextButton.click();
-      browser.wait(ExpectedConditions.visibilityOf(page.srClonePage.cloning), constants.conditionTimeout);
-      expect<any>(page.srClonePage.cloning.isDisplayed()).toBe(true);
+    it('can clone project', async () => {
+      await page.nextButton.click();
+      await browser.wait(ExpectedConditions.visibilityOf(page.srClonePage.cloning), constants.conditionTimeout);
+      expect<any>(await page.srClonePage.cloning.isDisplayed()).toBe(true);
     });
 
-    it('cannot move on while cloning', () => {
-      expect<any>(page.nextButton.isDisplayed()).toBe(false);
-      expect<any>(page.nextButton.isEnabled()).toBe(false);
-      page.expectFormIsNotValid();
+    it('cannot move on while cloning', async () => {
+      expect<any>(await page.nextButton.isDisplayed()).toBe(false);
+      expect<any>(await page.nextButton.isEnabled()).toBe(false);
+      await page.expectFormIsNotValid();
     });
 
   });
 
   describe('New Project Name page', () => {
 
-    it('can create a new project', () => {
-      NewLexProjectPage.get();
-      page.chooserPage.createButton.click();
-      expect<any>(page.namePage.projectNameInput.isPresent()).toBe(true);
+    it('can create a new project', async () => {
+      await NewLexProjectPage.get();
+      await page.chooserPage.createButton.click();
+      expect<any>(await page.namePage.projectNameInput.isPresent()).toBe(true);
     });
 
-    it('cannot move on if name is invalid', () => {
-      expect<any>(page.nextButton.isEnabled()).toBe(true);
-      page.nextButton.click();
-      expect<any>(page.namePage.projectNameInput.isPresent()).toBe(true);
-      page.formStatus.expectContainsError('Project Name cannot be empty.');
+    it('cannot move on if name is invalid', async () => {
+      expect<any>(await page.nextButton.isEnabled()).toBe(true);
+      await page.nextButton.click();
+      expect<any>(await page.namePage.projectNameInput.isPresent()).toBe(true);
+      await page.formStatus.expectContainsError('Project Name cannot be empty.');
     });
 
-    it('finds the test project already exists', () => {
-      page.namePage.projectNameInput.sendKeys(constants.testProjectName + Key.TAB);
-      browser.wait(ExpectedConditions.visibilityOf(page.namePage.projectCodeExists), constants.conditionTimeout);
-      expect<any>(page.namePage.projectCodeExists.isDisplayed()).toBe(true);
-      expect<any>(page.namePage.projectCodeAlphanumeric.isPresent()).toBe(false);
-      expect<any>(page.namePage.projectCodeOk.isPresent()).toBe(false);
-      expect(page.namePage.projectCodeInput.getAttribute('value')).toEqual(constants.testProjectCode);
-      page.formStatus.expectContainsError('Another project with code \'' + constants.testProjectCode +
+    it('finds the test project already exists', async () => {
+      await page.namePage.projectNameInput.sendKeys(constants.testProjectName + Key.TAB);
+      await browser.wait(ExpectedConditions.visibilityOf(page.namePage.projectCodeExists), constants.conditionTimeout);
+      expect<any>(await page.namePage.projectCodeExists.isDisplayed()).toBe(true);
+      expect<any>(await page.namePage.projectCodeAlphanumeric.isPresent()).toBe(false);
+      expect<any>(await page.namePage.projectCodeOk.isPresent()).toBe(false);
+      expect(await page.namePage.projectCodeInput.getAttribute('value')).toEqual(constants.testProjectCode);
+      await page.formStatus.expectContainsError('Another project with code \'' + constants.testProjectCode +
         '\' already exists.');
     });
 
-    it('with a cleared name does not show an error but is still invalid', () => {
+    it('with a cleared name does not show an error but is still invalid', async () => {
 
       /**
        * FIXME: added the following two lines so the test will work (previous error wasn't clearing)
@@ -219,225 +219,225 @@ describe('Lexicon E2E New Project wizard app', () => {
        * however is likely symptomatic of some funkiness with promises. IJH 2014-12
        */
 
-      page.namePage.projectNameInput.sendKeys('a' + Key.TAB);
-      page.namePage.projectNameInput.clear();
-      page.namePage.projectNameInput.sendKeys(Key.TAB);
-      browser.sleep(CHECK_PAUSE);
-      expect<any>(page.namePage.projectCodeExists.isPresent()).toBe(false);
-      expect<any>(page.namePage.projectCodeAlphanumeric.isPresent()).toBe(false);
-      expect<any>(page.namePage.projectCodeOk.isPresent()).toBe(false);
-      page.formStatus.expectHasNoError();
-      expect<any>(page.nextButton.isEnabled()).toBe(true);
-      page.nextButton.click();
-      expect<any>(page.namePage.projectNameInput.isPresent()).toBe(true);
-      page.formStatus.expectContainsError('Project Name cannot be empty.');
+      await page.namePage.projectNameInput.sendKeys('a' + Key.TAB);
+      await page.namePage.projectNameInput.clear();
+      await page.namePage.projectNameInput.sendKeys(Key.TAB);
+      await browser.sleep(CHECK_PAUSE);
+      expect<any>(await page.namePage.projectCodeExists.isPresent()).toBe(false);
+      expect<any>(await page.namePage.projectCodeAlphanumeric.isPresent()).toBe(false);
+      expect<any>(await page.namePage.projectCodeOk.isPresent()).toBe(false);
+      await page.formStatus.expectHasNoError();
+      expect<any>(await page.nextButton.isEnabled()).toBe(true);
+      await page.nextButton.click();
+      expect<any>(await page.namePage.projectNameInput.isPresent()).toBe(true);
+      await page.formStatus.expectContainsError('Project Name cannot be empty.');
     });
 
-    it('can verify that an unused project name is available', () => {
-      page.namePage.projectNameInput.sendKeys(constants.newProjectName + Key.TAB);
-      browser.wait(ExpectedConditions.visibilityOf(page.namePage.projectCodeOk),
+    it('can verify that an unused project name is available', async () => {
+      await page.namePage.projectNameInput.sendKeys(constants.newProjectName + Key.TAB);
+      await browser.wait(ExpectedConditions.visibilityOf(page.namePage.projectCodeOk),
         constants.conditionTimeout);
-      expect<any>(page.namePage.projectCodeOk.isDisplayed()).toBe(true);
-      expect<any>(page.namePage.projectCodeExists.isPresent()).toBe(false);
-      expect<any>(page.namePage.projectCodeAlphanumeric.isPresent()).toBe(false);
-      expect<any>(page.namePage.projectCodeInput.getAttribute('value')).toEqual(constants.newProjectCode);
-      page.formStatus.expectHasNoError();
+      expect<any>(await page.namePage.projectCodeOk.isDisplayed()).toBe(true);
+      expect<any>(await page.namePage.projectCodeExists.isPresent()).toBe(false);
+      expect<any>(await page.namePage.projectCodeAlphanumeric.isPresent()).toBe(false);
+      expect<any>(await page.namePage.projectCodeInput.getAttribute('value')).toEqual(constants.newProjectCode);
+      await page.formStatus.expectHasNoError();
     });
 
-    it('can not edit project code by default', () => {
-      expect<any>(page.namePage.projectCodeInput.isDisplayed()).toBe(false);
+    it('can not edit project code by default', async () => {
+      expect<any>(await page.namePage.projectCodeInput.isDisplayed()).toBe(false);
     });
 
-    it('can edit project code when enabled', () => {
-      expect<any>(page.namePage.editProjectCodeCheckbox.isDisplayed()).toBe(true);
-      util.setCheckbox(page.namePage.editProjectCodeCheckbox, true);
-      expect<any>(page.namePage.projectCodeInput.isDisplayed()).toBe(true);
-      page.namePage.projectCodeInput.clear();
-      page.namePage.projectCodeInput.sendKeys('changed_new_project');
-      page.namePage.projectNameInput.sendKeys(Key.TAB);     // trigger project code check
-      expect<any>(page.namePage.projectCodeInput.getAttribute('value')).toEqual('changed_new_project');
-      page.formStatus.expectHasNoError();
+    it('can edit project code when enabled', async () => {
+      expect<any>(await page.namePage.editProjectCodeCheckbox.isDisplayed()).toBe(true);
+      await util.setCheckbox(page.namePage.editProjectCodeCheckbox, true);
+      expect<any>(await page.namePage.projectCodeInput.isDisplayed()).toBe(true);
+      await page.namePage.projectCodeInput.clear();
+      await page.namePage.projectCodeInput.sendKeys('changed_new_project');
+      await page.namePage.projectNameInput.sendKeys(Key.TAB);     // trigger project code check
+      expect<any>(await page.namePage.projectCodeInput.getAttribute('value')).toEqual('changed_new_project');
+      await page.formStatus.expectHasNoError();
     });
 
-    it('project code cannot be empty; does not show an error but is still invalid', () => {
-      page.namePage.projectCodeInput.clear();
-      page.namePage.projectNameInput.sendKeys(Key.TAB);     // trigger project code check
-      browser.sleep(CHECK_PAUSE);
-      expect<any>(page.namePage.projectCodeExists.isPresent()).toBe(false);
-      expect<any>(page.namePage.projectCodeAlphanumeric.isPresent()).toBe(false);
-      expect<any>(page.namePage.projectCodeOk.isPresent()).toBe(false);
-      page.formStatus.expectHasNoError();
-      expect<any>(page.nextButton.isEnabled()).toBe(true);
-      page.nextButton.click();
-      expect<any>(page.namePage.projectNameInput.isPresent()).toBe(true);
-      page.formStatus.expectContainsError('Project Code cannot be empty.');
+    it('project code cannot be empty; does not show an error but is still invalid', async () => {
+      await page.namePage.projectCodeInput.clear();
+      await page.namePage.projectNameInput.sendKeys(Key.TAB);     // trigger project code check
+      await browser.sleep(CHECK_PAUSE);
+      expect<any>(await page.namePage.projectCodeExists.isPresent()).toBe(false);
+      expect<any>(await page.namePage.projectCodeAlphanumeric.isPresent()).toBe(false);
+      expect<any>(await page.namePage.projectCodeOk.isPresent()).toBe(false);
+      await page.formStatus.expectHasNoError();
+      expect<any>(await page.nextButton.isEnabled()).toBe(true);
+      await page.nextButton.click();
+      expect<any>(await page.namePage.projectNameInput.isPresent()).toBe(true);
+      await page.formStatus.expectContainsError('Project Code cannot be empty.');
     });
 
-    it('project code can be one character', () => {
-      page.namePage.projectCodeInput.clear();
-      page.namePage.projectCodeInput.sendKeys('a');
-      page.namePage.projectNameInput.sendKeys(Key.TAB);     // trigger project code check
-      browser.wait(ExpectedConditions.visibilityOf(page.namePage.projectCodeOk), constants.conditionTimeout);
-      expect<any>(page.namePage.projectCodeExists.isPresent()).toBe(false);
-      expect<any>(page.namePage.projectCodeAlphanumeric.isPresent()).toBe(false);
-      expect<any>(page.namePage.projectCodeOk.isDisplayed()).toBe(true);
-      page.formStatus.expectHasNoError();
+    it('project code can be one character', async () => {
+      await page.namePage.projectCodeInput.clear();
+      await page.namePage.projectCodeInput.sendKeys('a');
+      await page.namePage.projectNameInput.sendKeys(Key.TAB);     // trigger project code check
+      await browser.wait(ExpectedConditions.visibilityOf(page.namePage.projectCodeOk), constants.conditionTimeout);
+      expect<any>(await page.namePage.projectCodeExists.isPresent()).toBe(false);
+      expect<any>(await page.namePage.projectCodeAlphanumeric.isPresent()).toBe(false);
+      expect<any>(await page.namePage.projectCodeOk.isDisplayed()).toBe(true);
+      await page.formStatus.expectHasNoError();
     });
 
-    it('project code cannot be uppercase', () => {
-      page.namePage.projectCodeInput.clear();
-      page.namePage.projectCodeInput.sendKeys('A' + Key.TAB);
-      browser.wait(ExpectedConditions.visibilityOf(page.namePage.projectCodeAlphanumeric), constants.conditionTimeout);
-      expect<any>(page.namePage.projectCodeExists.isPresent()).toBe(false);
-      expect<any>(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(true);
-      expect<any>(page.namePage.projectCodeOk.isPresent()).toBe(false);
-      page.formStatus.expectHasNoError();
-      page.nextButton.click();
-      page.formStatus.expectContainsError('Project Code must begin with a letter');
-      page.namePage.projectCodeInput.clear();
-      page.namePage.projectCodeInput.sendKeys('aB' + Key.TAB);
-      browser.wait(ExpectedConditions.visibilityOf(page.namePage.projectCodeAlphanumeric), constants.conditionTimeout);
-      expect<any>(page.namePage.projectCodeExists.isPresent()).toBe(false);
-      expect<any>(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(true);
-      expect<any>(page.namePage.projectCodeOk.isPresent()).toBe(false);
-      page.formStatus.expectHasNoError();
-      page.nextButton.click();
-      page.formStatus.expectContainsError('Project Code must begin with a letter');
+    it('project code cannot be uppercase', async () => {
+      await page.namePage.projectCodeInput.clear();
+      await page.namePage.projectCodeInput.sendKeys('A' + Key.TAB);
+      await browser.wait(ExpectedConditions.visibilityOf(page.namePage.projectCodeAlphanumeric), constants.conditionTimeout);
+      expect<any>(await page.namePage.projectCodeExists.isPresent()).toBe(false);
+      expect<any>(await page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(true);
+      expect<any>(await page.namePage.projectCodeOk.isPresent()).toBe(false);
+      await page.formStatus.expectHasNoError();
+      await page.nextButton.click();
+      await page.formStatus.expectContainsError('Project Code must begin with a letter');
+      await page.namePage.projectCodeInput.clear();
+      await page.namePage.projectCodeInput.sendKeys('aB' + Key.TAB);
+      await browser.wait(ExpectedConditions.visibilityOf(page.namePage.projectCodeAlphanumeric), constants.conditionTimeout);
+      expect<any>(await page.namePage.projectCodeExists.isPresent()).toBe(false);
+      expect<any>(await page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(true);
+      expect<any>(await page.namePage.projectCodeOk.isPresent()).toBe(false);
+      await page.formStatus.expectHasNoError();
+      await page.nextButton.click();
+      await page.formStatus.expectContainsError('Project Code must begin with a letter');
     });
 
-    it('project code cannot start with a number', () => {
-      page.namePage.projectCodeInput.clear();
-      page.namePage.projectCodeInput.sendKeys('1' + Key.TAB);
-      browser.wait(ExpectedConditions.visibilityOf(page.namePage.projectCodeAlphanumeric), constants.conditionTimeout);
-      expect<any>(page.namePage.projectCodeExists.isPresent()).toBe(false);
-      expect<any>(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(true);
-      expect<any>(page.namePage.projectCodeOk.isPresent()).toBe(false);
-      page.formStatus.expectHasNoError();
-      page.nextButton.click();
-      page.formStatus.expectContainsError('Project Code must begin with a letter');
+    it('project code cannot start with a number', async () => {
+      await page.namePage.projectCodeInput.clear();
+      await page.namePage.projectCodeInput.sendKeys('1' + Key.TAB);
+      await browser.wait(ExpectedConditions.visibilityOf(page.namePage.projectCodeAlphanumeric), constants.conditionTimeout);
+      expect<any>(await page.namePage.projectCodeExists.isPresent()).toBe(false);
+      expect<any>(await page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(true);
+      expect<any>(await page.namePage.projectCodeOk.isPresent()).toBe(false);
+      await page.formStatus.expectHasNoError();
+      await page.nextButton.click();
+      await page.formStatus.expectContainsError('Project Code must begin with a letter');
     });
 
-    it('project code cannot use non-alphanumeric', () => {
-      page.namePage.projectCodeInput.clear();
-      page.namePage.projectCodeInput.sendKeys('a?' + Key.TAB);
-      browser.wait(ExpectedConditions.visibilityOf(page.namePage.projectCodeAlphanumeric), constants.conditionTimeout);
-      expect<any>(page.namePage.projectCodeExists.isPresent()).toBe(false);
-      expect<any>(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(true);
-      expect<any>(page.namePage.projectCodeOk.isPresent()).toBe(false);
-      page.formStatus.expectHasNoError();
-      page.nextButton.click();
-      page.formStatus.expectContainsError('Project Code must begin with a letter');
+    it('project code cannot use non-alphanumeric', async () => {
+      await page.namePage.projectCodeInput.clear();
+      await page.namePage.projectCodeInput.sendKeys('a?' + Key.TAB);
+      await browser.wait(ExpectedConditions.visibilityOf(page.namePage.projectCodeAlphanumeric), constants.conditionTimeout);
+      expect<any>(await page.namePage.projectCodeExists.isPresent()).toBe(false);
+      expect<any>(await page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(true);
+      expect<any>(await page.namePage.projectCodeOk.isPresent()).toBe(false);
+      await page.formStatus.expectHasNoError();
+      await page.nextButton.click();
+      await page.formStatus.expectContainsError('Project Code must begin with a letter');
     });
 
-    it('project code reverts to default when Edit-project-code is disabled', () => {
-      expect<any>(page.namePage.editProjectCodeCheckbox.isDisplayed()).toBe(true);
-      util.setCheckbox(page.namePage.editProjectCodeCheckbox, false);
-      expect<any>(page.namePage.projectCodeInput.isDisplayed()).toBe(false);
-      expect(page.namePage.projectCodeInput.getAttribute('value')).toEqual(constants.newProjectCode);
-      page.formStatus.expectHasNoError();
+    it('project code reverts to default when Edit-project-code is disabled', async () => {
+      expect<any>(await page.namePage.editProjectCodeCheckbox.isDisplayed()).toBe(true);
+      await util.setCheckbox(page.namePage.editProjectCodeCheckbox, false);
+      expect<any>(await page.namePage.projectCodeInput.isDisplayed()).toBe(false);
+      expect(await page.namePage.projectCodeInput.getAttribute('value')).toEqual(constants.newProjectCode);
+      await page.formStatus.expectHasNoError();
     });
 
-    it('can create project', () => {
-      expect<any>(page.nextButton.isEnabled()).toBe(true);
-      page.expectFormIsValid();
-      page.nextButton.click();
-      expect<any>(page.namePage.projectNameInput.isPresent()).toBe(false);
-      expect<any>(page.initialDataPage.browseButton.isPresent()).toBe(true);
-      page.formStatus.expectHasNoError();
+    it('can create project', async () => {
+      expect<any>(await page.nextButton.isEnabled()).toBe(true);
+      await page.expectFormIsValid();
+      await page.nextButton.click();
+      expect<any>(await page.namePage.projectNameInput.isPresent()).toBe(false);
+      expect<any>(await page.initialDataPage.browseButton.isPresent()).toBe(true);
+      await page.formStatus.expectHasNoError();
     });
 
   });
 
   describe('Initial Data page with upload', () => {
 
-    it('cannot see back button and defaults to uploading data', () => {
-      expect<any>(page.backButton.isDisplayed()).toBe(false);
-      expect<any>(page.initialDataPage.browseButton.isDisplayed()).toBe(true);
-      expect<any>(page.progressIndicatorStep3Label.getText()).toEqual('Verify');
-      page.expectFormIsNotValid();
-      page.formStatus.expectHasNoError();
+    it('cannot see back button and defaults to uploading data', async () => {
+      expect<any>(await page.backButton.isDisplayed()).toBe(false);
+      expect<any>(await page.initialDataPage.browseButton.isDisplayed()).toBe(true);
+      expect<any>(await page.progressIndicatorStep3Label.getText()).toEqual('Verify');
+      await page.expectFormIsNotValid();
+      await page.formStatus.expectHasNoError();
     });
 
     describe('Mock file upload', () => {
 
-      it('cannot upload large file', () => {
-        page.initialDataPage.mockUpload.enableButton.click();
-        expect<any>(page.initialDataPage.mockUpload.fileNameInput.isPresent()).toBe(true);
-        expect<any>(page.initialDataPage.mockUpload.fileNameInput.isDisplayed()).toBe(true);
-        page.initialDataPage.mockUpload.fileNameInput.sendKeys(constants.testMockZipImportFile.name);
-        page.initialDataPage.mockUpload.fileSizeInput.sendKeys(134217728);
-        expect<any>(page.noticeList.count()).toBe(0);
-        page.initialDataPage.mockUpload.uploadButton.click();
-        expect<any>(page.initialDataPage.browseButton.isDisplayed()).toBe(true);
-        expect<any>(page.verifyDataPage.entriesImported.isPresent()).toBe(false);
-        expect<any>(page.noticeList.count()).toBe(1);
-        expect<any>(page.noticeList.get(0).getText()).toContain('is too large. It must be smaller than');
-        page.formStatus.expectHasNoError();
-        page.initialDataPage.mockUpload.fileNameInput.clear();
-        page.initialDataPage.mockUpload.fileSizeInput.clear();
-        page.firstNoticeCloseButton.click();
+      it('cannot upload large file', async () => {
+        await page.initialDataPage.mockUpload.enableButton.click();
+        expect<any>(await page.initialDataPage.mockUpload.fileNameInput.isPresent()).toBe(true);
+        expect<any>(await page.initialDataPage.mockUpload.fileNameInput.isDisplayed()).toBe(true);
+        await page.initialDataPage.mockUpload.fileNameInput.sendKeys(constants.testMockZipImportFile.name);
+        await page.initialDataPage.mockUpload.fileSizeInput.sendKeys(134217728);
+        expect<any>(await page.noticeList.count()).toBe(0);
+        await page.initialDataPage.mockUpload.uploadButton.click();
+        expect<any>(await page.initialDataPage.browseButton.isDisplayed()).toBe(true);
+        expect<any>(await page.verifyDataPage.entriesImported.isPresent()).toBe(false);
+        expect<any>(await page.noticeList.count()).toBe(1);
+        expect<any>(await page.noticeList.get(0).getText()).toContain('is too large. It must be smaller than');
+        await page.formStatus.expectHasNoError();
+        await page.initialDataPage.mockUpload.fileNameInput.clear();
+        await page.initialDataPage.mockUpload.fileSizeInput.clear();
+        await page.firstNoticeCloseButton.click();
       });
 
-      it('cannot upload jpg', () => {
-        page.initialDataPage.mockUpload.fileNameInput.sendKeys(constants.testMockJpgImportFile.name);
-        page.initialDataPage.mockUpload.fileSizeInput.sendKeys(constants.testMockJpgImportFile.size);
-        expect<any>(page.noticeList.count()).toBe(0);
-        page.initialDataPage.mockUpload.uploadButton.click();
-        expect<any>(page.initialDataPage.browseButton.isDisplayed()).toBe(true);
-        expect<any>(page.verifyDataPage.entriesImported.isPresent()).toBe(false);
-        expect<any>(page.noticeList.count()).toBe(1);
-        expect(page.noticeList.get(0).getText()).toContain(constants.testMockJpgImportFile.name +
+      it('cannot upload jpg', async () => {
+        await page.initialDataPage.mockUpload.fileNameInput.sendKeys(constants.testMockJpgImportFile.name);
+        await page.initialDataPage.mockUpload.fileSizeInput.sendKeys(constants.testMockJpgImportFile.size);
+        expect<any>(await page.noticeList.count()).toBe(0);
+        await page.initialDataPage.mockUpload.uploadButton.click();
+        expect<any>(await page.initialDataPage.browseButton.isDisplayed()).toBe(true);
+        expect<any>(await page.verifyDataPage.entriesImported.isPresent()).toBe(false);
+        expect<any>(await page.noticeList.count()).toBe(1);
+        expect(await page.noticeList.get(0).getText()).toContain(constants.testMockJpgImportFile.name +
           ' is not an allowed compressed file. Ensure the file is');
-        page.formStatus.expectHasNoError();
-        page.initialDataPage.mockUpload.fileNameInput.clear();
-        page.initialDataPage.mockUpload.fileSizeInput.clear();
-        page.firstNoticeCloseButton.click();
+        await page.formStatus.expectHasNoError();
+        await page.initialDataPage.mockUpload.fileNameInput.clear();
+        await page.initialDataPage.mockUpload.fileSizeInput.clear();
+        await page.firstNoticeCloseButton.click();
       });
 
-      it('can upload zip file', () => {
-        page.initialDataPage.mockUpload.fileNameInput.sendKeys(constants.testMockZipImportFile.name);
-        page.initialDataPage.mockUpload.fileSizeInput.sendKeys(constants.testMockZipImportFile.size);
-        expect<any>(page.noticeList.count()).toBe(0);
-        page.initialDataPage.mockUpload.uploadButton.click();
-        expect<any>(page.verifyDataPage.entriesImported.isDisplayed()).toBe(true);
-        expect<any>(page.noticeList.count()).toBe(1);
-        expect(page.noticeList.get(0).getText()).toContain('Successfully imported ' +
+      it('can upload zip file', async () => {
+        await page.initialDataPage.mockUpload.fileNameInput.sendKeys(constants.testMockZipImportFile.name);
+        await page.initialDataPage.mockUpload.fileSizeInput.sendKeys(constants.testMockZipImportFile.size);
+        expect<any>(await page.noticeList.count()).toBe(0);
+        await page.initialDataPage.mockUpload.uploadButton.click();
+        expect<any>(await page.verifyDataPage.entriesImported.isDisplayed()).toBe(true);
+        expect<any>(await page.noticeList.count()).toBe(1);
+        expect(await page.noticeList.get(0).getText()).toContain('Successfully imported ' +
           constants.testMockZipImportFile.name);
-        page.formStatus.expectHasNoError();
+        await page.formStatus.expectHasNoError();
       });
 
     });
 
   });
 
-  describe('Verify Data page', () => {
+  describe('Verify Data await page', () => {
 
-    it('displays stats', () => {
-      expect<any>(page.verifyDataPage.title.getText()).toEqual('Verify Data');
-      expect<any>(page.verifyDataPage.entriesImported.getText()).toEqual('2');
-      page.formStatus.expectHasNoError();
+    it('displays stats', async () => {
+      expect<any>(await page.verifyDataPage.title.getText()).toEqual('Verify Data');
+      expect<any>(await page.verifyDataPage.entriesImported.getText()).toEqual('2');
+      await page.formStatus.expectHasNoError();
     });
 
     // regression avoidance test - should not redirect when button is clicked
-    it('displays non-critical errors', () => {
-      expect<any>(page.verifyDataPage.importErrors.isPresent()).toBe(true);
-      expect<any>(page.verifyDataPage.importErrors.isDisplayed()).toBe(false);
-      page.verifyDataPage.nonCriticalErrorsButton.click();
-      expect<any>(page.verifyDataPage.title.getText()).toEqual('Verify Data');
-      page.formStatus.expectHasNoError();
-      expect<any>(page.verifyDataPage.importErrors.isDisplayed()).toBe(true);
-      expect(page.verifyDataPage.importErrors.getText())
+    it('displays non-critical errors', async () => {
+      expect<any>(await page.verifyDataPage.importErrors.isPresent()).toBe(true);
+      expect<any>(await page.verifyDataPage.importErrors.isDisplayed()).toBe(false);
+      await page.verifyDataPage.nonCriticalErrorsButton.click();
+      expect<any>(await page.verifyDataPage.title.getText()).toEqual('Verify Data');
+      await page.formStatus.expectHasNoError();
+      expect<any>(await page.verifyDataPage.importErrors.isDisplayed()).toBe(true);
+      expect(await page.verifyDataPage.importErrors.getText())
         .toContain('range file \'TestProj.lift-ranges\' was not found');
-      page.verifyDataPage.nonCriticalErrorsButton.click();
-      browser.wait(ExpectedConditions.invisibilityOf(page.verifyDataPage.importErrors), constants.conditionTimeout);
-      expect<any>(page.verifyDataPage.importErrors.isDisplayed()).toBe(false);
+      await page.verifyDataPage.nonCriticalErrorsButton.click();
+      await browser.wait(ExpectedConditions.invisibilityOf(page.verifyDataPage.importErrors), constants.conditionTimeout);
+      expect<any>(await page.verifyDataPage.importErrors.isDisplayed()).toBe(false);
     });
 
-    it('can go to lexicon', () => {
-      expect<any>(page.nextButton.isDisplayed()).toBe(true);
-      expect<any>(page.nextButton.isEnabled()).toBe(true);
-      page.expectFormIsValid();
-      page.nextButton.click();
+    it('can go to lexicon', async () => {
+      expect<any>(await page.nextButton.isDisplayed()).toBe(true);
+      expect<any>(await page.nextButton.isEnabled()).toBe(true);
+      await page.expectFormIsValid();
+      await page.nextButton.click();
       expect<any>(editorPage.browse.getEntryCount()).toBe(2);
     });
 
@@ -445,94 +445,94 @@ describe('Lexicon E2E New Project wizard app', () => {
 
   describe('New Empty Project Name page', () => {
 
-    it('create: new empty project', () => {
-      NewLexProjectPage.get();
-      page.chooserPage.createButton.click();
-      page.namePage.projectNameInput.sendKeys(constants.emptyProjectName + Key.TAB);
-      browser.wait(ExpectedConditions.visibilityOf(page.namePage.projectCodeOk), constants.conditionTimeout);
-      expect<any>(page.namePage.projectCodeExists.isPresent()).toBe(false);
-      expect<any>(page.namePage.projectCodeAlphanumeric.isPresent()).toBe(false);
-      expect<any>(page.namePage.projectCodeOk.isDisplayed()).toBe(true);
-      expect<any>(page.nextButton.isEnabled()).toBe(true);
+    it('create: new empty project', async () => {
+      await NewLexProjectPage.get();
+      await page.chooserPage.createButton.click();
+      await page.namePage.projectNameInput.sendKeys(constants.emptyProjectName + Key.TAB);
+      await browser.wait(ExpectedConditions.visibilityOf(page.namePage.projectCodeOk), constants.conditionTimeout);
+      expect<any>(await page.namePage.projectCodeExists.isPresent()).toBe(false);
+      expect<any>(await page.namePage.projectCodeAlphanumeric.isPresent()).toBe(false);
+      expect<any>(await page.namePage.projectCodeOk.isDisplayed()).toBe(true);
+      expect<any>(await page.nextButton.isEnabled()).toBe(true);
 
       // added sleep to ensure state is stable so the next test passes (expectFormIsNotValid)
-      browser.sleep(500);
-      page.nextButton.click();
-      expect<any>(page.namePage.projectNameInput.isPresent()).toBe(false);
-      expect<any>(page.initialDataPage.browseButton.isPresent()).toBe(true);
+      await browser.sleep(500);
+      await page.nextButton.click();
+      expect<any>(await page.namePage.projectNameInput.isPresent()).toBe(false);
+      expect<any>(await page.initialDataPage.browseButton.isPresent()).toBe(true);
     });
 
   });
 
   describe('Initial Data page skipping upload', () => {
 
-    it('can skip uploading data', () => {
-      expect<any>(page.nextButton.isEnabled()).toBe(true);
-      page.expectFormIsNotValid();
-      page.nextButton.click();
-      expect<any>(page.primaryLanguagePage.selectButton.isPresent()).toBe(true);
+    it('can skip uploading data', async () => {
+      expect<any>(await page.nextButton.isEnabled()).toBe(true);
+      await page.expectFormIsNotValid();
+      await page.nextButton.click();
+      expect<any>(await page.primaryLanguagePage.selectButton.isPresent()).toBe(true);
     });
 
   });
 
   describe('Primary Language page', () => {
 
-    it('can go back to initial data page (then forward again)', () => {
-      expect<any>(page.backButton.isDisplayed()).toBe(true);
-      expect<any>(page.backButton.isEnabled()).toBe(true);
-      page.backButton.click();
-      expect<any>(page.initialDataPage.browseButton.isDisplayed()).toBe(true);
-      expect<any>(page.nextButton.isEnabled()).toBe(true);
-      page.expectFormIsNotValid();
-      page.nextButton.click();
-      expect<any>(page.primaryLanguagePage.selectButton.isPresent()).toBe(true);
-      expect<any>(page.backButton.isDisplayed()).toBe(true);
+    it('can go back to initial data page (then forward again)', async () => {
+      expect<any>(await page.backButton.isDisplayed()).toBe(true);
+      expect<any>(await page.backButton.isEnabled()).toBe(true);
+      await page.backButton.click();
+      expect<any>(await page.initialDataPage.browseButton.isDisplayed()).toBe(true);
+      expect<any>(await page.nextButton.isEnabled()).toBe(true);
+      await page.expectFormIsNotValid();
+      await page.nextButton.click();
+      expect<any>(await page.primaryLanguagePage.selectButton.isPresent()).toBe(true);
+      expect<any>(await page.backButton.isDisplayed()).toBe(true);
     });
 
-    it('cannot move on if language is not selected', () => {
-      expect<any>(page.nextButton.isEnabled()).toBe(true);
-      page.expectFormIsNotValid();
-      page.nextButton.click();
-      expect<any>(page.primaryLanguagePage.selectButton.isPresent()).toBe(true);
-      page.formStatus.expectContainsError('Please select a primary language for the project.');
+    it('cannot move on if language is not selected', async () => {
+      expect<any>(await page.nextButton.isEnabled()).toBe(true);
+      await page.expectFormIsNotValid();
+      await page.nextButton.click();
+      expect<any>(await page.primaryLanguagePage.selectButton.isPresent()).toBe(true);
+      await page.formStatus.expectContainsError('Please select a primary language for the project.');
     });
 
-    it('can select language', () => {
-      expect<any>(page.primaryLanguagePage.selectButton.isEnabled()).toBe(true);
-      page.primaryLanguagePage.selectButtonClick();
-      expect<any>(page.modal.selectLanguage.searchLanguageInput.isPresent()).toBe(true);
+    it('can select language', async () => {
+      expect<any>(await page.primaryLanguagePage.selectButton.isEnabled()).toBe(true);
+      await page.primaryLanguagePage.selectButtonClick();
+      expect<any>(await page.modal.selectLanguage.searchLanguageInput.isPresent()).toBe(true);
     });
 
     describe('Select Language modal', () => {
 
-      it('can search, select and add language', () => {
-        page.modal.selectLanguage.searchLanguageInput.sendKeys(constants.searchLanguage + Key.ENTER);
-        expect<any>(page.modal.selectLanguage.languageRows.first().isPresent()).toBe(true);
+      it('can search, select and add language', async () => {
+        await page.modal.selectLanguage.searchLanguageInput.sendKeys(constants.searchLanguage + Key.ENTER);
+        expect<any>(await page.modal.selectLanguage.languageRows.first().isPresent()).toBe(true);
 
-        expect<any>(page.modal.selectLanguage.addButton.isPresent()).toBe(true);
-        expect<any>(page.modal.selectLanguage.addButton.isEnabled()).toBe(false);
-        page.modal.selectLanguage.languageRows.first().click();
-        expect<any>(page.modal.selectLanguage.addButton.isEnabled()).toBe(true);
-        expect<any>(page.modal.selectLanguage.addButton.getText()).toEqual('Add ' + constants.foundLanguage);
+        expect<any>(await page.modal.selectLanguage.addButton.isPresent()).toBe(true);
+        expect<any>(await page.modal.selectLanguage.addButton.isEnabled()).toBe(false);
+        await page.modal.selectLanguage.languageRows.first().click();
+        expect<any>(await page.modal.selectLanguage.addButton.isEnabled()).toBe(true);
+        expect<any>(await page.modal.selectLanguage.addButton.getText()).toEqual('Add ' + constants.foundLanguage);
 
-        page.modal.selectLanguage.addButton.click();
-        browser.wait(ExpectedConditions.stalenessOf(page.modal.selectLanguage.searchLanguageInput),
+        await page.modal.selectLanguage.addButton.click();
+        await browser.wait(ExpectedConditions.stalenessOf(page.modal.selectLanguage.searchLanguageInput),
           constants.conditionTimeout);
-        expect<any>(page.modal.selectLanguage.searchLanguageInput.isPresent()).toBe(false);
+        expect<any>(await page.modal.selectLanguage.searchLanguageInput.isPresent()).toBe(false);
       });
 
     });
 
-    it('can go to lexicon and primary language has changed', () => {
-      page.formStatus.expectHasNoError();
-      expect<any>(page.nextButton.isEnabled()).toBe(true);
-      page.expectFormIsValid();
-      page.nextButton.click();
-      browser.wait(ExpectedConditions.visibilityOf(editorPage.browse.noEntriesElem), constants.conditionTimeout);
-      expect<any>(editorPage.browse.noEntriesElem.isDisplayed()).toBe(true);
-      editorPage.browse.noEntriesNewWordBtn.click();
-      expect<any>(editorPage.edit.getEntryCount()).toBe(1);
-      expect<any>(editorPage.edit.getLexemesAsObject()).toEqual({ es: '' });
+    it('can go to lexicon and primary language has changed', async () => {
+      await page.formStatus.expectHasNoError();
+      expect<any>(await page.nextButton.isEnabled()).toBe(true);
+      await page.expectFormIsValid();
+      await page.nextButton.click();
+      await browser.wait(ExpectedConditions.visibilityOf(editorPage.browse.noEntriesElem), constants.conditionTimeout);
+      expect<any>(await editorPage.browse.noEntriesElem.isDisplayed()).toBe(true);
+      await editorPage.browse.noEntriesNewWordBtn.click();
+      expect<any>(await editorPage.edit.getEntryCount()).toBe(1);
+      expect<any>(await editorPage.edit.getLexemesAsObject()).toEqual({ es: '' });
     });
 
   });

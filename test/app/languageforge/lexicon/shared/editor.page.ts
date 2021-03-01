@@ -183,8 +183,8 @@ export class EditorPage {
       return this.editorUtil.dcMultitextToObject(lexeme);
     },
 
-    getFirstLexeme: () => {
-      browser.wait(ExpectedConditions.visibilityOf(this.edit.fields.get(0)), Utils.conditionTimeout);
+    getFirstLexeme: async () => {
+      await browser.wait(ExpectedConditions.visibilityOf(this.edit.fields.get(0)), Utils.conditionTimeout);
 
       // Returns the first (topmost) lexeme regardless of its wsid
       const lexeme = this.edit.fields.get(0);
