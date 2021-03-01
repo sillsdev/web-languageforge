@@ -13,6 +13,7 @@ export class RolesService {
   techSupport: IPromise<string>;
   static defaultContributorRole = 'Contributor';
   static defaultManagerRole = 'Manager';
+  static defaultTechSupportRole = 'LanguageDepotProgrammer';
   // get contributor(): IPromise<string {
   //   return this._contributor || RolesService.defaultContributorRole;
   // }
@@ -100,13 +101,13 @@ export class RolesService {
           }
         });
         if (!contributorFound) {
-          contributorD.reject('No contributor role found!');
+          contributorD.resolve(RolesService.defaultContributorRole);
         }
         if (!managerFound) {
-          managerD.reject('No manager role found!');
+          contributorD.resolve(RolesService.defaultManagerRole);
         }
         if (!techSupportFound) {
-          techSupportD.reject('No tech support role found!');
+          contributorD.resolve(RolesService.defaultTechSupportRole);
         }
         return result.data;
       } else {
