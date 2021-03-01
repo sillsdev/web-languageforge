@@ -17,7 +17,7 @@ attach_debugger () {
 
 attach_debugger &
 cd /data
-gulp test-e2e-doTest --webserverHost e2e ${@:2}
+gulp test-e2e-doTest --webserverHost e2e "$@"
 STATUS=$?
 
 exit $STATUS
