@@ -17,13 +17,13 @@ tests:
 build: wait
 	docker-compose build
 
-.PHONY: db-reset
-db-reset:
-	docker-compose run db-reset
-
 .PHONY: wait
 wait:
 	docker build -t wait wait/.
+
+.PHONY: db-reset
+db-reset:
+	docker-compose run db-reset
 
 .PHONY: clean
 clean:
