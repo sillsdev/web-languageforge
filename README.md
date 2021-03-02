@@ -102,6 +102,26 @@ Other useful resources:
 1. You should see a landing page, click "Login"
 1. Use `admin` and `password` to get in
 
+#### If you would like to run the E2E tests
+
+1. `make e2e`
+1. Individual test results will appear in your terminal but if you'd like to watch them in real-time, simply VNC into the running tests via `localhost:5900`, e.g., Mac OSX users simply `open vnc://localhost:5900` and use `secret` as the password.  Other operating systems may require installing a separate VNC Viewer tool.
+
+#### If you would like to run the unit tests
+
+1. `make tests`
+1. Test results will appear in your terminal
+
+#### Viewing logs
+
+1. `make logs` will show logs from any runnign contianers, results can be filtered by simply grepping, e.g., `make logs | grep lf-ui`
+
+#### Cleanup
+
+1. `make clean` is the most common, it shuts down and cleans up running containers
+1. less commonly, if you need to blow away shared artifacts from previous runs, simply `make clean-volumes`
+1. rarely needed but for a "start from scratch" environment, `make clean-powerwash`.
+
 #### Language Forge Configuration File ####
 
 If you are working with FLEx Send and Receive feature, manually edit the Language Forge config file
