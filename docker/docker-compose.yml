@@ -38,9 +38,18 @@ services:
       # persist user data uploads and assets
       - lf-user-data-assets:/var/www/src/assets
 
+      - lfmerge-data:/var/lib/languageforge
+
       # for developer convenience
       - ../src/Api:/var/www/src/Api
       - ../src/Site:/var/www/src/Site
+
+  lfmerge:
+    build: lfmerge
+    image: lf-merge
+    container_name: lf-merge
+    volumes:
+      - lfmerge-data:/data/dropzone
 
   ssl:
     image: caddy
@@ -73,14 +82,6 @@ services:
     volumes:
       - lf-mongo-data:/data/db
     restart: always
-
-  lfmerge:
-    build: lfmerge
-    image: lf-merge
-    container_name: lf-merge
-    # volumes:
-    #   - lfmerge/parrot.sh:/data
-  #     - lfmerge-data:/var/lib/languageforge
 
   selenium:
     # image: selenium/standalone-chrome
@@ -168,3 +169,4 @@ volumes:
   lf-mongo-data:
   lf-user-data-assets:
   lf-webpack-dist-folder:
+  lfmerge-data:
