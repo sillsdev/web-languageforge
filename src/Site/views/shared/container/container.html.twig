@@ -9,9 +9,7 @@
 
     <title>{{ app.website.name }}</title>
 
-    {% for cssFile in cssFiles %}
-        <link rel=stylesheet href="/{{ cssFile }}?v={{ version }}" />
-    {% endfor %}
+    <link rel=stylesheet href="/dist/css/languageforge.css" />
 
     {% for cssFile in vendorFilesCss %}
         <link rel=stylesheet href="/{{ cssFile }}?v={{ version }}" />
