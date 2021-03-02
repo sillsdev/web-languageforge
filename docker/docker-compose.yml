@@ -74,11 +74,12 @@ services:
       - lf-mongo-data:/data/db
     restart: always
 
-  # TODO: still needs to be built/run/tested, etc.
-  # lfmerge:
-  #   container_name: lfmerge
-  #   build: lfmerge/.
-  #   volumes:
+  lfmerge:
+    build: lfmerge
+    image: lf-merge
+    container_name: lf-merge
+    # volumes:
+    #   - lfmerge/parrot.sh:/data
   #     - lfmerge-data:/var/lib/languageforge
 
   selenium:
