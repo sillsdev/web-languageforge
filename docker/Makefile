@@ -30,5 +30,9 @@ clean:
 	docker-compose kill
 	docker-compose rm -f
 	docker system prune -f
+
+    # remove lf-specific volumes
+	docker volume ls -q |grep _lf_ | xargs docker volume rm
+
   # by default volumes are not pruned.  To prune volumes as well, do:
   # docker system prune -f --volumes
