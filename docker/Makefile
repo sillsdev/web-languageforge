@@ -31,8 +31,10 @@ logs:
 
 .PHONY: clean
 clean:
-	docker-compose down -v
+	docker-compose down
 	docker system prune -f
 
-  # by default volumes are not pruned.  To prune volumes as well, do:
-  # docker system prune -f --volumes
+.PHONY: clean-volumes
+clean-volumes:
+	docker-compose down -v
+	docker system prune -f --volumes
