@@ -15,13 +15,15 @@ RUN a2enmod headers rewrite
 COPY docker/api/000-default.conf /etc/apache2/sites-enabled
 COPY docker/api/apache2.service /etc/systemd/system
 
-# copy src files into our image
-COPY src /var/www/html/
-RUN ln -s /var/www/html /var/www/src
-
 # run composer install
+COPY src/composer.json src/composer.lock /var/www/html/
 ENV COMPOSER_ALLOW_SUPERUSER=1
 RUN composer install
 
 # make wait available for container ochestration
 COPY --from=wait /wait /wait
+
+# copy src files into our image
+COPY src /var/www/html/
+RUN ln -s /var/www/html /var/www/src
+
