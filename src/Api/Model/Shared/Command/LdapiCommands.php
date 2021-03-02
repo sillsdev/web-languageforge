@@ -68,8 +68,8 @@ class LdapiCommands
         return ($result === 'Manager');
     }
 
-    public static function getAllRoles($languageDepotUsername) {
-        return Ldapi::call($languageDepotUsername, 'get', self::ROLES_BASE_URL . self::URL_PART_GET_ALL);
+    public static function getAllRoles() {
+        return Ldapi::call(null, 'get', self::ROLES_BASE_URL . self::URL_PART_GET_ALL);
     }
 }
 
