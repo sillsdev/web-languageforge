@@ -6,7 +6,7 @@ start: wait
 	docker-compose up -d ssl
 
 .PHONY: e2e
-e2e:
+e2e: build
 	docker-compose run e2e-ui
 
 .PHONY: tests
@@ -38,3 +38,7 @@ clean:
 clean-volumes:
 	docker-compose down -t 1 -v
 	docker system prune -f --volumes
+
+.PHONY: clean-powerwash
+clean-powerwash: clean-volumes
+	docker-compose down -t 1 --rmi all
