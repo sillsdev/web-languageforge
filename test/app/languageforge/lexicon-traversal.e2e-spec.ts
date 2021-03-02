@@ -85,7 +85,7 @@ describe('Lexicon E2E Page Traversal', () => {
     it('Edit view', async () => {
       await projectsPage.get();
       await projectsPage.clickOnProject(constants.testProjectName);
-      await editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
+      await editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
       await editorPage.noticeList.count();
       await editorPage.edit.entriesList.count();
       await editorPage.edit.senses.count();

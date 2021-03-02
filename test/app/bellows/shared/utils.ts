@@ -12,7 +12,7 @@ export class Utils {
     // what its current value is
     return checkboxElement.isSelected().then((checked: boolean) => {
       if (checked !== value) {
-        checkboxElement.click();
+        return checkboxElement.click();
       }
     });
   }
@@ -69,7 +69,7 @@ export class Utils {
   waitForAlert(timeout: number) {
     if (!timeout) { timeout = 8000; }
 
-    browser.wait(() => {
+    return browser.wait(() => {
       let alertPresent = true;
       try {
         browser.switchTo().alert();
@@ -86,12 +86,12 @@ export class Utils {
   notice: any = {
     list: this.noticeList,
     firstCloseButton: this.noticeList.first().element(by.partialButtonText('×')),
-    waitToInclude: (includedText: any): void => {
-      browser.wait(() =>
+    waitToInclude: async (includedText: any) => {
+      await browser.wait(() =>
         this.noticeList.count().then((count: any) =>
           count >= 1),
         Utils.conditionTimeout);
-      browser.wait(() =>
+      return browser.wait(() =>
         this.noticeList.first().getText().then((text: any) => text.includes(includedText)),
         Utils.conditionTimeout);
     }
@@ -144,7 +144,7 @@ export class Utils {
 
   static isAllCheckboxes(elementArray: ElementArrayFinder, state: boolean = true) {
     const all: boolean[] = [];
-    return elementArray.map((checkboxElement: ElementFinder) => {
+    return elementArray.each((checkboxElement: ElementFinder) => {
       checkboxElement.isSelected().then((isSelected: boolean) => {
         all.push(isSelected);
       });

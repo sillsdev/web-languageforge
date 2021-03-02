@@ -22,7 +22,7 @@ describe('Lexicon E2E Semantic Domains Lazy Load', () => {
     await loginPage.loginAsManager();
     await projectsPage.get();
     await projectsPage.clickOnProject(constants.testProjectName);
-    await editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
+    await editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
     expect<any>(await editorPage.edit.getFirstLexeme()).toEqual(constants.testEntry1.lexeme.th.value);
     expect<any>(await editorPage.edit.semanticDomain.values.first().getText()).toEqual(semanticDomain1dot1English);
     expect<any>(await header.language.button.getText()).toEqual('English');
@@ -42,7 +42,7 @@ describe('Lexicon E2E Semantic Domains Lazy Load', () => {
 
   it('should be using Thai Semantic Domain', async () => {
     await Utils.clickBreadcrumb(constants.testProjectName);
-    await editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
+    await editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
     expect<any>(await editorPage.edit.semanticDomain.values.first().getText()).toEqual(semanticDomain1dot1Thai);
   });
 
@@ -57,7 +57,7 @@ describe('Lexicon E2E Semantic Domains Lazy Load', () => {
 
   it('should be using English Semantic Domain', async () => {
     await Utils.clickBreadcrumb(constants.testProjectName);
-    await editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
+    await editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
     expect<any>(await editorPage.edit.semanticDomain.values.first().getText()).toEqual(semanticDomain1dot1English);
   });
 
@@ -71,7 +71,7 @@ describe('Lexicon E2E Semantic Domains Lazy Load', () => {
 
   it('should be using Thai Semantic Domain after refresh', async () => {
     await Utils.clickBreadcrumb(constants.testProjectName);
-    await editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
+    await editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
     expect<any>(await editorPage.edit.semanticDomain.values.first().getText()).toEqual(semanticDomain1dot1Thai);
     expect<any>(await editorPage.edit.entryCountElem.isDisplayed()).toBe(true);
     await browser.refresh();
@@ -93,7 +93,7 @@ describe('Lexicon E2E Semantic Domains Lazy Load', () => {
 
   it('should be using English Semantic Domain', async () => {
     await Utils.clickBreadcrumb(constants.testProjectName);
-    await editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
+    await editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
     expect<any>(await editorPage.edit.semanticDomain.values.first().getText()).toEqual(semanticDomain1dot1English);
   });
 

@@ -24,7 +24,7 @@ describe('Lexicon E2E Editor Comments', () => {
   });
 
   it('click on first word', async () => {
-    await editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
+    await editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
   });
 
   it('click first comment bubble, type in a comment, add text to another part of the entry, ' +
