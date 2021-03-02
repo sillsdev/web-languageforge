@@ -32,7 +32,7 @@ clean:
 	docker system prune -f
 
     # remove lf-specific volumes
-	docker volume ls -q |grep _lf_ | xargs --no-run-if-empty docker volume rm
+	docker volume ls -q |grep ^docker_lf_ | xargs --no-run-if-empty docker volume rm
 
   # by default volumes are not pruned.  To prune volumes as well, do:
   # docker system prune -f --volumes
