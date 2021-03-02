@@ -31,10 +31,10 @@ logs:
 
 .PHONY: clean
 clean:
-	docker-compose down
+	docker-compose down -t 1
 	docker system prune -f
 
 .PHONY: clean-volumes
 clean-volumes:
-	docker-compose down -v
+	docker-compose down -t 1 -v
 	docker system prune -f --volumes
