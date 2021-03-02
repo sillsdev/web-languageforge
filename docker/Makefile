@@ -3,7 +3,7 @@
 .PHONY: start
 start: wait
   # starts the entire runtime infrastructure
-	docker-compose up -d ssl && docker-compose logs -f ui
+	docker-compose up -d ssl
 
 .PHONY: e2e
 e2e:
