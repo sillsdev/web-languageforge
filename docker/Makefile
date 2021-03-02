@@ -25,6 +25,10 @@ wait:
 db-reset:
 	docker-compose run db-reset
 
+.PHONY: logs
+logs:
+	docker-compose logs
+
 .PHONY: clean
 clean:
 	docker-compose down -v
