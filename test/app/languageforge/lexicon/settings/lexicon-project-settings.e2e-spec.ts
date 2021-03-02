@@ -6,10 +6,10 @@ describe('Lexicon E2E Project Settings', () => {
   const loginPage = new BellowsLoginPage();
   const projectSettingsPage = new ProjectSettingsPage();
 
-  it('should display project properties for manager', () => {
-    loginPage.loginAsManager();
-    projectSettingsPage.get(constants.testProjectName);
-    expect(projectSettingsPage.tabs.project.isDisplayed());
-    expect<any>(projectSettingsPage.projectTab.saveButton.isDisplayed()).toBe(true);
+  it('should display project properties for manager', async () => {
+    await loginPage.loginAsManager();
+    await projectSettingsPage.get(constants.testProjectName);
+    expect(await projectSettingsPage.tabs.project.isDisplayed());
+    expect<any>(await projectSettingsPage.projectTab.saveButton.isDisplayed()).toBe(true);
   });
 });

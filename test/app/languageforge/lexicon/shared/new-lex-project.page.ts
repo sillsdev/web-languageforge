@@ -9,7 +9,7 @@ export class NewLexProjectPage {
   modal = new LexModals();
 
   static get() {
-    browser.get(browser.baseUrl + '/app/lexicon/new-project');
+    return browser.get(browser.baseUrl + '/app/lexicon/new-project');
   }
 
   // form controls
@@ -20,22 +20,22 @@ export class NewLexProjectPage {
   backButton = element(by.id('back-button'));
   nextButton = element(by.id('next-button'));
 
-  expectFormIsValid() {
-    expect(this.nextButton.getAttribute('class')).toMatch(/btn-primary(?:\s|$)/);
+  async expectFormIsValid() {
+    expect(await this.nextButton.getAttribute('class')).toMatch(/btn-primary(?:\s|$)/);
   }
 
-  expectFormIsNotValid() {
-    expect(this.nextButton.getAttribute('class')).not.toMatch(/btn-primary(?:\s|$)/);
+  async expectFormIsNotValid() {
+    expect(await this.nextButton.getAttribute('class')).not.toMatch(/btn-primary(?:\s|$)/);
   }
 
   formStatus = {
-    expectHasNoError() {
-      expect(element(by.id('form-status')).getAttribute('class')).not.toContain('alert');
+    async expectHasNoError() {
+      expect(await element(by.id('form-status')).getAttribute('class')).not.toContain('alert');
     },
-    expectContainsError(partialMsg: string) {
+    async expectContainsError(partialMsg: string) {
       if (!partialMsg) partialMsg = '';
-      expect(element(by.id('form-status')).getAttribute('class')).toContain('alert-danger');
-      expect(element(by.id('form-status')).getText()).toContain(partialMsg);
+      expect(await element(by.id('form-status')).getAttribute('class')).toContain('alert-danger');
+      expect(await element(by.id('form-status')).getText()).toContain(partialMsg);
     }
   };
 
@@ -86,9 +86,9 @@ export class NewLexProjectPage {
     selectButton: element(by.id('select-language-button')),
     // tslint:disable-next-line:max-line-length
     // see http://stackoverflow.com/questions/25553057/making-protractor-wait-until-a-ui-boostrap-modal-box-has-disappeared-with-cucum
-    selectButtonClick() {
-      element(by.id('select-language-button')).click();
-      browser.executeScript('$(\'.modal\').removeClass(\'fade\');');
+    async selectButtonClick() {
+      await element(by.id('select-language-button')).click();
+      return browser.executeScript('$(\'.modal\').removeClass(\'fade\');');
     }
   };
   // step 3 alternate: send receive clone

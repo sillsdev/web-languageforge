@@ -4,12 +4,12 @@ import { Utils } from './utils';
 
 export class UserManagementPage {
   static get(projectId: string) {
-    browser.get(browser.baseUrl + '/app/usermanagement/' + projectId );
+    return browser.get(browser.baseUrl + '/app/usermanagement/' + projectId );
   }
 
-  static getByProjectName(projectName: string) {
+  static async getByProjectName(projectName: string) {
     const projectsPage = new ProjectsPage();
-    projectsPage.get();
+    await projectsPage.get();
     return projectsPage.findProject(projectName).then((projectRow: ElementFinder) => {
       const projectLink = projectRow.element(by.css('a'));
       return projectLink.getAttribute('href').then((href: string) => {
@@ -17,7 +17,7 @@ export class UserManagementPage {
         expect(results).not.toBeNull();
         expect(results.length).toBeGreaterThan(1);
         const projectId = results[1];
-        UserManagementPage.get(projectId);
+        return UserManagementPage.get(projectId);
       });
     });
   }
@@ -30,10 +30,10 @@ export class UserManagementPage {
   userNameInput = this.newMembersDiv.element(by.id('typeaheadInput'));
 
   changeUserRole(userName: string, roleText: string) {
-    this.getUserRow(userName).then( (row: ElementFinder) => {
+    return this.getUserRow(userName).then( (row: ElementFinder) => {
       if (row) {
         const select = row.element(by.css('select'));
-        Utils.clickDropdownByValue(select, roleText);
+        return Utils.clickDropdownByValue(select, roleText);
       }
     });
   }

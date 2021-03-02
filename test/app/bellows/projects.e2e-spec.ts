@@ -14,88 +14,88 @@ describe('Bellows E2E Projects List app', () => {
 
   describe('for Normal User', () => {
 
-    it('should list the project of which the user is a member', () => {
-      loginPage.loginAsMember();
-      projectsPage.get();
-      expect(projectsPage.projectNames.get(0).getText()).toBe(constants.testProjectName);
+    it('should list the project of which the user is a member', async () => {
+      await loginPage.loginAsMember();
+      await projectsPage.get();
+      expect(await projectsPage.projectNames.get(0).getText()).toBe(constants.testProjectName);
     });
 
-    it('should not list projects the user is not a member of', () => {
-      projectsPage.get();
-      expect<any>(projectsPage.projectsList.count()).toBe(1);
+    it('should not list projects the user is not a member of', async () => {
+      await projectsPage.get();
+      expect<any>(await projectsPage.projectsList.count()).toBe(1);
     });
 
-    it('can list two projects of which the user is a member', () => {
-      loginPage.loginAsAdmin();
-      projectsPage.get();
-      browser.wait(ExpectedConditions.visibilityOf(projectsPage.createBtn), constants.conditionTimeout);
-      projectsPage.addMemberToProject(constants.otherProjectName, constants.memberName);
-      loginPage.loginAsMember();
-      projectsPage.get();
-      browser.wait(ExpectedConditions.visibilityOf(projectsPage.createBtn), constants.conditionTimeout);
-      expect<any>(projectsPage.projectsList.count()).toBe(2);
+    it('can list two projects of which the user is a member', async () => {
+      await loginPage.loginAsAdmin();
+      await projectsPage.get();
+      await browser.wait(ExpectedConditions.visibilityOf(projectsPage.createBtn), constants.conditionTimeout);
+      await projectsPage.addMemberToProject(constants.otherProjectName, constants.memberName);
+      await loginPage.loginAsMember();
+      await projectsPage.get();
+      await browser.wait(ExpectedConditions.visibilityOf(projectsPage.createBtn), constants.conditionTimeout);
+      expect<any>(await projectsPage.projectsList.count()).toBe(2);
     });
   });
 
   // Two helper functions to avoid duplicating the same checks in admin test below
-  const shouldProjectBeLinked = (projectName: string, projectRow: ElementFinder, bool: boolean) => {
-    expect<any>(projectRow.element(by.cssContainingText('a', projectName)).isDisplayed()).toBe(bool);
+  const shouldProjectBeLinked = async (projectName: string, projectRow: ElementFinder, bool: boolean) => {
+    expect<any>(await projectRow.element(by.cssContainingText('a', projectName)).isDisplayed()).toBe(bool);
   };
 
-  const shouldProjectHaveButtons = (projectRow: ElementFinder, bool: boolean) => {
+  const shouldProjectHaveButtons = async (projectRow: ElementFinder, bool: boolean) => {
     const addAsTechSupportBtn = projectRow.element(by.id('techSupportButton'));
-    expect<any>(addAsTechSupportBtn.isDisplayed()).toBe(bool);
+    expect<any>(await addAsTechSupportBtn.isDisplayed()).toBe(bool);
   };
 
   describe('for System Admin User', () => {
 
-    it('should list all projects', () => {
-      loginPage.loginAsAdmin();
-      projectsPage.get();
-      expect(projectsPage.projectsList.count()).toBeGreaterThan(0);
+    it('should list all projects', async () => {
+      await loginPage.loginAsAdmin();
+      await projectsPage.get();
+      expect(await projectsPage.projectsList.count()).toBeGreaterThan(0);
 
       // Check that the test project is around
-      projectsPage.findProject(constants.testProjectName).then((projectRow: ElementFinder) => {
-        shouldProjectBeLinked(constants.testProjectName, projectRow, true);
+      return projectsPage.findProject(constants.testProjectName).then((projectRow: ElementFinder) => {
+        return shouldProjectBeLinked(constants.testProjectName, projectRow, true);
       });
     });
 
-    it('should show add and delete buttons', () => {
+    it('should show add and delete buttons', async () => {
       // projectsPage.createBtn.getOuterHtml().then(console.log);
-      expect(projectsPage.createBtn.isDisplayed()).toBeTruthy();
+      expect(await projectsPage.createBtn.isDisplayed()).toBeTruthy();
     });
 
-    it('should allow the admin to add themselves to the project as member or manager', () => {
+    it('should allow the admin to add themselves to the project as member or manager', async () => {
 
       // First remove the admin from the project (must be a project admin is not the owner of)
-      loginPage.loginAsManager();
-      projectsPage.get();
+      await loginPage.loginAsManager();
+      await projectsPage.get();
 
       // The admin should not see "Add myself to project" buttons when he's already a project member
       // or manager, and the project name should be a clickable link
-      projectsPage.findProject(constants.otherProjectName).then((projectRow: ElementFinder) => {
-        shouldProjectBeLinked(constants.otherProjectName, projectRow, true);
-        shouldProjectHaveButtons(projectRow, false);
+      await projectsPage.findProject(constants.otherProjectName).then(async (projectRow: ElementFinder) => {
+        await shouldProjectBeLinked(constants.otherProjectName, projectRow, true);
+        return shouldProjectHaveButtons(projectRow, false);
       });
 
-      projectsPage.removeUserFromProject(constants.otherProjectName, constants.adminUsername);
-      loginPage.loginAsAdmin();
-      projectsPage.get();
+      await projectsPage.removeUserFromProject(constants.otherProjectName, constants.adminUsername);
+      await loginPage.loginAsAdmin();
+      await projectsPage.get();
 
       // Now the admin should have "Add myself to project" buttons
       // And the project name should NOT be a clickable link
-      projectsPage.findProject(constants.otherProjectName).then((projectRow: ElementFinder) => {
-        shouldProjectBeLinked(constants.otherProjectName, projectRow, false);
-        shouldProjectHaveButtons(projectRow, true);
+      await projectsPage.findProject(constants.otherProjectName).then(async (projectRow: ElementFinder) => {
+        await shouldProjectBeLinked(constants.otherProjectName, projectRow, false);
+        await shouldProjectHaveButtons(projectRow, true);
 
         // Now add the admin back to the project
-        projectRow.element(by.id('techSupportButton')).click();
+        return projectRow.element(by.id('techSupportButton')).click();
       });
 
       // And the buttons should go away after one of them is clicked
-      projectsPage.findProject(constants.otherProjectName).then((projectRow: ElementFinder) => {
-        shouldProjectBeLinked(constants.otherProjectName, projectRow, true);
-        shouldProjectHaveButtons(projectRow, false);
+      return projectsPage.findProject(constants.otherProjectName).then(async (projectRow: ElementFinder) => {
+        await shouldProjectBeLinked(constants.otherProjectName, projectRow, true);
+        return shouldProjectHaveButtons(projectRow, false);
       });
     });
 
@@ -103,29 +103,26 @@ describe('Bellows E2E Projects List app', () => {
 
   describe('Lexicon E2E Project Access', () => {
 
-    it('Admin added to project when accessing without membership', () => {
-      loginPage.loginAsManager();
-      browser.getCurrentUrl().then(url => {
-        projectNameLabel.getText().then( projectName => {
-          projectsPage.get();
-          browser.wait(ExpectedConditions.visibilityOf(projectsPage.createBtn), constants.conditionTimeout);
-          projectsPage.removeUserFromProject(projectName, constants.adminUsername);
-          loginPage.loginAsAdmin();
-          browser.get(url);
-          browser.wait(ExpectedConditions.visibilityOf(editorPage.browseDiv), constants.conditionTimeout);
-          expect<any>(editorPage.browseDiv.isPresent()).toBe(true);
-        });
-      });
+    it('Admin added to project when accessing without membership', async () => {
+      await loginPage.loginAsManager();
+      const url = await browser.getCurrentUrl();
+      const projectName = await projectNameLabel.getText();
+      await projectsPage.get();
+      await browser.wait(ExpectedConditions.visibilityOf(projectsPage.createBtn), constants.conditionTimeout);
+      await projectsPage.removeUserFromProject(projectName, constants.adminUsername);
+      await loginPage.loginAsAdmin();
+      await browser.get(url);
+      await browser.wait(ExpectedConditions.visibilityOf(editorPage.browseDiv), constants.conditionTimeout);
+      expect<any>(await editorPage.browseDiv.isPresent()).toBe(true);
     });
 
-    it('User redirected to projects app when accessing without membership', () => {
-        loginPage.loginAsManager();
-        browser.getCurrentUrl().then(url => {
-          loginPage.loginAsSecondUser();
-          browser.get(url);
-          browser.wait(ExpectedConditions.visibilityOf(projectsPage.createBtn), constants.conditionTimeout);
-          expect<any>(projectsPage.createBtn.isPresent()).toBe(true);
-        });
+    it('User redirected to projects app when accessing without membership', async () => {
+      await loginPage.loginAsManager();
+      const url = await browser.getCurrentUrl();
+      await loginPage.loginAsSecondUser();
+      await browser.get(url);
+      await browser.wait(ExpectedConditions.visibilityOf(projectsPage.createBtn), constants.conditionTimeout);
+      expect<any>(await projectsPage.createBtn.isPresent()).toBe(true);
     });
 
   });

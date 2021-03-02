@@ -12,40 +12,40 @@ describe('Bellows E2E User Management App', () => {
   const projectsPage = new ProjectsPage();
   const userManagementPage = new UserManagementPage();
 
-  it('Can add admin as Tech Support', () => {
+  it('Can add admin as Tech Support', async () => {
     // Remove admin from Other Project for Testing
-    loginPage.loginAsManager();
-    projectsPage.get();
-    projectsPage.removeUserFromProject(constants.otherProjectName, constants.adminUsername);
+    await loginPage.loginAsManager();
+    await projectsPage.get();
+    await projectsPage.removeUserFromProject(constants.otherProjectName, constants.adminUsername);
 
-    loginPage.loginAsAdmin();
-    projectsPage.get();
+    await loginPage.loginAsAdmin();
+    await projectsPage.get();
 
     // Click "+ Tech Support" button
-    projectsPage.findProject(constants.otherProjectName).then((projectRow: ElementFinder) => {
-      projectRow.element(by.id('techSupportButton')).click();
+    await projectsPage.findProject(constants.otherProjectName).then((projectRow: ElementFinder) => {
+      return projectRow.element(by.id('techSupportButton')).click();
     });
 
-    UserManagementPage.getByProjectName(constants.otherProjectName).then(() => {
-      browser.wait(ExpectedConditions.visibilityOf(userManagementPage.projectMemberRows.first()), Utils.conditionTimeout);
-      userManagementPage.getUserRow(constants.adminUsername).then( (row: ElementFinder) => {
+    return UserManagementPage.getByProjectName(constants.otherProjectName).then(async () => {
+      await browser.wait(ExpectedConditions.visibilityOf(userManagementPage.projectMemberRows.first()), Utils.conditionTimeout);
+      return userManagementPage.getUserRow(constants.adminUsername).then(async (row: ElementFinder) => {
         const selector = row.element(by.css('select'));
-        expect<any>(selector.isEnabled()).toBe(true);
-        selector.element(by.css('option[selected=selected]')).getText().then( text => {
+        expect<any>(await selector.isEnabled()).toBe(true);
+        return selector.element(by.css('option[selected=selected]')).getText().then( text => {
           expect<any>(text).toBe('Tech Support');
         });
       });
     });
   });
 
-  it('Other user cannot assign Tech Support user\'s role', () => {
-    loginPage.loginAsManager();
-    UserManagementPage.getByProjectName(constants.otherProjectName).then(() => {
-      browser.wait(ExpectedConditions.visibilityOf(userManagementPage.projectMemberRows.first()), Utils.conditionTimeout);
-      userManagementPage.getUserRow(constants.adminUsername).then( (row: ElementFinder) => {
+  it('Other user cannot assign Tech Support user\'s role', async () => {
+    await loginPage.loginAsManager();
+    return UserManagementPage.getByProjectName(constants.otherProjectName).then(async () => {
+      await browser.wait(ExpectedConditions.visibilityOf(userManagementPage.projectMemberRows.first()), Utils.conditionTimeout);
+      return userManagementPage.getUserRow(constants.adminUsername).then(async (row: ElementFinder) => {
         const selector = row.element(by.css('select'));
-        expect<any>(selector.isEnabled()).toBe(false);
-        selector.element(by.css('option[selected=selected]')).getText().then( text => {
+        expect<any>(await selector.isEnabled()).toBe(false);
+        return selector.element(by.css('option[selected=selected]')).getText().then( text => {
           expect<any>(text).toBe('Tech Support');
         });
       });
@@ -53,38 +53,34 @@ describe('Bellows E2E User Management App', () => {
 
   });
 
-  it('Tech Support user can assign their own role', () => {
-    loginPage.loginAsAdmin();
-    UserManagementPage.getByProjectName(constants.otherProjectName).then(() => {
-      browser.wait(ExpectedConditions.visibilityOf(userManagementPage.projectMemberRows.first()), Utils.conditionTimeout);
-      userManagementPage.changeUserRole(constants.adminUsername, 'Manager');
+  it('Tech Support user can assign their own role', async () => {
+    await loginPage.loginAsAdmin();
+    await UserManagementPage.getByProjectName(constants.otherProjectName).then(async () => {
+      await browser.wait(ExpectedConditions.visibilityOf(userManagementPage.projectMemberRows.first()), Utils.conditionTimeout);
+      return userManagementPage.changeUserRole(constants.adminUsername, 'Manager');
     });
     // Now verify
-    UserManagementPage.getByProjectName(constants.otherProjectName).then(() => {
-      browser.wait(ExpectedConditions.visibilityOf(userManagementPage.projectMemberRows.first()), Utils.conditionTimeout);
-      userManagementPage.getUserRow(constants.adminUsername).then( (row: ElementFinder) => {
+    return UserManagementPage.getByProjectName(constants.otherProjectName).then(async () => {
+      await browser.wait(ExpectedConditions.visibilityOf(userManagementPage.projectMemberRows.first()), Utils.conditionTimeout);
+      userManagementPage.getUserRow(constants.adminUsername).then(async (row: ElementFinder) => {
         const selector = row.element(by.css('select'));
-        expect<any>(selector.isEnabled()).toBe(true);
-        selector.element(by.css('option[selected=selected]')).getText().then( text => {
+        expect<any>(await selector.isEnabled()).toBe(true);
+        return selector.element(by.css('option[selected=selected]')).getText().then( text => {
           expect<any>(text).toBe('Manager');
         });
       });
     });
   });
 
-  it('User cannot assign member to Tech Support role', () => {
-    loginPage.loginAsManager();
-    UserManagementPage.getByProjectName(constants.otherProjectName).then(() => {
-
-      userManagementPage.getUserRow(constants.adminUsername).then( (row: ElementFinder) => {
-        row.element(by.css('select')).getText().then( text => {
-          expect<any>(text).toContain('Manager');
-          expect<any>(text).toContain('Contributor');
-          expect<any>(text).toContain('Observer');
-          expect<any>(text).toContain('Observer with comment');
-          expect<any>(text).not.toContain('Tech Support');
-        });
-      });
-    });
+  it('User cannot assign member to Tech Support role', async () => {
+    await loginPage.loginAsManager();
+    await UserManagementPage.getByProjectName(constants.otherProjectName);
+    const row = await userManagementPage.getUserRow(constants.adminUsername) as ElementFinder;
+    const text = await row.element(by.css('select')).getText();
+    expect<string>(text).toContain('Manager');
+    expect<string>(text).toContain('Contributor');
+    expect<string>(text).toContain('Observer');
+    expect<string>(text).toContain('Observer with comment');
+    expect<string>(text).not.toContain('Tech Support');
   });
 });

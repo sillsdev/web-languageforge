@@ -100,38 +100,38 @@ export class ProjectsPage {
 
   //noinspection JSUnusedGlobalSymbols
   addManagerToProject(projectName: string, usersName: string) {
-    this.addUserToProject(projectName, usersName, 'Manager');
+    return this.addUserToProject(projectName, usersName, 'Manager');
   }
 
   addMemberToProject(projectName: string, usersName: string) {
-    this.addUserToProject(projectName, usersName, 'Contributor');
+    return this.addUserToProject(projectName, usersName, 'Contributor');
   }
 
   removeUserFromProject(projectName: string, userName: string) {
-    this.findProject(projectName).then((projectRow: any) => {
+    return this.findProject(projectName).then(async (projectRow: any) => {
       const projectLink = projectRow.element(by.css('a'));
-      projectLink.getAttribute('href').then((href: string) => {
+      await projectLink.getAttribute('href').then((href: string) => {
         const results = /app\/lexicon\/([0-9a-fA-F]+)\//.exec(href);
         expect(results).not.toBeNull();
         expect(results.length).toBeGreaterThan(1);
         const projectId = results[1];
-        UserManagementPage.get(projectId);
+        return UserManagementPage.get(projectId);
       });
-      browser.wait(ExpectedConditions.visibilityOf(this.userManagementPage.addMembersBtn), Utils.conditionTimeout);
+      await browser.wait(ExpectedConditions.visibilityOf(this.userManagementPage.addMembersBtn), Utils.conditionTimeout);
 
       let userFilter: any;
       let projectMemberRows: any;
       userFilter = element(by.model('$ctrl.userFilter'));
-      userFilter.sendKeys(userName);
+      await userFilter.sendKeys(userName);
       projectMemberRows = element.all(by.repeater('user in $ctrl.list.visibleUsers'));
 
-      const foundUserRow = projectMemberRows.first();
+      const foundUserRow = await projectMemberRows.first();
       const rowCheckbox = foundUserRow.element(by.css('input[type="checkbox"]'));
-      this.utils.setCheckbox(rowCheckbox, true);
+      await this.utils.setCheckbox(rowCheckbox, true);
       const removeMembersBtn = element(by.id('remove-members-button'));
-      removeMembersBtn.click();
+      await removeMembersBtn.click();
 
-      this.get(); // After all is finished, reload projects page
+      return this.get(); // After all is finished, reload projects page
     });
   }
 }

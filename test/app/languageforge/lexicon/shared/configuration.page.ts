@@ -12,10 +12,10 @@ export class ConfigurationPage {
   settingsMenuLink = element(by.id('settings-dropdown-button'));
   configurationLink = element(by.id('dropdown-configuration'));
 
-  get() {
-    Utils.scrollTop();
-    this.settingsMenuLink.click();
-    this.configurationLink.click();
+  async get() {
+    await Utils.scrollTop();
+    await this.settingsMenuLink.click();
+    return this.configurationLink.click();
   }
 
   applyButton = element(by.id('configuration-apply-btn'));
@@ -225,9 +225,9 @@ export class ConfigurationPage {
       remove:     this.activePane.element(by.id('configuration-remove-btn')),
       // tslint:disable-next-line:max-line-length
       // see http://stackoverflow.com/questions/25553057/making-protractor-wait-until-a-ui-boostrap-modal-box-has-disappeared-with-cucum
-      newButtonClick: () => {
-        this.inputSystemsPane.newButton.click();
-        browser.executeScript('$(\'.modal\').removeClass(\'fade\');');
+      newButtonClick: async () => {
+        await this.inputSystemsPane.newButton.click();
+        return browser.executeScript('$(\'.modal\').removeClass(\'fade\');');
       }
     },
     getLanguageByName: (languageName: string) =>
