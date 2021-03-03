@@ -18,7 +18,7 @@ describe('Lexicon E2E Configuration Fields', () => {
     await loginPage.loginAsManager();
     await projectsPage.get();
     await projectsPage.clickOnProject(constants.testProjectName);
-    await editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
+    await editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
     expect(await editorPage.edit.getFirstLexeme()).toEqual(constants.testEntry1.lexeme.th.value);
   });
 
@@ -126,7 +126,7 @@ describe('Lexicon E2E Configuration Fields', () => {
       await configPage.applyButton.click();
       expect<any>(await configPage.applyButton.isEnabled()).toBe(false);
       await Utils.clickBreadcrumb(constants.testProjectName);
-      await editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
+      await editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
       await editorPage.edit.showHiddenFields();
       expect<any>(await editorPage.edit.getFieldLabel(0).getText()).toEqual('Word');
       expect<any>(await editorPage.edit.getFieldLabel(1).getText()).toEqual('Pronunciation');

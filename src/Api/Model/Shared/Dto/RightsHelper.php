@@ -91,7 +91,7 @@ class RightsHelper
      */
     public function userHasProjectRight($right)
     {
-        return $this->_projectModel->hasRight($this->_userId, $right);
+        return isset($this->_projectModel) ? $this->_projectModel->hasRight($this->_userId, $right) : false;
     }
 
     /**

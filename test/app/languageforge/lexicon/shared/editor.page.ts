@@ -15,7 +15,7 @@ export class EditorPage {
   static get(projectId: string, entryId: string) {
     let extra = projectId ? ('/' + projectId) : '';
     extra += (projectId && entryId) ? ('#!/editor/entry/' + entryId) : '';
-    browser.get(browser.baseUrl + '/app/lexicon' + extra);
+    return browser.get(browser.baseUrl + '/app/lexicon' + extra);
   }
 
   static getProjectIdFromUrl() {
@@ -57,9 +57,9 @@ export class EditorPage {
     noEntriesNewWordBtn: element(by.id('noEntriesNewWord')),
     newWordBtn: element(by.id('newWord')),
     entryCountElem: this.browseDiv.element(by.id('totalNumberOfEntries')),
-    getEntryCount: () => {
+    getEntryCount: async () => {
       // assumption is entry count > 0
-      browser.wait(ExpectedConditions.visibilityOf(this.browse.entryCountElem), Utils.conditionTimeout);
+      await browser.wait(ExpectedConditions.visibilityOf(this.browse.entryCountElem), Utils.conditionTimeout);
       return this.browse.entryCountElem.getText().then((s: string) =>
         parseInt(/(\d+)$/.exec(s)[1], 10)
       );
@@ -79,18 +79,24 @@ export class EditorPage {
 
     // Entries list (main body of view)
     entriesList: this.browseDiv.all(by.repeater('entry in $ctrl.visibleEntries track by entry.id')),
-    findEntryByLexeme: (lexeme: string) => {
-      browser.wait(ExpectedConditions.visibilityOf(
+    clickEntryByLexeme: async (lexeme: string) => {
+      await browser.wait(ExpectedConditions.visibilityOf(
         element(by.id('lexAppListView'))), Utils.conditionTimeout);
-      return this.browse.entriesList.filter((row: ElementFinder) => {
+      const elements = await this.browse.entriesList.filter(async (row: ElementFinder) => {
         const elem = row.element(by.binding('entry.word'));
 
         // fix problem with protractor not scrolling to element before click
-        browser.driver.executeScript('arguments[0].scrollIntoView();', elem.getWebElement());
+        await browser.driver.executeScript('arguments[0].scrollIntoView();', elem.getWebElement());
         return elem.getText().then((word: string) =>
           (word.indexOf(lexeme) > -1)
         );
-      });
+      })
+      if (elements.length > 0) {
+        return elements[0].click();
+      } else {
+        throw new Error(`No entry found by lexeme ${lexeme}`);
+
+      };
     }
   };
 
@@ -109,20 +115,20 @@ export class EditorPage {
     },
     showHiddenFields: () => {
       // Only click the button if it will result in fields being shown
-      this.edit.toggleHiddenFieldsBtn.getText().then((text: string) => {
+      return this.edit.toggleHiddenFieldsBtn.getText().then(async (text: string) => {
         if (text === this.edit.toggleHiddenFieldsBtnText.show) {
-          Utils.scrollTop();
-          this.edit.toggleHiddenFieldsBtn.click();
+          await Utils.scrollTop();
+          return this.edit.toggleHiddenFieldsBtn.click();
         }
       });
     },
 
     hideHiddenFields: () => {
       // Only click the button if it will result in fields being hidden
-      this.edit.toggleHiddenFieldsBtn.getText().then((text: string) => {
+      return this.edit.toggleHiddenFieldsBtn.getText().then(async (text: string) => {
         if (text === this.edit.toggleHiddenFieldsBtnText.hide) {
-          Utils.scrollTop();
-          this.edit.toggleHiddenFieldsBtn.click();
+          await Utils.scrollTop();
+          return this.edit.toggleHiddenFieldsBtn.click();
         }
       });
     },

@@ -947,7 +947,7 @@ class Sf
         }
         if ($user->email) {
             $ldUsers = LdapiCommands::searchUsers('', $user->email);
-            if (count($ldUsers) == 1) {
+            if ($ldUsers && count($ldUsers) == 1) {
                 $username = $ldUsers[0]['username'];
                 if ($username) {
                     $user->languageDepotUsername = $username;
@@ -1004,7 +1004,7 @@ class Sf
     }
 
     public function ldapi_get_all_roles() {
-        return LdapiCommands::getAllRoles($this->get_ldapi_username());
+        return LdapiCommands::getAllRoles();
     }
 
     // ---------------------------------------------------------------
