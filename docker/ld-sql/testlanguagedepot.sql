@@ -518,7 +518,7 @@ CREATE TABLE `email_addresses` (
 LOCK TABLES `email_addresses` WRITE;
 /*!40000 ALTER TABLE `email_addresses` DISABLE KEYS */;
 INSERT INTO `email_addresses` (`id`, `user_id`, `address`, `is_default`, `notify`, `created_on`, `updated_on`) VALUES
-(1, 1,     'admin@example.net',          1, 1, '2009-07-22 06:32:07', '2009-07-23 08:45:37'),
+(1, 1,     'admin@example.com',          1, 1, '2009-07-22 06:32:07', '2009-07-23 08:45:37'),
 (2, 3,     'king.richard@example.com',   1, 1, '2019-10-04 13:27:30', '2019-10-04 13:27:30'),
 (3, 4,     'princejohn@example.com',     1, 1, '2019-10-04 13:27:30', '2019-10-04 13:27:30'),
 (4, 10,    'manager1@example.net',       1, 1, '2009-07-22 06:32:07', '2009-07-23 08:45:37'),
