@@ -28,8 +28,10 @@ services:
     depends_on:
       - db
       - mail
+      - ld-api
     environment:
       - WAIT_HOSTS=db:27017, mail:25
+      - "LDAPI_BASE_URL=http://ld-api:3000/api/v2/"
     command: sh -c "/wait && apache2-foreground"
     volumes:
       # share dist folder between ui and api containers
@@ -90,6 +92,29 @@ services:
       - /dev/shm:/dev/shm
     ports:
       - "5900:5900"
+
+  ld-sql:
+    build:
+      context: ld-sql
+    image: ld-sql
+    ports:
+      # Exposed to host so you can run MySQL admin tools if you want
+      # Note that this will *fail* if you have MySQL running on your host, as port 3306 will already be taken
+      - 3306:3306
+    env_file: ld-api/ld.env
+    container_name: ld-sql
+
+  ld-api:
+    build:
+      context: ld-api
+    image: ld-api
+    depends_on:
+      - ld-sql
+    ports:
+      - 3000:3000
+    # env_file should be same one given to ld-sql image
+    env_file: ld-api/ld.env
+    container_name: ld-api
 
   e2e-ui:
     build:
