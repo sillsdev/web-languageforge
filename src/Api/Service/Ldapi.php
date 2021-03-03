@@ -74,9 +74,9 @@ class Ldapi
 
     public static function callNodeJsServer($languageDepotUsername, $method, $url, array $jsonData = null)
     {
-        $baseUrl = 'http://localhost:3000/api/v2/';     // Node.js server
-        // $baseUrl = 'http://172.17.0.1:3000/api/v2/';     // Node.js server on localhost (Docker internal IP for localhost is 172.17.0.1)
-        // Should eventually be: $baseUrl = 'https://admin.languagedepot.org/api/';
+        $baseUrl = getenv('LDAPI_BASE_URL');
+        if (!$baseUrl) { $baseUrl = 'https://admin.languagedepot.org/api/v2/'; }
+        // Note that getenv('LDAPI_BASE_URL') || 'default' fails because getenv can return boolean, so PHP evaluates that line to 1 instead of the string value of getenv
 
         if ($languageDepotUsername) {
             $jwtPayload = [
@@ -142,7 +142,7 @@ class Ldapi
             // TODO: Do something if status code is 400
             return $json;
         } else {
-            throw new \Exception("");
+            throw new \Exception("No response from LD API at " . $baseUrl . $url);
         }
     }
 
