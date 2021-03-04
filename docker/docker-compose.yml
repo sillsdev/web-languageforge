@@ -32,6 +32,7 @@ services:
     environment:
       - WAIT_HOSTS=db:27017, mail:25
       - "LDAPI_BASE_URL=http://ld-api:3000/api/v2/"
+      # LDAPI_BASE_URL hostname and port need to match container name and port of the ld-api container (defined further down)
     # TODO: Make a run.sh that sets umask and then runs apache2-foreground
     command: sh -c "/wait && umask 0002 && apache2-foreground"
     volumes:
@@ -98,10 +99,10 @@ services:
     build:
       context: ld-sql
     image: ld-sql
-    ports:
-      # Exposed to host so you can run MySQL admin tools if you want
-      # Note that this will *fail* if you have MySQL running on your host, as port 3306 will already be taken
-      - 3306:3306
+    # To access the MySQL database via localhost:3306 on your dev machine (e.g., in VS Code), uncomment the "ports" config below
+    # Note that if you're running MySQL on your dev machine already, change the first number to something else, like 3307 and access localhost:3307
+    # ports:
+    #   - 3306:3306
     env_file: ld-api/ld.env
     container_name: ld-sql
 
@@ -111,10 +112,10 @@ services:
     image: ld-api
     depends_on:
       - ld-sql
-    ports:
-      - 3000:3000
     # env_file should be same one given to ld-sql image
     env_file: ld-api/ld.env
+    environment:
+      - PORT=3000
     container_name: ld-api
 
   e2e-ui:
