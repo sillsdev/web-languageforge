@@ -84,7 +84,9 @@ services:
   selenium:
     # image: selenium/standalone-chrome
     image: selenium/standalone-chrome-debug
+    # TODO: seems would should have a depends_on for the e2e-api
     links:
+      # TODO:  I wonder why this was necessary, I would've thought e2e-api was already available, maybe not?
       - "e2e-api:e2e"
     volumes:
       - /dev/shm:/dev/shm
