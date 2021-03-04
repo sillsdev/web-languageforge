@@ -102,7 +102,6 @@ services:
       - e2e-api
       - mail
       - selenium
-      - ui
     environment:
       - WAIT_HOSTS=db:27017, mail:25, selenium:4444
     command: sh -c "/wait && /run.sh"
