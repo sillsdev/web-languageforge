@@ -89,7 +89,7 @@ Other useful resources:
 
 ### Docker ###
 
-1. Install [Docker](https://www.docker.com/get-started)
+1. Install [Docker](https://www.docker.com/get-started) (Linux users will need some additional steps, please visit https://docs.docker.com/compose/install for info on install the engine and compose)
 1. Install [Make](https://www.gnu.org/software/make/).  This is actually optional but simplifies things a bit.
 1. Clone the repo:  `git clone https://github.com/sillsdev/web-languageforge`
 1. `cd web-languageforge/docker`
