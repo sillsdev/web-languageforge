@@ -6,7 +6,7 @@ start: wait
 	docker-compose up -d ssl
 
 .PHONY: e2e
-e2e: build
+e2e:
 	docker-compose run e2e-ui
 
 .PHONY: tests
