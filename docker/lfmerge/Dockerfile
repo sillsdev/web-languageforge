@@ -14,10 +14,4 @@ RUN curl -L http://linux.lsdev.sil.org/downloads/sil-testing.gpg | apt-key add -
  && apt-get purge --yes curl \
  && apt-get install --yes --no-install-recommends lfmerge
 
-RUN mkdir -p /data/dropzone
-
-COPY watcher /data/
-RUN chmod +x /data/watcher
-
-CMD iwatch -c '/data/watcher %f' -e create /data/dropzone
-
+CMD iwatch -c /usr/bin/lfmergeqm -e create /var/lib/languageforge/lexicon/sendreceive/syncqueue
