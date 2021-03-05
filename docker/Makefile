@@ -3,10 +3,11 @@
 .PHONY: start
 start: wait
   # starts the entire runtime infrastructure
-	docker-compose up -d ssl && docker-compose logs -f ui
+	docker-compose up -d ssl
 
 .PHONY: e2e
 e2e:
+	docker-compose build ui api
 	docker-compose run e2e-ui
 
 .PHONY: tests
@@ -25,14 +26,20 @@ wait:
 db-reset:
 	docker-compose run db-reset
 
+.PHONY: logs
+logs:
+	docker-compose logs
+
 .PHONY: clean
 clean:
-	docker-compose kill
-	docker-compose rm -f
+	docker-compose down -t 1
 	docker system prune -f
 
-    # remove lf-specific volumes
-	docker volume ls -q |grep ^docker_lf_ | xargs --no-run-if-empty docker volume rm
+.PHONY: clean-volumes
+clean-volumes:
+	docker-compose down -t 1 -v
+	docker system prune -f --volumes
 
-  # by default volumes are not pruned.  To prune volumes as well, do:
-  # docker system prune -f --volumes
+.PHONY: clean-powerwash
+clean-powerwash: clean-volumes
+	docker-compose down -t 1 --rmi all

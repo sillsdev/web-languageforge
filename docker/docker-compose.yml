@@ -11,7 +11,7 @@ services:
       - api
     volumes:
       # share dist folder between ui and api containers
-      - lf_webpack_dist_folder:/data/src/dist
+      - lf-webpack-dist-folder:/data/src/dist
 
       # for developer convenience
       - ../src:/data/src
@@ -33,10 +33,10 @@ services:
     command: sh -c "/wait && apache2-foreground"
     volumes:
       # share dist folder between ui and api containers
-      - lf_webpack_dist_folder:/var/www/src/dist
+      - lf-webpack-dist-folder:/var/www/src/dist
 
       # persist user data uploads and assets
-      - lf_user_data_assets:/var/www/src/assets
+      - lf-user-data-assets:/var/www/src/assets
 
       # for developer convenience
       - ../src/Api:/var/www/src/Api
@@ -51,8 +51,8 @@ services:
     depends_on:
       - ui
     volumes:
-      - lf_caddy_data:/data
-      - lf_caddy_config:/config
+      - lf-caddy-data:/data
+      - lf-caddy-config:/config
     # https://caddyserver.com/docs/command-line
     command: caddy reverse-proxy --from localhost --to api
     restart: unless-stopped
@@ -71,7 +71,7 @@ services:
       # exposed this to host for admin tools
       - 27017:27017
     volumes:
-      - lf_mongo_data:/data/db
+      - lf-mongo-data:/data/db
     restart: always
 
   # TODO: still needs to be built/run/tested, etc.
@@ -84,7 +84,9 @@ services:
   selenium:
     # image: selenium/standalone-chrome
     image: selenium/standalone-chrome-debug
+    # TODO: seems would should have a depends_on for the e2e-api
     links:
+      # TODO:  I wonder why this was necessary, I would've thought e2e-api was already available, maybe not?
       - "e2e-api:e2e"
     volumes:
       - /dev/shm:/dev/shm
@@ -107,7 +109,13 @@ services:
     command: sh -c "/wait && /run.sh"
     volumes:
       # share dist folder between ui and api containers
-      - lf_webpack_dist_folder:/data/src/dist
+      - lf-webpack-dist-folder:/data/src/dist
+
+      # for developer convenience
+      - ../src:/data/src
+      - ../typings:/data/typings
+      - ../webpack.config.js:/data/webpack.config.js
+      - ../gulpfile.js:/data/gulpfile.js
 
   e2e-api:
     build:
@@ -123,7 +131,7 @@ services:
     command: sh -c "/wait && /run.sh"
     volumes:
       # share dist folder between ui and api containers
-      - lf_webpack_dist_folder:/var/www/src/dist
+      - lf-webpack-dist-folder:/var/www/src/dist
 
   test-api:
     # TODO: get XDebug working with VSCode
@@ -154,8 +162,8 @@ services:
       - db
 
 volumes:
-  lf_caddy_config:
-  lf_caddy_data:
-  lf_mongo_data:
-  lf_user_data_assets:
-  lf_webpack_dist_folder:
+  lf-caddy-config:
+  lf-caddy-data:
+  lf-mongo-data:
+  lf-user-data-assets:
+  lf-webpack-dist-folder:
