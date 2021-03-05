@@ -28,6 +28,7 @@ services:
     depends_on:
       - db
       - mail
+      - lfmerge
     environment:
       - WAIT_HOSTS=db:27017, mail:25
     command: sh -c "/wait && apache2-foreground"
@@ -38,7 +39,7 @@ services:
       # persist user data uploads and assets
       - lf-user-data-assets:/var/www/src/assets
 
-      - lfmerge-data:/var/lib/languageforge
+      #TODO: need a place that makes sense in this container - lfmerge-queue:
 
       # for developer convenience
       - ../src/Api:/var/www/src/Api
@@ -49,7 +50,7 @@ services:
     image: lf-merge
     container_name: lf-merge
     volumes:
-      - lfmerge-data:/data/dropzone
+      - lfmerge-queue:/var/lib/languageforge/lexicon/sendreceive/syncqueue
 
   ssl:
     image: caddy
@@ -169,4 +170,4 @@ volumes:
   lf-mongo-data:
   lf-user-data-assets:
   lf-webpack-dist-folder:
-  lfmerge-data:
+  lfmerge-queue:
