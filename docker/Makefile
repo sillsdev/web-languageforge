@@ -7,6 +7,7 @@ start: wait
 
 .PHONY: e2e
 e2e:
+  docker-compose build ui api
 	docker-compose run e2e-ui
 
 .PHONY: tests
