@@ -157,23 +157,23 @@ export class EditorUtil {
 
   // designed for use with Text-Angular controls (i.e. that don't have ordinary input or textarea)
   selectElement = {
-    sendKeys(elem: any, keys: string) {
-      elem.click();
-      elem.sendKeys(keys);
+    async sendKeys(elem: any, keys: string) {
+      await elem.click();
+      return elem.sendKeys(keys);
     },
 
-    clear(elem: any) {
+    async clear(elem: any) {
       // fix problem with protractor not scrolling to element before click
-      elem.getLocation().then((navDivLocation: any) => {
+      await elem.getLocation().then((navDivLocation: any) => {
         const initTop = (navDivLocation.y - 150) > 0 ? navDivLocation.y - 150 : 1;
         const initLeft = navDivLocation.x;
         browser.executeScript('window.scrollTo(' + initLeft + ',' + initTop + ');');
       });
 
-      elem.click();
+      await elem.click();
       const ctrlA = Key.chord(Key.CONTROL, 'a');
-      elem.sendKeys(ctrlA);
-      elem.sendKeys(Key.DELETE);
+      await elem.sendKeys(ctrlA);
+      return elem.sendKeys(Key.DELETE);
     }
   };
 }
