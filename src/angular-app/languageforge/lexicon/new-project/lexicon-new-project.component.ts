@@ -28,7 +28,6 @@ import {NewProjectChooserState} from './new-project-chooser.component';
 import {NewProjectInitialDataState} from './non-send-receive/new-project-initial-data.component';
 import {NewProjectSendReceiveCloneState} from './send-receive/new-project-clone.component';
 import {NewProjectSendReceiveCredentialsState} from './send-receive/new-project-credentials.component';
-import {HelpHeroService} from '../../../bellows/core/helphero.service';
 
 export interface NewProject extends LexiconProject {
   editProjectCode?: boolean;
@@ -67,7 +66,7 @@ export class LexiconNewProjectController implements angular.IController {
     'lexProjectService',
     'lexSendReceiveApi',
     'lexSendReceive',
-    'helpHeroService'];
+  ];
   constructor(private readonly $scope: angular.IScope, readonly $q: angular.IQService,
               readonly $state: angular.ui.IStateService, private readonly $window: angular.IWindowService,
               private readonly applicationHeaderService: ApplicationHeaderService,
@@ -78,20 +77,13 @@ export class LexiconNewProjectController implements angular.IController {
               private readonly lexProjectService: LexiconProjectService,
               private readonly sendReceiveApi: LexiconSendReceiveApiService,
               readonly sendReceive: LexiconSendReceiveService,
-              private readonly helpHeroService: HelpHeroService) { }
+             ) { }
 
   $onInit(): void {
     this.sessionService.getSession().then(session => {
       const projectSettings = session.projectSettings<LexiconProjectSettings>();
       if (projectSettings != null && projectSettings.interfaceConfig != null) {
         this.interfaceConfig = projectSettings.interfaceConfig;
-      }
-      // Inform HelpHero of user identity
-      const userId = session.userId();
-      if (userId) {
-        this.helpHeroService.setIdentity(userId);
-      } else {
-        this.helpHeroService.anonymous();
       }
     });
 

@@ -5,7 +5,6 @@ import { ProjectService } from '../../core/api/project.service';
 import { ApplicationHeaderService } from '../../core/application-header.service';
 import { BreadcrumbService } from '../../core/breadcrumbs/breadcrumb.service';
 import { SiteWideNoticeService } from '../../core/site-wide-notice-service';
-import { HelpHeroService } from '../../core/helphero.service';
 import { SessionService } from '../../core/session.service';
 
 export class Rights {
@@ -41,12 +40,12 @@ export class UserManagementAppController implements angular.IController {
   };
 
   static $inject = ['$location', 'projectService', 'sessionService', 'applicationHeaderService',
-                    'siteWideNoticeService', 'breadcrumbService', 'lexProjectService', 'helpHeroService'];
+                    'siteWideNoticeService', 'breadcrumbService', 'lexProjectService'];
   constructor(private $location: angular.ILocationService, private projectService: ProjectService,
               private sessionService: SessionService, private applicationHeaderService: ApplicationHeaderService,
               private siteWideNoticeService: SiteWideNoticeService,
               private breadcrumbService: BreadcrumbService, private lexProjectService: LexiconProjectService,
-              private readonly helpHeroService: HelpHeroService) { }
+             ) { }
 
   $onInit(): void {
     this.joinRequests = [];
@@ -71,11 +70,6 @@ export class UserManagementAppController implements angular.IController {
         this.rights.add || this.rights.remove || this.rights.changeRole;
 
       this.currentUser.id = session.userId();
-      if (this.currentUser.id) {
-        this.helpHeroService.setIdentity(this.currentUser.id);
-      } else {
-        this.helpHeroService.anonymous();
-      }
     });
   }
 
