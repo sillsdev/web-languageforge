@@ -2,7 +2,6 @@ import * as angular from 'angular';
 
 import {ActivityService} from '../../../bellows/core/api/activity.service';
 import {ApplicationHeaderService} from '../../../bellows/core/application-header.service';
-import {HelpHeroService} from '../../../bellows/core/helphero.service';
 import {ModalService} from '../../../bellows/core/modal/modal.service';
 import {NoticeService} from '../../../bellows/core/notice/notice.service';
 import {
@@ -85,7 +84,6 @@ export class LexiconEditorController implements angular.IController {
     'lexProjectService',
     'lexRightsService',
     'lexSendReceive',
-    'helpHeroService'
   ];
 
   constructor(private readonly $filter: angular.IFilterService,
@@ -106,7 +104,7 @@ export class LexiconEditorController implements angular.IController {
               private readonly lexProjectService: LexiconProjectService,
               private readonly rightsService: LexiconRightsService,
               private readonly sendReceive: LexiconSendReceiveService,
-              private readonly helpHeroService: HelpHeroService) {}
+             ) {}
 
   $onInit(): void {
     this.show.more = this.editorService.showMoreEntries;
@@ -157,7 +155,6 @@ export class LexiconEditorController implements angular.IController {
         rights: this.lecRights
       } as FieldControl;
       this.evaluateState();
-      this.helpHeroService.setProperty({hasEntries: this.entries.length > 0});
     }
 
     const configChange = changes.lecConfig as angular.IChangesObject<LexiconConfig>;

@@ -4,7 +4,6 @@ import { ProjectService } from '../../core/api/project.service';
 import { ApplicationHeaderService } from '../../core/application-header.service';
 import { BreadcrumbService } from '../../core/breadcrumbs/breadcrumb.service';
 import { SiteWideNoticeService } from '../../core/site-wide-notice-service';
-import { HelpHeroService } from '../../core/helphero.service';
 import { NoticeService } from '../../core/notice/notice.service';
 import { SessionService } from '../../core/session.service';
 import { Project } from '../../shared/model/project.model';
@@ -42,7 +41,7 @@ export class ProjectsAppController implements angular.IController {
                     'breadcrumbService',
                     'siteWideNoticeService',
                     'applicationHeaderService',
-                    'helpHeroService'];
+                   ];
   constructor(private $window: angular.IWindowService, private projectService: ProjectService,
               private userService: UserService,
               private rolesService: RolesService,
@@ -50,7 +49,7 @@ export class ProjectsAppController implements angular.IController {
               private breadcrumbService: BreadcrumbService,
               private siteWideNoticeService: SiteWideNoticeService,
               private applicationHeaderService: ApplicationHeaderService,
-              private readonly helpHeroService: HelpHeroService) { }
+             ) { }
 
   $onInit() {
     this.projectTypeNames = this.projectService.data.projectTypeNames;
@@ -69,13 +68,6 @@ export class ProjectsAppController implements angular.IController {
         session.hasSiteRight(this.sessionService.domain.PROJECTS, this.sessionService.operation.CREATE);
       this.rights.showControlBar = this.rights.canCreateProject;
       this.siteName = session.baseSite();
-
-      const userId = session.userId();
-      if (userId) {
-        this.helpHeroService.setIdentity(userId);
-      } else {
-        this.helpHeroService.anonymous();
-      }
     });
 
     this.notice.checkUrlForNotices();

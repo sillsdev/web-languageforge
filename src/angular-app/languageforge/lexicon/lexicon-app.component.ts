@@ -1,7 +1,6 @@
 import * as angular from 'angular';
 
 import {SiteWideNoticeService} from '../../bellows/core/site-wide-notice-service';
-import {HelpHeroService} from '../../bellows/core/helphero.service';
 import {NoticeService} from '../../bellows/core/notice/notice.service';
 import {InterfaceConfig} from '../../bellows/shared/model/interface-config.model';
 import {User} from '../../bellows/shared/model/user.model';
@@ -36,7 +35,7 @@ export class LexiconAppController implements angular.IController {
     'lexEditorDataService',
     'lexRightsService',
     'lexSendReceive',
-    'helpHeroService'];
+  ];
   constructor(private readonly $scope: angular.IScope, private readonly $location: angular.ILocationService,
               private readonly $q: angular.IQService,
               private readonly notice: NoticeService, private readonly configService: LexiconConfigService,
@@ -45,7 +44,7 @@ export class LexiconAppController implements angular.IController {
               private readonly editorService: LexiconEditorDataService,
               private readonly rightsService: LexiconRightsService,
               private readonly sendReceive: LexiconSendReceiveService,
-              private readonly helpHeroService: HelpHeroService) { }
+             ) { }
 
   $onInit(): void {
     let finishedPreloading = false;
@@ -72,12 +71,6 @@ export class LexiconAppController implements angular.IController {
         } else {
           this.setupConfig(rights, editorConfig);
           finishedPreloading = true;
-        }
-
-        if (this.rights) {
-          this.helpHeroService.setIdentity(this.rights.session.userId());
-        } else {
-          this.helpHeroService.anonymous();
         }
 
         this.$scope.$watch(() => this.interfaceConfig.languageCode, (newVal: string) => {
