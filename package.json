@@ -28,7 +28,7 @@
     "crc-32": "^1.2.0",
     "font-awesome": "^4.7.0",
     "intl-tel-input": "9.2.7",
-    "jquery": "^3.4.1",
+    "jquery": "^3.6.0",
     "lamejs": "^1.2.0",
     "localforage": "^1.7.1",
     "moment": "^2.18.1",
