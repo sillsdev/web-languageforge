@@ -10,7 +10,7 @@ export class Utils {
   setCheckbox(checkboxElement: ElementFinder, value: boolean) {
     // Ensure a checkbox element will be either checked (true) or unchecked (false), regardless of
     // what its current value is
-    return checkboxElement.isSelected().then((checked: boolean) => {
+    return checkboxElement.isSelected().then(async (checked: boolean) => {
       if (checked !== value) {
         return checkboxElement.click();
       }
