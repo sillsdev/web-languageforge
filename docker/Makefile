@@ -43,3 +43,4 @@ clean-volumes:
 .PHONY: clean-powerwash
 clean-powerwash: clean-volumes
 	docker-compose down -t 1 --rmi all
+	docker rmi wait
