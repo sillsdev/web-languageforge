@@ -42,9 +42,9 @@ export class ExceptionHandlingService {
 
   reportUnhandledException(exception: Error, cause?: string) {
     if (cause == null) {
-      this.$log.error('Error: ' + exception.message + ' (reported to Bugsnag)');
+      this.$log.error('Error: ' + exception.message ? exception.message : exception + ' (reported to Bugsnag)');
     } else {
-      this.$log.error('Error: ' + exception.message + '; caused by: ' + cause + ' (reported to Bugsnag)');
+      this.$log.error('Error: ' + exception.message ? exception.message : exception + '; caused by: ' + cause + ' (reported to Bugsnag)');
     }
 
     this.notifyBugsnag(exception, cause);
