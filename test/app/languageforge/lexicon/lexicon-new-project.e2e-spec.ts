@@ -169,21 +169,22 @@ describe('Lexicon E2E New Project wizard app', () => {
 
   });
 
-  describe('Send Receive Verify page', () => {
+  // DISABLED 2021-03-09 RM - We'll re-enable these tests once lfmerge is added to the api container
+  // describe('Send Receive Verify page', () => {
 
-    it('can clone project', async () => {
-      await page.nextButton.click();
-      await browser.wait(ExpectedConditions.visibilityOf(page.srClonePage.cloning), constants.conditionTimeout);
-      expect<any>(await page.srClonePage.cloning.isDisplayed()).toBe(true);
-    });
+  //   it('can clone project', async () => {
+  //     await page.nextButton.click();
+  //     await browser.wait(ExpectedConditions.visibilityOf(page.srClonePage.cloning), constants.conditionTimeout);
+  //     expect<any>(await page.srClonePage.cloning.isDisplayed()).toBe(true);
+  //   });
 
-    it('cannot move on while cloning', async () => {
-      expect<any>(await page.nextButton.isDisplayed()).toBe(false);
-      expect<any>(await page.nextButton.isEnabled()).toBe(false);
-      await page.expectFormIsNotValid();
-    });
+  //   it('cannot move on while cloning', async () => {
+  //     expect<any>(await page.nextButton.isDisplayed()).toBe(false);
+  //     expect<any>(await page.nextButton.isEnabled()).toBe(false);
+  //     await page.expectFormIsNotValid();
+  //   });
 
-  });
+  // });
 
   describe('New Project Name page', () => {
 

@@ -23,7 +23,15 @@ RUN composer install
 # make wait available for container ochestration
 COPY --from=wait /wait /wait
 
+# ensure PHP createProject() has permissions for Send/Receive projects
+# TODO: Move this into a volume in docker-compose once lfmerge is added
+RUN mkdir -p /var/lib/languageforge/lexicon
+RUN chown -R www-data:www-data /var/lib/languageforge/lexicon
+
 # copy src files into our image
 COPY src /var/www/html/
+# ensure correct permissions for assets folders
+RUN chown -R www-data:www-data /var/www/html/assets /var/www/html/cache
+RUN chmod -R g+ws /var/www/html/assets /var/www/html/cache
 RUN ln -s /var/www/html /var/www/src
 
