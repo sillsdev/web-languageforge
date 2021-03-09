@@ -22,4 +22,5 @@ COPY gulpfile.js webpack.config.js tsconfig.json tslint.json ./
 # copy in src files
 COPY src ./src/
 
+# artifacts built to /data/src/dist
 RUN gulp sass webpack-lf
