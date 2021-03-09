@@ -9,6 +9,7 @@ services:
     container_name: lf-ui
     depends_on:
       - api
+    command: gulp sass:watch webpack-lf:watch
     volumes:
       # share dist folder between ui and api containers
       - lf-webpack-dist-folder:/data/src/dist
