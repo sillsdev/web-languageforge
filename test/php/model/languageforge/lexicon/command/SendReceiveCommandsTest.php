@@ -255,7 +255,7 @@ class SendReceiveCommandsTest extends TestCase
     public function testIsProcessRunningByPidFile_NoProcess_NotRunning()
     {
         $mockPidFilePath = sys_get_temp_dir() . '/mockLFMerge.pid';
-        $pid = 1;
+        $pid = 2;
         file_put_contents($mockPidFilePath, $pid);
 
         $isRunning = SendReceiveCommands::isProcessRunningByPidFile($mockPidFilePath);
