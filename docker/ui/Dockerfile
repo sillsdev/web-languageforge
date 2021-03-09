@@ -26,5 +26,3 @@ COPY gulpfile.js webpack.config.js tsconfig.json tslint.json ./
 COPY src ./src/
 
 RUN gulp sass webpack-lf
-
-CMD ["gulp", "sass:watch", "webpack-lf:watch"]
