@@ -13,7 +13,6 @@ COPY docker/api/php.ini /usr/local/etc/php
 # apache2 module and virtual host customizations
 RUN a2enmod headers rewrite
 COPY docker/api/000-default.conf /etc/apache2/sites-enabled
-COPY docker/api/apache2.service /etc/systemd/system
 
 # install LFMerge
 RUN curl -L http://linux.lsdev.sil.org/downloads/sil-testing.gpg | apt-key add - \
