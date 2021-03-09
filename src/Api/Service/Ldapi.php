@@ -74,9 +74,7 @@ class Ldapi
 
     public static function callNodeJsServer($languageDepotUsername, $method, $url, array $jsonData = null)
     {
-        $baseUrl = getenv('LDAPI_BASE_URL');
-        if (!$baseUrl) { $baseUrl = 'https://admin.languagedepot.org/api/v2/'; }
-        // Note that getenv('LDAPI_BASE_URL') || 'default' fails because getenv can return boolean, so PHP evaluates that line to 1 instead of the string value of getenv
+        $baseUrl = getenv('LDAPI_BASE_URL') ?: 'https://admin.languagedepot.org/api/v2/';
 
         if ($languageDepotUsername) {
             $jwtPayload = [
