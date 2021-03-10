@@ -592,8 +592,10 @@ describe('Lexicon E2E Editor List and Entry', () => {
     await editorPage.browse.clickEntryByLexeme(constants.testEntry3.lexeme.th.value);
     await editorPage.edit.actionMenu.click();
     await editorPage.edit.deleteMenuItem.click();
+    await browser.waitForAngular();
     expect<any>(await editorPage.modal.modalBodyText.getText()).toContain(constants.testEntry3.lexeme.th.value);
     await Utils.clickModalButton('Delete Entry');
+    await browser.waitForAngular();
     expect<any>(await editorPage.edit.getEntryCount()).toBe(3);
   });
 
