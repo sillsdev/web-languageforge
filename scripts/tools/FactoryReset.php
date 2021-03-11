@@ -36,13 +36,10 @@ class FactoryReset
 
     // Destination paths for rsync
     const DEV_LFPATH = '/var/www/languageforge.org_dev';
-    const DEV_SFPATH = '/var/www/scriptureforge.org_dev';
 
     const QA_LFPATH = '/var/www/languageforge.org_qa';
-    const QA_SFPATH = '/var/www/scriptureforge.org_qa';
 
     const LOCAL_LFPATH = '/var/www/virtual/languageforge.org';
-    const LOCAL_SFPATH = '/var/www/virtual/scriptureforge.org';
 
     const LFMERGE_SENDRECEIVE_PATH = '/var/lib/languageforge/lexicon/sendreceive';
 
@@ -51,9 +48,6 @@ class FactoryReset
 
     /** @var string - path to languageforge site */
     public $lfSitePath;
-
-    /** @var string - path to scriptureforge site */
-    public $sfSitePath;
 
     /** @var  string - path to lfmerge sendreceive folder */
     public $lfmergeSendReceivePath;
@@ -76,20 +70,17 @@ class FactoryReset
                 print "Script being run on the DEVELOPMENT SERVER khrap\n";
                 $this->environment = "dev";
                 $this->lfSitePath = $this::DEV_LFPATH;
-                $this->sfSitePath = $this::DEV_SFPATH;
                 $this->hostOption = "--host " . str_replace("mongodb://", "", MONGODB_CONN);
             } else {
                 print "Script being run on the QA SERVER khrap\n";
                 $this->environment = "qa";
                 $this->lfSitePath = $this::QA_LFPATH;
-                $this->sfSitePath = $this::QA_SFPATH;
                 $this->hostOption = "--host " . str_replace("mongodb://", "", MONGODB_CONN);
             }
         } else if (strpos(getcwd(), '/var/www/') !== true) {
             print "Script being run on your LOCAL MACHINE khrap\n";
             $this->environment = "local";
             $this->lfSitePath = $this::LOCAL_LFPATH;
-            $this->sfSitePath = $this::LOCAL_SFPATH;
             $this->hostOption = "";
         } else {
             exit("Cannot be run on LIVE SERVER.  EXITING\n");
@@ -114,13 +105,9 @@ class FactoryReset
         $siteNameMap = array();
         if ($this->environment == "dev") {
             print "Site names being converted for DEVELOPMENT SERVER khrap\n";
-            $siteNameMap['scriptureforge.org'] = 'dev.scriptureforge.org';
-            $siteNameMap['jamaicanpsalms.scriptureforge.org'] = 'jamaicanpsalms.dev.scriptureforge.org';
             $siteNameMap['languageforge.org'] = 'dev.languageforge.org';
         } else if ($this->environment == "qa") {
             print "Site names being converted for QA SERVER khrap\n";
-            $siteNameMap['scriptureforge.org'] = 'qa.scriptureforge.org';
-            $siteNameMap['jamaicanpsalms.scriptureforge.org'] = 'jamaicanpsalms.qa.scriptureforge.org';
             $siteNameMap['languageforge.org'] = 'qa.languageforge.org';
         } else if ($this->environment == "local") {
             print "Site names being converted for LOCAL MACHINE khrap\n";
@@ -198,7 +185,7 @@ class FactoryReset
         } else {
             print "\nUsage: FactoryReset.php <run> <DIRECTORY>\n";
             print "Run factory reset and restore mongodb and assets from DIRECTORY\n";
-            print "DIRECTORY is assumed to contain 3 files: sf_assets_backup.tgz lf_assets_backup.tgz mongodb_backup.tgz\n";
+            print "DIRECTORY is assumed to contain 2 files: lf_assets_backup.tgz mongodb_backup.tgz\n";
             print "\nTest Mode - no data will be changed\n--------------------------------\n\n";
         }
         $archivePath = count($argv) > 2 ? $argv[2] : '';
@@ -243,19 +230,10 @@ class FactoryReset
                 $this->Execute($runForReal, $cmd);
             }
 
-            if (file_exists("$archivePath/sf_assets_backup.tgz")) {
-                print "\nRemoving existing SF assets\n";
-                $cmd = "rm -r {$this->sfSitePath}/htdocs/assets/sfchecks";
-                $this->Execute($runForReal, $cmd);
-                print "\nExtracting SF assets into place...\n";
-                $cmd = "tar -xzf $archivePath/sf_assets_backup.tgz --strip-components=3 -C {$this->sfSitePath}/";
-                $this->Execute($runForReal, $cmd);
-            }
-
             print "\nEnsure www-data has permissions...\n";
-            $cmd = "sudo chgrp -R www-data {$this->lfSitePath}/htdocs/assets {$this->sfSitePath}/htdocs/assets";
+            $cmd = "sudo chgrp -R www-data {$this->lfSitePath}/htdocs/assets";
             $this->Execute($runForReal, $cmd);
-            $cmd = "sudo chmod -R g+w {$this->lfSitePath}/htdocs/assets {$this->sfSitePath}/htdocs/assets";
+            $cmd = "sudo chmod -R g+w {$this->lfSitePath}/htdocs/assets";
             $this->Execute($runForReal, $cmd);
             $cmd = "sudo chgrp -R fieldworks {$this->lfmergeSendReceivePath}";
             $this->Execute($runForReal, $cmd);

@@ -127,20 +127,6 @@ class ActivityModel extends MapperModel
     public static function getActivityTypesForSiteBase($siteBase)
     {
         switch ($siteBase) {
-            case Website::SCRIPTUREFORGE:
-                return [
-                    self::ADD_COMMENT,
-                    self::UPDATE_COMMENT,
-                    self::ADD_ANSWER,
-                    self::UPDATE_ANSWER,
-                    self::ADD_TEXT,
-                    self::ADD_QUESTION,
-                    self::CHANGE_STATE_OF_QUESTION,
-                    self::INCREASE_SCORE,
-                    self::DECREASE_SCORE,
-                    self::ADD_USER_TO_PROJECT,
-                    self::UNKNOWN,
-                ];
             case Website::LANGUAGEFORGE:
                 return [
                     self::ADD_USER_TO_PROJECT,
@@ -170,16 +156,6 @@ class ActivityModel extends MapperModel
     public static function getContentTypesForSiteBase($siteBase)
     {
         switch ($siteBase) {
-            case Website::SCRIPTUREFORGE:
-                return [
-                    self::PROJECT,
-                    self::TEXT,
-                    self::QUESTION,
-                    self::ANSWER,
-                    self::COMMENT,
-                    self::USER,
-                    self::USER_RELATED,
-                ];
             case Website::LANGUAGEFORGE:
                 return [
                     self::PROJECT,

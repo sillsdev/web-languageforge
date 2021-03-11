@@ -36,9 +36,6 @@ export class ProjectService {
     // data constants
     this.data = {
       projectTypeNames: {
-        sfchecks: 'Community Scripture Checking',
-        webtypesetting: 'Typesetting',
-        semdomtrans: 'Semantic Domain Translation',
         lexicon: 'Dictionary',
         ldproject: 'Language Depot'
       },
@@ -51,7 +48,6 @@ export class ProjectService {
       const types = {
         // 'languageforge': ['lexicon', 'semdomtrans'],
         languageforge: ['lexicon'],
-        scriptureforge: ['sfchecks'],
         languagedepot: ['ldproject']
       };
 

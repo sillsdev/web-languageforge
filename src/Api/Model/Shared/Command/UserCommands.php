@@ -7,7 +7,6 @@ use Api\Library\Shared\Communicate\DeliveryInterface;
 use Api\Library\Shared\Website;
 use Api\Library\Shared\Palaso\Exception\UserUnauthorizedException;
 use Api\Model\Languageforge\Lexicon\LexRoles;
-use Api\Model\Scriptureforge\Sfchecks\SfchecksUserProfile;
 use Api\Model\Shared\Dto\CreateSimpleDto;
 use Api\Model\Shared\Mapper\IdReference;
 use Api\Model\Shared\Mapper\JsonDecoder;
