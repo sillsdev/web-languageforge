@@ -100,7 +100,7 @@ Other useful resources:
 1. Within any browser, navigate to https://localhost
 1. Continue through any certificate warnings
 1. You should see a landing page, click "Login"
-1. Use `admin` and `password` to get in
+1. Use `admin` and `password` to get in (if that user is not recognized, you'll need to `make db-reset` and then try again)
 
 #### If you would like to run the E2E tests
 
