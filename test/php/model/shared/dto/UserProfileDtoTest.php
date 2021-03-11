@@ -1,6 +1,5 @@
 <?php
 
-use Api\Model\Scriptureforge\Sfchecks\SfchecksUserProfile;
 use Api\Model\Shared\Dto\UserProfileDto;
 use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\Rights\SiteRoles;

@@ -2,8 +2,6 @@
 
 namespace Api\Service;
 
-use Api\Library\Scriptureforge\Sfchecks\ParatextExport;
-use Api\Library\Scriptureforge\Sfchecks\SfchecksReports;
 use Api\Library\Shared\Palaso\Exception\UserNotAuthenticatedException;
 use Api\Library\Shared\Palaso\Exception\UserUnauthorizedException;
 use Api\Library\Shared\SilexSessionHelper;
@@ -17,22 +15,6 @@ use Api\Model\Languageforge\Lexicon\Command\SendReceiveCommands;
 use Api\Model\Languageforge\Lexicon\Dto\LexBaseViewDto;
 use Api\Model\Languageforge\Lexicon\Dto\LexDbeDto;
 use Api\Model\Languageforge\Lexicon\Dto\LexProjectDto;
-use Api\Model\Languageforge\Semdomtrans\Command\SemDomTransItemCommands;
-use Api\Model\Languageforge\Semdomtrans\Command\SemDomTransProjectCommands;
-use Api\Model\Languageforge\Semdomtrans\Command\SemDomTransWorkingSetCommands;
-use Api\Model\Languageforge\Semdomtrans\Dto\SemDomTransAppManagementDto;
-use Api\Model\Languageforge\Semdomtrans\Dto\SemDomTransEditDto;
-use Api\Model\Scriptureforge\Sfchecks\Command\SfchecksProjectCommands;
-use Api\Model\Scriptureforge\Sfchecks\Command\SfchecksUploadCommands;
-use Api\Model\Scriptureforge\Sfchecks\Command\QuestionCommands;
-use Api\Model\Scriptureforge\Sfchecks\Command\QuestionTemplateCommands;
-use Api\Model\Scriptureforge\Sfchecks\Command\TextCommands;
-use Api\Model\Scriptureforge\Sfchecks\Dto\ProjectPageDto;
-use Api\Model\Scriptureforge\Sfchecks\Dto\ProjectSettingsDto;
-use Api\Model\Scriptureforge\Sfchecks\Dto\QuestionCommentDto;
-use Api\Model\Scriptureforge\Sfchecks\Dto\QuestionListDto;
-use Api\Model\Scriptureforge\Sfchecks\Dto\TextSettingsDto;
-use Api\Model\Scriptureforge\Sfchecks\Dto\UsxHelper;
 use Api\Model\Shared\Command\MessageCommands;
 use Api\Model\Shared\Command\ProjectCommands;
 use Api\Model\Shared\Command\SessionCommands;
