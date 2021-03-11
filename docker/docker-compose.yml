@@ -174,12 +174,15 @@ services:
     build:
       context: ..
       dockerfile: docker/db-reset/Dockerfile
-    volumes:
-      # for developer convenience
-      - ../scripts/:/var/www/scripts
     depends_on:
       - mail
       - db
+    environment:
+      - WAIT_HOSTS=db:27017, mail:25
+    command: sh -c "/wait && /run.sh"
+    volumes:
+      # for developer convenience
+      - ../scripts/:/var/www/scripts
 
 volumes:
   lf-caddy-config:
