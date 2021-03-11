@@ -488,29 +488,6 @@ gulp.task('test-e2e-setupTestEnvironment', function (cb) {
 });
 
 // -------------------------------------
-//   Task: E2E Test: Teardown Test Environment
-// -------------------------------------
-gulp.task('test-e2e-teardownTestEnvironment', function (cb) {
-  var params = require('yargs')
-    .option('dest', {
-      demand: false,
-      describe: 'destination of test environment',
-      type: 'string' })
-    .fail(yargFailure)
-    .argv;
-  var options = {
-    dryRun: false,
-    silent: false,
-    cwd: getTestCwd(params.dest)
-  };
-  execute(
-    'sudo -u www-data php teardownTestEnvironment.php',
-    options,
-    cb
-  );
-});
-
-// -------------------------------------
 //   Task: Remote Restart PHP-FPM
 // -------------------------------------
 gulp.task('remote-restart-php-fpm', function (cb) {
@@ -555,7 +532,6 @@ gulp.task('test-e2e-env', function () {
   var cwd = getTestCwd(params.dest);
   var src = [
     'setupTestEnvironment.php',
-    'teardownTestEnvironment.php',
     'e2eTestConfig.php',
     'testConstants.json'];
 
@@ -725,14 +701,6 @@ gulp.task('test-e2e-clean-compile',
 );
 
 // -------------------------------------
-//   Task: E2E Test: Teardown for developer
-// -------------------------------------
-gulp.task('test-e2e-teardownForLocalDev', gulp.series(
-  'test-e2e-teardownTestEnvironment',
-  'test-e2e-useLiveConfig')
-);
-
-// -------------------------------------
 //   Task: E2E Test: Run
 // -------------------------------------
 gulp.task('test-e2e-run',
@@ -741,16 +709,6 @@ gulp.task('test-e2e-run',
     'test-e2e-useTestConfig',
     'test-e2e-setupTestEnvironment',
     'test-e2e-doTest')
-);
-gulp.task('test-e2e-run').description = 'Run the E2E test on local developer environment';
-
-gulp.task('test-e2e-local-lf', gulp.series(
-    'test-e2e-clean-compile',
-    'test-e2e-useTestConfig',
-    'test-e2e-setupTestEnvironment',
-    'test-e2e-doTest',
-    'test-e2e-teardownTestEnvironment',
-    'test-e2e-useLiveConfig')
 );
 
 //endregion
