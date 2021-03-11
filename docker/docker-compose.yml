@@ -79,13 +79,6 @@ services:
       - lf-mongo-data:/data/db
     restart: always
 
-  # TODO: still needs to be built/run/tested, etc.
-  # lfmerge:
-  #   container_name: lfmerge
-  #   build: lfmerge/.
-  #   volumes:
-  #     - lfmerge-data:/var/lib/languageforge
-
   selenium:
     # image: selenium/standalone-chrome
     image: selenium/standalone-chrome-debug
