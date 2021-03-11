@@ -17,7 +17,7 @@ class ProjectInsightsDto
 {
     public static function singleProjectInsights($id, $website) {
         $appName = ProjectInsightsDto::appName($website);
-        $project = $appName === LfProjectModel::LEXICON_APP ? new LexProjectModel($id) : new SfchecksProjectModel($id);
+        $project = new LexProjectModel($id);
 
         $projectData = new stdClass();
 

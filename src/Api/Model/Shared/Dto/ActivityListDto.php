@@ -101,16 +101,7 @@ class ActivityListDto
         $unreadItems = [];
         foreach ($projectList->entries as $project) {
             $projectModel = new ProjectModel($project['id']);
-            // Sfchecks projects need special handling of the "Users can see each others' responses" option
-            $activityFilter = null;
-            if ($projectModel->appName === SfchecksProjectModel::SFCHECKS_APP) {
-                $sfchecksProjectModel = new SfchecksProjectModel($project['id']);
-                if (! $sfchecksProjectModel->shouldSeeOtherUsersResponses($userId)) {
-                    $activityFilter = function ($itemId) use ($projectModel, $userId) {
-                        return self::filterActivityByUserId($projectModel, $userId, $itemId);
-                    };
-                }
-            }
+
             // TODO: Figure out how to handle limit and skip parameters when we're in the all-projects view: it's more complicated than just passing them on to each project's query. 2018-02 RM
             $activity = array_merge($activity, self::getActivityForProject($projectModel, $filterParams));
             $unreadItems = array_merge($unreadItems, self::getUnreadActivityForUserInProject($userId, $project['id'], $activityFilter));
@@ -134,23 +125,8 @@ class ActivityListDto
      */
     public static function getActivityForOneProject($projectModel, $userId, $filterParams = [])
     {
-        // Sfchecks projects need special handling of the "Users can see each others' responses" option
-        $activityFilter = null;
-        if ($projectModel->appName === SfchecksProjectModel::SFCHECKS_APP) {
-            $sfchecksProjectModel = new SfchecksProjectModel($projectModel->id->asString());
-            if (! $sfchecksProjectModel->shouldSeeOtherUsersResponses($userId)) {
-                $activityFilter = function ($itemId) use ($projectModel, $userId) {
-                    return self::filterActivityByUserId($projectModel, $userId, $itemId);
-                };
-            }
-        }
-        if (isset($activityFilter)) {
-            $activity = array_filter(self::getActivityForProject($projectModel, $filterParams), $activityFilter);
-            $unreadItems = self::getUnreadActivityForUserInProject($userId, $projectModel->id->asString(), $activityFilter);
-        } else {
-            $activity = self::getActivityForProject($projectModel, $filterParams);
-            $unreadItems = self::getUnreadActivityForUserInProject($userId, $projectModel->id->asString());
-        }
+        $activity = self::getActivityForProject($projectModel, $filterParams);
+        $unreadItems = self::getUnreadActivityForUserInProject($userId, $projectModel->id->asString());
         uasort($activity, ['self', 'sortActivity']);
         $dto = [
             'activity' => $activity,

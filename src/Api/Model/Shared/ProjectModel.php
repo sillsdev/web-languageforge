@@ -112,7 +112,7 @@ class ProjectModel extends MapperModel
     public $siteName;
 
     /**
-     * Specifies the angular app this project is associated with e.g. sfchecks || lexicon (note: these apps are site specific)
+     * Specifies the angular app this project is associated with e.g. lexicon (note: these apps are site specific)
      * @var string
      */
     public $appName;
@@ -437,14 +437,8 @@ class ProjectModel extends MapperModel
     {
         $project = new ProjectModel($projectId);
         switch ($project->appName) {
-            case 'sfchecks':
-                return new SfchecksProjectModel($projectId);
-            case 'rapuma':
-                return new RapumaProjectModel($projectId);
             case 'lexicon':
                 return new LexProjectModel($projectId);
-            case 'semdomtrans':
-                return new SemDomTransProjectModel($projectId);
             default:
                 throw new ResourceNotAvailableException(
                     "projectId '$projectId' could not be found when calling ProjectModel::getById()");
@@ -461,10 +455,7 @@ class ProjectModel extends MapperModel
         $model = new ProjectModel();
         $model->readByProperty('inviteToken.token', $token);
         switch ($model->appName) {
-            case 'sfchecks':
-            case 'rapuma':
             case 'lexicon':
-            case 'semdomtrans':
                 return $model->id->id;
             default:
                 throw new ResourceNotAvailableException(
