@@ -40,32 +40,6 @@ class AuthUserProvider implements UserProviderInterface
             throw new UsernameNotFoundException(sprintf('Username "%s" access denied on "%s".', $usernameOrEmail, $this->website->domain));
         }
 
-        if (!$user->hasRoleOnSite($this->website) and $user->role != SystemRoles::SYSTEM_ADMIN) {
-            $shouldThrowException = true;
-
-            // special case: if known user on languageforge.org logs in on scriptureforge.org and vice versa, we automatically add them to the site.
-            // This is because scriptureforge and languageforge are sister sites where cross-login is expected and allowed.
-            $sisterSiteMap = array(
-                'scriptureforge.org' => 'languageforge.org',
-                'scriptureforge.localhost' => 'localhost',
-                'dev.scriptureforge.org' => 'dev.languageforge.org',
-                'qa.scriptureforge.org' => 'qa.languageforge.org'
-            );
-            $sisterSiteMap = array_merge($sisterSiteMap, array_flip($sisterSiteMap));
-            if (array_key_exists($this->website->domain, $sisterSiteMap)) {
-                $otherWebsite = Website::get($sisterSiteMap[$this->website->domain]);
-                if ($user->hasRoleOnSite($otherWebsite)) {
-                    $shouldThrowException = false;
-                    $user->siteRole[$this->website->domain] = $this->website->userDefaultSiteRole;
-                    $user->write();
-                }
-            }
-
-            if ($shouldThrowException) {
-                throw new AccessDeniedException(sprintf('Username "%s" not available on "%s". Use "Create an Account".', $usernameOrEmail, $this->website->domain));
-            }
-        }
-
         /*
         $identityCheck = UserCommands::checkIdentity($usernameOrEmail, '', $this->website);
         if (! $identityCheck->usernameExists) {
