@@ -231,33 +231,6 @@ Web server root URL: `http://localhost`
 
 The Ansible script should automatically install and configure php-xdebug for you. If using VS Code, a debug extension is included in the recommended extensions to install for this project.
 
-#### Integrating Xdebug with PhpStorm ####
-
-Setting *PHP Interpreter* from PhpStorm
-
-**File** --> **Settings** --> **Languages & Frameworks** --> **PHP**
-
-From the dropdown to *PHP language level*, select `"7"`
-For *Interpreter*, click `"..."` to browse, then `"+"`
-
-- Name: PHP 7
-- PHP executable: /usr/bin/php
-
-Adding *Servers* from PhpStorm
-
-**File** --> **Settings** --> **Languages & Frameworks** --> **PHP** --> **Servers**
-Click the "+" to add the following Name & Hosts:
-
-- default.local
-- localhost
-- scriptureforge.localhost
-
-Restart apache2
-
-``` bash
-sudo service apache2 restart
-```
-
 #### Xdebug helper Chrome extension ####
 
 Install the [Xdebug helper](https://chrome.google.com/webstore/detail/xdebug-helper/eadndfjplgieldjbigjakmdgkmoaaaoc) extension which adds a bug icon to the top right area of Chrome extensions.
@@ -299,22 +272,6 @@ Chrome debugging has also been configured. Launch configurations are defined in 
 ### PHP Unit Tests ###
 
 Unit testing currently uses [PHPUnit](https://phpunit.de/) which was already installed by composer. To run them use `gulp test-php`.
-
-#### Integrating PHPUnit with PhpStorm ####
-
-**File** -> **Settings** -> **Languages & Frameworks** -> **PHP** -> **PHPUnit**
-
-Under PHPUnit Library, select `Use Composer autoloader` option
-For `Path to script` browse to `web-languageforge/src/vendor/autoload.php`
-
-Under Test Runner
-Select *Default configuration file* and browse to `web-languageforge/test/php/phpunit.xml`
-
-Select *Default boostrap file* and browse to `web-languageforge/test/php/TestConfig.php`
-
-To run tests, browse to the project view, right-click `test/php` and select `Run php`.
-
-Note: at least one test will fail if the LFMerge (send/receive) program is not installed and available.  This is OK as long as you are not testing Send/Receive functionality.
 
 ### TypeScript Unit Tests ###
 
@@ -383,18 +340,6 @@ cd scripts/tools
 ./FactoryReset.php run
 ````
 After a fresh factory reset, there is one user.  username: admin password: password
-
-## Updating dependencies ##
-
-Occasionally developers need to update composer or npm.  If something isn't working after a recent code change, try to update the dependencies using `./refreshDeps.sh lf`. If you know what has changed you can manually run some of the steps below.
-
-### Update npm packages ###
-
-In the *root* folder: `npm install`
-
-### Update composer ###
-
-In the **src/** folder: `composer install`
 
 ## Libraries used ##
 
