@@ -1,6 +1,5 @@
 <?php
 
-use Api\Model\Scriptureforge\Sfchecks\TextModel;
 use Api\Model\Shared\Dto\ProjectListDto;
 use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\Rights\SystemRoles;

@@ -5,8 +5,6 @@ use Api\Library\Shared\Palaso\Exception\UserUnauthorizedException;
 use Api\Model\Languageforge\Lexicon\LexEntryModel;
 use Api\Model\Languageforge\Lexicon\LexOptionListModel;
 use Api\Model\Languageforge\Lexicon\LexProjectModel;
-use Api\Model\Scriptureforge\Sfchecks\SfchecksProjectModel;
-use Api\Model\Scriptureforge\SfProjectModel;
 use Api\Model\Shared\Command\ProjectCommands;
 use Api\Model\Shared\Mapper\MongoStore;
 use Api\Model\Shared\ProjectModel;

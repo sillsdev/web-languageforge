@@ -1,7 +1,6 @@
 <?php
 
 use Api\Library\Shared\Website;
-use Api\Model\Scriptureforge\Sfchecks\QuestionModel;
 use Api\Model\Shared\Command\SessionCommands;
 use Api\Model\Shared\Command\ProjectCommands;
 use Api\Model\Shared\ProjectModel;
