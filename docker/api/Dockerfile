@@ -40,6 +40,9 @@ COPY --from=wait /wait /wait
 COPY src /var/www/html/
 RUN ln -s /var/www/html /var/www/src
 
+# grab the built assets from the ui image
+COPY --from=lf-ui /data/src/dist /var/www/html/dist
+
 # ensure correct write permissions for assets folders
 RUN chown -R www-data:www-data /var/www/html/assets /var/www/html/cache \
 && chmod -R g+ws /var/www/html/assets /var/www/html/cache
