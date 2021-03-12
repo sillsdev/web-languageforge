@@ -3,6 +3,9 @@ FROM node:10
 # the setup looks way too complicated.  Let's stick with the official node:10 package even though
 # it's a large image
 
+# Expose Live-Reload port
+#EXPOSE 35729
+
 # install Gulp globally
 RUN npm config set unsafe-perm true && npm install -g gulp-cli
 
