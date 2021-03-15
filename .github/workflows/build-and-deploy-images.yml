@@ -40,7 +40,7 @@ jobs:
         run: make --directory=docker deployable-app
 
       - name: Tag app image with Docker Hub location
-        run: docker tag lf-api sillsdev/web-languageforge/lf-app:latest
+        run: docker tag lf-api sillsdev/web-languageforge:app-latest
 
       - name: Reveal images
         run: docker images
@@ -52,6 +52,6 @@ jobs:
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
       - name: Push the app image
-        run: docker push sillsdev/web-languageforge/lf-app:latest
+        run: docker push sillsdev/web-languageforge:app-latest
 
       # TODO: maybe there's a way to improve all this by utilizing docker's GH Actions...https://docs.docker.com/ci-cd/github-actions/
