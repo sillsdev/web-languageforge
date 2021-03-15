@@ -23,6 +23,9 @@ jobs:
           docker --version
           docker-compose --version
           make --version
+          cat /proc/cpuinfo
+          free
+          df -h
 
       - name: Build app
         run: |
