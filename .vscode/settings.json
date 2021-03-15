@@ -3,5 +3,6 @@
     "--configuration",
     "test/php/phpunit.xml"
   ],
-  "phpcs.composerJsonPath": "src"
+  "phpcs.composerJsonPath": "src",
+  "php.suggest.basic": false
 }
