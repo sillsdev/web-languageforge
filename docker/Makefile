@@ -23,7 +23,8 @@ wait:
 	docker build -t wait wait/.
 
 .PHONY: db-reset
-db-reset:
+db-reset: wait
+	docker-compose build api
 	docker-compose run db-reset
 
 .PHONY: logs

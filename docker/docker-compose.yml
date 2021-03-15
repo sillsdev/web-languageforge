@@ -9,6 +9,7 @@ services:
     container_name: lf-ui
     depends_on:
       - api
+    command: gulp sass:watch webpack-lf:watch
     volumes:
       # share dist folder between ui and api containers
       - lf-webpack-dist-folder:/data/src/dist
@@ -33,7 +34,7 @@ services:
       - WAIT_HOSTS=db:27017, mail:25
       - "LDAPI_BASE_URL=http://ld-api:3000/api/v2/"
       # LDAPI_BASE_URL hostname and port need to match container name and port of the ld-api container (defined further down)
-    # TODO: Make a run.sh that sets umask and then runs apache2-foreground
+      # TODO: Make a run.sh that sets umask and then runs apache2-foreground
     command: sh -c "/wait && umask 0002 && apache2-foreground"
     volumes:
       # share dist folder between ui and api containers
@@ -77,13 +78,6 @@ services:
     volumes:
       - lf-mongo-data:/data/db
     restart: always
-
-  # TODO: still needs to be built/run/tested, etc.
-  # lfmerge:
-  #   container_name: lfmerge
-  #   build: lfmerge/.
-  #   volumes:
-  #     - lfmerge-data:/var/lib/languageforge
 
   selenium:
     # image: selenium/standalone-chrome
@@ -180,12 +174,15 @@ services:
     build:
       context: ..
       dockerfile: docker/db-reset/Dockerfile
-    volumes:
-      # for developer convenience
-      - ../scripts/:/var/www/scripts
     depends_on:
       - mail
       - db
+    environment:
+      - WAIT_HOSTS=db:27017, mail:25
+    command: sh -c "/wait && /run.sh"
+    volumes:
+      # for developer convenience
+      - ../scripts/:/var/www/scripts
 
 volumes:
   lf-caddy-config:

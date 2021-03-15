@@ -4,7 +4,7 @@ FROM node:10
 # it's a large image
 
 # Expose Live-Reload port
-EXPOSE 35729
+#EXPOSE 35729
 
 # install Gulp globally
 RUN npm config set unsafe-perm true && npm install -g gulp-cli
@@ -25,6 +25,5 @@ COPY gulpfile.js webpack.config.js tsconfig.json tslint.json ./
 # copy in src files
 COPY src ./src/
 
+# artifacts built to /data/src/dist
 RUN gulp sass webpack-lf
-
-CMD ["gulp", "sass:watch", "webpack-lf:watch"]

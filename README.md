@@ -93,6 +93,7 @@ Other useful resources:
 1. Install [Make](https://www.gnu.org/software/make/).  This is actually optional but simplifies things a bit.
 1. Clone the repo:  `git clone https://github.com/sillsdev/web-languageforge`
 1. `cd web-languageforge/docker`
+1. First time only (this will establish a default user): `make db-reset`
 1. `make`
 
 #### Testing the Installation
@@ -100,7 +101,7 @@ Other useful resources:
 1. Within any browser, navigate to https://localhost
 1. Continue through any certificate warnings
 1. You should see a landing page, click "Login"
-1. Use `admin` and `password` to get in
+1. Use `admin` and `password` to get in (if that user is not recognized, you'll need to `make db-reset` and then try again)
 
 #### If you would like to run the E2E tests
 
