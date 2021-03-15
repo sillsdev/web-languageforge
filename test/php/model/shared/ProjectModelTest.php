@@ -194,7 +194,7 @@ class ProjectModelTest extends TestCase
         $project->addUser($userId, ProjectRoles::MANAGER);
 
         // rolesClass undefined in base ProjectModel
-        $project->hasRight($userId, Domain::QUESTIONS + Operation::CREATE);
+        $project->hasRight($userId, Domain::ENTRIES + Operation::CREATE);
     }
 
     public function testGetRolesList_Exception()

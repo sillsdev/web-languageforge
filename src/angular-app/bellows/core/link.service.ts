@@ -6,9 +6,6 @@ export interface LinkService {
   user(userId: string): string;
   settings(projectId: string): string;
 
-  text(textId: string, projectId?: string): string;
-  question(textId: string, questionId: string, projectId?: string): string;
-
   entry(entryId: string, projectId?: string): string;
 }
 
@@ -20,7 +17,7 @@ export function LinkService() {
     return '<a href="' + url + '">' + text + '</a>';
   };
 
-  this.project = function project(projectId?: string, projectType: string = 'sfchecks'): string {
+  this.project = function project(projectId?: string, projectType: string = 'lexicon'): string {
     if (angular.isDefined(projectId)) {
       return '/app/' + projectType + '/' + projectId + '#!/';
     } else {
@@ -34,24 +31,6 @@ export function LinkService() {
 
   this.settings = function settings(projectId: string): string {
     return this.project(projectId) + '/settings';
-  };
-
-  /** sfchecks section */
-
-  this.text = function text(textId: string, projectId?: string): string {
-    if (angular.isDefined(projectId)) {
-      return this.project(projectId) + textId;
-    } else {
-      return this.project() + textId;
-    }
-  };
-
-  this.question = function question(textId: string, questionId: string, projectId?: string): string {
-    if (angular.isDefined(projectId)) {
-      return this.text(textId, projectId) + '/' + questionId;
-    } else {
-      return this.text(textId) + '/' + questionId;
-    }
   };
 
   /** lexicon section */

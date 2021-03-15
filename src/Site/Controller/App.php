@@ -123,12 +123,6 @@ class App extends Base
             $this->addJavascriptFiles($model->parentAppFolder, ['js/vendor', 'js/assets']);
         }
 
-        if ($model->appName == 'semdomtrans' || $model->appName == 'semdomtrans-new-project') {
-            // special case for semdomtrans app
-            // add lexicon JS files since the semdomtrans app depends upon these JS files
-            $this->addJavascriptFiles($model->siteFolder . '/lexicon', ['js/vendor', 'js/assets']);
-        }
-
         $this->addCssFiles(NG_BASE_FOLDER . 'bellows/shared');
         $this->addCssFiles($model->appFolder, ['node_modules']);
 
@@ -335,9 +329,7 @@ class AppModel {
 
     private function isProjectContextRequired($appName) {
         switch ($appName) {
-            case "sfchecks":
             case "lexicon":
-            case "semdomtrans":
             case "projectmanagement":
             case "usermanagement":
                 return true;

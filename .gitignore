@@ -23,7 +23,6 @@ src/assets/
 !src/cache/.htaccess
 src/cache/
 src/js/lib/languageforge.min.js
-src/js/lib/scriptureforge.min.js
 src/node_modules/
 !src/vendor/lift/
 src/vendor/
@@ -32,15 +31,6 @@ vagrant_ansible_inventory_*
 test/app/protractorConfBrowserStack.js
 artifacts/
 src/userConfig.php
-
-# CSS files generated from Sass
-src/angular-app/bellows/apps/**/*.css
-src/angular-app/bellows/shared/*.css
-src/angular-app/bellows/shared/**/*.css
-src/angular-app/bellows/directive/*.css
-src/angular-app/languageforge/**/*.css
-src/angular-app/scriptureforge/**/*.css
-#src/Site/views/**/*.css
 
 secrets/
 

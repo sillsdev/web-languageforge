@@ -7,7 +7,6 @@ use Api\Library\Shared\Communicate\DeliveryInterface;
 use Api\Library\Shared\Website;
 use Api\Library\Shared\Palaso\Exception\UserUnauthorizedException;
 use Api\Model\Languageforge\Lexicon\LexRoles;
-use Api\Model\Scriptureforge\Sfchecks\SfchecksUserProfile;
 use Api\Model\Shared\Dto\CreateSimpleDto;
 use Api\Model\Shared\Mapper\IdReference;
 use Api\Model\Shared\Mapper\JsonDecoder;
@@ -127,7 +126,6 @@ class UserCommands
         $result =  UserCommands::checkUniqueIdentity($user, $checkUsername, $checkEmail);
         if ($result == 'ok') {
             $user->setProperties(UserModel::USER_PROFILE_ACCESSIBLE, $params);
-            self::setProjectUserProfile($user, $params);
             $userId = $user->write();
             if ($isNewEmail) {
                 Communicate::sendVerifyEmail($user, $website, $delivery);
@@ -673,23 +671,4 @@ class UserCommands
 
         return $admin;
     }
-
-    /**
-     * @param UserModel $user
-     * @param array $params
-     * @throws \Exception
-     */
-    private static function setProjectUserProfile($user, $params)
-    {
-        if (array_key_exists('projectUserProfiles', $params)) {
-            foreach ($params['projectUserProfiles'] as $projectId => $sfchecksUserProfile) {
-                $project = ProjectModel::getById($projectId);
-                if ($project->userIsMember($user->id->asString())) {
-                    $user->projectUserProfiles[$projectId] = new SfchecksUserProfile();
-                    JsonDecoder::decode($user->projectUserProfiles[$projectId], $params['projectUserProfiles'][$projectId]);
-                }
-            }
-        }
-    }
-
 }

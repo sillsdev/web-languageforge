@@ -1,18 +1,14 @@
-# web-languageforge / web-scriptureforge #
+# web-languageforge #
 
-[Language Forge](https://languageforge.org) and [Scripture Forge](https://scriptureforge.org) represent different websites, but have the same code base stored in one [repository](https://github.com/sillsdev/web-languageforge).
+[Language Forge](https://languageforge.org) is an online service to collaborate on building a dictionary.
 
 ## Users ##
 
 To use **Language Forge** go to [languageforge.org](https://languageforge.org).
 
-To use **Scripture Forge** go to [scriptureforge.org](https://scriptureforge.org).
-
 ### User Problems ###
 
-To report an user issue with the **Language Forge** application, email "issues @ languageforge dot org".
-
-To report an user issue with the **Scripture Forge** application, email "issues @ scriptureforge dot org".
+To report an issue using the **Language Forge** service, email "languageforgeissues @ sil dot org".
 
 ## Special Thanks To ##
 
@@ -36,7 +32,6 @@ We merge from **master** to testing (**qa** branch) then ship from **qa** to **l
 | Site            | Master Branch | QA Branch | Live Branch |
 | --------------- | ------------- | --------- | ----------- |
 | Language Forge  | `master` | `lf-qa` | `lf-live` |
-| Scripture Forge | `master` | `sf-qa` | `sf-live` |
 
 ### Builds ###
 
@@ -45,14 +40,12 @@ Status of builds from our continuous integration (CI) [server](https://build.pal
 | Site            | Master Unit | Master E2E | QA | Live |
 | --------------- | ----------- | ---------- | -- | ---- |
 | Language Forge  | ![Build Status](https://build.palaso.org/app/rest/builds/buildType:(id:bt372)/statusIcon) | in transition | ![Build Status](https://build.palaso.org/app/rest/builds/buildType:(id:LanguageForge_LanguageForgeQa)/statusIcon) | ![Build Status](https://build.palaso.org/app/rest/builds/buildType:(id:LanguageForge_LanguageForgeLive)/statusIcon) |
-| Scripture Forge | ![Build Status](https://build.palaso.org/app/rest/builds/buildType:(id:bt270)/statusIcon) | in transition | ![Build Status](https://build.palaso.org/app/rest/builds/buildType:(id:ScriptureForge_ScriptureForgeQa)/statusIcon) | ![Build Status](https://build.palaso.org/app/rest/builds/buildType:(id:ScriptureForge_ScriptureForgeLive)/statusIcon) |
 
 Successful builds from our CI server deploy to:
 
 | Site            | QA | Live |
 | --------------- | -- | ---- |
 | Language Forge  | [qa.languageforge.org](https://qa.languageforge.org) | [languageforge.org](https://languageforge.org) |
-| Scripture Forge | [qa.scriptureforge.org](https://qa.scriptureforge.org) | [scriptureforge.org](https://scriptureforge.org) |
 
 ## Style Guides ##
 
@@ -184,7 +177,7 @@ Name[en]=Eclipse
 
 Even though we no longer use Eclipse for web development, we [install](https://marketplace.eclipse.org/content/monjadb) the MonjaDB plugin for browsing and updating MongoDB.
 
-Once the MonjaDB plugin is installed, access `MonjaDB` from the Eclipse menu and select `Connect`. Set the database name to `scriptureforge` (both sites use the same database). Keep the other default settings and click `OK` and you should see the contents of the database.
+Once the MonjaDB plugin is installed, access `MonjaDB` from the Eclipse menu and select `Connect`. Set the database name to `scriptureforge` (named this for legacy reasons). Keep the other default settings and click `OK` and you should see the contents of the database.
 
 ### PhpStorm ###
 
@@ -238,33 +231,6 @@ Web server root URL: `http://localhost`
 
 The Ansible script should automatically install and configure php-xdebug for you. If using VS Code, a debug extension is included in the recommended extensions to install for this project.
 
-#### Integrating Xdebug with PhpStorm ####
-
-Setting *PHP Interpreter* from PhpStorm
-
-**File** --> **Settings** --> **Languages & Frameworks** --> **PHP**
-
-From the dropdown to *PHP language level*, select `"7"`
-For *Interpreter*, click `"..."` to browse, then `"+"`
-
-- Name: PHP 7
-- PHP executable: /usr/bin/php
-
-Adding *Servers* from PhpStorm
-
-**File** --> **Settings** --> **Languages & Frameworks** --> **PHP** --> **Servers**
-Click the "+" to add the following Name & Hosts:
-
-- default.local
-- localhost
-- scriptureforge.localhost
-
-Restart apache2
-
-``` bash
-sudo service apache2 restart
-```
-
 #### Xdebug helper Chrome extension ####
 
 Install the [Xdebug helper](https://chrome.google.com/webstore/detail/xdebug-helper/eadndfjplgieldjbigjakmdgkmoaaaoc) extension which adds a bug icon to the top right area of Chrome extensions.
@@ -307,22 +273,6 @@ Chrome debugging has also been configured. Launch configurations are defined in 
 
 Unit testing currently uses [PHPUnit](https://phpunit.de/) which was already installed by composer. To run them use `gulp test-php`.
 
-#### Integrating PHPUnit with PhpStorm ####
-
-**File** -> **Settings** -> **Languages & Frameworks** -> **PHP** -> **PHPUnit**
-
-Under PHPUnit Library, select `Use Composer autoloader` option
-For `Path to script` browse to `web-languageforge/src/vendor/autoload.php`
-
-Under Test Runner
-Select *Default configuration file* and browse to `web-languageforge/test/php/phpunit.xml`
-
-Select *Default boostrap file* and browse to `web-languageforge/test/php/TestConfig.php`
-
-To run tests, browse to the project view, right-click `test/php` and select `Run php`.
-
-Note: at least one test will fail if the LFMerge (send/receive) program is not installed and available.  This is OK as long as you are not testing Send/Receive functionality.
-
 ### TypeScript Unit Tests ###
 
 `gulp test-ts-lf` or `gulp test-ts-sf`
@@ -360,12 +310,6 @@ Then to run **languageforge** tests in another terminal:
 ./rune2e.sh lf
 ````
 
-To run **scriptureforge** tests:
-
-``` bash
-./rune2e.sh sf
-```
-
 (If you get an error messages like `Error: ECONNREFUSED connect ECONNREFUSED 127.0.0.1:4444` you probably forgot to start the **webdriver**, see above)
 
 To test a certain test spec, add a parameter `--specs [spec name]`.  For example,
@@ -387,22 +331,6 @@ To debug the tests:
 
 Unfortunately, debugging the e2e tests does not currently work very well because of the way WebDriver handles control flow.
 
-## Get a copy of the live database ##
-
-You need to have SSH access to the live database on [Language Forge](https://languageforge.org) or [Scripture Forge](https://scriptureforge.org).
-
-(For installation of npm see https://github.com/nodesource/distributions)
-
-Install gulp dependencies by running from the repo root (where):
-
-    npm install
-
-To install the mongodb databases locally, run:
-
-``` bash
-gulp mongodb-copy-prod-db
-```
-
 ## Resetting MongoDB ##
 
 If you want to _start over_ with your mongo database, you can use the factory reset script like so (this will delete all data in the mongodb):
@@ -411,20 +339,7 @@ If you want to _start over_ with your mongo database, you can use the factory re
 cd scripts/tools
 ./FactoryReset.php run
 ````
-
 After a fresh factory reset, there is one user.  username: admin password: password
-
-## Updating dependencies ##
-
-Occasionally developers need to update composer or npm.  If something isn't working after a recent code change, try to update the dependencies using `./refreshDeps.sh lf` or `./refreshDeps sf`. If you know what has changed you can manually run some of the steps below.
-
-### Update npm packages ###
-
-In the *root* folder: `npm install`
-
-### Update composer ###
-
-In the **src/** folder: `composer install`
 
 ## Libraries used ##
 

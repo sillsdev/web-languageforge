@@ -169,6 +169,8 @@ services:
     volumes:
       # for developer convenience
       - ../test:/var/www/test
+      - ../src/Api:/var/www/src/Api
+      - ../src/Site:/var/www/src/Site
 
   db-reset:
     build:

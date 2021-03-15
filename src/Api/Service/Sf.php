@@ -2,8 +2,6 @@
 
 namespace Api\Service;
 
-use Api\Library\Scriptureforge\Sfchecks\ParatextExport;
-use Api\Library\Scriptureforge\Sfchecks\SfchecksReports;
 use Api\Library\Shared\Palaso\Exception\UserNotAuthenticatedException;
 use Api\Library\Shared\Palaso\Exception\UserUnauthorizedException;
 use Api\Library\Shared\SilexSessionHelper;
@@ -17,22 +15,6 @@ use Api\Model\Languageforge\Lexicon\Command\SendReceiveCommands;
 use Api\Model\Languageforge\Lexicon\Dto\LexBaseViewDto;
 use Api\Model\Languageforge\Lexicon\Dto\LexDbeDto;
 use Api\Model\Languageforge\Lexicon\Dto\LexProjectDto;
-use Api\Model\Languageforge\Semdomtrans\Command\SemDomTransItemCommands;
-use Api\Model\Languageforge\Semdomtrans\Command\SemDomTransProjectCommands;
-use Api\Model\Languageforge\Semdomtrans\Command\SemDomTransWorkingSetCommands;
-use Api\Model\Languageforge\Semdomtrans\Dto\SemDomTransAppManagementDto;
-use Api\Model\Languageforge\Semdomtrans\Dto\SemDomTransEditDto;
-use Api\Model\Scriptureforge\Sfchecks\Command\SfchecksProjectCommands;
-use Api\Model\Scriptureforge\Sfchecks\Command\SfchecksUploadCommands;
-use Api\Model\Scriptureforge\Sfchecks\Command\QuestionCommands;
-use Api\Model\Scriptureforge\Sfchecks\Command\QuestionTemplateCommands;
-use Api\Model\Scriptureforge\Sfchecks\Command\TextCommands;
-use Api\Model\Scriptureforge\Sfchecks\Dto\ProjectPageDto;
-use Api\Model\Scriptureforge\Sfchecks\Dto\ProjectSettingsDto;
-use Api\Model\Scriptureforge\Sfchecks\Dto\QuestionCommentDto;
-use Api\Model\Scriptureforge\Sfchecks\Dto\QuestionListDto;
-use Api\Model\Scriptureforge\Sfchecks\Dto\TextSettingsDto;
-use Api\Model\Scriptureforge\Sfchecks\Dto\UsxHelper;
 use Api\Model\Shared\Command\MessageCommands;
 use Api\Model\Shared\Command\ProjectCommands;
 use Api\Model\Shared\Command\SessionCommands;
@@ -453,23 +435,9 @@ class Sf
         return ActivityListDto::getActivityForOneLexEntry($projectModel, $entryId, $filterParams);
     }
 
-    /*
-     * --------------------------------------------------------------- SCRIPTUREFORGE ---------------------------------------------------------------
-     */
-
     // ---------------------------------------------------------------
     // PROJECT API
     // ---------------------------------------------------------------
-    /**
-     * Update an Sfchecks Project
-     *
-     * @param array $settings
-     * @return string $projectId of written object
-     */
-    public function project_update($settings)
-    {
-        return SfchecksProjectCommands::updateProject($this->projectId, $this->userId, $settings);
-    }
 
     public function project_updateUserRole($userId, $role)
     {
@@ -528,158 +496,6 @@ class Sf
     public function project_pageDto()
     {
         return ProjectPageDto::encode($this->projectId, $this->userId);
-    }
-
-    // ---------------------------------------------------------------
-    // MESSAGE API
-    // ---------------------------------------------------------------
-    public function message_markRead($messageId)
-    {
-        return MessageCommands::markMessageRead($this->projectId, $messageId, $this->userId);
-    }
-
-    public function message_send($userIds, $subject, $emailTemplate, $smsTemplate)
-    {
-        return MessageCommands::sendMessage($this->projectId, $userIds, $subject, $smsTemplate, $emailTemplate, '');
-    }
-
-    // ---------------------------------------------------------------
-    // TEXT API
-    // ---------------------------------------------------------------
-    public function text_update($object)
-    {
-        return TextCommands::updateText($this->projectId, $object, $this->userId);
-    }
-
-    public function text_read($textId)
-    {
-        return TextCommands::readText($this->projectId, $textId);
-    }
-
-    public function text_archive($textIds)
-    {
-        return TextCommands::archiveTexts($this->projectId, $textIds);
-    }
-
-    public function text_publish($textIds)
-    {
-        return TextCommands::publishTexts($this->projectId, $textIds);
-    }
-
-    public function text_settings_dto($textId)
-    {
-        return TextSettingsDto::encode($this->projectId, $textId, $this->userId);
-
-    }
-
-    public function text_exportComments($params)
-    {
-        return ParatextExport::exportCommentsForText($this->projectId, $params['textId'], $params);
-    }
-
-    // ---------------------------------------------------------------
-    // Question / Answer / Comment API
-    // ---------------------------------------------------------------
-    public function question_update($object)
-    {
-        return QuestionCommands::updateQuestion($this->projectId, $object, $this->userId);
-    }
-
-    public function question_read($questionId)
-    {
-        return QuestionCommands::readQuestion($this->projectId, $questionId);
-    }
-
-    public function question_archive($questionIds)
-    {
-        return QuestionCommands::archiveQuestions($this->projectId, $questionIds);
-    }
-
-    public function question_publish($questionIds)
-    {
-        return QuestionCommands::publishQuestions($this->projectId, $questionIds);
-    }
-
-    public function question_update_answer($questionId, $answer)
-    {
-        return QuestionCommands::updateAnswer($this->projectId, $questionId, $answer, $this->userId);
-    }
-
-    public function question_update_answerExportFlag($questionId, $answerId, $isToBeExported)
-    {
-        return QuestionCommands::updateAnswerExportFlag($this->projectId, $questionId, $answerId, $isToBeExported);
-    }
-
-    public function question_update_answerTags($questionId, $answerId, $tags)
-    {
-        return QuestionCommands::updateAnswerTags($this->projectId, $questionId, $answerId, $tags);
-    }
-
-    public function question_remove_answer($questionId, $answerId)
-    {
-        return QuestionCommands::removeAnswer($this->projectId, $questionId, $answerId);
-    }
-
-    public function question_update_comment($questionId, $answerId, $comment)
-    {
-        return QuestionCommands::updateComment($this->projectId, $questionId, $answerId, $comment, $this->userId);
-    }
-
-    public function question_remove_comment($questionId, $answerId, $commentId)
-    {
-        return QuestionCommands::removeComment($this->projectId, $questionId, $answerId, $commentId);
-    }
-
-    public function question_comment_dto($questionId)
-    {
-        return QuestionCommentDto::encode($this->projectId, $questionId, $this->userId);
-    }
-
-    public function question_list_dto($textId)
-    {
-        return QuestionListDto::encode($this->projectId, $textId, $this->userId);
-    }
-
-    public function answer_vote_up($questionId, $answerId)
-    {
-        return QuestionCommands::voteUp($this->userId, $this->projectId, $questionId, $answerId);
-    }
-
-    public function answer_vote_down($questionId, $answerId)
-    {
-        return QuestionCommands::voteDown($this->userId, $this->projectId, $questionId, $answerId);
-    }
-
-    // ---------------------------------------------------------------
-    // QuestionTemplates API
-    // ---------------------------------------------------------------
-    public function questionTemplate_update($model)
-    {
-        return QuestionTemplateCommands::updateTemplate($this->projectId, $model);
-    }
-
-    public function questionTemplate_read($id)
-    {
-        return QuestionTemplateCommands::readTemplate($this->projectId, $id);
-    }
-
-    public function questionTemplate_delete($questionTemplateIds)
-    {
-        return QuestionTemplateCommands::deleteQuestionTemplates($this->projectId, $questionTemplateIds);
-    }
-
-    public function questionTemplate_list()
-    {
-        return QuestionTemplateCommands::listTemplates($this->projectId);
-    }
-
-    // ---------------------------------------------------------------
-    // Upload API
-    // ---------------------------------------------------------------
-    public function sfChecks_uploadFile($mediaType, $tmpFilePath)
-    {
-        $response = SfchecksUploadCommands::uploadFile($this->projectId, $mediaType, $tmpFilePath);
-        return JsonEncoder::encode($response);
     }
 
     /*
@@ -862,76 +678,9 @@ class Sf
     }
 
 
-    /*
-     * --------------------------------------------------------------- SEMANTIC DOMAIN TRANSLATION MANAGER API ---------------------------------------------------------------
-     */
-    public function semdom_editor_dto($browserId, $lastFetchTime = null)
-    {
-        $sessionLabel = 'lexDbeFetch_' . $browserId;
-        $this->app['session']->set($sessionLabel, time());
-        if ($lastFetchTime) {
-            $lastFetchTime = $lastFetchTime - 5; // 5 second buffer
-
-            return SemDomTransEditDto::encode($this->projectId, $this->userId, $lastFetchTime);
-        } else {
-            return SemDomTransEditDto::encode($this->projectId, $this->userId);
-        }
-    }
-
-    public function semdom_get_open_projects() {
-        return SemDomTransProjectCommands::getOpenSemdomProjects($this->userId);
-    }
-
-    public function semdom_item_update($data) {
-        return SemDomTransItemCommands::update($data, $this->projectId);
-    }
-
-    public function semdom_project_exists($languageIsoCode) {
-        return SemDomTransProjectCommands::checkProjectExists($languageIsoCode);
-    }
-
-    public function semdom_workingset_update($data) {
-        return SemDomTransWorkingSetCommands::update($data, $this->projectId);
-    }
-
-    public function semdom_export_project() {
-        return $this->website->domain . "/" . SemDomTransProjectCommands::exportProject($this->projectId);
-    }
-
-    // 2015-04 CJH REVIEW: this method should be moved to the semdom project commands (and a test should be written around it).  This method should also assert that a project with that code does not already exist
-    public function semdom_create_project($languageIsoCode, $languageName, $useGoogleTranslateData) {
-        return SemDomTransProjectCommands::createProject($languageIsoCode, $languageName, $useGoogleTranslateData, $this->userId, $this->website);
-    }
-
-    public function semdom_does_googletranslatedata_exist($languageIsoCode) {
-        return SemDomTransProjectCommands::doesGoogleTranslateDataExist($languageIsoCode);
-    }
-
     // -------------------------------- Project Management App Api ----------------------------------
     public function project_management_dto() {
         return ProjectManagementDto::encode($this->projectId);
-    }
-
-    public function project_management_report_sfchecks_userEngagementReport() {
-        return SfchecksReports::UserEngagementReport($this->projectId);
-    }
-
-    public function project_management_report_sfchecks_topContributorsWithTextReport() {
-        return SfchecksReports::TopContributorsWithTextReport($this->projectId);
-    }
-
-    public function project_management_report_sfchecks_responsesOverTimeReport() {
-        return SfchecksReports::ResponsesOverTimeReport($this->projectId);
-    }
-
-    // -------------------------------- Semdomtrans App Management Api ----------------------------------
-    public function semdomtrans_app_management_dto() {
-        return SemDomTransAppManagementDto::encode();
-    }
-
-    public function semdomtrans_export_all_projects() {
-        // TODO: implement this
-        return ['exportUrl' => '/sampledownload.zip'];
     }
 
     // ----------------------------------- Language Depot Api -------------------------------------

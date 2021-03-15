@@ -104,19 +104,6 @@ class RightsHelper
     {
         switch ($methodName) {
 
-                // User Role (Project Context)
-            case 'semdom_editor_dto':
-                return $this->userHasProjectRight(Domain::ENTRIES + Operation::VIEW);
-            case 'semdom_get_open_projects':
-                return true;
-            case 'semdom_item_update':
-                return $this->userHasProjectRight(Domain::ENTRIES + Operation::EDIT);
-            case 'semdom_project_exists':
-                return true;
-            case 'semdom_create_project':
-                return true;
-            case 'semdom_workingset_update':
-                return $this->userHasProjectRight(Domain::ENTRIES + Operation::EDIT);
             case 'project_getJoinRequests':
                 return $this->userHasProjectRight(Domain::USERS + Operation::EDIT);
             case 'project_sendJoinRequest':
@@ -129,42 +116,15 @@ class RightsHelper
             case 'project_createInviteLink':
             case 'project_updateInviteTokenRole':
                 return $this->userHasProjectRight(Domain::USERS + Operation::EDIT);
-            case 'semdom_does_googletranslatedata_exist':
-                return true;
             case 'project_acceptJoinRequest':
                 return $this->userHasProjectRight(Domain::USERS + Operation::EDIT);
             case 'project_denyJoinRequest':
                 return $this->userHasProjectRight(Domain::USERS + Operation::EDIT);
-            case 'semdom_export_project':
-                return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
-
             case 'user_sendInvite':
             case 'message_markRead':
             case 'project_pageDto':
             case 'lex_projectDto':
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::VIEW);
-
-            case 'answer_vote_up':
-            case 'answer_vote_down':
-                return $this->userHasProjectRight(Domain::ANSWERS + Operation::VIEW);
-
-            case 'question_update_answer':
-                return $this->userHasProjectRight(Domain::ANSWERS + Operation::EDIT_OWN);
-
-            case 'question_remove_answer':
-                return $this->userHasProjectRight(Domain::ANSWERS + Operation::DELETE_OWN);
-
-            case 'question_update_comment':
-                return $this->userHasProjectRight(Domain::COMMENTS + Operation::EDIT_OWN);
-
-            case 'question_remove_comment':
-                return $this->userHasProjectRight(Domain::COMMENTS + Operation::DELETE_OWN);
-
-            case 'question_comment_dto':
-                return $this->userHasProjectRight(Domain::ANSWERS + Operation::VIEW);
-
-            case 'question_list_dto':
-                return $this->userHasProjectRight(Domain::QUESTIONS + Operation::VIEW);
 
                     // Project Manager Role (Project Context)
             case 'user_createSimple':
@@ -196,33 +156,6 @@ class RightsHelper
 
             case 'project_removeUsers':
                 return $this->userHasProjectRight(Domain::USERS + Operation::DELETE);
-
-            case 'text_update':
-            case 'text_read':
-            case 'text_settings_dto':
-            case 'text_exportComments':
-                return $this->userHasProjectRight(Domain::TEXTS + Operation::EDIT);
-
-            case 'text_archive':
-            case 'text_publish':
-                return $this->userHasProjectRight(Domain::TEXTS + Operation::ARCHIVE);
-
-            case 'sfChecks_uploadFile':
-                return $this->userHasProjectRight(Domain::TEXTS + Operation::EDIT);
-
-            case 'question_update':
-            case 'question_read':
-                return $this->userHasProjectRight(Domain::QUESTIONS + Operation::EDIT);
-
-            case 'question_update_answerExportFlag':
-                return $this->userHasProjectRight(Domain::TEXTS + Operation::EDIT);
-
-            case 'question_update_answerTags':
-                return $this->userHasProjectRight(Domain::TAGS + Operation::EDIT);
-
-            case 'question_archive':
-            case 'question_publish':
-                return $this->userHasProjectRight(Domain::QUESTIONS + Operation::ARCHIVE);
 
                     // Admin (system context)
             case 'user_read':
@@ -262,18 +195,6 @@ class RightsHelper
 
             case 'projectcode_exists':
                 return $this->userHasSiteRight(Domain::PROJECTS + Operation::CREATE);
-
-            case 'questionTemplate_update':
-                return $this->userHasProjectRight(Domain::TEMPLATES + Operation::EDIT);
-
-            case 'questionTemplate_read':
-                return $this->userHasProjectRight(Domain::TEMPLATES + Operation::VIEW);
-
-            case 'questionTemplate_delete':
-                return $this->userHasProjectRight(Domain::TEMPLATES + Operation::DELETE);
-
-            case 'questionTemplate_list':
-                return $this->userHasProjectRight(Domain::TEMPLATES + Operation::VIEW);
 
                     // User (site context)
             case 'user_readProfile':
@@ -352,15 +273,7 @@ class RightsHelper
 
                     // project management app
             case 'project_management_dto':
-            case 'project_management_report_sfchecks_userEngagementReport':
-            case 'project_management_report_sfchecks_topContributorsWithTextReport':
-            case 'project_management_report_sfchecks_responsesOverTimeReport':
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
-
-                    // semdomtrans app management
-            case 'semdomtrans_app_management_dto':
-            case 'semdomtrans_export_all_projects':
-                return $this->userHasSiteRight(Domain::PROJECTS + Operation::EDIT);
 
                     // Language Depot API access
             case 'ldapi_check_user_password':

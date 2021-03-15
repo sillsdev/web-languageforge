@@ -19,13 +19,6 @@ class Domain
     // shared project domains
     const COMMENTS        = 1600; // ownership
 
-    // scriptureforge-sfchecks domains
-    const TEXTS            = 1300;
-    const QUESTIONS        = 1400;
-    const ANSWERS        = 1500; // ownership
-    const TEMPLATES        = 1700;
-    const TAGS        = 1800;
-
     // languageforge-lexicon domains
     const ENTRIES        = 1900;
 }

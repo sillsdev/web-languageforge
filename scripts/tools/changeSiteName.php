@@ -23,12 +23,6 @@ class ChangeSiteName
             }
             return "localhost";
         }
-        if (strpos($siteName, "scriptureforge") !== false) {
-            if ($target == "qa") {
-                return "qa.scriptureforge.org";
-            }
-            return "scriptureforge.localhost";
-        }
         return '';
     }
 

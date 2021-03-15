@@ -94,8 +94,8 @@ class CommunicateTest extends TestCase
         $user = new UserModel($userId);
         $user->communicate_via = UserModel::COMMUNICATE_VIA_EMAIL;
         $project = self::$environ->createProjectSettings(SF_TESTPROJECTCODE);
-        $project->emailSettings->fromAddress = 'projectName@scriptureforge.org';
-        $project->emailSettings->fromName = 'Scripture Forge ProjectName';
+        $project->emailSettings->fromAddress = 'projectName@languageforge.org';
+        $project->emailSettings->fromName = 'Language Forge ProjectName';
         $subject = 'TestSubject';
         $smsTemplate = '';
         $emailTemplate = 'TestMessage';
@@ -148,8 +148,8 @@ class CommunicateTest extends TestCase
         $user = new UserModel($userId);
         $user->communicate_via = UserModel::COMMUNICATE_VIA_EMAIL;
         $project = self::$environ->createProjectSettings(SF_TESTPROJECTCODE);
-        $project->emailSettings->fromAddress = 'projectName@scriptureforge.org';
-        $project->emailSettings->fromName = 'Scripture Forge ProjectName';
+        $project->emailSettings->fromAddress = 'projectName@languageforge.org';
+        $project->emailSettings->fromName = 'Language Forge ProjectName';
         $subject = 'TestSubject';
         $smsTemplate = '';
         $emailTemplate = 'TestMessage';

@@ -1,7 +1,6 @@
 <?php
 
 use Api\Library\Shared\Website;
-use Api\Model\Scriptureforge\Sfchecks\QuestionModel;
 use Api\Model\Shared\Command\SessionCommands;
 use Api\Model\Shared\Command\ProjectCommands;
 use Api\Model\Shared\ProjectModel;
@@ -14,12 +13,6 @@ class SessionTestEnvironment
 
     /** @var string */
     public $projectId;
-
-    /** @var QuestionModel */
-    public $question;
-
-    /** @var string */
-    public $questionId;
 
     /** @var string */
     public $userId;
@@ -34,12 +27,8 @@ class SessionTestEnvironment
         $this->website = $environ->website;
 
         $this->project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $this->question = new QuestionModel($this->project);
-        $this->question->write();
-
         $this->userId = $environ->createUser('test_user', 'Test User', 'test_user@example.com');
         $this->projectId = $this->project->id->asString();
-        $this->questionId = $this->question->id->asString();
     }
 
     /**

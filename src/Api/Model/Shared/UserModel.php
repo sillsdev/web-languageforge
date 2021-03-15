@@ -3,7 +3,6 @@
 namespace Api\Model\Shared;
 
 use Api\Library\Shared\Website;
-use Api\Model\Scriptureforge\Sfchecks\SfchecksUserProfile;
 use Api\Model\Shared\Mapper\ArrayOf;
 use Api\Model\Shared\Mapper\Id;
 use Api\Model\Shared\Mapper\IdReference;
@@ -48,9 +47,6 @@ class UserModel extends MapperModel
         $this->resetPasswordExpirationDate = new \DateTime();
         $this->projectsProperties = new MapOf(function () {
             return new ProjectProperties();
-        });
-        $this->projectUserProfiles = new MapOf(function () {
-            return new SfchecksUserProfile();
         });
 
         /*
@@ -177,12 +173,6 @@ class UserModel extends MapperModel
      * @var MapOf<ProjectProperties>
      */
     public $projectsProperties;
-
-    /**
-     * TODO Deprecate. Migrate to $this->projectsProperties[<projectId>]->sfchecksUserProfile IJH 2014-03
-     * @var MapOf<SfchecksUserProfile>
-     */
-    public $projectUserProfiles;
 
     /**
      * Use $params to set properties of UserModel
@@ -490,7 +480,4 @@ class ProjectProperties
 
     /** @var string Users preferred interface language code */
     public $interfaceLanguageCode;
-
-    /** @var SfchecksUserProfile*/
-    public $sfchecksUserProfile;
 }

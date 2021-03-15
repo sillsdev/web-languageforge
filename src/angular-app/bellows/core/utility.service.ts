@@ -53,46 +53,4 @@ export class UtilityService {
     for (const char of text) if (char < '0' || char > '9') return false;
     return text.length !== 0;
   }
-
-  // FixMe: move to sfchecks-utility service - IJH 2017-11
-  readUsxFile(file: any): angular.IPromise<string> {
-    return this.readFile(file, true);
-  }
-
-  // FixMe: move to sfchecks-utility service - IJH 2017-11
-  readTextFile(file: any): angular.IPromise<string> {
-    return this.readFile(file, false);
-  }
-
-  // FixMe: move to sfchecks-utility service - IJH 2017-11
-  private readFile(file: any, isUsx: boolean = false): angular.IPromise<string> {
-    if (!file || file.$error) return;
-
-    const deferred = this.$q.defer<string>();
-    const reader = new FileReader();
-    reader.addEventListener('loadend', () => {
-      if (isUsx) {
-        // Basic sanity check: make sure what was uploaded is USX
-        // First few characters should be optional BOM, optional <?xml ..., then <usx ...
-        const startOfText = reader.result.slice(0, 1000);
-        const usxIndex = startOfText.indexOf('<usx');
-        if (usxIndex !== -1) {
-          deferred.resolve(reader.result);
-        } else {
-          deferred.reject('Error loading USX file. The file doesn\'t appear to be valid USX.');
-        }
-      } else {
-        deferred.resolve(reader.result);
-      }
-    });
-
-    // read the clipboard item or file
-    const blob = file.getAsFile ? file.getAsFile() : file;
-    if (blob instanceof Blob) {
-      reader.readAsText(blob);
-    }
-
-    return deferred.promise;
-  }
-
 }

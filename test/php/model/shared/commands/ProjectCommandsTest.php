@@ -5,8 +5,7 @@ use Api\Library\Shared\Palaso\Exception\UserUnauthorizedException;
 use Api\Model\Languageforge\Lexicon\LexEntryModel;
 use Api\Model\Languageforge\Lexicon\LexOptionListModel;
 use Api\Model\Languageforge\Lexicon\LexProjectModel;
-use Api\Model\Scriptureforge\Sfchecks\SfchecksProjectModel;
-use Api\Model\Scriptureforge\SfProjectModel;
+use Api\Model\Languageforge\LfProjectModel;
 use Api\Model\Shared\Command\ProjectCommands;
 use Api\Model\Shared\Mapper\MongoStore;
 use Api\Model\Shared\ProjectModel;
@@ -38,7 +37,7 @@ class ProjectCommandsTest extends TestCase
         $user1Id = self::$environ->createUser("user1name", "User1 Name", "user1@example.com");
         $user1 = new UserModel($user1Id);
 
-        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, SfProjectModel::SFCHECKS_APP,
+        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, LfProjectModel::LEXICON_APP,
             $user1->id->asString(), self::$environ->website);
 
         $this->assertEquals(1, ProjectCommands::deleteProjects(array($projectId), $user1Id));
@@ -54,7 +53,7 @@ class ProjectCommandsTest extends TestCase
         $user1 = new UserModel($user1Id);
         $user2 = new UserModel($user2Id);
 
-        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, SfProjectModel::SFCHECKS_APP,
+        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, LfProjectModel::LEXICON_APP,
             $user1->id->asString(), self::$environ->website);
         $project = new ProjectModel($projectId);
         $project->addUser($user2->id->asString(), ProjectRoles::MANAGER);
@@ -626,8 +625,8 @@ class ProjectCommandsTest extends TestCase
         $user2Id = self::$environ->createUser("user2name", "User2 Name", "user2@example.com");
         $user1 = new UserModel($user1Id);
         $user2 = new UserModel($user2Id);
-        $project1Id = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, SfProjectModel::SFCHECKS_APP, $user1Id, self::$environ->website);
-        $project2Id = ProjectCommands::createProject(SF_TESTPROJECT2, SF_TESTPROJECTCODE2, SfProjectModel::SFCHECKS_APP, $user1Id, self::$environ->website);
+        $project1Id = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, LfProjectModel::LEXICON_APP, $user1Id, self::$environ->website);
+        $project2Id = ProjectCommands::createProject(SF_TESTPROJECT2, SF_TESTPROJECTCODE2, LfProjectModel::LEXICON_APP, $user1Id, self::$environ->website);
 
         // user1 is already a manager of both projects
         // make user2 a manager of both projects as well
@@ -661,7 +660,7 @@ class ProjectCommandsTest extends TestCase
 
         $ownerId = self::$environ->createUser("ownername", "owner Name", "owner@example.com");
 
-        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, SfProjectModel::SFCHECKS_APP, $ownerId, self::$environ->website);
+        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, LfProjectModel::LEXICON_APP, $ownerId, self::$environ->website);
         ProjectCommands::updateUserRole($projectId, $adminId, ProjectRoles::TECH_SUPPORT);
 
         $project = ProjectModel::getById($projectId);
@@ -681,7 +680,7 @@ class ProjectCommandsTest extends TestCase
 
         $ownerId = self::$environ->createUser("ownername", "owner Name", "owner@example.com");
 
-        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, SfProjectModel::SFCHECKS_APP, $ownerId, self::$environ->website);
+        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, LfProjectModel::LEXICON_APP, $ownerId, self::$environ->website);
         ProjectCommands::updateUserRole($projectId, $userId, ProjectRoles::TECH_SUPPORT);
     }
 
@@ -689,7 +688,7 @@ class ProjectCommandsTest extends TestCase
     {
         self::$environ->clean();
         $ownerId = self::$environ->createUser("ownername", "owner Name", "owner@example.com");
-        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, SfProjectModel::SFCHECKS_APP, $ownerId, self::$environ->website);
+        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, LfProjectModel::LEXICON_APP, $ownerId, self::$environ->website);
         $projectModel = ProjectModel::getById($projectId);
         $inviteUrl = ProjectCommands::createInviteLink($projectId, ProjectRoles::MANAGER);
 
@@ -711,7 +710,7 @@ class ProjectCommandsTest extends TestCase
     {
         self::$environ->clean();
         $ownerId = self::$environ->createUser("ownername", "owner Name", "owner@example.com");
-        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, SfProjectModel::SFCHECKS_APP, $ownerId, self::$environ->website);
+        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, LfProjectModel::LEXICON_APP, $ownerId, self::$environ->website);
         $projectModel = ProjectModel::getById($projectId);
         $inviteUrl = ProjectCommands::createInviteLink($projectId, ProjectRoles::MANAGER);
 
@@ -729,7 +728,7 @@ class ProjectCommandsTest extends TestCase
     {
         self::$environ->clean();
         $ownerId = self::$environ->createUser("ownername", "owner Name", "owner@example.com");
-        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, SfProjectModel::SFCHECKS_APP, $ownerId, self::$environ->website);
+        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, LfProjectModel::LEXICON_APP, $ownerId, self::$environ->website);
         $projectModel = ProjectModel::getById($projectId);
         $inviteUrl = ProjectCommands::createInviteLink($projectId, ProjectRoles::MANAGER);
 
@@ -745,7 +744,7 @@ class ProjectCommandsTest extends TestCase
     {
         self::$environ->clean();
         $ownerId = self::$environ->createUser("ownername", "owner Name", "owner@example.com");
-        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, SfProjectModel::SFCHECKS_APP, $ownerId, self::$environ->website);
+        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, LfProjectModel::LEXICON_APP, $ownerId, self::$environ->website);
         $projectModel = ProjectModel::getById($projectId);
         $inviteUrl = ProjectCommands::createInviteLink($projectId, ProjectRoles::CONTRIBUTOR);
 

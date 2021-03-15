@@ -78,11 +78,7 @@ export class Domains {
   ANY: RightsFunction;
   USERS: RightsFunction;
   PROJECTS: RightsFunction;
-  TEXTS: RightsFunction;
-  QUESTIONS: RightsFunction;
-  ANSWERS: RightsFunction;
   COMMENTS: RightsFunction;
-  TEMPLATES: RightsFunction;
   TAGS: RightsFunction;
   ENTRIES: RightsFunction;
 }
@@ -117,11 +113,7 @@ export class SessionService {
       ANY:       this.rightsFunction(1000),
       USERS:     this.rightsFunction(1100),
       PROJECTS:  this.rightsFunction(1200),
-      TEXTS:     this.rightsFunction(1300),
-      QUESTIONS: this.rightsFunction(1400),
-      ANSWERS:   this.rightsFunction(1500),
       COMMENTS:  this.rightsFunction(1600),
-      TEMPLATES: this.rightsFunction(1700),
       TAGS:      this.rightsFunction(1800),
       ENTRIES:   this.rightsFunction(1900)
     };

@@ -6,13 +6,6 @@ use Api\Library\Shared\Website;
 use Api\Library\Shared\Palaso\Exception\ResourceNotAvailableException;
 use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\Languageforge\Lexicon\LexRoles;
-use Api\Model\Languageforge\Semdomtrans\SemDomTransProjectModel;
-use Api\Model\Languageforge\Semdomtrans\SemDomTransRoles;
-use Api\Model\Scriptureforge\Rapuma\RapumaProjectModel;
-use Api\Model\Scriptureforge\Rapuma\RapumaRoles;
-use Api\Model\Scriptureforge\Sfchecks\ProjectUserPropertiesSettings;
-use Api\Model\Scriptureforge\Sfchecks\SfchecksProjectModel;
-use Api\Model\Scriptureforge\Sfchecks\SfchecksRoles;
 use Api\Model\Shared\Command\UserCommands;
 use Api\Model\Shared\Mapper\ArrayOf;
 use Api\Model\Shared\Mapper\Id;
@@ -42,8 +35,6 @@ class ProjectModel extends MapperModel
         });
 
         $this->isArchived = false;
-        $this->userProperties = new ProjectUserPropertiesSettings();
-        $this->allowAudioDownload = true;
         $this->allowInviteAFriend = true;
         $this->interfaceLanguageCode = 'en';
 
@@ -92,9 +83,6 @@ class ProjectModel extends MapperModel
     /** @var boolean Flag to indicated if this project is featured on the website */
     public $featured;
 
-    /** @var boolean Flag to indicate if this project allows users to download audio files */
-    public $allowAudioDownload;
-
     /** @var boolean Flag to indicate if this project allows users to invite a friend */
     public $allowInviteAFriend;
 
@@ -111,13 +99,13 @@ class ProjectModel extends MapperModel
     public $allowSharing;
 
     /**
-     * Specifies which site this project belongs to e.g. scriptureforge || languageforge, cf. Website class
+     * Specifies which site this project belongs to.  e.g. languageforge, cf. Website class
      * @var string
      */
     public $siteName;
 
     /**
-     * Specifies the angular app this project is associated with e.g. sfchecks || lexicon (note: these apps are site specific)
+     * Specifies the angular app this project is associated with e.g. lexicon (note: these apps are site specific)
      * @var string
      */
     public $appName;
@@ -125,7 +113,7 @@ class ProjectModel extends MapperModel
     /** @var ArrayOf */
     public $usersRequestingAccess;
 
-    /** @var LexRoles|SfchecksRoles|SemDomTransRoles|RapumaRoles */
+    /** @var LexRoles */
     protected $rolesClass;
 
     /**
@@ -157,19 +145,6 @@ class ProjectModel extends MapperModel
             $projectExists = ($website->domain == $projectModel->siteName);
         }
         return $projectExists;
-    }
-
-    /**
-     * Reads the model from the mongo collection
-     * Ensures that the required pick lists exist even if not present in the database
-     * @param string $id
-     * @throws \Exception
-     * @see MapperModel::read()
-     */
-    public function read($id)
-    {
-        parent::read($id);
-        $this->userProperties->ensurePickListsExist();
     }
 
     /**
@@ -442,14 +417,8 @@ class ProjectModel extends MapperModel
     {
         $project = new ProjectModel($projectId);
         switch ($project->appName) {
-            case 'sfchecks':
-                return new SfchecksProjectModel($projectId);
-            case 'rapuma':
-                return new RapumaProjectModel($projectId);
             case 'lexicon':
                 return new LexProjectModel($projectId);
-            case 'semdomtrans':
-                return new SemDomTransProjectModel($projectId);
             default:
                 throw new ResourceNotAvailableException(
                     "projectId '$projectId' could not be found when calling ProjectModel::getById()");
@@ -466,10 +435,7 @@ class ProjectModel extends MapperModel
         $model = new ProjectModel();
         $model->readByProperty('inviteToken.token', $token);
         switch ($model->appName) {
-            case 'sfchecks':
-            case 'rapuma':
             case 'lexicon':
-            case 'semdomtrans':
                 return $model->id->id;
             default:
                 throw new ResourceNotAvailableException(
