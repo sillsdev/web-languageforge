@@ -25,7 +25,6 @@ jobs:
           make --version
 
       - name: Establish working directory
-        run: cd docker
-
-      - name: Reveal working directory
-        run: pwd
+        run: |
+          cd docker
+          ls -l
