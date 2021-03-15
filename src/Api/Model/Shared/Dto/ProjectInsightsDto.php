@@ -94,40 +94,8 @@ class ProjectInsightsDto
         $projectData->recentUsers = count($recentUsers);
         $projectData->lastActivityDate = $lastActivityDate ? $lastActivityDate->format(\DateTime::RFC2822) : null;
 
-        // sf-specific data
-        if ($appName === SfProjectModel::SFCHECKS_APP) {
-            $textList = new TextListModel($project);
-            $textList->read();
-            $projectData->texts = $textList->count;
-            $projectData->openTexts = 0;
-            $projectData->questions = 0;
-            $projectData->openQuestions = 0;
-            $projectData->answers = 0;
-            $projectData->openAnswers = 0;
-            $projectData->comments = 0;
-            $projectData->openComments = 0;
-            foreach ($textList->entries as $textData) {
-                $text = new TextModel($project, $textData['id']);
-                if (!$text->isArchived) $projectData->openTexts++;
-
-                $questionList = new QuestionAnswersListModel($project, $textData['id']);
-                $questionList->read();
-                $projectData->questions += $questionList->count;
-                foreach ($questionList->entries as $questionData) {
-                    $question = new QuestionModel($project, $questionData['id']);
-                    $questionOpen = !$text->isArchived && !$question->isArchived;
-                    if ($questionOpen) $projectData->openQuestions++;
-                    $projectData->answers += count($question->answers);
-                    if ($questionOpen) $projectData->openAnswers += count($question->answers);
-                    foreach ($question->answers as $answer) {
-                        $projectData->comments += count($answer->comments);
-                        if ($questionOpen) $projectData->openComments += count($answer->comments);
-                    }
-                }
-            }
-        }
         // lf-specific data
-        else if ($appName === LfProjectModel::LEXICON_APP) {
+        if ($appName === LfProjectModel::LEXICON_APP) {
             $projectData->lastEntryModifiedDate = $project->lastEntryModifiedDate->asDateTimeInterface()->format(\DateTime::RFC2822);
             $projectData->commenters = $commenters;
             $projectData->observers = $observers;
@@ -205,9 +173,7 @@ class ProjectInsightsDto
     }
 
     private static function appName($website) {
-        // while each site may theoretically have more than one type of app, only projects associated with these apps are
-        // supported by the project insights page
-        return $website->base === Website::LANGUAGEFORGE ? LfProjectModel::LEXICON_APP : SfProjectModel::SFCHECKS_APP;
+        return LfProjectModel::LEXICON_APP;
     }
 }
 

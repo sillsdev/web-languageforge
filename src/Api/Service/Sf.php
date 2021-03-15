@@ -678,76 +678,9 @@ class Sf
     }
 
 
-    /*
-     * --------------------------------------------------------------- SEMANTIC DOMAIN TRANSLATION MANAGER API ---------------------------------------------------------------
-     */
-    public function semdom_editor_dto($browserId, $lastFetchTime = null)
-    {
-        $sessionLabel = 'lexDbeFetch_' . $browserId;
-        $this->app['session']->set($sessionLabel, time());
-        if ($lastFetchTime) {
-            $lastFetchTime = $lastFetchTime - 5; // 5 second buffer
-
-            return SemDomTransEditDto::encode($this->projectId, $this->userId, $lastFetchTime);
-        } else {
-            return SemDomTransEditDto::encode($this->projectId, $this->userId);
-        }
-    }
-
-    public function semdom_get_open_projects() {
-        return SemDomTransProjectCommands::getOpenSemdomProjects($this->userId);
-    }
-
-    public function semdom_item_update($data) {
-        return SemDomTransItemCommands::update($data, $this->projectId);
-    }
-
-    public function semdom_project_exists($languageIsoCode) {
-        return SemDomTransProjectCommands::checkProjectExists($languageIsoCode);
-    }
-
-    public function semdom_workingset_update($data) {
-        return SemDomTransWorkingSetCommands::update($data, $this->projectId);
-    }
-
-    public function semdom_export_project() {
-        return $this->website->domain . "/" . SemDomTransProjectCommands::exportProject($this->projectId);
-    }
-
-    // 2015-04 CJH REVIEW: this method should be moved to the semdom project commands (and a test should be written around it).  This method should also assert that a project with that code does not already exist
-    public function semdom_create_project($languageIsoCode, $languageName, $useGoogleTranslateData) {
-        return SemDomTransProjectCommands::createProject($languageIsoCode, $languageName, $useGoogleTranslateData, $this->userId, $this->website);
-    }
-
-    public function semdom_does_googletranslatedata_exist($languageIsoCode) {
-        return SemDomTransProjectCommands::doesGoogleTranslateDataExist($languageIsoCode);
-    }
-
     // -------------------------------- Project Management App Api ----------------------------------
     public function project_management_dto() {
         return ProjectManagementDto::encode($this->projectId);
-    }
-
-    public function project_management_report_sfchecks_userEngagementReport() {
-        return SfchecksReports::UserEngagementReport($this->projectId);
-    }
-
-    public function project_management_report_sfchecks_topContributorsWithTextReport() {
-        return SfchecksReports::TopContributorsWithTextReport($this->projectId);
-    }
-
-    public function project_management_report_sfchecks_responsesOverTimeReport() {
-        return SfchecksReports::ResponsesOverTimeReport($this->projectId);
-    }
-
-    // -------------------------------- Semdomtrans App Management Api ----------------------------------
-    public function semdomtrans_app_management_dto() {
-        return SemDomTransAppManagementDto::encode();
-    }
-
-    public function semdomtrans_export_all_projects() {
-        // TODO: implement this
-        return ['exportUrl' => '/sampledownload.zip'];
     }
 
     // ----------------------------------- Language Depot Api -------------------------------------

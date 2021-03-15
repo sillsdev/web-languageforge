@@ -48,9 +48,6 @@ class UserModel extends MapperModel
         $this->projectsProperties = new MapOf(function () {
             return new ProjectProperties();
         });
-        $this->projectUserProfiles = new MapOf(function () {
-            return new SfchecksUserProfile();
-        });
 
         /*
          * We don't need to set 'role' to ReadOnly because we control where it's modified
@@ -176,12 +173,6 @@ class UserModel extends MapperModel
      * @var MapOf<ProjectProperties>
      */
     public $projectsProperties;
-
-    /**
-     * TODO Deprecate. Migrate to $this->projectsProperties[<projectId>]->sfchecksUserProfile IJH 2014-03
-     * @var MapOf<SfchecksUserProfile>
-     */
-    public $projectUserProfiles;
 
     /**
      * Use $params to set properties of UserModel
@@ -489,7 +480,4 @@ class ProjectProperties
 
     /** @var string Users preferred interface language code */
     public $interfaceLanguageCode;
-
-    /** @var SfchecksUserProfile*/
-    public $sfchecksUserProfile;
 }

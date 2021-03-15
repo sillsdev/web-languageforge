@@ -40,7 +40,7 @@ class MapperModel extends ObjectForEncoding
      * @see MongoMapper::read()
      * @throws \Exception
      */
-    protected function read($id)
+    public function read($id)
     {
         if ($this->_mapper->exists($id)) {
             $this->_mapper->read($this, $id);

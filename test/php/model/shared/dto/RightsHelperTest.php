@@ -45,7 +45,7 @@ class RightsHelperTest extends TestCase
         $project = self::$environ->createProject('projectForTest', 'projTestCode');
         $projectId = $project->id->asString();
         $project->addUser($userId, ProjectRoles::MANAGER);
-        $project->appName = 'sfchecks';
+        $project->appName = 'lexicon';
         $project->write();
         $user->addProject($projectId);
         $user->write();
@@ -62,7 +62,7 @@ class RightsHelperTest extends TestCase
         $project = self::$environ->createProject('projectForTest', 'projTestCode');
         $projectId = $project->id->asString();
         $project->addUser($userId, ProjectRoles::CONTRIBUTOR);
-        $project->appName = 'sfchecks';
+        $project->appName = 'lexicon';
         $project->write();
         $user->addProject($projectId);
         $user->write();
@@ -76,7 +76,7 @@ class RightsHelperTest extends TestCase
     {
         $userId = self::$environ->createUser('user', 'user', 'user@user.com', SystemRoles::USER);
         $project = self::$environ->createProject('projectForTest', 'projTestCode');
-        $project->appName = 'sfchecks';
+        $project->appName = 'lexicon';
         $project->write();
         $projectId = $project->id->asString();
         $project = ProjectModel::getById($projectId);

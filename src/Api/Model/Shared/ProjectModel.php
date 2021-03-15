@@ -6,8 +6,6 @@ use Api\Library\Shared\Website;
 use Api\Library\Shared\Palaso\Exception\ResourceNotAvailableException;
 use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\Languageforge\Lexicon\LexRoles;
-use Api\Model\Languageforge\Semdomtrans\SemDomTransProjectModel;
-use Api\Model\Languageforge\Semdomtrans\SemDomTransRoles;
 use Api\Model\Shared\Command\UserCommands;
 use Api\Model\Shared\Mapper\ArrayOf;
 use Api\Model\Shared\Mapper\Id;
@@ -37,8 +35,6 @@ class ProjectModel extends MapperModel
         });
 
         $this->isArchived = false;
-        $this->userProperties = new ProjectUserPropertiesSettings();
-        $this->allowAudioDownload = true;
         $this->allowInviteAFriend = true;
         $this->interfaceLanguageCode = 'en';
 
@@ -86,9 +82,6 @@ class ProjectModel extends MapperModel
 
     /** @var boolean Flag to indicated if this project is featured on the website */
     public $featured;
-
-    /** @var boolean Flag to indicate if this project allows users to download audio files */
-    public $allowAudioDownload;
 
     /** @var boolean Flag to indicate if this project allows users to invite a friend */
     public $allowInviteAFriend;
@@ -152,19 +145,6 @@ class ProjectModel extends MapperModel
             $projectExists = ($website->domain == $projectModel->siteName);
         }
         return $projectExists;
-    }
-
-    /**
-     * Reads the model from the mongo collection
-     * Ensures that the required pick lists exist even if not present in the database
-     * @param string $id
-     * @throws \Exception
-     * @see MapperModel::read()
-     */
-    public function read($id)
-    {
-        parent::read($id);
-        $this->userProperties->ensurePickListsExist();
     }
 
     /**

@@ -104,7 +104,7 @@ class ActivityListDto
 
             // TODO: Figure out how to handle limit and skip parameters when we're in the all-projects view: it's more complicated than just passing them on to each project's query. 2018-02 RM
             $activity = array_merge($activity, self::getActivityForProject($projectModel, $filterParams));
-            $unreadItems = array_merge($unreadItems, self::getUnreadActivityForUserInProject($userId, $project['id'], $activityFilter));
+            $unreadItems = array_merge($unreadItems, self::getUnreadActivityForUserInProject($userId, $project['id']));
         }
         $unreadItems = array_merge($unreadItems, self::getGlobalUnreadActivityForUser($userId));
         uasort($activity, ['self', 'sortActivity']);
@@ -461,20 +461,6 @@ class ActivityListDtoEncoder extends JsonEncoder
                 'id' => $project->id->asString(),
                 'type' => $project->appName,
             ];
-        } elseif ($key == 'textRef') {
-            $text = new TextModel($this->_project);
-            if ($text->exists($model->asString())) {
-                return $model->asString();
-            } else {
-                return '';
-            }
-        } elseif ($key == 'questionRef') {
-            $question = new QuestionModel($this->_project);
-            if ($question->exists($model->asString())) {
-                return $model->asString();
-            } else {
-                return '';
-            }
         } elseif ($key == 'entryRef') {
             $entry = new LexEntryModel($this->_project);
             if ($entry->exists($model->asString())) {

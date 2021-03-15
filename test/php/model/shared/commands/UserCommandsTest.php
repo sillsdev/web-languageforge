@@ -227,37 +227,6 @@ class UserCommandsTest extends TestCase
         $this->assertEquals($newUserId, $userId);
     }
 
-    /**
-     * @throws Exception
-     */
-    public function testUpdateUserProfile_SetProjectUserProfiles_ProjectUserProfilesSet()
-    {
-        // setup parameters
-        $userId = self::$environ->createUser('username', 'name', 'name@example.com');
-        $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $projectId = $project->id->asString();
-        ProjectCommands::updateUserRole($projectId, $userId);
-        $params = [
-            'projectUserProfiles' => [
-                $projectId => [
-                    'city' => '',
-                    'preferredBibleVersion' => '',
-                    'religiousAffiliation' => '',
-                    'studyGroup' => 'group1',
-                    'feedbackGroup' => ''
-                ]
-            ]
-        ];
-
-        $newUserId = UserCommands::updateUserProfile($params, $userId, self::$environ->website);
-
-        // user profile updated
-        $user = new UserModel($newUserId);
-        $this->assertCount(1, $user->projectUserProfiles);
-        $this->assertEquals('group1', $user->projectUserProfiles[$projectId]->studyGroup);
-        $this->assertEquals($newUserId, $userId);
-    }
-
     public function testUpdateUser_SetLangCodeOnly_LangCodeSet()
     {
         // setup parameters
