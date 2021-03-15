@@ -599,15 +599,6 @@ export class ActivityContainerController implements angular.IController {
           this.linkService.project(item.projectRef.id, item.projectRef.type);
       }
 
-      if ('textRef' in item) {
-        item.textHref = this.linkService.text(item.textRef, item.projectRef.id);
-      }
-
-      if ('questionRef' in item) {
-        item.questionHref = this.linkService.question(item.textRef,
-          item.questionRef, item.projectRef.id);
-      }
-
       if ('entryRef' in item) {
         item.entryHref = this.linkService.entry(item.entryRef, item.projectRef.id);
       }
