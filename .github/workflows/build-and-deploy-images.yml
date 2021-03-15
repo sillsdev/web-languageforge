@@ -11,7 +11,7 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  intial-plumbing-test:
+  build-images:
     # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources
     runs-on: ubuntu-latest
 
@@ -24,7 +24,10 @@ jobs:
           docker-compose --version
           make --version
 
-      - name: Establish working directory
+      - name: Build app
         run: |
           cd docker
-          ls -l
+          make deployable-app
+
+      - name: Reveal images
+        run: docker images
