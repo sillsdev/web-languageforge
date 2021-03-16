@@ -1,10 +1,10 @@
-FROM node:10
-# Note: we cannot use node:10-alpine because the npm package node-sass is compiled using gcc and
-# the setup looks way too complicated.  Let's stick with the official node:10 package even though
-# it's a large image
+FROM node:14-alpine
 
 # Expose Live-Reload port
 #EXPOSE 35729
+
+# install npm globally
+RUN npm config set unsafe-perm true && npm install -g npm@7.6.3
 
 # install Gulp globally
 RUN npm config set unsafe-perm true && npm install -g gulp-cli

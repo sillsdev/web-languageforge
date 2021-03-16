@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
 attach_debugger () {
   # Searches for the Node process running Protractor tests, then signals for it to attach the debugger
