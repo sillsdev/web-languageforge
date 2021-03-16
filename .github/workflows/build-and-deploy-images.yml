@@ -43,8 +43,10 @@ jobs:
       - name: Build app
         run: make --directory=docker deployable-app
 
-      - name: Tag app image with Docker Hub location
-        run: docker tag lf-api sillsdev/web-languageforge:app-latest
+      - name: Tag images with Docker Hub location
+        run: |
+          docker tag lf-api sillsdev/web-languageforge:app-latest
+          docker tag lf-mail sillsdev/web-languageforge:mail-latest
 
       - name: Reveal images
         run: docker images
@@ -55,7 +57,9 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-      - name: Push the app image
-        run: docker push sillsdev/web-languageforge:app-latest
+      - name: Publish images to Docker Hub
+        run: |
+          docker push sillsdev/web-languageforge:app-latest
+          docker push sillsdev/web-languageforge:mail-latest
 
 # TODO: maybe there's a way to improve all this by utilizing docker's GH Actions...https://docs.docker.com/ci-cd/github-actions/, especially layer caching...
