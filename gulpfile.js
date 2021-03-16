@@ -20,7 +20,7 @@ var _execute = require('child_process').exec;
 var gulp = require('gulp');
 var concat = require('gulp-concat');
 var jshint = require('gulp-jshint');
-var phpunit = require('gulp-phpunit');
+// var phpunit = require('gulp-phpunit');
 var protractor = require('gulp-protractor').protractor;
 var webdriverStandalone = require('gulp-protractor').webdriver_standalone;
 var webdriverUpdate = require('gulp-protractor').webdriver_update;
@@ -280,60 +280,60 @@ gulp.task('mongodb-copy-prod-db').description =
 // -------------------------------------
 //   Task: test-php
 // -------------------------------------
-gulp.task('test-php', function () {
-  var src = 'test/php/phpunit.xml';
-  var options = {
-    dryRun: false,
-    debug: false,
-    logJunit: 'PhpUnitTests.xml'
-  };
-  gutil.log("##teamcity[importData type='junit' path='PhpUnitTests.xml']");
-  return gulp.src(src)
-    .pipe(phpunit('src/vendor/bin/phpunit', options));
-});
+// gulp.task('test-php', function () {
+//   var src = 'test/php/phpunit.xml';
+//   var options = {
+//     dryRun: false,
+//     debug: false,
+//     logJunit: 'PhpUnitTests.xml'
+//   };
+//   gutil.log("##teamcity[importData type='junit' path='PhpUnitTests.xml']");
+//   return gulp.src(src)
+//     .pipe(phpunit('src/vendor/bin/phpunit', options));
+// });
 
 // -------------------------------------
 //   Task: test-php with debugging info
 // -------------------------------------
-gulp.task('test-php-debug', function () {
-  var src = 'test/php/phpunit.xml';
-  var options = {
-    dryRun: false,
-    debug: true
-  };
-  return gulp.src(src)
-    .pipe(phpunit('src/vendor/bin/phpunit', options));
-});
+// gulp.task('test-php-debug', function () {
+//   var src = 'test/php/phpunit.xml';
+//   var options = {
+//     dryRun: false,
+//     debug: true
+//   };
+//   return gulp.src(src)
+//     .pipe(phpunit('src/vendor/bin/phpunit', options));
+// });
 
 // -------------------------------------
 //   Task: test-php-coverage
 // -------------------------------------
-gulp.task('test-php-coverage', function () {
-  var src = 'test/php/phpunit.xml';
-  var options = {
-    dryRun: false,
-    debug: false,
-    logJunit: 'PhpUnitTests.xml',
-    coverageHtml: 'test/CodeCoverage/php/'
-  };
-  gutil.log("##teamcity[importData type='junit' path='PhpUnitTests.xml']");
-  return gulp.src(src)
-    .pipe(phpunit('src/vendor/bin/phpunit', options));
-});
+// gulp.task('test-php-coverage', function () {
+//   var src = 'test/php/phpunit.xml';
+//   var options = {
+//     dryRun: false,
+//     debug: false,
+//     logJunit: 'PhpUnitTests.xml',
+//     coverageHtml: 'test/CodeCoverage/php/'
+//   };
+//   gutil.log("##teamcity[importData type='junit' path='PhpUnitTests.xml']");
+//   return gulp.src(src)
+//     .pipe(phpunit('src/vendor/bin/phpunit', options));
+// });
 
 // -------------------------------------
 //   Task: test-php:watch
 // -------------------------------------
-gulp.task('test-php:watch', function () {
-  gulp.watch(phpPatterns, ['test-php']);
-});
+// gulp.task('test-php:watch', function () {
+//   gulp.watch(phpPatterns, ['test-php']);
+// });
 
 // -------------------------------------
 //   Task: test-php-debug:watch with debugging info
 // -------------------------------------
-gulp.task('test-php-debug:watch', function () {
-  gulp.watch(phpPatterns, ['test-php-debug']);
-});
+// gulp.task('test-php-debug:watch', function () {
+//   gulp.watch(phpPatterns, ['test-php-debug']);
+// });
 
 function runKarmaTests(applicationName, cb, type) {
   var config = {
@@ -1216,25 +1216,25 @@ gulp.task('build-e2e').description =
 // -------------------------------------
 //   Task: Build, PHP Tests, Upload
 // -------------------------------------
-gulp.task('build-and-test',
-  gulp.series(
-    'build',
-    'test-php',
-    'test-ts'
-  )
-);
-gulp.task('build-and-test').description =
-  'Build and Run PHP tests on CI server; Deploy to dev site';
+// gulp.task('build-and-test',
+//   gulp.series(
+//     'build',
+//     'test-php',
+//     'test-ts'
+//   )
+// );
+// gulp.task('build-and-test').description =
+//   'Build and Run PHP tests on CI server; Deploy to dev site';
 
 // -------------------------------------
 //   Task: Build PHP Coverage
 // -------------------------------------
-gulp.task('build-php-coverage',
-  gulp.series(
-    'build',
-    'test-php-coverage'
-  )
-);
+// gulp.task('build-php-coverage',
+//   gulp.series(
+//     'build',
+//     'test-php-coverage'
+//   )
+// );
 
 //endregion
 
