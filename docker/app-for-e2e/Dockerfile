@@ -1,7 +1,7 @@
-FROM lf-api:latest
+FROM lf-app:latest
 
 COPY src/config.php.fortest /var/www/src/config.php
-COPY docker/e2e-api/run.sh /run.sh
+COPY docker/app-for-e2e/run.sh /run.sh
 COPY test /var/www/test/
 WORKDIR /var/www/test/app
 CMD ["/run.sh"]

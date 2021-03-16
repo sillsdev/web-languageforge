@@ -1,14 +1,12 @@
 # https://docs.docker.com/compose/compose-file
 version: '3.5'
 services:
-  ui:
+  ui-builder:
     build:
       context: ..
-      dockerfile: docker/ui/Dockerfile
-    image: lf-ui
-    container_name: lf-ui
-    depends_on:
-      - api
+      dockerfile: docker/ui-builder/Dockerfile
+    image: lf-ui-builder
+    container_name: lf-ui-builder
     command: gulp sass:watch webpack-lf:watch
     volumes:
       # share dist folder between ui and api containers
@@ -20,16 +18,17 @@ services:
       - ../webpack.config.js:/data/webpack.config.js
       - ../gulpfile.js:/data/gulpfile.js
 
-  api:
+  app:
     build:
       context: ..
-      dockerfile: docker/api/Dockerfile
-    image: lf-api
-    container_name: lf-api
+      dockerfile: docker/app/Dockerfile
+    image: lf-app
+    container_name: lf-app
     depends_on:
       - db
       - mail
       - ld-api
+      - ui-builder
     environment:
       - WAIT_HOSTS=db:27017, mail:25
       - "LDAPI_BASE_URL=http://ld-api:3000/api/v2/"
@@ -54,7 +53,7 @@ services:
       - 80:80
       - 443:443
     depends_on:
-      - ui
+      - ui-builder
     volumes:
       - lf-caddy-data:/data
       - lf-caddy-config:/config
@@ -83,7 +82,7 @@ services:
     # image: selenium/standalone-chrome
     image: selenium/standalone-chrome-debug
     links:
-      - "e2e-api:e2e"
+      - "app-for-e2e:e2e"
     volumes:
       - /dev/shm:/dev/shm
     ports:
@@ -112,15 +111,15 @@ services:
     environment:
       - PORT=3000
 
-  e2e-ui:
+  test-e2e:
     build:
       context: ..
-      dockerfile: docker/e2e-ui/Dockerfile
-    image: e2e-ui
-    container_name: e2e-ui
+      dockerfile: docker/test-e2e/Dockerfile
+    image: test-e2e
+    container_name: test-e2e
     depends_on:
       - db
-      - e2e-api
+      - app-for-e2e
       - mail
       - selenium
     environment:
@@ -136,12 +135,12 @@ services:
       - ../webpack.config.js:/data/webpack.config.js
       - ../gulpfile.js:/data/gulpfile.js
 
-  e2e-api:
+  app-for-e2e:
     build:
       context: ..
-      dockerfile: docker/e2e-api/Dockerfile
-    image: e2e-api
-    container_name: e2e-api
+      dockerfile: docker/app-for-e2e/Dockerfile
+    image: app-for-e2e
+    container_name: app-for-e2e
     depends_on:
       - db
       - mail
@@ -153,13 +152,13 @@ services:
       # share dist folder between ui and api containers
       - lf-webpack-dist-folder:/var/www/src/dist
 
-  test-api:
+  test-php:
     # TODO: get XDebug working with VSCode
     build:
       context: ..
-      dockerfile: docker/test-api/Dockerfile
-    image: test-api
-    container_name: test-api
+      dockerfile: docker/test-php/Dockerfile
+    image: test-php
+    container_name: test-php
     depends_on:
       - db
       - mail

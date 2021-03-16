@@ -98,17 +98,17 @@ Other useful resources:
 
 #### If you would like to run the E2E tests
 
-1. `make build e2e`
+1. `make build test-e2e`
 1. Individual test results will appear in your terminal but if you'd like to watch them in real-time, simply VNC into the running tests via `localhost:5900`, e.g., Mac OSX users simply `open vnc://localhost:5900` and use `secret` as the password.  Other operating systems may require installing a separate VNC Viewer tool.
 
 #### If you would like to run the unit tests
 
-1. `make tests`
+1. `make test-php`
 1. Test results will appear in your terminal
 
 #### Viewing logs
 
-1. `make logs` will show logs from any runnign contianers, results can be filtered by simply grepping, e.g., `make logs | grep lf-ui`
+1. `make logs` will show logs from any running containers, results can be filtered by simply grepping, e.g., `make logs | grep lf-ui-builder`
 
 #### Cleanup
 

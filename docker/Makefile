@@ -5,14 +5,14 @@ start: wait
   # starts the entire runtime infrastructure
 	docker-compose up -d ssl
 
-.PHONY: e2e
-e2e: wait
-	docker-compose build ui api
-	docker-compose run e2e-ui
+.PHONY: test-e2e
+test-e2e: wait
+	docker-compose build ui-builder app
+	docker-compose run test-e2e
 
-.PHONY: tests
-tests:
-	docker-compose run test-api
+.PHONY: test-php
+test-php:
+	docker-compose run test-php
 
 .PHONY: build
 build: wait
@@ -24,7 +24,7 @@ wait:
 
 .PHONY: db-reset
 db-reset: wait
-	docker-compose build api
+	docker-compose build app
 	docker-compose run db-reset
 
 .PHONY: logs
