@@ -34,7 +34,7 @@ jobs:
       - name: Disk info
         run: df -h
 
-  build:
+  build-n-publish:
     runs-on: ubuntu-latest
 
     steps:
@@ -43,25 +43,19 @@ jobs:
       - name: Build app
         run: make --directory=docker deployable-app
 
-      # - name: Tag app image with Docker Hub location
-      #   run: docker tag lf-api sillsdev/web-languageforge:app-latest
+      - name: Tag app image with Docker Hub location
+        run: docker tag lf-api sillsdev/web-languageforge:app-latest
 
-      # - name: Log in to Docker Hub
-      #   uses: docker/login-action@v1
-      #   with:
-      #     username: ${{ secrets.DOCKERHUB_USERNAME }}
-      #     password: ${{ secrets.DOCKERHUB_PASSWORD }}
-
-      # - name: Push the app image
-      #   run: docker push sillsdev/web-languageforge:app-latest
-
-  view-images-test:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
       - name: Reveal images
         run: docker images
 
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Push the app image
+        run: docker push sillsdev/web-languageforge:app-latest
 
 # TODO: maybe there's a way to improve all this by utilizing docker's GH Actions...https://docs.docker.com/ci-cd/github-actions/, especially layer caching...
