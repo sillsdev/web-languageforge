@@ -33,15 +33,15 @@ logs:
 
 .PHONY: clean
 clean:
-	docker-compose down -t 1
+	docker-compose down
 	docker system prune -f
 
 .PHONY: clean-volumes
 clean-volumes:
-	docker-compose down -t 1 -v
+	docker-compose down -v
 	docker system prune -f --volumes
 
 .PHONY: clean-powerwash
 clean-powerwash: clean-volumes
-	docker-compose down -t 1 --rmi all
+	docker-compose down --rmi all
 	docker rmi wait
