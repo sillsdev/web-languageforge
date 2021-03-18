@@ -6,13 +6,20 @@ start: wait
 	docker-compose up -d ssl
 
 .PHONY: test-e2e
-test-e2e: wait
-	docker-compose build ui-builder app
+test-e2e: build-test-e2e
 	docker-compose run test-e2e
 
+.PHONY: build-test-e2e
+build-test-e2e: wait
+	docker-compose build mail ui-builder app app-for-e2e test-e2e
+
 .PHONY: test-php
-test-php:
+test-php: build-test-php
 	docker-compose run test-php
+
+.PHONY: build-test-php
+build-test-php: wait
+	docker-compose build mail ui-builder app test-php
 
 .PHONY: build
 build: wait
