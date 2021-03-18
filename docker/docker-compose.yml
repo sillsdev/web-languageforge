@@ -81,8 +81,6 @@ services:
   selenium:
     # image: selenium/standalone-chrome
     image: selenium/standalone-chrome-debug
-    links:
-      - "app-for-e2e:e2e"
     volumes:
       - /dev/shm:/dev/shm
     ports:
