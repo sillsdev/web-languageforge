@@ -25,6 +25,7 @@ services:
       - db
       - mail
       - ld-api
+      - ld-hgweb
       - ui-builder
     environment:
       - WAIT_HOSTS=db:27017, mail:25
@@ -102,6 +103,14 @@ services:
     env_file: ld-api/ld.env
     environment:
       - PORT=3000
+
+  ld-hgweb:
+    build:
+      context: hgweb
+    image: ld-hgweb
+    container_name: ld-hgweb
+    expose:
+      - 80
 
   test-e2e:
     build:
