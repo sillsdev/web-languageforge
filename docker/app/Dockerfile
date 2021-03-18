@@ -8,11 +8,11 @@ COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr
 RUN install-php-extensions gd xdebug mongodb intl @composer
 
 # php.ini customizations
-COPY docker/api/php.ini /usr/local/etc/php
+COPY docker/app/php.ini /usr/local/etc/php
 
 # apache2 module and virtual host customizations
 RUN a2enmod headers rewrite
-COPY docker/api/000-default.conf /etc/apache2/sites-enabled
+COPY docker/app/000-default.conf /etc/apache2/sites-enabled
 
 # install LFMerge
 RUN curl -L http://linux.lsdev.sil.org/downloads/sil-testing.gpg | apt-key add - \
@@ -41,7 +41,7 @@ COPY src /var/www/html/
 RUN ln -s /var/www/html /var/www/src
 
 # grab the built assets from the ui image
-COPY --from=lf-ui /data/src/dist /var/www/html/dist
+COPY --from=lf-ui-builder /data/src/dist /var/www/html/dist
 
 # ensure correct write permissions for assets folders
 RUN chown -R www-data:www-data /var/www/html/assets /var/www/html/cache \

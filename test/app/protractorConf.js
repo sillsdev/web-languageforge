@@ -2,7 +2,7 @@
 exports.config = {
   // The address of a running selenium server.
   seleniumAddress: 'http://selenium:4444/wd/hub',
-  baseUrl: 'http://e2e',
+  baseUrl: 'http://app-for-e2e',
 
   // The timeout in milliseconds for each script run on the browser. This should
   // be longer than the maximum time your application needs to stabilize between
