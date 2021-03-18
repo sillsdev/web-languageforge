@@ -1,0 +1,66 @@
+# https://docs.docker.com/compose/compose-file
+version: '3.5'
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: docker/api/Dockerfile
+    image: lf-api
+    container_name: lf-api
+    depends_on:
+      - db
+      - mail
+      - ld-api
+    environment:
+      - WAIT_HOSTS=db:27017, mail:25
+      - "LDAPI_BASE_URL=http://ld-api:3000/api/v2/"
+      # LDAPI_BASE_URL hostname and port need to match container name and port of the ld-api container (defined further down)
+      # TODO: Make a run.sh that sets umask and then runs apache2-foreground
+    command: sh -c "/wait && umask 0002 && apache2-foreground"
+    volumes:
+      # persist user data uploads and assets
+      - lf-user-data-assets:/var/www/src/assets
+
+  mail:
+    build:
+      context: .
+      dockerfile: mail/Dockerfile
+    image: lf-mail
+    container_name: lf-mail
+
+  db:
+    image: mongo:4.0
+    container_name: lf-db
+    ports:
+      # exposed this to host for admin tools
+      - 27017:27017
+    volumes:
+      - lf-mongo-data:/data/db
+    restart: always
+
+  ld-sql:
+    build:
+      context: ld-sql
+    image: ld-sql
+    container_name: ld-sql
+    # To access the MySQL database via localhost:3306 on your dev machine (e.g., in VS Code), uncomment the "ports" config below
+    # Note that if you're running MySQL on your dev machine already, change the first number to something else, like 3307 and access localhost:3307
+    # ports:
+    #   - 3306:3306
+    env_file: ld-api/ld.env
+
+  ld-api:
+    build:
+      context: ld-api
+    image: ld-api
+    container_name: ld-api
+    depends_on:
+      - ld-sql
+    # env_file should be same one given to ld-sql image
+    env_file: ld-api/ld.env
+    environment:
+      - PORT=3000
+
+volumes:
+  lf-mongo-data:
+  lf-user-data-assets:
