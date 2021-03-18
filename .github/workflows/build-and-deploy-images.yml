@@ -45,7 +45,7 @@ jobs:
 
       - name: Tag images with Docker Hub location
         run: |
-          docker tag lf-api sillsdev/web-languageforge:app-latest
+          docker tag lf-app sillsdev/web-languageforge:app-latest
           docker tag lf-mail sillsdev/web-languageforge:mail-latest
 
       - name: Reveal images
