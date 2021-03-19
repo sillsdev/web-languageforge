@@ -4,7 +4,11 @@
   "description": "xForge - Language Forge and Scripture Forge",
   "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "sass": "node-sass src/sass -o src/dist/css",
+    "sass:watch": "npm run sass && node-sass src/sass -o src/dist/css --watch --recursive",
+    "webpack": "webpack",
+    "webpack:watch": "webpack -w",
+    "webpack:production": "webpack -p"
   },
   "author": "",
   "license": "MIT",
@@ -35,6 +39,7 @@
     "ng-drag-to-reorder": "^1.0.8",
     "ng-file-upload": "12.0.4",
     "ng-table": "^3.0.1",
+    "npm-run-all": "^4.1.5",
     "oclazyload": "^1.1.0",
     "offline-js": "0.7.11",
     "popper.js": "^1.12.5",
@@ -106,7 +111,6 @@
     "typescript": "^2.5.3",
     "url-loader": "^0.5.9",
     "webpack": "^3.4.1",
-    "webpack-bundle-analyzer": "^3.3.2",
     "webpack-livereload-plugin": "^1.2.0",
     "webpack-merge": "^4.1.0",
     "workbox-webpack-plugin": "^3.3.1",

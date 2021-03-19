@@ -7,7 +7,7 @@ services:
       dockerfile: docker/ui-builder/Dockerfile
     image: lf-ui-builder
     container_name: lf-ui-builder
-    command: gulp sass:watch webpack-lf:watch
+    command: npx npm-run-all -p -r sass:watch webpack:watch
     volumes:
       # for developer convenience
       - ../src:/data/src

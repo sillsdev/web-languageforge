@@ -27,8 +27,6 @@ var _template = require('lodash.template');
 var Server = require('karma').Server;
 var path = require('path');
 var del = require('del');
-var webpack = require('webpack');
-var webpackConfig = require('./webpack.config.js');
 
 // -------------------------------------
 //   Global Variables
@@ -55,80 +53,6 @@ var phpPatterns = [
   'src/Site/**/*.php',
   'test/**/*.php'
 ];
-
-// region sass
-
-var sassCommand = './node_modules/.bin/node-sass';
-
-gulp.task('sass', gulp.parallel(
-  function buildAngularAppDir(done) {
-    execute(sassCommand  + ' src/sass -o src/dist/css',
-      null, done);
-  }
-));
-
-gulp.task('sass:watch', function () {
-  var debug = process.argv.indexOf('--debug') !== -1;
-  if (!debug) console.info('Tip: run with --debug to generate source comments and source maps.');
-
-  var watch = ' --watch --recursive';
-  var debugArgs = debug ? ' --source-comments --source-map-embed' : '';
-
-  var a = sassCommand + ' src/sass -o src/dist/css' + debugArgs;
-
-  return new Promise(function (resolve, reject) {
-    execute(a, null, function () {
-      execute(a + watch, null, reject);
-    });
-  });
-
-});
-
-// endregion
-
-//region webpack
-
-function runWebpack(applicationName, callback, isWatch, isAnalyze, isProduction) {
-  var config = webpackConfig({
-    applicationName: applicationName,
-    isProduction: isProduction,
-    isAnalyze: isAnalyze,
-    isTest: false
-  });
-
-  var compiler = webpack(config);
-
-  var log = function (err, stats) {
-    if (err) console.error(err);
-    if (stats) console.log(stats.toString({ chunks: false, colors: true }));
-    if (!isWatch) callback();
-  };
-
-  isWatch ? compiler.watch({}, log) : compiler.run(log);
-}
-
-// -------------------------------------
-//   Task: webpack-lf
-// -------------------------------------
-gulp.task('webpack-lf', function (cb) {
-  runWebpack('languageforge', cb);
-});
-
-// -------------------------------------
-//   Task: webpack-lf watch
-// -------------------------------------
-gulp.task('webpack-lf:watch', function (cb) {
-  runWebpack('languageforge', cb, true);
-});
-
-// -------------------------------------
-//   Task: webpack-lf analyze
-// -------------------------------------
-gulp.task('webpack-lf:analyze', function (cb) {
-  runWebpack('languageforge', cb, false, true);
-});
-
-// endregion
 
 //region Test (PHP, JS, .NET, and E2E)
 
@@ -365,22 +289,6 @@ gulp.task('build-remove-test-fixtures', function (done) {
   } else {
     done();
   }
-});
-
-// -------------------------------------
-//   Task: Build webpack
-// -------------------------------------
-gulp.task('build-webpack', function (cb) {
-  var params = require('yargs')
-    .option('applicationName', {
-      demand: true,
-      type: 'string' })
-    .option('doNoCompression', {
-      demand: false,
-      type: 'boolean' })
-    .fail(yargFailure)
-    .argv;
-  runWebpack(params.applicationName, cb, false, false, !params.doNoCompression);
 });
 
 // -------------------------------------

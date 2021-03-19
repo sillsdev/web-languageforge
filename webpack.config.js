@@ -1,6 +1,5 @@
 'use strict';
 
-var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 var path = require('path');
 var LiveReloadPlugin = require('webpack-livereload-plugin');
@@ -13,9 +12,6 @@ var workboxPlugin = require('workbox-webpack-plugin');
 module.exports = function (env) {
   if (env == null) {
     env = {
-      applicationName: 'languageforge',
-      isProduction: false,
-      isAnalyze: false,
       isTest: false
     };
   }
@@ -114,17 +110,17 @@ module.exports = function (env) {
   var serviceWorkerConfig = {
     clientsClaim: true,
     importScripts: [
-      '/service-worker/' + env.applicationName + '/service-worker.js'
+      '/service-worker/languageforge/service-worker.js'
     ],
     include: [] // To be changed once ready to start caching the whole app
   };
 
   // Set up and return a customized Webpack config according to the environment we're in
 
-  webpackConfig.entry.main = './src/angular-app/' + env.applicationName + '/main' +
+  webpackConfig.entry.main = './src/angular-app/languageforge/main' +
     (env.isTest ? '.specs' : '') + '.ts';
 
-  if (env.isProduction) {
+  if (env.NODE_ENV == "production") {
     webpackConfig.plugins.push(new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify('production')
     }));
@@ -138,10 +134,6 @@ module.exports = function (env) {
     serviceWorkerConfig.importScripts = ['/service-worker/service-worker-debug.js']
       .concat(serviceWorkerConfig.importScripts);
     serviceWorkerConfig.skipWaiting = true;
-  }
-
-  if (env.isAnalyze) {
-    webpackConfig.plugins.push(new BundleAnalyzerPlugin({ analyzerMode: 'static' }));
   }
 
   if (env.isTest) {

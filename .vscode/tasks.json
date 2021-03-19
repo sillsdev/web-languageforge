@@ -7,10 +7,10 @@
         "label": "webpack",
         "type": "shell",
         "windows": {
-          "command": "bash -c 'gulp webpack-lf'"
+          "command": "bash -c 'npm run webpack'"
         },
         "linux": {
-          "command": "gulp webpack-lf"
+          "command": "npm run webpack"
         },
         "problemMatcher": "$awesometsc",
         "group": {
@@ -26,10 +26,10 @@
         "type": "shell",
         "isBackground": true,
         "windows": {
-          "command": "bash -c 'gulp webpack-lf:watch'"
+          "command": "bash -c 'npm run webpack:watch'"
         },
         "linux": {
-          "command": "gulp webpack-lf:watch"
+          "command": "npm run webpack:watch"
         },
         "presentation": {
           "reveal": "silent"
