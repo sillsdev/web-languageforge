@@ -8,7 +8,8 @@
     "sass:watch": "npm run sass && node-sass src/sass -o src/dist/css --watch --recursive",
     "webpack": "webpack",
     "webpack:watch": "webpack -w",
-    "webpack:production": "webpack -p"
+    "webpack:production": "webpack -p",
+    "watch-all": "npm-run-all -r -p sass:watch webpack:watch"
   },
   "author": "",
   "license": "MIT",
