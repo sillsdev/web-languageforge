@@ -120,7 +120,7 @@ module.exports = function (env) {
   webpackConfig.entry.main = './src/angular-app/languageforge/main' +
     (env.isTest ? '.specs' : '') + '.ts';
 
-  if (env.NODE_ENV == "production") {
+  if (process.env.NODE_ENV == "production") {
     webpackConfig.plugins.push(new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify('production')
     }));
