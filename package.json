@@ -4,12 +4,13 @@
   "description": "xForge - Language Forge and Scripture Forge",
   "private": true,
   "scripts": {
+    "build": "npm-run-all -r -p -l sass webpack",
+    "build:watch": "npm-run-all -r -p -l sass:watch webpack:watch",
     "sass": "node-sass src/sass -o src/dist/css",
     "sass:watch": "npm run sass && node-sass src/sass -o src/dist/css --watch --recursive",
     "webpack": "webpack",
     "webpack:watch": "webpack -w",
-    "webpack:production": "webpack -p",
-    "watch-all": "npm-run-all -r -p sass:watch webpack:watch"
+    "webpack:production": "webpack -p"
   },
   "author": "",
   "license": "MIT",

@@ -7,7 +7,7 @@ services:
       dockerfile: docker/ui-builder/Dockerfile
     image: lf-ui-builder
     container_name: lf-ui-builder
-    command: npm run watch-all
+    command: npm run build:watch
     volumes:
       # for developer convenience
       - ../src:/data/src

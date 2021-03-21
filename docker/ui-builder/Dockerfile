@@ -26,4 +26,4 @@ COPY gulpfile.js webpack.config.js tsconfig.json tslint.json ./
 COPY src ./src/
 
 # artifacts built to /data/src/dist
-RUN npm run sass && npm run webpack
+RUN npm run build
