@@ -23,7 +23,7 @@ build-test-php: wait
 
 .PHONY: build
 build: wait
-	docker-compose build
+	docker-compose build mail ui-builder app
 
 .PHONY: wait
 wait:
