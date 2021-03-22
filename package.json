@@ -4,7 +4,7 @@
   "description": "xForge - Language Forge and Scripture Forge",
   "private": true,
   "scripts": {
-    "build": "npm-run-all -r -p -l sass webpack",
+    "build": "npm-run-all -p -l sass webpack",
     "build:watch": "npm-run-all -r -p -l sass:watch webpack:watch",
     "sass": "node-sass src/sass -o src/dist/css",
     "sass:watch": "npm run sass && node-sass src/sass -o src/dist/css --watch --recursive",
