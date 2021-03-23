@@ -7,7 +7,7 @@ services:
       dockerfile: docker/ui-builder/Dockerfile
     image: lf-ui-builder
     container_name: lf-ui-builder
-    command: gulp sass:watch webpack-lf:watch
+    command: npm run build:watch
     volumes:
       # for developer convenience
       - ../src:/data/src
@@ -27,7 +27,6 @@ services:
       - db
       - mail
       - ld-api
-      - ui-builder
     environment:
       - WAIT_HOSTS=db:27017, mail:25
       - "LDAPI_BASE_URL=http://ld-api:3000/api/v2/"
@@ -49,12 +48,12 @@ services:
       - 80:80
       - 443:443
     depends_on:
-      - ui-builder
+      - app
     volumes:
       - lf-caddy-data:/data
       - lf-caddy-config:/config
     # https://caddyserver.com/docs/command-line
-    command: caddy reverse-proxy --from localhost --to api
+    command: caddy reverse-proxy --from localhost --to app
     restart: unless-stopped
 
   mail:
