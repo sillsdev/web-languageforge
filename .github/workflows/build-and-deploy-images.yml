@@ -46,7 +46,6 @@ jobs:
       - name: Tag images with Docker Hub location
         run: |
           docker tag lf-app sillsdev/web-languageforge:app-latest
-          docker tag lf-mail sillsdev/web-languageforge:mail-latest
 
       - name: Reveal images
         run: docker images
@@ -60,6 +59,5 @@ jobs:
       - name: Publish images to Docker Hub
         run: |
           docker push sillsdev/web-languageforge:app-latest
-          docker push sillsdev/web-languageforge:mail-latest
 
 # TODO: maybe there's a way to improve all this by utilizing docker's GH Actions...https://docs.docker.com/ci-cd/github-actions/, especially layer caching...
