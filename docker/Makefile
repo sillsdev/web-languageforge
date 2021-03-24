@@ -44,7 +44,7 @@ db-reset:
 .PHONY: deployable-app
 deployable-app: wait
 	docker-compose build ui-builder
-	docker-compose build app mail
+	docker-compose build app
 
 .PHONY: logs
 logs:
