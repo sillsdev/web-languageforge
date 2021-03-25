@@ -22,7 +22,7 @@ RUN npm config set unsafe-perm true && npm install
 COPY typings ./typings/
 COPY gulpfile.js webpack.config.js tsconfig.json tslint.json ./
 
-# copy in src files
+# copy in src local files
 COPY src ./src/
 
 # artifacts built to /data/src/dist

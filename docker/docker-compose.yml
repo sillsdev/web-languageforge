@@ -9,7 +9,9 @@ services:
     container_name: lf-ui-builder
     command: npm run build:watch
     volumes:
-      # for developer convenience
+      # share dist folder between ui and api containers
+      - lf-ui-dist:/data/src/dist
+      # for developer convenience volume map
       - ../src:/data/src
       - ../typings:/data/typings
       - ../webpack.config.js:/data/webpack.config.js
@@ -37,6 +39,9 @@ services:
       # persist user data uploads and assets
       - lf-user-data-assets:/var/www/src/assets
 
+      # share dist folder between ui and api containers
+      - lf-ui-dist:/var/www/src/dist
+      
       # for developer convenience
       - ../src/Api:/var/www/src/Api
       - ../src/Site:/var/www/src/Site
@@ -177,3 +182,4 @@ volumes:
   lf-caddy-data:
   lf-mongo-data:
   lf-user-data-assets:
+  lf-ui-dist:
