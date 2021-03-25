@@ -121,9 +121,12 @@ services:
     volumes:
       # for developer convenience
       - ../src:/data/src
+      - ../test:/data/test
       - ../typings:/data/typings
       - ../webpack.config.js:/data/webpack.config.js
       - ../gulpfile.js:/data/gulpfile.js
+      - ../package.json:/data/package.json
+      - ../package-lock.json:/data/package-lock.json
 
   app-for-e2e:
     build:

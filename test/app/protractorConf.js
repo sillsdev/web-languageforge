@@ -1,48 +1,27 @@
-
+var specString = '*';
+var specs = [
+  "/data/test/app/allspecs/**/*.e2e-spec.js",
+  "/data/test/app/bellows/**/" + specString + ".e2e-spec.js",
+  "/data/test/app/languageforge/**/" + specString + ".e2e-spec.js",
+];
 exports.config = {
-  // The address of a running selenium server.
   seleniumAddress: 'http://selenium:4444/wd/hub',
   baseUrl: 'http://app-for-e2e',
-
-  // The timeout in milliseconds for each script run on the browser. This should
-  // be longer than the maximum time your application needs to stabilize between
-  // tasks.
   allScriptsTimeout: 12000,
-
-  // To run tests in a single browser, uncomment the following
   capabilities: {
     browserName: 'chrome',
     chromeOptions: {
       args: ['--start-maximized']
     }
   },
-
+  specs: specs,
   framework: 'jasmine2',
-
-  // To run tests in multiple browsers, uncomment the following
-  // multiCapabilities: [{
-  //   'browserName': 'chrome'
-  // }, {
-  //   'browserName': 'firefox'
-  // }],
-
-  // Selector for the element housing the angular app - this defaults to
-  // body, but is necessary if ng-app is on a descendant of <body>
   rootElement: '[id="app-container"]',
-
-  // Spec patterns are relative to the current working directly when
-  // protractor is called.
-  //specs: specs,
-
-  // Options to be passed to Jasmine-node.
   jasmineNodeOpts: {
     showColors: true,
     defaultTimeoutInterval: 120000,
     print: function () {}
-
-    //isVerbose: true,
   },
-
   onPrepare: function () {
     /* global angular: false, browser: false, jasmine: false */
 
