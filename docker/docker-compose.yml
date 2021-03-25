@@ -11,13 +11,15 @@ services:
     volumes:
       # share dist folder between ui and api containers
       - lf-ui-dist:/data/src/dist
+
       # for developer convenience volume map
-      - ../src:/data/src
-      - ../typings:/data/typings
       - ../webpack.config.js:/data/webpack.config.js
       - ../gulpfile.js:/data/gulpfile.js
       - ../package.json:/data/package.json
       - ../package-lock.json:/data/package-lock.json
+
+      # needed this volume mapping so changes to typescript would be reflected in running app, actually rebundled and outpt to dist which is then shared to the app container.
+      - ../src/angular-app:/data/src/angular-app
 
   app:
     build:
@@ -40,11 +42,14 @@ services:
       - lf-user-data-assets:/var/www/src/assets
 
       # share dist folder between ui and api containers
-      - lf-ui-dist:/var/www/src/dist
-      
+      - lf-ui-dist:/var/www/html/dist
+
       # for developer convenience
       - ../src/Api:/var/www/src/Api
       - ../src/Site:/var/www/src/Site
+
+      # needed this volume mapping so changes to partials would be reflected in running app.
+      - ../src/angular-app:/var/www/src/angular-app
 
   ssl:
     image: caddy
