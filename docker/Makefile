@@ -1,7 +1,7 @@
 # https://docs.docker.com/compose/reference/overview
 
 .PHONY: start
-start: wait
+start:
   # starts the entire runtime infrastructure
 	docker-compose up -d ssl
 

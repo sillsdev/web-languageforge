@@ -8,6 +8,6 @@ COPY docker/test-e2e/run.sh /run.sh
 # copy in test folder
 COPY test/ /data/test/
 
-RUN gulp test-e2e-clean-compile
+RUN npm run compile-test-e2e
 
 CMD ["/run.sh"]

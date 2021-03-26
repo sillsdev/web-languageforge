@@ -17,7 +17,7 @@ attach_debugger () {
 
 attach_debugger &
 cd /data
-gulp test-e2e-doTest --webserverHost app-for-e2e "$@"
+npm run test-e2e
 STATUS=$?
 
 exit $STATUS

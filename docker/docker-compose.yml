@@ -124,6 +124,11 @@ services:
       - ../typings:/data/typings
       - ../webpack.config.js:/data/webpack.config.js
       - ../gulpfile.js:/data/gulpfile.js
+      - ../package.json:/data/package.json
+      - ../package-lock.json:/data/package-lock.json
+# uncomment on dev machine for convenience but don't commit - it messes up the e2e test run by
+# clobbering the JS files produced by tsc in the built image.
+#      - ../test:/data/test
 
   app-for-e2e:
     build:
