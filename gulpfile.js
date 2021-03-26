@@ -23,7 +23,6 @@ var replace = require('gulp-replace');
 var uglify = require('gulp-uglify');
 var gutil = require('gulp-util');
 var _template = require('lodash.template');
-var Server = require('karma').Server;
 var path = require('path');
 
 // -------------------------------------
@@ -37,88 +36,6 @@ var notifyReleaseStages = "['live', 'qa']";
 // "Google API" to find other lines to uncomment further below.
 
 // const secrets_google_api_client_id = require('./secrets/google-api-client-id.json');
-
-var srcPatterns = [
-  'src/angular-app/**',
-  'src/Api/**',
-  'src/Site/**',
-  'test/**'
-];
-
-var phpPatterns = [
-  'src/angular-app/**/*.php',
-  'src/Api/**/*.php',
-  'src/Site/**/*.php',
-  'test/**/*.php'
-];
-
-//region Test (PHP, JS, .NET, and E2E)
-
-function runKarmaTests(applicationName, cb, type) {
-  var config = {
-    configFile: __dirname + '/karma.conf.js',
-    applicationName: applicationName
-  };
-
-  switch (type) {
-    case 'ci':
-      config.reporters = 'teamcity';
-      break;
-
-    case 'watch':
-      config.autoWatch = true;
-      config.singleRun = false;
-      break;
-
-    case 'debug':
-      config.autoWatch = true;
-      config.singleRun = false;
-      config.browsers = [];
-      break;
-  }
-
-  new Server(config, function (err) {
-    if (err === 0) {
-      cb();
-    } else {
-      cb(new gutil.PluginError('karma', { message: 'Karma Tests failed' }));
-    }
-  }).start();
-}
-
-// -------------------------------------
-//   Task: test-ts
-// -------------------------------------
-gulp.task('test-ts', function (cb) {
-  var params = require('yargs')
-    .option('applicationName', {
-      demand: true,
-      type: 'string' })
-    .fail(yargFailure)
-    .argv;
-  runKarmaTests(params.applicationName, cb, 'ci');
-});
-
-// -------------------------------------
-//   Task: test-ts-lf
-// -------------------------------------
-gulp.task('test-ts-lf', function (cb) {
-  runKarmaTests('languageforge', cb);
-});
-
-// -------------------------------------
-//   Task: test-ts-lf:watch
-// -------------------------------------
-gulp.task('test-ts-lf:watch', function (cb) {
-  runKarmaTests('languageforge', cb, 'watch');
-});
-
-// -------------------------------------
-//   Task: test-ts-lf:debug
-// -------------------------------------
-gulp.task('test-ts-lf:debug', function (cb) {
-  runKarmaTests('languageforge', cb, 'debug');
-});
 
 //region build
 
