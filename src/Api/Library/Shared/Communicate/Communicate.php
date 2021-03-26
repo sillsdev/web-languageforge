@@ -294,8 +294,7 @@ class Communicate
 
     private static function sendTemplateEmail($to, $subject, $templateName, $vars, $website, DeliveryInterface $delivery = null)
     {
-        $senderEmail = 'no-reply@' . $website->domain;
-        $from = [$senderEmail => $website->name];
+        $from = 'no-reply@languageforge.org';
 
         $templatePath = $website->base . '/theme/' . $website->theme . '/email/en';
         if (! file_exists(APPPATH . 'Site/views/' . "$templatePath/$templateName.twig" )) {
