@@ -11,9 +11,7 @@ var workboxPlugin = require('workbox-webpack-plugin');
 
 module.exports = function (env) {
   if (env == null) {
-    env = {
-      isTest: false
-    };
+    env = { };
   }
 
   // Webpack Config
@@ -117,8 +115,7 @@ module.exports = function (env) {
 
   // Set up and return a customized Webpack config according to the environment we're in
 
-  webpackConfig.entry.main = './src/angular-app/languageforge/main' +
-    (env.isTest ? '.specs' : '') + '.ts';
+  webpackConfig.entry.main = './src/angular-app/languageforge/main.ts';
 
   if (process.env.NODE_ENV == "production") {
     webpackConfig.plugins.push(new webpack.DefinePlugin({
@@ -136,36 +133,25 @@ module.exports = function (env) {
     serviceWorkerConfig.skipWaiting = true;
   }
 
-  if (env.isTest) {
-    webpackConfig.devtool = false;
-    var plugins = [
-      new webpack.SourceMapDevToolPlugin({
-        filename: null, // if no value is provided the sourcemap is inlined
-        test: /\.(ts|js)($|\?)/i // process .js and .ts files only
-      })
-    ];
-    webpackConfig.plugins = webpackConfig.plugins.concat(plugins);
-  } else {
-    var plugins = [
-      new webpack.optimize.CommonsChunkPlugin({
-        name: 'vendor',
-        minChunks: function (module) {
-          // this assumes your vendor imports exist in the following directories
-          return module.context && (
-            module.context.indexOf('node_modules') !== -1 ||
-            module.context.indexOf('core/input-systems') !== -1
-          );
-        }
-      }),
+  var plugins = [
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'vendor',
+      minChunks: function (module) {
+        // this assumes your vendor imports exist in the following directories
+        return module.context && (
+          module.context.indexOf('node_modules') !== -1 ||
+          module.context.indexOf('core/input-systems') !== -1
+        );
+      }
+    }),
 
-      // CommonChunksPlugin will now extract all the common modules from vendor and main bundles
-      new webpack.optimize.CommonsChunkPlugin({
-        name: 'manifest'
-      }),
-      new LiveReloadPlugin()
-    ];
-    webpackConfig.plugins = webpackConfig.plugins.concat(plugins);
-  }
+    // CommonChunksPlugin will now extract all the common modules from vendor and main bundles
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'manifest'
+    }),
+    new LiveReloadPlugin()
+  ];
+  webpackConfig.plugins = webpackConfig.plugins.concat(plugins);
 
   // Add Service Worker to list of plugins
   webpackConfig.plugins = webpackConfig.plugins.concat(
