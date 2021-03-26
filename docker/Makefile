@@ -22,12 +22,8 @@ build-test-php: wait
 	docker-compose build mail ui-builder app test-php
 
 .PHONY: build
-build: wait
+build:
 	docker-compose build mail ui-builder app
-
-.PHONY: wait
-wait:
-	docker build -t wait wait/.
 
 .PHONY: db-reset
 db-reset: wait

@@ -34,7 +34,7 @@ ENV COMPOSER_ALLOW_SUPERUSER=1
 RUN composer install
 
 # make wait available for container ochestration
-COPY --from=wait /wait /wait
+COPY --from=megahirt/wait /wait /wait
 
 # copy src files into our image
 COPY src /var/www/html/

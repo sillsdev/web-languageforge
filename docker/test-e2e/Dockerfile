@@ -1,7 +1,7 @@
 FROM lf-ui-builder:latest
 
 # make wait available for container ochestration
-COPY --from=wait /wait /wait
+COPY --from=megahirt/wait /wait /wait
 
 COPY docker/test-e2e/run.sh /run.sh
 
