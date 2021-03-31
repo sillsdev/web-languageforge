@@ -33,11 +33,6 @@ module.exports = {
     },
 
     plugins: [
-        // new HtmlWebpackPlugin({
-        //     title: 'AngularJS - Webpack',
-        //     template: 'index.html',
-        //     inject: true
-        // }),
         new LoaderOptionsPlugin({
             debug: true,
             options: {
