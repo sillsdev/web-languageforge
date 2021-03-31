@@ -7,13 +7,14 @@ services:
       dockerfile: docker/ui-builder/Dockerfile
     image: lf-ui-builder
     container_name: lf-ui-builder
-    command: npm run build:watch
+    command: npm run build:prd
     volumes:
       # share dist folder between ui and api containers
       - lf-ui-dist:/data/src/dist
 
       # for developer convenience volume map
       - ../webpack.config.js:/data/webpack.config.js
+      - ../webpack-prd.config.js:/data/webpack-prd.config.js
       - ../gulpfile.js:/data/gulpfile.js
       - ../package.json:/data/package.json
       - ../package-lock.json:/data/package-lock.json
@@ -133,6 +134,7 @@ services:
       - ../src:/data/src
       - ../typings:/data/typings
       - ../webpack.config.js:/data/webpack.config.js
+      - ../webpack-prd.config.js:/data/webpack-prd.config.js
       - ../gulpfile.js:/data/gulpfile.js
 
   app-for-e2e:

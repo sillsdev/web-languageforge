@@ -16,14 +16,14 @@ WORKDIR /data
 # unsafe-perm is required to work around an npm bug since we are running as root and also have a git+HTTPS repo source.
 # see https://github.com/npm/npm/issues/17346
 COPY package.json package-lock.json ./
-RUN npm config set unsafe-perm true && npm install
+RUN npm config set unsafe-perm true && npm install --legacy-peer-deps
 
 # Copy in files needed for compilation, located in the repo root
 COPY typings ./typings/
-COPY gulpfile.js webpack.config.js tsconfig.json tslint.json ./
+COPY gulpfile.js webpack.config.js webpack-prd.config.js tsconfig.json tslint.json ./
 
 # copy in src local files
 COPY src ./src/
 
 # artifacts built to /data/src/dist
-RUN npm run build
+RUN npm run build:prd
