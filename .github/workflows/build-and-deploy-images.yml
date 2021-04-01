@@ -1,0 +1,63 @@
+name: Deploy to Docker Hub
+
+# https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#on
+on:
+  push:
+    branches:
+      - 'chore/publishBaseApp'
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  environment:
+    # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: What version of Make is installed
+        run: make --version
+
+      - name: What version of Docker is installed
+        run: docker --version
+
+      - name: What version of Docker-Compose is installed
+        run: docker-compose --version
+
+      - name: CPU info
+        run: cat /proc/cpuinfo
+
+      - name: RAM info
+        run: free
+
+      - name: Disk info
+        run: df -h
+
+  build-n-publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build base-app image
+        working-directory: ./docker-static/base-app
+        run: docker build . -t lf-base-app
+
+      - name: Tag images with Docker Hub location
+        run: |
+          docker tag lf-base-app sillsdev/web-languageforge:base-app-latest
+
+      - name: Reveal images
+        run: docker images
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Publish images to Docker Hub
+        run: |
+          docker push sillsdev/web-languageforge:base-app-latest
+
