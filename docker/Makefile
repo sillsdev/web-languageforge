@@ -7,11 +7,24 @@ start: build
 
 .PHONY: e2e-tests
 e2e-tests: build
-	docker-compose run test-e2e
+	ifeq($(TEAMCITY_VERSION),$())
+		# developer machine
+		docker-compose run test-e2e
+	else
+		# teamcity CI
+		docker-compose run -e TEAMCITY_VERSION=TEAMCITY_VERSION test-e2e
+	endif
 
 .PHONY: unit-tests
 unit-tests: build
-	docker-compose run test-php
+	ifeq($(TEAMCITY_VERSION),$())
+		# developer machine
+		docker-compose run test-php
+	else
+		# teamcity CI
+		docker-compose run --name unittests test-php
+		docker cp unittests:/var/www/PhpUnitTests.xml ..
+	endif
 
 .PHONY: build
 build:
