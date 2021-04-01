@@ -110,6 +110,11 @@ Other useful resources:
 1. less commonly, if you need to blow away shared artifacts from previous runs, simply `make clean-volumes`
 1. rarely needed but for a "start from scratch" environment, `make clean-powerwash`.
 
+### Running dev
+
+1. `make dev` will start the ui-builder
+1. Attaching to the ui-builder container should be enabled.
+
 ### Xdebug helper Chrome extension ####
 
 Install the [Xdebug helper](https://chrome.google.com/webstore/detail/xdebug-helper/eadndfjplgieldjbigjakmdgkmoaaaoc) extension which adds a bug icon to the top right area of Chrome extensions.

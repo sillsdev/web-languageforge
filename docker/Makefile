@@ -5,6 +5,10 @@ start: build
   # starts the entire runtime infrastructure
 	docker-compose up -d ssl
 
+.PHONY: dev
+dev: start
+	docker-compose up -d ui-builder
+
 .PHONY: e2e-tests
 e2e-tests: build
 	docker-compose build app-for-e2e test-e2e
