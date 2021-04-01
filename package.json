@@ -17,7 +17,9 @@
     "build:watch": "npm-run-all -r -p -l sass:watch webpack:watch",
     "webpack": "webpack",
     "webpack:watch": "webpack -w",
-    "webpack:production": "webpack -p"
+    "webpack:production": "webpack -p",
+    "compile-test-e2e": "tsc -p test/app",
+    "test-e2e": "protractor test/app/protractorConf.js"
   },
   "author": "",
   "license": "MIT",
@@ -94,7 +96,6 @@
     "gulp-clean-css": "^4.2.0",
     "gulp-concat": "^2.6.0",
     "gulp-exec": "~2.1.0",
-    "gulp-protractor": "^4.1.1",
     "gulp-replace": "^0.5.4",
     "gulp-uglify": "^2.0.0",
     "gulp-util": "~3.0.6",
