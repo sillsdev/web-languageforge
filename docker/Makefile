@@ -7,6 +7,7 @@ start: build
 
 .PHONY: e2e-tests
 e2e-tests: build
+	docker-compose build app-for-e2e test-e2e
 ifeq ($(TEAMCITY_VERSION),$())
 	# developer machine
 	docker-compose run test-e2e
@@ -17,6 +18,7 @@ endif
 
 .PHONY: unit-tests
 unit-tests: build
+	docker-compose build test-php
 ifeq ("$(TEAMCITY_VERSION)",$())
 	# developer machine
 	docker-compose run test-php
