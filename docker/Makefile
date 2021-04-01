@@ -1,36 +1,39 @@
 # https://docs.docker.com/compose/reference/overview
 
 .PHONY: start
-start:
+start: build
   # starts the entire runtime infrastructure
 	docker-compose up -d ssl
 
-.PHONY: test-e2e
-test-e2e: build-test-e2e
+.PHONY: e2e-tests
+e2e-tests: build
+	docker-compose build app-for-e2e test-e2e
+ifeq ($(TEAMCITY_VERSION),$())
+	# developer machine
 	docker-compose run test-e2e
+else
+	# teamcity CI
+	docker-compose run -e TEAMCITY_VERSION=TEAMCITY_VERSION test-e2e
+endif
 
-.PHONY: build-test-e2e
-build-test-e2e: wait
-	docker-compose build mail ui-builder app app-for-e2e test-e2e
-
-.PHONY: test-php
-test-php: build-test-php
+.PHONY: unit-tests
+unit-tests: build
+	docker-compose build test-php
+ifeq ("$(TEAMCITY_VERSION)",$())
+	# developer machine
 	docker-compose run test-php
-
-.PHONY: build-test-php
-build-test-php: wait
-	docker-compose build mail ui-builder app test-php
+else
+	# teamcity CI
+	docker-compose run --name unittests test-php
+	docker cp unittests:/var/www/PhpUnitTests.xml ..
+endif
 
 .PHONY: build
-build: wait
+build:
 	docker-compose build mail ui-builder app
 
-.PHONY: wait
-wait:
-	docker build -t wait wait/.
-
 .PHONY: db-reset
-db-reset: wait
+db-reset:
 	docker-compose build app
 	docker-compose run db-reset
 
@@ -51,4 +54,3 @@ clean-volumes:
 .PHONY: clean-powerwash
 clean-powerwash: clean-volumes
 	docker-compose down --rmi all
-	docker rmi wait

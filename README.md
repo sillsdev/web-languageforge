@@ -92,12 +92,12 @@ Other useful resources:
 
 ### Running E2E Tests
 
-1. `make build test-e2e`
+1. `make e2e-tests`
 1. Individual test results will appear in your terminal but if you'd like to watch them in real-time, simply VNC into the running tests via `localhost:5900`, e.g., Mac OSX users simply `open vnc://localhost:5900` and use `secret` as the password.  Other operating systems may require installing a separate VNC Viewer tool.
 
-### Running PHP Unit Tests
+### Running Unit Tests
 
-1. `make test-php`
+1. `make unit-tests`
 1. Test results will appear in your terminal
 
 ### Viewing logs
