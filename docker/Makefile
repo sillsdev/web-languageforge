@@ -42,7 +42,7 @@ db-reset:
 	docker-compose run db-reset
 
 .PHONY: deployable-app
-deployable-app: wait
+deployable-app:
 	docker-compose build ui-builder
 	docker-compose build app
 
