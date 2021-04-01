@@ -1,4 +1,4 @@
-name: Deploy to Docker Hub
+name: Publish Base App
 
 # https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#on
 on:
