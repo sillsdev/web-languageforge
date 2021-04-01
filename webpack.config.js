@@ -4,18 +4,30 @@ const ROOT = path.resolve(__dirname, './src/angular-app/languageforge');
 /**
  * Webpack Plugins
  */
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const LoaderOptionsPlugin = require('webpack/lib/LoaderOptionsPlugin');
-//const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyPlugin = require("copy-webpack-plugin");
 const webpack = require('webpack')
 
 module.exports = {
     context: ROOT,
-
     resolve: {
-        extensions: ['.ts', '.js']
+      extensions: ['.ts', '.js']
+    },
+
+    devServer: {
+      historyApiFallback: true,
+      watchOptions: { aggregateTimeout: 300, poll: 1000 },
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
+        'Access-Control-Allow-Headers': 'X-Requested-With, content-type, Authorization'
+      }
+    },
+
+    node: {
+      global: true,
+      __dirname: true,
+      __filename: true
     },
 
     module: {
@@ -33,15 +45,6 @@ module.exports = {
     },
 
     plugins: [
-        new LoaderOptionsPlugin({
-            debug: true,
-            options: {
-                tslint: {
-                    configuration: require('./tslint.json'),
-                    typeCheck: true
-                }
-            }
-        }),
         new MiniCssExtractPlugin({
             filename: '[name].css',
             chunkFilename: '[id].css'

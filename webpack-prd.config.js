@@ -4,6 +4,7 @@ const commonConfig = require("./webpack.config.js");
 const workboxPlugin = require('workbox-webpack-plugin');
 const DESTINATION = path.resolve(__dirname, 'src', 'dist');
 const LiveReloadPlugin = require('webpack-livereload-plugin');
+const LoaderOptionsPlugin = require('webpack/lib/LoaderOptionsPlugin');
 
 /**
  * Webpack Plugins
@@ -34,9 +35,19 @@ module.exports = webpackMerge(commonConfig, {
     runtimeChunk: {
       name: "manifest",
     },
+    minimize: true,
+    minimizer: [new TerserPlugin()],
   },
   plugins: [
-    new TerserPlugin(),
+    new LoaderOptionsPlugin({
+      debug: true,
+      options: {
+        tslint: {
+          configuration: require('./tslint.json'),
+          typeCheck: true
+        }
+      }
+    }),
     new workboxPlugin.GenerateSW({
       clientsClaim: true,
       skipWaiting: true,
