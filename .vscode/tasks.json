@@ -49,20 +49,6 @@
           "reveal": "silent"
         },
         "problemMatcher": []
-      },
-      {
-        "label": "sass",
-        "type": "shell",
-        "windows": {
-          "command": "bash -c 'gulp sass'"
-        },
-        "linux": {
-          "command": "gulp sass"
-        },
-        "presentation": {
-          "reveal": "silent"
-        },
-        "problemMatcher": "$node-sass"
       }
     ]
   }

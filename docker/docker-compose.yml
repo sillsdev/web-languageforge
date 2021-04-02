@@ -16,7 +16,6 @@ services:
       - ../webpack.config.js:/data/webpack.config.js
       - ../webpack-dev.config.js:/data/webpack-dev.config.js
       - ../webpack-prd.config.js:/data/webpack-prd.config.js
-      - ../gulpfile.js:/data/gulpfile.js
       - ../package.json:/data/package.json
       - ../package-lock.json:/data/package-lock.json
 
@@ -137,7 +136,6 @@ services:
       - ../webpack.config.js:/data/webpack.config.js
       - ../webpack-dev.config.js:/data/webpack-dev.config.js
       - ../webpack-prd.config.js:/data/webpack-prd.config.js
-      - ../gulpfile.js:/data/gulpfile.js
       - ../package.json:/data/package.json
       - ../package-lock.json:/data/package-lock.json
 # uncomment on dev machine for convenience but don't commit - it messes up the e2e test run by

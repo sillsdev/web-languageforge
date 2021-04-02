@@ -136,16 +136,6 @@ Chrome debugging has also been configured. Launch configurations are defined in 
 
 ## Testing ##
 
-### TypeScript Unit Tests ###
-
-`gulp test-ts-lf` or `gulp test-ts-sf`
-
-If you are doing a lot of testing use
-
-`gulp test-ts-lf:watch` or `gulp test-ts-sf:watch`
-
-TypeScript unit test spec files live in the `src` folder next to the relevant source file and have the file extension `.spec.ts`. Only E2E test specs will be in the `test` folder.
-
 ### E2E Tests ###
 To test a certain test spec, add a parameter `--specs [spec name]`.  For example,
 
