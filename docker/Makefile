@@ -12,7 +12,7 @@ dev: start
 .PHONY: e2e-tests
 e2e-tests: build
 	docker-compose build app-for-e2e test-e2e
-ifeq ($(TEAMCITY_VERSION),$())
+ifeq ($(GITHUB_ACTIONS),$())
 	# developer machine
 	docker-compose run test-e2e
 else
@@ -23,13 +23,13 @@ endif
 .PHONY: unit-tests
 unit-tests: build
 	docker-compose build test-php
-ifeq ("$(TEAMCITY_VERSION)",$())
+ifeq ("$(GITHUB_ACTIONS)",$())
 	# developer machine
 	docker-compose run test-php
 else
 	# teamcity CI
 	docker-compose run --name unittests test-php
-	docker cp unittests:/var/www/PhpUnitTests.xml ..
+	docker cp unittests:/var/www/PhpUnitTests.xml .
 endif
 
 .PHONY: build
