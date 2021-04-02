@@ -41,6 +41,11 @@ db-reset:
 	docker-compose build app
 	docker-compose run db-reset
 
+.PHONY: deployable-app
+deployable-app:
+	docker-compose build ui-builder
+	docker-compose build app
+
 .PHONY: logs
 logs:
 	docker-compose logs
