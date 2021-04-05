@@ -18,8 +18,6 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Security;
 
-defined('ENVIRONMENT') or exit('No direct script access allowed');
-
 class Auth extends App
 {
     // return status
