@@ -34,7 +34,7 @@ endif
 
 .PHONY: build
 build:
-	docker-compose build mail ui-builder app
+	docker-compose build mail ui-builder app ld-api
 
 .PHONY: db-reset
 db-reset:
