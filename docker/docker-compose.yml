@@ -170,6 +170,7 @@ services:
       - mail
     environment:
       - WAIT_HOSTS=db:27017, mail:25
+      - ENVIRONMENT=testing
     command: sh -c "/wait && /run.sh"
     volumes:
       # for developer convenience
