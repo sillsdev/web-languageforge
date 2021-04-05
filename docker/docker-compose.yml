@@ -156,6 +156,7 @@ services:
     environment:
       - WAIT_HOSTS=db:27017, mail:25
       - "LDAPI_BASE_URL=http://ld-api:3000/api/v2/"
+      - ENVIRONMENT=testing
     command: sh -c "/wait && /run.sh"
 
   test-php:
