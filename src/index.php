@@ -28,26 +28,22 @@ $app = new Silex\Application();
  * By default development will have debugging on but testing and live will turn it off.
  */
 
-if (defined('ENVIRONMENT')) {
-    switch (ENVIRONMENT) {
-        case 'development':
-            $app['bugsnag'] = null;
-            error_reporting(E_ALL);
-            $app['debug'] = true;
-            break;
+switch (ENVIRONMENT) {
+    case 'development':
+        $app['bugsnag'] = null;
+        error_reporting(E_ALL);
+        $app['debug'] = true;
+        break;
 
-        case 'testing':
-        case 'production':
-            BugsnagExceptionHandler::setup($app, BUGSNAG_API_KEY);
-            error_reporting(0);
-            $app['debug'] = false;
-            break;
+    case 'testing':
+    case 'production':
+        BugsnagExceptionHandler::setup($app, BUGSNAG_API_KEY);
+        error_reporting(0);
+        $app['debug'] = false;
+        break;
 
-        default:
-            exit('Error: The application environment is not set correctly. Please open the following file and correct this: '.SELF);
-    }
-} else {
-    exit('Error: The application environment is not set correctly. Please open the following file and correct this: '.SELF);
+    default:
+        exit('Error: The application environment is not set correctly. Please open the following file and correct this: '.SELF);
 }
 
 /*--------------------------------------------------------------------
@@ -106,16 +102,14 @@ if ($WEBSITE) {
  *--------------------------------------------------------------------
  */
 
-if (defined('ENVIRONMENT')) {
-    switch (ENVIRONMENT) {
-        case 'development':
-            define('TWIG_CACHE_PATH', false);
-            break;
-        case 'testing':
-        case 'production':
-        default:
-            define('TWIG_CACHE_PATH', APPPATH . 'cache');
-    }
+switch (ENVIRONMENT) {
+    case 'development':
+        define('TWIG_CACHE_PATH', false);
+        break;
+    case 'testing':
+    case 'production':
+    default:
+        define('TWIG_CACHE_PATH', APPPATH . 'cache');
 }
 
 $app->register(new Silex\Provider\TwigServiceProvider(), array(
