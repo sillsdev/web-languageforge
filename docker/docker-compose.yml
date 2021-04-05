@@ -37,6 +37,8 @@ services:
       - "LDAPI_BASE_URL=http://ld-api:3000/api/v2/"
       # LDAPI_BASE_URL hostname and port need to match container name and port of the ld-api container (defined further down)
       # TODO: Make a run.sh that sets umask and then runs apache2-foreground
+
+      - ENVIRONMENT=development
     command: sh -c "/wait && umask 0002 && apache2-foreground"
     volumes:
       # persist user data uploads and assets
