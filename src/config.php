@@ -22,10 +22,6 @@ use Sil\PhpEnv\Env; // https://github.com/silinternational/php-env#class-env-sum
 
 define('ENVIRONMENT', Env::requireEnv('ENVIRONMENT'));
 
-if (file_exists('userConfig.php')) {
-    require_once('userConfig.php');
-}
-
 /*---------------------------------------------------------------
  * General xForge Configuration
  *---------------------------------------------------------------
