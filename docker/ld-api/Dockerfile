@@ -15,13 +15,15 @@ ADD https://github.com/sillsdev/web-languagedepot-api/tarball/nodejs ./
 RUN tar xvzf nodejs && rm nodejs && mv sillsdev-web-languagedepot-api-* ldapi
 WORKDIR /git/ldapi
 RUN pnpm i --frozen-lockfile
+# Temporary workaround for module resolution failure during svelte-kit build
+RUN npm i
 RUN pnpm run build
 
 # Step 2: Create minimal container with running app
 FROM node:14.15.4-alpine
 COPY --from=builder /usr/local/lib/node_modules/pnpm /usr/local/lib/node_modules/pnpm
-RUN ln -s ../lib/node_modules/pnpm/bin/pnpm.js /usr/local/bin/pnpm && \
-    ln -s ../lib/node_modules/pnpm/bin/pnpx.js /usr/local/bin/pnpx
+RUN ln -s ../lib/node_modules/pnpm/bin/pnpm.cjs /usr/local/bin/pnpm && \
+    ln -s ../lib/node_modules/pnpm/bin/pnpx.cjs /usr/local/bin/pnpx
 WORKDIR /app
 COPY --from=builder /git/ldapi/static assets
 COPY --from=builder /git/ldapi/package.json /git/ldapi/pnpm-lock.yaml ./
