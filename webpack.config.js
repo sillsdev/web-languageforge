@@ -69,16 +69,16 @@ module.exports = {
             // The ([\\/]) piece accounts for path separators in *nix and Windows
             /angular([\\/])core([\\/])@angular/,
             path.resolve(__dirname, './src'),
-    
+
             // your Angular Async Route paths relative to this root directory
             {}
           ),
           new webpack.DefinePlugin({
-            'process.env.XFORGE_BUGSNAG_API_KEY': JSON.stringify(process.env.XFORGE_BUGSNAG_API_KEY
+            'process.env.BUGSNAG_API_KEY': JSON.stringify(process.env.BUGSNAG_API_KEY
               || 'missing-bugsnag-api-key'),
-            'process.env.NOTIFY_RELEASE_STAGES': process.env.NOTIFY_RELEASE_STAGES || "['live', 'qa']"
-          }),  
-      
+            'process.env.BUGSNAG_NOTIFY_RELEASE_STAGES': process.env.BUGSNAG_NOTIFY_RELEASE_STAGES || "['live', 'qa']"
+          }),
+
     ],
 
     entry: './main.ts'
