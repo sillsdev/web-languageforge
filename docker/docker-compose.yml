@@ -39,6 +39,9 @@ services:
       # TODO: Make a run.sh that sets umask and then runs apache2-foreground
 
       - ENVIRONMENT=development
+      # - ENVIRONMENT=testing|production
+      # - BUGSNAG_API_KEY=some-key
+      # - BUGSNAG_NOTIFY_RELEASE_STAGES=live,qa
     command: sh -c "/wait && umask 0002 && apache2-foreground"
     volumes:
       # persist user data uploads and assets

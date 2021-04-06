@@ -37,7 +37,7 @@ switch (ENVIRONMENT) {
 
     case 'testing':
     case 'production':
-        BugsnagExceptionHandler::setup($app, BUGSNAG_API_KEY);
+        BugsnagExceptionHandler::setup($app);
         error_reporting(0);
         $app['debug'] = false;
         break;
