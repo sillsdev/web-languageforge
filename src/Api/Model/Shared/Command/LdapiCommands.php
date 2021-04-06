@@ -6,10 +6,11 @@ use Api\Service\Ldapi;
 
 class LdapiCommands
 {
+    const SEARCH_BASE_URL = 'search';
     const USERS_BASE_URL = 'users';
-    const SEARCHUSERS_BASE_URL = 'searchUsers';
+    const SEARCHUSERS_BASE_URL = self::SEARCH_BASE_URL . '/' . self::USERS_BASE_URL;
     const PROJECTS_BASE_URL = 'projects';
-    const SEARCHPROJECTS_BASE_URL = 'searchProjects';
+    const SEARCHPROJECTS_BASE_URL = self::SEARCH_BASE_URL . '/' . self::PROJECTS_BASE_URL;
     const ROLES_BASE_URL = 'roles';
 
     const URL_PART_GET_ALL = '';

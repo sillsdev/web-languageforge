@@ -8,20 +8,24 @@
 
 # Step 1: Build app
 FROM node:14.15.4-alpine AS builder
+RUN npm i -g pnpm
 WORKDIR /git
 ADD https://github.com/sillsdev/web-languagedepot-api/tarball/nodejs ./
 # Github tarball has top-level directory USER-REPO-HASH, and HASH is unpredictable ahead of time, so we rename it
 RUN tar xvzf nodejs && rm nodejs && mv sillsdev-web-languagedepot-api-* ldapi
 WORKDIR /git/ldapi
-RUN npm ci
-RUN npm run build && npm run adapt
+RUN pnpm i --frozen-lockfile
+RUN pnpm run build
 
 # Step 2: Create minimal container with running app
 FROM node:14.15.4-alpine
+COPY --from=builder /usr/local/lib/node_modules/pnpm /usr/local/lib/node_modules/pnpm
+RUN ln -s ../lib/node_modules/pnpm/bin/pnpm.js /usr/local/bin/pnpm && \
+    ln -s ../lib/node_modules/pnpm/bin/pnpx.js /usr/local/bin/pnpx
 WORKDIR /app
 COPY --from=builder /git/ldapi/static assets
-COPY --from=builder /git/ldapi/package*.json ./
-RUN npm ci
+COPY --from=builder /git/ldapi/package.json /git/ldapi/pnpm-lock.yaml ./
+RUN pnpm i --prod --frozen-lockfile
 COPY --from=builder /git/ldapi/build ./
 EXPOSE 3000
 USER node
