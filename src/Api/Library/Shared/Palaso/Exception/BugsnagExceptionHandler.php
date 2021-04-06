@@ -7,19 +7,19 @@ use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\UserModel;
 use Bugsnag\Silex\Silex1ServiceProvider;
 use Silex\Application;
+use Sil\PhpEnv\Env; // https://github.com/silinternational/php-env#class-env-summary-of-functions
 
 class BugsnagExceptionHandler
 {
-    public static function setup(Application $application, String $apiKey)
+    public static function setup(Application $application)
     {
         $application->register(new Silex1ServiceProvider());
 
         $application['bugsnag.options'] = [
-            'api_key' => $apiKey,
+            'api_key' => Env::requireEnv('BUGSNAG_API_KEY'),
         ];
 
-        // only send errors to bugsnag if we're running on live or qa
-        $application['bugsnag']->setNotifyReleaseStages(BUGSNAG_NOTIFY_RELEASE_STAGES);
+        $application['bugsnag']->setNotifyReleaseStages(Env::requireArray('BUGSNAG_NOTIFY_RELEASE_STAGES'));
         $application['bugsnag']->setAppVersion(VERSION);
         $application['bugsnag']->setAppType('PHP');
 
