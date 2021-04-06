@@ -79,10 +79,6 @@ if (! defined('LANGUAGE_DEPOT_API_TOKEN')) {
     define('LANGUAGE_DEPOT_API_TOKEN', 'not-a-secret');
 }
 
-if (! defined('GATHERWORDS_CLIENT_ID')) {
-    define('GATHERWORDS_CLIENT_ID', 'gatherWordsClientId');
-}
-
 define('NG_BASE_FOLDER', 'angular-app/');
 define('BCRYPT_COST', 7);
 
