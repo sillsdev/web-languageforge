@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ed474d12fdb6d356bd6386f95f164958",
+    "content-hash": "d92617405e6c280a5256bb9e4fa28249",
     "packages": [
         {
             "name": "aptoma/twig-markdown",
@@ -1285,6 +1285,44 @@
             ],
             "abandoned": "symfony/flex",
             "time": "2017-04-30T16:26:54+00:00"
+        },
+        {
+            "name": "silinternational/php-env",
+            "version": "2.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/silinternational/php-env.git",
+                "reference": "3906403fde599b04b82fd51b2c0ddc3a04fdd47e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/silinternational/php-env/zipball/3906403fde599b04b82fd51b2c0ddc3a04fdd47e",
+                "reference": "3906403fde599b04b82fd51b2c0ddc3a04fdd47e",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4"
+            },
+            "require-dev": {
+                "johnkary/phpunit-speedtrap": "1.*",
+                "phpunit/phpunit": "^6.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Sil\\PhpEnv\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Simple PHP library for getting (or requiring) environment variables, designed to handle true, false, and null more intelligently. If desired, an environment variable's value can be split into an array automatically.",
+            "support": {
+                "issues": "https://github.com/silinternational/php-env/issues",
+                "source": "https://github.com/silinternational/php-env/tree/master"
+            },
+            "time": "2017-08-31T12:44:44+00:00"
         },
         {
             "name": "sillsdev/web-php-utilities",

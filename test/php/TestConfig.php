@@ -9,10 +9,6 @@ if (! defined('APPPATH')) {
     define('APPPATH', $rootPath . 'src/');
 }
 
-if (! defined('ENVIRONMENT')) {
-    define('ENVIRONMENT', 'development');
-}
-
 require_once APPPATH . 'vendor/autoload.php';
 
 define('TestMode', true);

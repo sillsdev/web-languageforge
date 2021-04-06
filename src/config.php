@@ -1,5 +1,7 @@
 <?php
 
+use Sil\PhpEnv\Env; // https://github.com/silinternational/php-env#class-env-summary-of-functions
+
 /*---------------------------------------------------------------
  * Application Environment
  *---------------------------------------------------------------
@@ -18,9 +20,7 @@
  *
  */
 
-if (! defined('ENVIRONMENT')) {
-    define('ENVIRONMENT', 'development');
-}
+define('ENVIRONMENT', Env::requireEnv('ENVIRONMENT'));
 
 if (file_exists('userConfig.php')) {
     require_once('userConfig.php');
