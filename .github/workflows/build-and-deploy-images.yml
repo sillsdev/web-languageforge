@@ -3,10 +3,9 @@ name: Deploy to Docker Hub
 # https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#on
 on:
   push:
-    # tags:
-    #   - build-n-publish-images
-    branches:
-      - 'chore/migrate-bugsnag-env'
+    tags:
+      - build-n-publish-images
+
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
