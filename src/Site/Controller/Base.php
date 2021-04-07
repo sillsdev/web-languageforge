@@ -25,7 +25,7 @@ class Base
         $this->data['smallAvatarUrl'] = '';
         $this->data['userName'] = '';
         $this->data['version'] = VERSION;
-        $this->data['useMinifiedJs'] = USE_MINIFIED_JS;
+        $this->data['useMinifiedJs'] = true;
         $this->data['http_host'] = $_SERVER['HTTP_HOST'];
 
         $this->data['jsFiles'] = [];
@@ -122,7 +122,7 @@ class Base
         $this->data['themeColor'] = '#0a2440';
 
         $this->populateHeaderMenuViewdata();
-        $this->data['useCdn'] = USE_CDN;
+        $this->data['useCdn'] = true;
 
         if (empty($this->data)) {
             $app->abort(404, 'Error: cannot render without data');

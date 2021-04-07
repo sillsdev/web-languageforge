@@ -36,20 +36,4 @@ if (! defined('MONGODB_CONN')) {
     define('MONGODB_CONN', 'mongodb://db:27017');
 }
 
-if (! defined('USE_MINIFIED_JS')) {
-    if (defined('ENVIRONMENT') and ENVIRONMENT === 'development') {
-        define('USE_MINIFIED_JS', false);
-    } else {
-        define('USE_MINIFIED_JS', true);
-    }
-}
-
-if (! defined('USE_CDN')) {
-    if (defined('ENVIRONMENT') and ENVIRONMENT === 'development') {
-        define('USE_CDN', false);
-    } else {
-        define('USE_CDN', true);
-    }
-}
-
 define('BCRYPT_COST', 7);
