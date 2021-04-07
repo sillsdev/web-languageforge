@@ -21,6 +21,7 @@ use Sil\PhpEnv\Env; // https://github.com/silinternational/php-env#class-env-sum
  */
 
 define('ENVIRONMENT', Env::requireEnv('ENVIRONMENT'));
+define('LANGUAGE_DEPOT_API_TOKEN', Env::requireEnv('LANGUAGE_DEPOT_API_TOKEN'));
 
 /*---------------------------------------------------------------
  * General xForge Configuration
@@ -49,10 +50,6 @@ if (! defined('USE_CDN')) {
     } else {
         define('USE_CDN', true);
     }
-}
-
-if (! defined('LANGUAGE_DEPOT_API_TOKEN')) {
-    define('LANGUAGE_DEPOT_API_TOKEN', 'not-a-secret');
 }
 
 define('BCRYPT_COST', 7);
