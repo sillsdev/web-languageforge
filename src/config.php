@@ -51,10 +51,6 @@ if (! defined('USE_CDN')) {
     }
 }
 
-if (! defined('REMEMBER_ME_SECRET')) {
-    define('REMEMBER_ME_SECRET', 'not_a_secret');
-}
-
 if (! defined('LANGUAGE_DEPOT_API_TOKEN')) {
     define('LANGUAGE_DEPOT_API_TOKEN', 'not-a-secret');
 }
