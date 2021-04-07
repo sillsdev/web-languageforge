@@ -75,7 +75,6 @@ if (! defined('LANGUAGE_DEPOT_API_TOKEN')) {
     define('LANGUAGE_DEPOT_API_TOKEN', 'not-a-secret');
 }
 
-define('NG_BASE_FOLDER', 'angular-app/');
 define('BCRYPT_COST', 7);
 
 if (!defined('BUGSNAG_API_KEY')) {

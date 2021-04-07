@@ -123,7 +123,7 @@ class App extends Base
             $this->addJavascriptFiles($model->parentAppFolder, ['js/vendor', 'js/assets']);
         }
 
-        $this->addCssFiles(NG_BASE_FOLDER . 'bellows/shared');
+        $this->addCssFiles('angular-app/bellows/shared');
         $this->addCssFiles($model->appFolder, ['node_modules']);
 
         if ($model->appName !== 'ldproject') {
@@ -267,9 +267,9 @@ class AppModel {
      * @throws AppNotFoundException
      */
     private function determineFolderPaths($appName, $projectId, $website, $isPublic) {
-        $siteFolder = NG_BASE_FOLDER . $website->base;
+        $siteFolder = 'angular-app/' . $website->base;
         $sitePublicFolder = "$siteFolder/public";
-        $bellowsFolder = NG_BASE_FOLDER . "bellows";
+        $bellowsFolder = "angular-app/bellows";
         $bellowsAppFolder = "$bellowsFolder/apps";
         $bellowsPublicAppFolder = "$bellowsAppFolder/public";
         $parentAppFolder = '';
