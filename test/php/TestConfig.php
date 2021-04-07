@@ -1,6 +1,7 @@
 <?php
 
 use Api\Library\Shared\Website;
+use Sil\PhpEnv\Env; // https://github.com/silinternational/php-env#class-env-summary-of-functions
 
 $rootPath = realpath(__DIR__ . '/../..') . DIRECTORY_SEPARATOR;
 
@@ -27,7 +28,7 @@ define('SF_TESTPROJECT2',     'Test Project2');
 define('SF_TESTPROJECTCODE2', 'testcode2');
 define('BCRYPT_COST', 7);
 
-define('LANGUAGE_DEPOT_API_TOKEN', 'not-a-secret');
+define('LANGUAGE_DEPOT_API_TOKEN', Env::requireEnv('LANGUAGE_DEPOT_API_TOKEN'));
 
 global $WEBSITE;
 $WEBSITE = Website::get('localhost');

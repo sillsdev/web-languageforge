@@ -21,6 +21,7 @@ use Sil\PhpEnv\Env; // https://github.com/silinternational/php-env#class-env-sum
  */
 
 define('ENVIRONMENT', Env::requireEnv('ENVIRONMENT'));
+define('LANGUAGE_DEPOT_API_TOKEN', Env::requireEnv('LANGUAGE_DEPOT_API_TOKEN'));
 
 /*---------------------------------------------------------------
  * General xForge Configuration
@@ -69,10 +70,6 @@ if (! defined('FACEBOOK_CLIENT_ID')) {
 
 if (! defined('FACEBOOK_CLIENT_SECRET')) {
     define('FACEBOOK_CLIENT_SECRET', 'facebookClientSecret');
-}
-
-if (! defined('LANGUAGE_DEPOT_API_TOKEN')) {
-    define('LANGUAGE_DEPOT_API_TOKEN', 'not-a-secret');
 }
 
 define('NG_BASE_FOLDER', 'angular-app/');
