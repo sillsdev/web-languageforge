@@ -33,8 +33,12 @@ else
 endif
 
 .PHONY: build
-build:
-	docker-compose build mail ui-builder app ld-api
+build: ui-builder
+	docker-compose build mail app ld-api
+
+.PHONY: build-ui
+build-ui:
+	docker-compose build --build-arg BUGSNAG_API_KEY=${BUGSNAG_API_KEY} ui-builder
 
 .PHONY: db-reset
 db-reset:
@@ -42,8 +46,7 @@ db-reset:
 	docker-compose run db-reset
 
 .PHONY: deployable-app
-deployable-app:
-	docker-compose build ui-builder
+deployable-app: build-ui
 	docker-compose build app
 
 .PHONY: logs

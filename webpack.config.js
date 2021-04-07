@@ -74,9 +74,7 @@ module.exports = {
             {}
           ),
           new webpack.DefinePlugin({
-            'process.env.BUGSNAG_API_KEY': JSON.stringify(process.env.BUGSNAG_API_KEY
-              || 'missing-bugsnag-api-key'),
-            'process.env.BUGSNAG_NOTIFY_RELEASE_STAGES': process.env.BUGSNAG_NOTIFY_RELEASE_STAGES || "['live', 'qa']"
+            'process.env.BUGSNAG_API_KEY': JSON.stringify(process.env.BUGSNAG_API_KEY),
           }),
 
     ],

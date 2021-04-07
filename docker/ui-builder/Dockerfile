@@ -22,5 +22,8 @@ COPY webpack.config.js webpack-dev.config.js webpack-prd.config.js tsconfig.json
 # copy in src local files
 COPY src ./src/
 
+ARG BUGSNAG_API_KEY='missing-bugsnag-api-key'
+ENV BUGSNAG_API_KEY=$BUGSNAG_API_KEY
+
 # artifacts built to /data/src/dist
 RUN npm run build:dev

@@ -22,7 +22,7 @@ export class ExceptionHandlingService {
     // process.env.* are set in webpack.config.js
     this.bugsnagClient = Bugsnag({
       apiKey: process.env.BUGSNAG_API_KEY,
-      notifyReleaseStages: process.env.BUGSNAG_NOTIFY_RELEASE_STAGES,
+      notifyReleaseStages: ['live', 'qa'],
       releaseStage: this.getReleaseStage()
     });
   }
