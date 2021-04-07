@@ -3,9 +3,10 @@ name: Deploy to Docker Hub
 # https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#on
 on:
   push:
-    tags:
-      - build-n-publish-images
-
+    # tags:
+    #   - build-n-publish-images
+    branches:
+      - 'chore/migrate-bugsnag-env'
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -38,26 +39,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - name: establish ENV
+        run: export BUGSNAG_API_KEY=abc123
 
-      - name: Build app
-        run: make --directory=docker deployable-app
+      - name: view
+        run: env
 
-      - name: Tag images with Docker Hub location
-        run: |
-          docker tag lf-app sillsdev/web-languageforge:app-latest
+      # - uses: actions/checkout@v2
 
-      - name: Reveal images
-        run: docker images
+      # - name: Build app
+      #   run: make --directory=docker deployable-app
 
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      # - name: Tag images with Docker Hub location
+      #   run: |
+      #     docker tag lf-app sillsdev/web-languageforge:app-latest
 
-      - name: Publish images to Docker Hub
-        run: |
-          docker push sillsdev/web-languageforge:app-latest
+      # - name: Reveal images
+      #   run: docker images
 
-# TODO: maybe there's a way to improve all this by utilizing docker's GH Actions...https://docs.docker.com/ci-cd/github-actions/, especially layer caching...
+      # - name: Log in to Docker Hub
+      #   uses: docker/login-action@v1
+      #   with:
+      #     username: ${{ secrets.DOCKERHUB_USERNAME }}
+      #     password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      # - name: Publish images to Docker Hub
+      #   run: |
+      #     docker push sillsdev/web-languageforge:app-latest
