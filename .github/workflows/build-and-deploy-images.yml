@@ -39,16 +39,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: view ENV
-        run: env
-        env:
-          BUGSNAG_API_KEY: abc123
-
-      # - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
       # - name: Build app
       #   run: make --directory=docker deployable-app
+      - name: Build ui
+        run: make --directory=docker build-ui
+        env:
+          BUGSNAG_API_KEY: abc123
 
+      - name: did it make it?
+        run: docker-compose run ui-builder cat /data/src/dist/main.bundle.js
       # - name: Tag images with Docker Hub location
       #   run: |
       #     docker tag lf-app sillsdev/web-languageforge:app-latest
