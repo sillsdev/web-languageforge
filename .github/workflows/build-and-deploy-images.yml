@@ -49,7 +49,9 @@ jobs:
           BUGSNAG_API_KEY: abc123
 
       - name: did it make it?
-        run: docker-compose run ui-builder cat /data/src/dist/main.bundle.js
+        run: |
+          cd docker
+          docker-compose run ui-builder cat /data/src/dist/main.bundle.js
       # - name: Tag images with Docker Hub location
       #   run: |
       #     docker tag lf-app sillsdev/web-languageforge:app-latest
