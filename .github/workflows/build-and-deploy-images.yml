@@ -39,12 +39,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: establish ENV
+      - name: view ENV
+        run: env
         env:
           BUGSNAG_API_KEY: abc123
-
-      - name: view
-        run: env
 
       # - uses: actions/checkout@v2
 
