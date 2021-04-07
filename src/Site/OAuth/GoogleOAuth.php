@@ -14,6 +14,7 @@ use Silex\Application;
 use Site\OAuth\OAuthBase;
 use Site\OAuth\SelectAccountGoogleOAuthProvider;
 use Symfony\Component\HttpFoundation\Request;
+use Sil\PhpEnv\Env; // https://github.com/silinternational/php-env#class-env-summary-of-functions
 
 class GoogleOAuth extends OAuthBase
 {
@@ -46,8 +47,8 @@ class GoogleOAuth extends OAuthBase
     protected function getOAuthProvider($redirectUri): AbstractProvider
     {
         $provider = new SelectAccountGoogleOAuthProvider([
-            'clientId' => GOOGLE_CLIENT_ID,
-            'clientSecret' => GOOGLE_CLIENT_SECRET,
+            'clientId' => Env::requireEnv('GOOGLE_CLIENT_ID'),
+            'clientSecret' => Env::requireEnv('GOOGLE_CLIENT_SECRET'),
             'redirectUri' => $redirectUri,
         ]);
         return $provider;

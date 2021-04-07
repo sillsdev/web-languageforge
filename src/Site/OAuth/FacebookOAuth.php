@@ -14,6 +14,7 @@ use Silex\Application;
 use Site\OAuth\OAuthBase;
 use Site\OAuth\SelectAccountFacebookOAuthProvider;
 use Symfony\Component\HttpFoundation\Request;
+use Sil\PhpEnv\Env; // https://github.com/silinternational/php-env#class-env-summary-of-functions
 
 class FacebookOAuth extends OAuthBase
 {
@@ -60,8 +61,8 @@ class FacebookOAuth extends OAuthBase
     protected function getOAuthProvider($redirectUri): AbstractProvider
     {
         $provider = new SelectAccountFacebookOAuthProvider([
-            'clientId' => FACEBOOK_CLIENT_ID,
-            'clientSecret' => FACEBOOK_CLIENT_SECRET,
+            'clientId' => Env::requireEnv('FACEBOOK_CLIENT_ID'),
+            'clientSecret' => Env::requireEnv('FACEBOOK_CLIENT_SECRET'),
             'redirectUri' => $redirectUri,
             'graphApiVersion' => 'v4.0',
         ]);
