@@ -164,6 +164,7 @@ services:
       - WAIT_HOSTS=db:27017, mail:25
       - "LDAPI_BASE_URL=http://ld-api:3000/api/v2/"
       - ENVIRONMENT=development
+      - REMEMBER_ME_SECRET=bogus-development-key
     command: sh -c "/wait && /run.sh"
 
   test-php:
