@@ -4,6 +4,7 @@ use Symfony\Component\Debug\ExceptionHandler;
 use Symfony\Component\HttpFoundation\Request;
 use Api\Library\Shared\Website;
 use Api\Library\Shared\Palaso\Exception\BugsnagExceptionHandler;
+use Sil\PhpEnv\Env; // https://github.com/silinternational/php-env#class-env-summary-of-functions
 
 require_once __DIR__ . '/vendor/autoload.php';
 require_once 'config.php';
@@ -162,7 +163,7 @@ $app['security.firewalls'] = array(
         'pattern' => '^.*$',
         'anonymous' => true,
         'form' => array('login_path' => '/auth/login', 'check_path' => '/app/login_check'),
-        'remember_me' => array('key' => REMEMBER_ME_SECRET),
+        'remember_me' => array('key' => Env::requireEnv('REMEMBER_ME_SECRET')),
         'logout' => array('logout_path' => '/auth/logout', 'target_url' => '/auth/login', 'invalidate_session' => true),
         'users' => $app->share(function() use ($WEBSITE) {
             return new \Site\Provider\AuthUserProvider($WEBSITE);

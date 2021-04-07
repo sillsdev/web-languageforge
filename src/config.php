@@ -51,10 +51,6 @@ if (! defined('USE_CDN')) {
     }
 }
 
-if (! defined('REMEMBER_ME_SECRET')) {
-    define('REMEMBER_ME_SECRET', 'not_a_secret');
-}
-
 if (! defined('GOOGLE_CLIENT_ID')) {
     define('GOOGLE_CLIENT_ID', 'googleClientId');
 }

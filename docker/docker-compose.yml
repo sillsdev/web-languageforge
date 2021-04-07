@@ -39,6 +39,7 @@ services:
       # TODO: Make a run.sh that sets umask and then runs apache2-foreground
 
       - ENVIRONMENT=development
+      - REMEMBER_ME_SECRET=bogus-development-key
     command: sh -c "/wait && umask 0002 && apache2-foreground"
     volumes:
       # persist user data uploads and assets
