@@ -40,7 +40,8 @@ jobs:
 
     steps:
       - name: establish ENV
-        run: export BUGSNAG_API_KEY=abc123
+        env:
+          BUGSNAG_API_KEY: abc123
 
       - name: view
         run: env
