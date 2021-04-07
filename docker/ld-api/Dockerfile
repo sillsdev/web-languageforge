@@ -8,15 +8,13 @@
 
 # Step 1: Build app
 FROM node:14.15.4-alpine AS builder
-RUN npm i -g pnpm
+RUN npm i -g pnpm@6
 WORKDIR /git
 ADD https://github.com/sillsdev/web-languagedepot-api/tarball/nodejs ./
 # Github tarball has top-level directory USER-REPO-HASH, and HASH is unpredictable ahead of time, so we rename it
 RUN tar xvzf nodejs && rm nodejs && mv sillsdev-web-languagedepot-api-* ldapi
 WORKDIR /git/ldapi
 RUN pnpm i --frozen-lockfile
-# Temporary workaround for module resolution failure during svelte-kit build
-RUN npm i
 RUN pnpm run build
 
 # Step 2: Create minimal container with running app
