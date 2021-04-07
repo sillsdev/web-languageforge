@@ -8,7 +8,7 @@
 
 # Step 1: Build app
 FROM node:14.15.4-alpine AS builder
-RUN npm i -g pnpm
+RUN npm i -g pnpm@5
 WORKDIR /git
 ADD https://github.com/sillsdev/web-languagedepot-api/tarball/nodejs ./
 # Github tarball has top-level directory USER-REPO-HASH, and HASH is unpredictable ahead of time, so we rename it
