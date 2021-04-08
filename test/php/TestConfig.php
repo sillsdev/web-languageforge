@@ -1,6 +1,7 @@
 <?php
 
 use Api\Library\Shared\Website;
+use Sil\PhpEnv\Env; // https://github.com/silinternational/php-env#class-env-summary-of-functions
 
 $rootPath = realpath(__DIR__ . '/../..') . DIRECTORY_SEPARATOR;
 
@@ -19,7 +20,7 @@ define('TestPhpPath', $rootPath . 'test/php/');
 define('TestLibPath', $rootPath . 'test/lib/');
 define('SourcePath', $rootPath . 'src/');
 
-define('SF_DATABASE', 'scriptureforge_test');
+define('DATABASE', Env::requireEnv('DATABASE'));
 define('MONGODB_CONN', 'mongodb://db:27017');
 define('SF_TESTPROJECT',      'Test Project');
 define('SF_TESTPROJECTCODE',  'testcode1');

@@ -40,7 +40,7 @@ class UserRelationModel extends MapperModel
     {
         static $instance = null;
         if (null === $instance) {
-            $instance = new MongoMapper(SF_DATABASE, 'userrelation');
+            $instance = new MongoMapper(DATABASE, 'userrelation');
         }
 
         return $instance;
