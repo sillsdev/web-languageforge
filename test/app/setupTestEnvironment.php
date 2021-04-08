@@ -33,11 +33,8 @@ if (is_null($website)) {
 }
 $site = $website->base;
 
-if (strpos(SF_DATABASE, '_test') === false ) {
-    exit("Error: SF_DATABASE '" . SF_DATABASE . "' is not a test database");
-}
 // start with a fresh database
-MongoStore::dropAllCollections(SF_DATABASE);
+MongoStore::dropAllCollections(DATABASE);
 
 // Also empty out databases for the test projects
 $projectArrays = [

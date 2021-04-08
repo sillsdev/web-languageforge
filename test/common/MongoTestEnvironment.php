@@ -19,7 +19,7 @@ class MongoTestEnvironment
 {
     public function __construct($domain = 'languageforge.org')
     {
-        $this->db = MongoStore::connect(SF_DATABASE);
+        $this->db = MongoStore::connect(DATABASE);
         $this->website = Website::get($domain);
         if (! isset($this->uploadFilePaths)) {
             $this->uploadFilePaths = array();
@@ -37,7 +37,6 @@ class MongoTestEnvironment
 
     /**
      * Removes all the collections from the mongo database.
-     * Hopefully this is only ever called on the scriptureforge_test database.
      */
     public function clean()
     {

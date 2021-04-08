@@ -211,7 +211,7 @@ class FactoryReset
         // start with a fresh database
         print "\nDropping main database...\n";
         if ($runForReal) {
-            MongoStore::dropAllCollections(SF_DATABASE);
+            MongoStore::dropAllCollections(DATABASE);
         }
 
         print "\nDropping other dbs on the server (like test dbs)\n";
