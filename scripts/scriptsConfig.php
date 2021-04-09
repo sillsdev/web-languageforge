@@ -9,5 +9,5 @@ define('APPPATH', $rootPath . '/html/');
 require_once APPPATH . 'vendor/autoload.php';
 
 define('DATABASE', Env::requireEnv('DATABASE'));
+define('MONGODB_CONN', Env::requireEnv('MONGODB_CONN'));
 define('BCRYPT_COST', 7);
-define('MONGODB_CONN', 'mongodb://db:27017');
