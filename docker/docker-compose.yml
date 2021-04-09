@@ -40,6 +40,7 @@ services:
 
       - ENVIRONMENT=development
       - DATABASE=scriptureforge
+      - MONGODB_CONN=mongodb://db:27017
     command: sh -c "/wait && umask 0002 && apache2-foreground"
     volumes:
       # persist user data uploads and assets
@@ -161,6 +162,7 @@ services:
       - "LDAPI_BASE_URL=http://ld-api:3000/api/v2/"
       - ENVIRONMENT=development
       - DATABASE=scriptureforge
+      - MONGODB_CONN=mongodb://db:27017
     command: sh -c "/wait && /run.sh"
 
   test-php:
@@ -177,6 +179,7 @@ services:
       - WAIT_HOSTS=db:27017, mail:25
       - ENVIRONMENT=development
       - DATABASE=scriptureforge
+      - MONGODB_CONN=mongodb://db:27017
     command: sh -c "/wait && /run.sh"
     volumes:
       # for developer convenience
@@ -194,6 +197,7 @@ services:
     environment:
       - WAIT_HOSTS=db:27017, mail:25
       - DATABASE=scriptureforge
+      - MONGODB_CONN=mongodb://db:27017
     command: sh -c "/wait && /run.sh"
     volumes:
       # for developer convenience

@@ -4,10 +4,7 @@ use Sil\PhpEnv\Env; // https://github.com/silinternational/php-env#class-env-sum
 
 define('ENVIRONMENT', Env::requireEnv('ENVIRONMENT'));
 define('DATABASE', Env::requireEnv('DATABASE'));
-
-if (! defined('MONGODB_CONN')) {
-    define('MONGODB_CONN', 'mongodb://db:27017');
-}
+define('MONGODB_CONN', Env::requireEnv('MONGODB_CONN'));
 
 if (! defined('USE_MINIFIED_JS')) {
     if (defined('ENVIRONMENT') and ENVIRONMENT === 'development') {
