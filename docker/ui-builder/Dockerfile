@@ -20,7 +20,13 @@ COPY typings ./typings/
 COPY webpack.config.js webpack-dev.config.js webpack-prd.config.js tsconfig.json tslint.json ./
 
 # copy in src local files
-COPY src ./src/
+COPY src/angular-app ./src/angular-app
+COPY src/appManifest ./src/appManifest
+COPY src/js ./src/js
+COPY src/json ./src/json
+COPY src/sass ./src/sass
+COPY src/service-worker ./src/service-worker
+COPY src/Site/views ./src/Site/views
 
 # artifacts built to /data/src/dist
 RUN npm run build:dev
