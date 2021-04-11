@@ -55,22 +55,6 @@ if (! defined('REMEMBER_ME_SECRET')) {
     define('REMEMBER_ME_SECRET', 'not_a_secret');
 }
 
-if (! defined('GOOGLE_CLIENT_ID')) {
-    define('GOOGLE_CLIENT_ID', 'googleClientId');
-}
-
-if (! defined('GOOGLE_CLIENT_SECRET')) {
-    define('GOOGLE_CLIENT_SECRET', 'googleClientSecret');
-}
-
-if (! defined('FACEBOOK_CLIENT_ID')) {
-    define('FACEBOOK_CLIENT_ID', 'facebookClientId');
-}
-
-if (! defined('FACEBOOK_CLIENT_SECRET')) {
-    define('FACEBOOK_CLIENT_SECRET', 'facebookClientSecret');
-}
-
 if (! defined('LANGUAGE_DEPOT_API_TOKEN')) {
     define('LANGUAGE_DEPOT_API_TOKEN', 'not-a-secret');
 }
