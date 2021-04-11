@@ -97,11 +97,9 @@ class Base
         }
         $this->addCssFiles($sassDir, [], false);
 
-        // Add bellows JS for every page because top container menubar needs it for helps
-        $bellowsFolder = NG_BASE_FOLDER . 'bellows';
-        $this->addJavascriptFiles($bellowsFolder . '/_js_module_definitions');
-        $this->addJavascriptFiles($bellowsFolder . '/js', ['vendor', 'assets']);
-        $this->addJavascriptFiles($bellowsFolder . '/directive');
+        $this->addJavascriptFiles('angular-app/bellows/_js_module_definitions');
+        $this->addJavascriptFiles('angular-app/bellows/js', ['vendor', 'assets']);
+        $this->addJavascriptFiles('angular-app/bellows/directive');
 
         // Add general Angular app dependencies
         $dependencies = $this->getAngularAppDependencies();
