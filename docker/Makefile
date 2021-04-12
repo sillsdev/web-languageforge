@@ -33,7 +33,7 @@ else
 endif
 
 .PHONY: build
-build: ui-builder
+build: build-ui
 	docker-compose build mail app ld-api
 
 .PHONY: build-ui
