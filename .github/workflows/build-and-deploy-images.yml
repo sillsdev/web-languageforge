@@ -42,6 +42,8 @@ jobs:
 
       - name: Build app
         run: make --directory=docker deployable-app
+        env:
+          BUGSNAG_API_KEY: ${{ secrets.BUGSNAG_API_KEY }}
 
       - name: Tag images with Docker Hub location
         run: |
@@ -59,5 +61,3 @@ jobs:
       - name: Publish images to Docker Hub
         run: |
           docker push sillsdev/web-languageforge:app-latest
-
-# TODO: maybe there's a way to improve all this by utilizing docker's GH Actions...https://docs.docker.com/ci-cd/github-actions/, especially layer caching...

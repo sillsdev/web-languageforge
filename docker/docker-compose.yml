@@ -39,6 +39,8 @@ services:
       # TODO: Make a run.sh that sets umask and then runs apache2-foreground
 
       - ENVIRONMENT=development
+      # only when ENVIRONMENT=production will BUGSNAG_API_KEY be utilized.
+      # - BUGSNAG_API_KEY=some-key
       - GOOGLE_CLIENT_ID=bogus-development-token
       - GOOGLE_CLIENT_SECRET=bogus-development-token
       - FACEBOOK_CLIENT_ID=bogus-development-token

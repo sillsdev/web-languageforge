@@ -60,12 +60,3 @@ if (! defined('LANGUAGE_DEPOT_API_TOKEN')) {
 }
 
 define('BCRYPT_COST', 7);
-
-if (!defined('BUGSNAG_API_KEY')) {
-    define('BUGSNAG_API_KEY', 'missing-bugsnag-api-key');
-}
-
-if (!defined('BUGSNAG_NOTIFY_RELEASE_STAGES')) {
-    // The real values will be set by gulp
-    define('BUGSNAG_NOTIFY_RELEASE_STAGES', 'not-set' );
-}

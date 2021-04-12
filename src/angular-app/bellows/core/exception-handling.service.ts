@@ -21,8 +21,8 @@ export class ExceptionHandlingService {
   constructor(private $log: angular.ILogService) {
     // process.env.* are set in webpack.config.js
     this.bugsnagClient = Bugsnag({
-      apiKey: process.env.XFORGE_BUGSNAG_API_KEY,
-      notifyReleaseStages: process.env.NOTIFY_RELEASE_STAGES,
+      apiKey: process.env.BUGSNAG_API_KEY,
+      notifyReleaseStages: ['live'],
       releaseStage: this.getReleaseStage()
     });
   }
