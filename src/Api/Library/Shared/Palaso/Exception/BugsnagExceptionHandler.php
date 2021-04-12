@@ -19,7 +19,7 @@ class BugsnagExceptionHandler
             'api_key' => Env::requireEnv('BUGSNAG_API_KEY'),
         ];
 
-        $application['bugsnag']->setNotifyReleaseStages(Env::requireArray('BUGSNAG_NOTIFY_RELEASE_STAGES'));
+        $application['bugsnag']->setNotifyReleaseStages(['live']);
         $application['bugsnag']->setAppVersion(VERSION);
         $application['bugsnag']->setAppType('PHP');
 
