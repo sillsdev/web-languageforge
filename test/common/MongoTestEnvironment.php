@@ -37,6 +37,7 @@ class MongoTestEnvironment
 
     /**
      * Removes all the collections from the mongo database.
+     * Hopefully this is only ever called on the scriptureforge_test database.
      */
     public function clean()
     {
