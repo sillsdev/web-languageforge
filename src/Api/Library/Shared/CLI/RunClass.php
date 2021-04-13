@@ -30,9 +30,6 @@ if (array_key_exists('isTest', $input)) {
     $isTest = $input['isTest'];
 }
 
-if ($isTest) {
-    define('DATABASE', 'scriptureforge_test');
-}
 require_once APPPATH . 'config.php';
 
 $output = call_user_func_array("$className::$methodName", $parameters);
