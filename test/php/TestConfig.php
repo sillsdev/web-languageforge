@@ -12,8 +12,6 @@ if (! defined('APPPATH')) {
 
 require_once APPPATH . 'vendor/autoload.php';
 
-define('TestMode', true);
-
 define('TestPath', $rootPath . 'test/');
 define('TestCommonPath', $rootPath . 'test/common/');
 define('TestPhpPath', $rootPath . 'test/php/');

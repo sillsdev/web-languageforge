@@ -16,9 +16,7 @@ class CommunicateDelivery implements DeliveryInterface
      */
     public function sendEmail($from, $to, $subject, $content, $htmlContent = '')
     {
-        if (!defined('TestMode')) {
-            Email::send($from, $to, $subject, $content, $htmlContent);
-        }
+        Email::send($from, $to, $subject, $content, $htmlContent);
     }
 
     /**
@@ -39,13 +37,10 @@ class CommunicateHelper
      */
     public static function templateFromFile($fileName)
     {
-        if (defined('TestMode')) {
-            $options = array();
-        } else {
-            $options = array(
-                    'cache' => APPPATH . 'cache',
-            );
-        }
+        $options = array(
+            'cache' => APPPATH . 'cache',
+        );
+
         $loader = new \Twig\Loader\FilesystemLoader(APPPATH . 'Site/views');
         $twig = new \Twig\Environment($loader, $options);
         $template = $twig->loadTemplate($fileName);
@@ -60,13 +55,10 @@ class CommunicateHelper
      */
     public static function templateFromString($templateCode)
     {
-        if (defined('TestMode')) {
-            $options = array();
-        } else {
-            $options = array(
-                    'cache' => APPPATH . 'cache',
-            );
-        }
+        $options = array(
+            'cache' => APPPATH . 'cache',
+        );
+
         $loader = new \Twig\Loader\ArrayLoader(array());
         $twig = new \Twig\Environment($loader, $options);
         $template = $twig->createTemplate($templateCode);
