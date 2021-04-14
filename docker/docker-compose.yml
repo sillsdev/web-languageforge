@@ -93,8 +93,11 @@ services:
       # exposed this to host for admin tools
       - 27017:27017
     volumes:
+      - ./db/init.js:/docker-entrypoint-initdb.d/init.js
       - lf-mongo-data:/data/db
     restart: always
+    environment:
+      - MONGO_INITDB_DATABASE=scriptureforge
 
   selenium:
     # image: selenium/standalone-chrome
@@ -197,22 +200,6 @@ services:
       - ../test:/var/www/test
       - ../src/Api:/var/www/src/Api
       - ../src/Site:/var/www/src/Site
-
-  db-reset:
-    build:
-      context: ..
-      dockerfile: docker/db-reset/Dockerfile
-    depends_on:
-      - mail
-      - db
-    environment:
-      - WAIT_HOSTS=db:27017, mail:25
-      - DATABASE=scriptureforge
-      - MONGODB_CONN=mongodb://db:27017
-    command: sh -c "/wait && /run.sh"
-    volumes:
-      # for developer convenience
-      - ../scripts/:/var/www/scripts
 
 volumes:
   lf-caddy-config:
