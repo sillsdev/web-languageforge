@@ -10,8 +10,9 @@ use Api\Model\Shared\ProjectListModel;
 use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\ProjectModelMongoMapper;
 use Api\Model\Shared\UserRelationModelMongoMapper;
+use Sil\PhpEnv\Env; // https://github.com/silinternational/php-env#class-env-summary-of-functions
 
-define('SF_TEST_DATABASE', 'scriptureforge_test');
+define('DATABASE', Env::requireEnv('DATABASE'));
 
 class EnsureDBIndexes
 {

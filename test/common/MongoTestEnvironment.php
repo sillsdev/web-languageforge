@@ -19,7 +19,7 @@ class MongoTestEnvironment
 {
     public function __construct($domain = 'languageforge.org')
     {
-        $this->db = MongoStore::connect(SF_DATABASE);
+        $this->db = MongoStore::connect(DATABASE);
         $this->website = Website::get($domain);
         if (! isset($this->uploadFilePaths)) {
             $this->uploadFilePaths = array();

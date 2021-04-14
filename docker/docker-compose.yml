@@ -39,6 +39,8 @@ services:
       # TODO: Make a run.sh that sets umask and then runs apache2-foreground
 
       - ENVIRONMENT=development
+      - DATABASE=scriptureforge
+      - MONGODB_CONN=mongodb://db:27017
       # only when ENVIRONMENT=production will BUGSNAG_API_KEY be utilized.
       # - BUGSNAG_API_KEY=some-key
       - GOOGLE_CLIENT_ID=bogus-development-token
@@ -138,6 +140,8 @@ services:
       - selenium
     environment:
       - WAIT_HOSTS=db:27017, mail:25, selenium:4444
+      - ENVIRONMENT=development
+      - LANGUAGE_DEPOT_API_TOKEN=bogus-development-token
     command: sh -c "/wait && /run.sh"
     volumes:
       # for developer convenience
@@ -165,7 +169,10 @@ services:
       - WAIT_HOSTS=db:27017, mail:25
       - LDAPI_BASE_URL=http://ld-api:3000/api/v2/
       - ENVIRONMENT=development
+      - DATABASE=scriptureforge_test
+      - MONGODB_CONN=mongodb://db:27017
       - REMEMBER_ME_SECRET=bogus-development-key
+      - LANGUAGE_DEPOT_API_TOKEN=bogus-development-token
     command: sh -c "/wait && /run.sh"
 
   test-php:
@@ -181,6 +188,8 @@ services:
     environment:
       - WAIT_HOSTS=db:27017, mail:25
       - ENVIRONMENT=development
+      - DATABASE=scriptureforge_test
+      - MONGODB_CONN=mongodb://db:27017
       - LANGUAGE_DEPOT_API_TOKEN=bogus-development-token
     command: sh -c "/wait && /run.sh"
     volumes:
@@ -198,6 +207,8 @@ services:
       - db
     environment:
       - WAIT_HOSTS=db:27017, mail:25
+      - DATABASE=scriptureforge
+      - MONGODB_CONN=mongodb://db:27017
     command: sh -c "/wait && /run.sh"
     volumes:
       # for developer convenience
