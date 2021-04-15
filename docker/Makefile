@@ -40,11 +40,6 @@ build: build-ui
 build-ui:
 	docker-compose build --build-arg BUGSNAG_API_KEY=${BUGSNAG_API_KEY} ui-builder
 
-.PHONY: db-reset
-db-reset:
-	docker-compose build app
-	docker-compose run db-reset
-
 .PHONY: deployable-app
 deployable-app: build-ui
 	docker-compose build app
