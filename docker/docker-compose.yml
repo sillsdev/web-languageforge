@@ -39,6 +39,8 @@ services:
       # TODO: Make a run.sh that sets umask and then runs apache2-foreground
 
       - ENVIRONMENT=development
+      - WEBSITE=localhost
+      # - WEBSITE=qa.languageforge.org
       - DATABASE=scriptureforge
       - MONGODB_CONN=mongodb://db:27017
       # only when ENVIRONMENT=production will BUGSNAG_API_KEY be utilized.

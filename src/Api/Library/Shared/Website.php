@@ -3,6 +3,7 @@
 namespace Api\Library\Shared;
 
 use Api\Model\Shared\Rights\SiteRoles;
+use Sil\PhpEnv\Env; // https://github.com/silinternational/php-env#class-env-summary-of-functions
 
 class Website
 {
@@ -85,8 +86,7 @@ class Website
 
     private static function getHostname()
     {
-        // the app is no longer limited to certain hostnames.  Always localhost now
-        return 'localhost';
+        return Env::requireEnv('WEBSITE');
     }
 
     /**
