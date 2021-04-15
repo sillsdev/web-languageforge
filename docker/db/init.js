@@ -2,7 +2,6 @@
 // https://docs.mongodb.com/manual/reference/method
 
 db.users.insert({
-  id: 1,
   username: 'admin',
   password: '$2y$07$NRGaBfMC2pS14TcMZQQlBObbpHJgStkdxrpXFuA5yLGnqGlgaHlTi',
   active: true,
