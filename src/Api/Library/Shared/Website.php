@@ -96,27 +96,6 @@ class Website
         return $protocol . "://" . $this->domain;
     }
 
-    public function templatePath($templateFile)
-    {
-        $path = APPPATH . "views/" . $this->base . '/' . $this->theme . "/$templateFile";
-        if (!file_exists($path)) {
-            $path = APPPATH . "views/" . $this->base . "/default/$templateFile";
-        }
-
-        return $path;
-    }
-
-    public function getAngularPath($appName) {
-        $dirPath = "angular-app/" . $this->base . "/$appName";
-        if (!file_exists($dirPath)) {
-            $dirPath = "angular-app/bellows/apps/$appName";
-            if (!file_exists($dirPath)) {
-                $dirPath = '';
-            }
-        }
-        return $dirPath;
-    }
-
     /**
      * This function contains the "definitions" for each website/domain
      */
