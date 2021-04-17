@@ -53,8 +53,4 @@ test/app/**/*.e2e-spec.js
 test/app/**/shared/*.js.map
 test/app/**/shared/*.js
 
-# Generated files
-# src/Api/Library/Shared/WebsiteInstances.php
-# src/angular-app/bellows/core/website-instances.generated-data.ts
-
 test/php/\.phpunit\.result\.cache
