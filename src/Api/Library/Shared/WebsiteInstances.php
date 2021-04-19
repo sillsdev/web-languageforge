@@ -38,16 +38,4 @@ class WebsiteInstances
 
         return $sites;
     }
-
-    /**
-     * @return array
-     */
-    public static function getRedirects() {
-
-        $redirects = array();
-
-        $redirects['www.languageforge.org'] = 'languageforge.org';
-
-        return $redirects;
-    }
 }

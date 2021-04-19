@@ -65,9 +65,6 @@ class Website
     /** @var array<Website> */
     private static $_sites;
 
-    /** @var array */
-    private static $_redirect;
-
     /**
      * @param string $hostname
      * @return Website
@@ -102,7 +99,6 @@ class Website
     public static function init()
     {
         self::$_sites = WebsiteInstances::getLanguageForgeSites();
-        self::$_redirect = WebsiteInstances::getRedirects();
     }
 }
 
