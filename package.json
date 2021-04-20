@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "build:dev": "npm-run-all -p -l sass webpack:dev",
-    "build:dev:watch": "npm-run-all -r -p -l sass:watch webpack:dev:watch",
+    "build:dev:watch": "npm-run-all -p -l sass:watch webpack:dev:watch",
     "build:prd": "npm-run-all -p -l sass webpack:prd",
     "sass": "node-sass src/sass -o src/dist/css",
     "sass:watch": "npm run sass && node-sass src/sass -o src/dist/css --watch --recursive",
@@ -13,7 +13,7 @@
     "webpack:dev:watch": "webpack -w --config webpack-dev.config.js",
     "webpack:prd": "webpack --config webpack-prd.config.js",
     "build": "npm-run-all -p -l sass webpack",
-    "build:watch": "npm-run-all -r -p -l sass:watch webpack:watch",
+    "build:watch": "npm-run-all -p -l sass:watch webpack:watch",
     "webpack": "webpack",
     "webpack:watch": "webpack -w",
     "webpack:production": "webpack -p",
