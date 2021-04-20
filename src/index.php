@@ -91,7 +91,7 @@ if (is_dir($application_folder)) {
  */
 
 global $WEBSITE;
-$WEBSITE = Website::getOrRedirect();
+$WEBSITE = Website::get();
 if ($WEBSITE) {
     $app['website'] = $WEBSITE;
 } else {

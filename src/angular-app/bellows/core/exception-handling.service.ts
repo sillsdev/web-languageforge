@@ -2,7 +2,7 @@ import * as angular from 'angular';
 import Bugsnag from 'bugsnag-js';
 import { Client } from 'bugsnag-js/types/client';
 
-import {websiteInstances} from './website-instances.generated-data';
+import {websiteInstances} from './website-instances';
 
 export class Metadata {
   version: string;

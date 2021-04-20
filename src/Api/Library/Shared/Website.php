@@ -3,6 +3,7 @@
 namespace Api\Library\Shared;
 
 use Api\Model\Shared\Rights\SiteRoles;
+use Sil\PhpEnv\Env; // https://github.com/silinternational/php-env#class-env-summary-of-functions
 
 class Website
 {
@@ -64,9 +65,6 @@ class Website
     /** @var array<Website> */
     private static $_sites;
 
-    /** @var array */
-    private static $_redirect;
-
     /**
      * @param string $hostname
      * @return Website
@@ -85,75 +83,7 @@ class Website
 
     private static function getHostname()
     {
-        // the app is no longer limited to certain hostnames.  Always localhost now
-        return 'localhost';
-    }
-
-    /**
-     * @param string $hostname
-     * @return string
-     * @throws \Exception
-     */
-    public static function getRedirect($hostname = '')
-    {
-        if (!$hostname) {
-            $hostname = self::getHostname();
-        }
-        if (array_key_exists($hostname, self::$_redirect)) {
-            $redirectTo = self::$_redirect[$hostname];
-            if (array_key_exists($redirectTo, self::$_sites)) {
-                $website = self::$_sites[$redirectTo];
-                $protocol = 'http';
-                if ($website->ssl) {
-                    $protocol = 'https';
-                }
-
-                return "$protocol://" . $website->domain;
-            } else {
-                throw new \Exception('Trying to redirect from $hostname to $redirectTo but $redirectTo is not a valid website!');
-            }
-        } else {
-            return '';
-        }
-    }
-
-    public static function getRawRedirect($hostname) {
-        if (array_key_exists($hostname, self::$_redirect)) {
-            return self::$_redirect[$hostname];
-        }
-        return '';
-    }
-
-    /**
-     * Convenience function to get the website object or redirect based upon ssl setting or a redirect list
-     * FYI Not testable  because of the inclusion of the header() method : test get() and getRedirect() instead
-     * @param string $hostname
-     * @return Website
-     * @throws \Exception
-     */
-    public static function getOrRedirect($hostname = '')
-    {
-        if (!$hostname) {
-            $hostname = self::getHostname();
-        }
-        $website = self::get($hostname);
-        if ($website) {
-            // check for https
-            if ($website->ssl && (!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] == "")) {
-                header("Location: " . $website->baseUrl() . $_SERVER['REQUEST_URI']);
-            } else {
-                return $website;
-            }
-        } else {
-            $url = self::getRedirect($hostname);
-            if ($url) {
-                header("Location: $url", true, 302);
-            } elseif (strpos($hostname, '.')) {
-                header("Location: http://" . substr($hostname, strpos($hostname, '.') + 1), true, 302);
-            }
-        }
-
-        return null;
+        return Env::requireEnv('WEBSITE');
     }
 
     public function baseUrl()
@@ -163,34 +93,12 @@ class Website
         return $protocol . "://" . $this->domain;
     }
 
-    public function templatePath($templateFile)
-    {
-        $path = APPPATH . "views/" . $this->base . '/' . $this->theme . "/$templateFile";
-        if (!file_exists($path)) {
-            $path = APPPATH . "views/" . $this->base . "/default/$templateFile";
-        }
-
-        return $path;
-    }
-
-    public function getAngularPath($appName) {
-        $dirPath = "angular-app/" . $this->base . "/$appName";
-        if (!file_exists($dirPath)) {
-            $dirPath = "angular-app/bellows/apps/$appName";
-            if (!file_exists($dirPath)) {
-                $dirPath = '';
-            }
-        }
-        return $dirPath;
-    }
-
     /**
      * This function contains the "definitions" for each website/domain
      */
     public static function init()
     {
         self::$_sites = WebsiteInstances::getLanguageForgeSites();
-        self::$_redirect = WebsiteInstances::getRedirects();
     }
 }
 

@@ -15,16 +15,4 @@ class WebsiteTest extends TestCase
         $website = Website::get('randomdomain.com');
         $this->assertNull($website);
     }
-
-    public function testGetRedirect_Works()
-    {
-        $redirect = Website::getRedirect('randomdomain.com');
-        $this->assertEquals('', $redirect);
-
-        $redirect = Website::getRedirect('languageforge.org');
-        $this->assertEquals('', $redirect);
-
-        $redirect = Website::getRedirect('www.languageforge.org');
-        $this->assertEquals('https://languageforge.org', $redirect);
-    }
 }
