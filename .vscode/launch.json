@@ -39,6 +39,7 @@
       "request": "launch",
       "url": "https://localhost",
       "sourceMaps": true,
+      "breakOnLoad": true,
       "sourceMapPathOverrides": {
         "webpack:///./*": "${workspaceFolder}/src/angular-app/*"  
       },
