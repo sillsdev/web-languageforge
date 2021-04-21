@@ -23,7 +23,7 @@
     "paths": {
       "@node_modules/*": ["node_modules/*"],
     },
-    // "rootDir": "src",
+    "rootDir": "src/angular-app",
     "sourceMap": true,
     "suppressImplicitAnyIndexErrors": true,
     "target": "es5",
