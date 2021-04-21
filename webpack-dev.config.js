@@ -15,7 +15,7 @@ const TerserPlugin = require("terser-webpack-plugin");
 
 module.exports = webpackMerge(commonConfig, {
   mode: "development",
-  devtool: 'source-map',
+  devtool: 'eval-cheap-module-source-map',
   resolve: {
     extensions: ['.ts', '.js'],
     modules: [path.resolve(__dirname, 'node_modules')]

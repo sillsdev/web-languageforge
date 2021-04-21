@@ -456,10 +456,12 @@ export class ConfigurationFieldUnifiedViewModel {
       }
     }
     if (hasOverride) {
+      overrides.groups[groupIndex] = new Group();
       overrides.groups[groupIndex].show = true;
     } else {
       ConfigurationFieldUnifiedViewModel.setInputSystemGroupSettingsFromFields(
         tag, config, groupIndex, inputSystemSettings);
+      overrides.groups[groupIndex] = new Group();
       overrides.groups[groupIndex].show = false;
     }
   }
