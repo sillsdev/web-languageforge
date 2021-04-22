@@ -6,17 +6,32 @@
       "type": "php",
       "request": "launch",
       "port": 9003,
-      "windows":{
+      "windows": {
         "localSourceRoot": "${workspaceRoot}",
         "serverSourceRoot": "${env:WSL_XFORGE_PATH}"
       }
     },
     {
+      "name": "Attach Docker localhost",
       "type": "chrome",
       "request": "attach",
-      "name": "Attach to Chrome",
       "port": 9222,
-      "webRoot": "${workspaceRoot}"
+      "sourceMapPathOverrides": {
+        "webpack:///./*": "${workspaceFolder}/src/angular-app/*"  
+      }
+    },
+    {
+      "name": "Launch Docker localhost",
+      "type": "chrome",
+      "request": "launch",
+      "url": "https://localhost",
+      "sourceMaps": true,
+      "sourceMapPathOverrides": {
+        "webpack:///./*": "${workspaceFolder}/src/angular-app/*"  
+      },
+      "runtimeArgs": [
+        "--remote-debugging-port=9222"
+      ]
     }
   ]
 }
