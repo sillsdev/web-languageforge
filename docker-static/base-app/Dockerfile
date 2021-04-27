@@ -25,7 +25,3 @@ RUN adduser www-data fieldworks \
 
 # make wait available for container ochestration
 COPY --from=sillsdev/web-languageforge:wait-latest /wait /wait
-
-COPY entrypoint.sh /
-
-ENTRYPOINT [ "/entrypoint.sh" ]
