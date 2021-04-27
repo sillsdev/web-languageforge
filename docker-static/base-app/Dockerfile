@@ -11,7 +11,7 @@ RUN install-php-extensions gd xdebug mongodb intl @composer
 RUN curl -L http://linux.lsdev.sil.org/downloads/sil-testing.gpg | apt-key add - \
 && echo "deb http://linux.lsdev.sil.org/ubuntu bionic main" > /etc/apt/sources.list.d/linux-lsdev-sil-org.list \
 && apt-get update \
-&& apt-get install --yes --no-install-recommends lfmerge
+&& apt-get install --yes --no-install-recommends lfmerge rsyslog logrotate cron
 
 # setup LFMerge permissions
 # TODO: we may not actually need to add www-data to the fieldworks group.  Needs testing
