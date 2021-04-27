@@ -13,6 +13,8 @@ RUN curl -L http://linux.lsdev.sil.org/downloads/sil-testing.gpg | apt-key add -
 && apt-get update \
 && apt-get install --yes --no-install-recommends lfmerge rsyslog logrotate cron
 
+COPY lfmerge.conf /etc/languageforge/conf/sendreceive.conf
+
 # setup LFMerge permissions
 # TODO: we may not actually need to add www-data to the fieldworks group.  Needs testing
 RUN adduser www-data fieldworks \
