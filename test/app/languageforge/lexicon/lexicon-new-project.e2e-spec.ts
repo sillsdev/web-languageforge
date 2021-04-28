@@ -221,6 +221,7 @@ describe('Lexicon E2E New Project wizard app', () => {
 
       await page.namePage.projectNameInput.sendKeys('a' + Key.TAB);
       await page.namePage.projectNameInput.clear();
+      await browser.waitForAngular();
       await page.namePage.projectNameInput.sendKeys(Key.TAB);
       await browser.sleep(CHECK_PAUSE);
       expect<any>(await page.namePage.projectCodeExists.isPresent()).toBe(false);
