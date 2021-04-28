@@ -23,5 +23,10 @@ RUN adduser www-data fieldworks \
 && mkdir -m 02775 -p /var/www/.local \
 && chown www-data:www-data /var/www/.local
 
+COPY entrypoint.sh /
+
+ENTRYPOINT [ "/entrypoint.sh" ]
+CMD [ "apache2-foreground" ]
+
 # make wait available for container ochestration
 COPY --from=sillsdev/web-languageforge:wait-latest /wait /wait
