@@ -144,7 +144,7 @@ services:
       - mail
       - selenium
     environment:
-      - WAIT_HOSTS=db:27017, mail:25, selenium:4444
+      - WAIT_HOSTS=db:27017, mail:25, selenium:4444, app-for-e2e:80
       - ENVIRONMENT=development
       - LANGUAGE_DEPOT_API_TOKEN=bogus-development-token
     command: sh -c "/wait && /run.sh"
