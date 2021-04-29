@@ -223,6 +223,7 @@ describe('Lexicon E2E New Project wizard app', () => {
       await page.namePage.projectNameInput.clear();
       await browser.waitForAngular();
       await page.namePage.projectNameInput.sendKeys(Key.TAB);
+      await browser.waitForAngular();
       await browser.sleep(CHECK_PAUSE);
       expect<any>(await page.namePage.projectCodeExists.isPresent()).toBe(false);
       expect<any>(await page.namePage.projectCodeAlphanumeric.isPresent()).toBe(false);
