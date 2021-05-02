@@ -34,6 +34,7 @@ services:
       - ld-api
     environment:
       - WAIT_HOSTS=db:27017, mail:25
+      - XDEBUG_MODE=develop,debug
       - LDAPI_BASE_URL=http://ld-api:3000/api/v2/
       # LDAPI_BASE_URL hostname and port need to match container name and port of the ld-api container (defined further down)
       # TODO: Make a run.sh that sets umask and then runs apache2-foreground
@@ -52,6 +53,8 @@ services:
       - REMEMBER_ME_SECRET=bogus-development-key
       - LANGUAGE_DEPOT_API_TOKEN=bogus-development-token
     command: sh -c "/wait && umask 0002 && apache2-foreground"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
       # persist user data uploads and assets
       - lf-user-data-assets:/var/www/src/assets
