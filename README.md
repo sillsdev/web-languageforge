@@ -114,6 +114,11 @@ Other useful resources:
 1. `make dev` will start the ui-builder
 1. Attaching to the ui-builder container should be enabled.
 
+### Building for production
+
+1. `make prod` will (currently) build a production version of the UI image.
+1. TODO: need to build the production version of the php app.
+
 ### Xdebug helper Chrome extension ####
 
 Install the [Xdebug helper](https://chrome.google.com/webstore/detail/xdebug-helper/eadndfjplgieldjbigjakmdgkmoaaaoc) extension which adds a bug icon to the top right area of Chrome extensions.
