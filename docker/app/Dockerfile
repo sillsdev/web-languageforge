@@ -2,6 +2,7 @@ FROM sillsdev/web-languageforge:base-app-latest
 
 # php.ini customizations
 COPY docker/app/php.ini /usr/local/etc/php
+COPY docker/app/docker-php-ext-xdebug.ini /usr/local/etc/php/conf.d
 
 # apache2 module and virtual host customizations
 RUN a2enmod headers rewrite

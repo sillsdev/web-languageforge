@@ -6,9 +6,8 @@
       "type": "php",
       "request": "launch",
       "port": 9003,
-      "windows": {
-        "localSourceRoot": "${workspaceRoot}",
-        "serverSourceRoot": "${env:WSL_XFORGE_PATH}"
+      "pathMappings": {
+        "/var/www/html/": "${workspaceRoot}/src/"
       }
     },
     {
@@ -17,7 +16,7 @@
       "request": "attach",
       "port": 9222,
       "sourceMapPathOverrides": {
-        "webpack:///./*": "${workspaceFolder}/src/angular-app/*"  
+        "webpack:///./*": "${workspaceFolder}/src/angular-app/*"
       }
     },
     {
@@ -28,7 +27,7 @@
       "sourceMaps": true,
       "breakOnLoad": true,
       "sourceMapPathOverrides": {
-        "webpack:///./*": "${workspaceFolder}/src/angular-app/*"  
+        "webpack:///./*": "${workspaceFolder}/src/angular-app/*"
       },
       "runtimeArgs": [
         "--remote-debugging-port=9222"
