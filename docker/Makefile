@@ -47,6 +47,8 @@ deployable-app: build-ui
 .PHONY: prod
 prod: build-ui
 	docker build -f ui-builder/Dockerfile.prod -t lf-ui-builder:prod .
+	docker build -f app-base/Dockerfile -t lf-app-base app-base
+	docker build -f app-base/Dockerfile.prod -t lf-app-base:prod app-base
 
 .PHONY: logs
 logs:
