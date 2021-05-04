@@ -44,6 +44,10 @@ build-ui:
 deployable-app: build-ui
 	docker-compose build app
 
+.PHONY: prod
+prod: build-ui
+	docker build -f ui-builder/Dockerfile.prod -t lf-ui-builder:prod .
+
 .PHONY: logs
 logs:
 	docker-compose logs
