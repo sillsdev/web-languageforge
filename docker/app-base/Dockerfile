@@ -1,4 +1,4 @@
-FROM php:7.3-apache
+FROM php:7.3.28-apache
 
 # install Language Forge APT dependencies
 RUN apt-get update && apt-get -y install p7zip-full unzip git gnupg2 curl
