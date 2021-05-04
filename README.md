@@ -52,7 +52,6 @@ PHP code conforms to [PSR-2](http://www.php-fig.org/psr/psr-2/).
 JavaScript code conforms to [AirBNB JS style guide](https://github.com/airbnb/javascript).
 
 - Using PhpStorm with JSCS helps a lot with automating this (see the section below on PhpStorm [Coding Standard and Style](#coding-standard-and-style)).
-- We plan to use [Prettier](https://prettier.io/) with pre-commit hook after re-writing the whole repo with Prettier first.
 
 ### TypeScript Style Guide ###
 
@@ -117,11 +116,7 @@ Other useful resources:
 ### Building for production
 
 1. `make prod` will (currently) build a production version of the UI image.
-1. TODO: need to build the production version of the php app.
 
-### Xdebug helper Chrome extension ####
-
-Install the [Xdebug helper](https://chrome.google.com/webstore/detail/xdebug-helper/eadndfjplgieldjbigjakmdgkmoaaaoc) extension which adds a bug icon to the top right area of Chrome extensions.
 ### LiveReload ###
 
 ### LiveReload Chrome extension ####
@@ -132,15 +127,27 @@ Install the [LiveReload](https://chrome.google.com/webstore/detail/livereload/jn
 
 Visual Studio Code is a simple, free, cross-platform code editor. You can download VS Code from [here](https://code.visualstudio.com/).
 
-The first time you open VS Code in the `web-languageforge` directory, it will recommend a list of extensions that are useful for developing **xForge** apps.
+The first time you open VS Code in the `web-languageforge` directory, it will recommend a list of extensions that are useful for developing Language Forge.  Install all recommended extensions for the best experience.
 
-Build tasks have been setup to work on both and Linux. Tasks are available for performing webpack build, sass build, and npm install. Tasks are defined in the `.vscode/tasks.json` file.
+Chrome and PHP debugging have also been configured. Launch configurations are defined in the `.vscode/launch.json` file.
 
-Chrome debugging has also been configured. Launch configurations are defined in the `.vscode/launch.json` file.
+## Debugging ##
 
-## Testing ##
+### PHP Application Debugging ###
 
-### E2E Tests ###
+To debug the Language Forge application locally, follow these steps:
+- run `make` or `make dev`
+- In VS Code, set a breakpoint on a line of code that should be executed
+- Click on the `Run and Debug` area of VS Code, then click the green play icon next to `XDebug` in the configuration dropdown.
+![XDebug](readme_images/xdebug1.png "Debugging with XDebug")] 
+- The VSCode status bar will turn orange when XDebug is active
+
+Additional considerations:
+
+If you encounter errors such as VSCode cannot find a file in the path "vendor", these source files are not available to VSCode as they are running inside Docker.  If you want to debug vendor libraries (not required), you will have to use Composer to download them put them in your source tree.
+
+
+### E2E Tests - TODO Needs Updating/Review ###
 To test a certain test spec, add a parameter `--specs [spec name]`.  For example,
 
 ``` bash
