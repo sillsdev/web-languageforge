@@ -1,4 +1,4 @@
-FROM sillsdev/web-languageforge:base-app-latest
+FROM sillsdev/web-languageforge:app-base-latest
 
 # php.ini customizations
 COPY docker/app/php.ini /usr/local/etc/php
