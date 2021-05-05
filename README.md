@@ -79,10 +79,10 @@ Other useful resources:
 1. Install [Make](https://www.gnu.org/software/make/).  This is actually optional but simplifies things a bit.
 1. Clone the repo:  `git clone https://github.com/sillsdev/web-languageforge`
 1. `cd web-languageforge/docker`
-1. `make`
 
 ### Running the App Locally
 
+1. `make`
 1. Within any browser, navigate to https://localhost
 1. Continue through any certificate warnings
 1. You should see a landing page, click "Login"
@@ -110,12 +110,11 @@ Other useful resources:
 
 ### Running dev
 
-1. `make dev` will start the ui-builder
-1. Attaching to the ui-builder container should be enabled.
+1. `make dev` will start the app in development mode, i.e. changes to source code will immediately be reflected in the locally running app.
 
 ### Building for production
 
-1. `make prod` will (currently) build a production version of the UI image.
+1. `make prod` will build a production version of the app.
 
 ### LiveReload ###
 
