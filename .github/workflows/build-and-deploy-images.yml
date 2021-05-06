@@ -40,21 +40,21 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Build and tag base-app image
-        working-directory: ./docker-static/base-app
+      - name: Build and tag base app image
+        working-directory: ./docker/app-base
         run: |
-          docker build . -t lf-base-app
-          docker tag lf-base-app sillsdev/web-languageforge:base-app-latest
+          docker build . -t lf-app-base
+          docker tag lf-app-base sillsdev/web-languageforge:app-base-latest
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
-      # we publish base-app first since building the app image depends upon base-app being on Docker Hub
-      - name: Publish base-app to Docker Hub
+
+      - name: Publish base app image to Docker Hub
         run: |
-          docker push sillsdev/web-languageforge:base-app-latest
+          docker push sillsdev/web-languageforge:app-base-latest
 
       - name: Build app
         run: make --directory=docker deployable-app

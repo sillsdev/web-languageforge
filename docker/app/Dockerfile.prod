@@ -1,9 +1,8 @@
-FROM sillsdev/web-languageforge:app-base-latest
+FROM lf-app-base:prod
 
 # php customizations
-RUN mv $PHP_INI_DIR/php.ini-development $PHP_INI_DIR/php.ini
+RUN mv $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini
 COPY docker/app/customizations.php.ini $PHP_INI_DIR/conf.d/
-COPY docker/app/docker-php-ext-xdebug.ini /usr/local/etc/php/conf.d
 
 # apache2 customizations
 RUN a2enmod headers rewrite
@@ -19,7 +18,7 @@ COPY src /var/www/html/
 RUN ln -s /var/www/html /var/www/src
 
 # grab the built assets from the ui image
-COPY --from=lf-ui-builder /data/src/dist /var/www/html/dist
+COPY --from=lf-ui-builder:prod /data/src/dist /var/www/html/dist
 
 # ensure correct write permissions for assets folders
 RUN    chown -R www-data:www-data /var/www/html/assets /var/www/html/cache \
