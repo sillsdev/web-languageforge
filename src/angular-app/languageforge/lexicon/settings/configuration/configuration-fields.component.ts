@@ -72,6 +72,7 @@ export class FieldsConfigurationController implements angular.IController {
   overrideAll = ConfigurationFieldUnifiedViewModel.overrideAll;
   resetInputSystemsForRole = ConfigurationFieldUnifiedViewModel.resetInputSystemsForRole;
   resetInputSystemsForGroup = ConfigurationFieldUnifiedViewModel.resetInputSystemsForGroup;
+  requiredConfigurationFields = ConfigurationFieldUnifiedViewModel.disableRequiredFields;
 
   openNewCustomFieldModal(fieldLevel: string): void {
     interface NewCustomData {

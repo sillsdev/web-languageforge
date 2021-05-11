@@ -17,7 +17,6 @@ export class ConfigurationFieldUnifiedViewModel {
 
   constructor(config: LexiconConfig, users: { [userId: string]: User }) {
     this.groupLists = ConfigurationFieldUnifiedViewModel.setGroupLists(config, users);
-
     this.inputSystems = new InputSystemSettingsList();
     const [settings, overrides] = ConfigurationFieldUnifiedViewModel.setInputSystemsViewModel(config);
     this.inputSystems.settings = settings;
@@ -96,16 +95,52 @@ export class ConfigurationFieldUnifiedViewModel {
     }
   }
 
-  static selectAllRow(setting: SettingsBase, settings: SettingsBase[], selectAll: SettingsBase): void {
+  static disableRequiredFields(fieldSettings: FieldSettings): boolean {
+    const disableFieldList = DisableFields.disableFieldList();
+    let disabled = false;
+    if (disableFieldList.includes(fieldSettings.fieldName)) {
+      disabled = true;
+    }
+    return disabled;
+  }
+
+  static selectAllRow(fieldSettings: FieldSettings, settings: SettingsBase[], selectAll: SettingsBase): void {
     const roles = RoleType.roles();
+    const disableFieldList = DisableFields.disableFieldList();
     for (const role of roles) {
-      setting[role] = setting.isAllRowSelected;
+      fieldSettings[role] = fieldSettings.isAllRowSelected;
       ConfigurationFieldUnifiedViewModel.checkIfAllRoleColumnSelected(settings, selectAll, role);
     }
-    for (const group of setting.groups) {
-      group.show = setting.isAllRowSelected;
+    for (const group of fieldSettings.groups) {
+      if (disableFieldList.includes(fieldSettings.fieldName)) {
+        group.show = true;
+      } else {
+        group.show = fieldSettings.isAllRowSelected;
+      }
       ConfigurationFieldUnifiedViewModel
-        .checkIfAllGroupColumnSelected(settings, selectAll, setting.groups.indexOf(group));
+        .checkIfAllGroupColumnSelected(settings, selectAll, fieldSettings.groups.indexOf(group));
+    }
+  }
+
+  static checkIfAllEntryFieldsRowSelected(fieldSettings: FieldSettings): void {
+    const roles = RoleType.roles();
+    const disableFieldList = DisableFields.disableFieldList();
+    fieldSettings.isAllRowSelected = true;
+    for (const role of roles) {
+      if (!fieldSettings[role]) {
+        fieldSettings.isAllRowSelected = false;
+        break;
+      }
+    }
+    if (fieldSettings.isAllRowSelected) {
+      for (const group of fieldSettings.groups) {
+        if (!group.show) {
+          if (disableFieldList.includes(fieldSettings.fieldName)) {
+            group.show = fieldSettings.isAllRowSelected;
+            break;
+          }
+        }
+      }
     }
   }
 
@@ -135,10 +170,10 @@ export class ConfigurationFieldUnifiedViewModel {
     }
   }
 
-  static selectAllGroupColumn(settings: SettingsBase[], selectAll: SettingsBase, groupIndex: number): void {
+  static selectAllGroupColumn(settings: FieldSettings[], selectAll: SettingsBase, groupIndex: number): void {
     for (const setting of settings) {
       setting.groups[groupIndex].show = selectAll.groups[groupIndex].show;
-      ConfigurationFieldUnifiedViewModel.checkIfAllRowSelected(setting);
+      ConfigurationFieldUnifiedViewModel.checkIfAllEntryFieldsRowSelected(setting);
     }
   }
 
@@ -257,7 +292,7 @@ export class ConfigurationFieldUnifiedViewModel {
 
         for (const fieldName in roleView.fields) {
           if (roleView.fields.hasOwnProperty(fieldName) &&
-              ConfigurationFieldUnifiedViewModel.isMultitextFieldType(roleView.fields[fieldName].type)) {
+            ConfigurationFieldUnifiedViewModel.isMultitextFieldType(roleView.fields[fieldName].type)) {
             const multiTextFieldConfig = roleView.fields[fieldName] as LexViewMultiTextFieldConfig;
             if (overrideInputSystems) {
               multiTextFieldConfig.overrideInputSystems = true;
@@ -287,7 +322,7 @@ export class ConfigurationFieldUnifiedViewModel {
 
         for (const fieldName in userView.fields) {
           if (userView.fields.hasOwnProperty(fieldName) &&
-              ConfigurationFieldUnifiedViewModel.isMultitextFieldType(userView.fields[fieldName].type)) {
+            ConfigurationFieldUnifiedViewModel.isMultitextFieldType(userView.fields[fieldName].type)) {
             const multiTextFieldConfig = userView.fields[fieldName] as LexViewMultiTextFieldConfig;
             if (overrideInputSystems) {
               multiTextFieldConfig.overrideInputSystems = true;
@@ -393,7 +428,7 @@ export class ConfigurationFieldUnifiedViewModel {
     if (roleView != null && roleView.fields != null) {
       for (const fieldName in roleView.fields) {
         if (roleView.fields.hasOwnProperty(fieldName) &&
-            ConfigurationFieldUnifiedViewModel.isMultitextFieldType(roleView.fields[fieldName].type)) {
+          ConfigurationFieldUnifiedViewModel.isMultitextFieldType(roleView.fields[fieldName].type)) {
           const multiTextField = roleView.fields[fieldName] as LexViewMultiTextFieldConfig;
           if (multiTextField.overrideInputSystems) {
             tags = multiTextField.inputSystems;
@@ -414,7 +449,7 @@ export class ConfigurationFieldUnifiedViewModel {
     if (roleView != null && roleView.fields != null) {
       for (const fieldName in roleView.fields) {
         if (roleView.fields.hasOwnProperty(fieldName) &&
-            ConfigurationFieldUnifiedViewModel.isMultitextFieldType(roleView.fields[fieldName].type)) {
+          ConfigurationFieldUnifiedViewModel.isMultitextFieldType(roleView.fields[fieldName].type)) {
           const multiTextField = roleView.fields[fieldName] as LexViewMultiTextFieldConfig;
           if (multiTextField.overrideInputSystems) {
             hasOverride = true;
@@ -444,7 +479,7 @@ export class ConfigurationFieldUnifiedViewModel {
     let hasOverride = false;
     for (const fieldName in config.userViews[userId].fields) {
       if (config.userViews[userId].fields.hasOwnProperty(fieldName) &&
-          ConfigurationFieldUnifiedViewModel.isMultitextFieldType(config.userViews[userId].fields[fieldName].type)
+        ConfigurationFieldUnifiedViewModel.isMultitextFieldType(config.userViews[userId].fields[fieldName].type)
       ) {
         const multiTextField = config.userViews[userId].fields[fieldName] as LexViewMultiTextFieldConfig;
         inputSystemSettings.groups[groupIndex] = new Group();
@@ -590,7 +625,7 @@ export class ConfigurationFieldUnifiedViewModel {
     let groupIndex = 0;
     for (const userId in config.userViews) {
       if (config.userViews.hasOwnProperty(userId) && config.userViews[userId] != null && (userId in users)) {
-        groupLists[groupIndex++] = { label: users[userId].username, userId } as GroupList;
+        groupLists[groupIndex++] = {label: users[userId].username, userId} as GroupList;
       }
     }
 
@@ -600,7 +635,7 @@ export class ConfigurationFieldUnifiedViewModel {
 }
 
 export class Group {
-  show: boolean = false;
+  show: boolean = true;
 }
 
 export abstract class SettingsBase {
@@ -651,4 +686,11 @@ export class RoleType {
 export interface GroupList {
   label: string;
   userId: string;
+}
+
+/* disable all fields that should not be available for changes by the user */
+export class DisableFields {
+  static disableFieldList(): string[] {
+    return ['lexeme'];
+  }
 }
