@@ -107,7 +107,7 @@ export class ConfigurationFieldUnifiedViewModel {
       ConfigurationFieldUnifiedViewModel.checkIfAllRoleColumnSelected(settings, selectAll, role);
     }
     for (const group of fieldSettings.groups) {
-      if (disableFieldList.includes(fieldSettings.fieldName)) {
+      if (requiredFieldList.includes(fieldSettings.fieldName)) {
         group.show = true;
       } else {
         group.show = fieldSettings.isAllRowSelected;
