@@ -130,7 +130,7 @@ export class ConfigurationFieldUnifiedViewModel {
     if (fieldSettings.isAllRowSelected) {
       for (const group of fieldSettings.groups) {
         if (!group.show) {
-          if (disableFieldList.includes(fieldSettings.fieldName)) {
+          if (requiredFieldList.includes(fieldSettings.fieldName)) {
             group.show = fieldSettings.isAllRowSelected;
             break;
           }
