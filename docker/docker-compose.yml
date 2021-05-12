@@ -63,6 +63,8 @@ services:
       - lf-ui-dist:/var/www/html/dist
 
       # for developer convenience
+      - ../src/index.php:/var/www/src/index.php
+      - ../src/config.php:/var/www/src/config.php
       - ../src/Api:/var/www/src/Api
       - ../src/Site:/var/www/src/Site
 
