@@ -119,7 +119,7 @@ export class ConfigurationFieldUnifiedViewModel {
 
   static checkIfAllEntryFieldsRowSelected(fieldSettings: FieldSettings): void {
     const roles = RoleType.roles();
-    const disableFieldList = DisableFields.disableFieldList();
+    const requiredFieldList = RequiredFields.requiredFieldList();
     fieldSettings.isAllRowSelected = true;
     for (const role of roles) {
       if (!fieldSettings[role]) {
