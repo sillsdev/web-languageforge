@@ -95,13 +95,8 @@ export class ConfigurationFieldUnifiedViewModel {
     }
   }
 
-  static disableRequiredFields(fieldSettings: FieldSettings): boolean {
-    const disableFieldList = DisableFields.disableFieldList();
-    let disabled = false;
-    if (disableFieldList.includes(fieldSettings.fieldName)) {
-      disabled = true;
-    }
-    return disabled;
+  static ensureRequiredFields(fieldSettings: FieldSettings): boolean {
+    return RequiredFields.requiredFieldList().includes(fieldSettings.fieldName);
   }
 
   static selectAllRow(fieldSettings: FieldSettings, settings: SettingsBase[], selectAll: SettingsBase): void {
