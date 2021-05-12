@@ -684,8 +684,8 @@ export interface GroupList {
 }
 
 /* disable all fields that should not be available for changes by the user */
-export class DisableFields {
-  static disableFieldList(): string[] {
+export class RequiredFields {
+  static requiredFieldList(): string[] {
     return ['lexeme'];
   }
 }
