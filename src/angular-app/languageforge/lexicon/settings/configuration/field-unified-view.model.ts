@@ -101,7 +101,7 @@ export class ConfigurationFieldUnifiedViewModel {
 
   static selectAllRow(fieldSettings: FieldSettings, settings: SettingsBase[], selectAll: SettingsBase): void {
     const roles = RoleType.roles();
-    const disableFieldList = DisableFields.disableFieldList();
+    const requiredFieldList = RequiredFields.requiredFieldList();
     for (const role of roles) {
       fieldSettings[role] = fieldSettings.isAllRowSelected;
       ConfigurationFieldUnifiedViewModel.checkIfAllRoleColumnSelected(settings, selectAll, role);
