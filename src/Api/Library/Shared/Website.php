@@ -69,7 +69,7 @@ class Website
      * @param string $hostname
      * @return Website
      */
-    public static function get($hostname = '')
+    public static function get($hostname = 'languageforge.org')
     {
         if (!$hostname) {
             $hostname = self::getHostname();
