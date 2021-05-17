@@ -32,7 +32,15 @@ create-new-deployment-mail:
 .PHONY: deploy-mail-qa
 deploy-mail-qa:
 	sed -e s/{{SERVER_HOSTNAME}}/qa.languageforge.org/ mail-deployment.yaml | kubectl apply -f -
-
 .PHONY: deploy-mail-prod
 deploy-mail-prod:
 	sed -e s/{{SERVER_HOSTNAME}}/languageforge.org/ mail-deployment.yaml | kubectl apply -f -
+
+.PHONY: deploy-app-qa
+deploy-app-qa:
+	sed -e s/{{ENVIRONMENT}}/development/ app-deployment.yaml \
+  | sed -e s/{{WEBSITE}}/qa.languageforge.org/ | kubectl apply -f -
+.PHONY: deploy-app-prod
+deploy-app-prod:
+	sed -e s/{{ENVIRONMENT}}/production/ app-deployment.yaml \
+  | sed -e s/{{WEBSITE}}/languageforge.org/ | kubectl apply -f -

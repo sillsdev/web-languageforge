@@ -1,0 +1,71 @@
+# https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#writing-a-deployment-spec
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: app
+  name: app
+spec:
+  selector:
+    matchLabels:
+      app: app
+  template:
+    # https://kubernetes.io/docs/concepts/workloads/pods/#pod-templates
+    metadata:
+      labels:
+        app: app
+    spec:
+      containers:
+      - name: app
+        image: sillsdev/web-languageforge:app-latest
+        ports:
+          - containerPort: 80
+            name: http
+            protocol: TCP
+        env:
+          - name: DATABASE
+            value: scriptureforge
+          - name: ENVIRONMENT
+            value: {{ENVIRONMENT}}
+          - name: WEBSITE
+            value: {{WEBSITE}}
+          - name: MONGODB_CONN
+            valueFrom:
+              secretKeyRef:
+                key: MONGODB_CONN
+                name: app
+          - name: REMEMBER_ME_SECRET
+            valueFrom:
+              secretKeyRef:
+                key: REMEMBER_ME_SECRET
+                name: app
+          - name: LDAPI_BASE_URL
+            valueFrom:
+              secretKeyRef:
+                key: LDAPI_BASE_URL
+                name: ld-api
+          - name: LANGUAGE_DEPOT_API_TOKEN
+            valueFrom:
+              secretKeyRef:
+                key: LANGUAGE_DEPOT_API_TOKEN
+                name: ld-api
+          - name: FACEBOOK_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                key: FACEBOOK_CLIENT_ID
+                name: oauth
+          - name: FACEBOOK_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                key: FACEBOOK_CLIENT_SECRET
+                name: oauth
+          - name: GOOGLE_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                key: GOOGLE_CLIENT_ID
+                name: oauth
+          - name: GOOGLE_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                key: GOOGLE_CLIENT_SECRET
+                name: oauth
