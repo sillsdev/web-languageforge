@@ -1,0 +1,38 @@
+# https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands
+.PHONY: list-services
+list-services:
+	kubectl get services
+
+.PHONY: list-deployments
+list-deployments:
+	kubectl get deployments
+
+.PHONY: logs
+logs: logs-app logs-db logs-mail
+.PHONY: logs-app
+logs-app:
+	kubectl logs deploy/app
+.PHONY: logs-db
+logs-db:
+	kubectl logs deploy/db
+.PHONY: logs-mail
+logs-mail:
+	kubectl logs deploy/mail
+
+.PHONY: retrieve-current-deployments
+retrieve-current-deployments:
+	kubectl get deploy app  -o yaml > app-deployment-current.yaml
+	kubectl get deploy mail -o yaml > mail-deployment-current.yaml
+	kubectl get deploy db   -o yaml > db-deployment-current.yaml
+
+.PHONY: create-new-deployment-mail
+create-new-deployment-mail:
+	kubectl create deployment mail --image=juanluisbaptiste/postfix:1.0.0 --dry-run=client -o yaml > mail-deployment-new.yaml
+
+.PHONY: deploy-mail-qa
+deploy-mail-qa:
+	sed -e s/{{SERVER_HOSTNAME}}/qa.languageforge.org/ mail-deployment.yaml | kubectl apply -f -
+
+.PHONY: deploy-mail-prod
+deploy-mail-prod:
+	sed -e s/{{SERVER_HOSTNAME}}/languageforge.org/ mail-deployment.yaml | kubectl apply -f -
