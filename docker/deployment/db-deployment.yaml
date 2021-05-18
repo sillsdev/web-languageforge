@@ -3,20 +3,20 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: db-from-kubectl
-  name: db-from-kubectl
+    app: db
+  name: db
 spec:
   selector:
     matchLabels:
-      app: db-from-kubectl
+      app: db
   template:
     # https://kubernetes.io/docs/concepts/workloads/pods/#pod-templates
     metadata:
       labels:
-        app: db-from-kubectl
+        app: db
     spec:
       containers:
-      - name: db-from-kubectl
+      - name: db
         image: mongo:4.0
         ports:
         - containerPort: 27017
@@ -28,7 +28,7 @@ spec:
       volumes:
       - name: vol1
         persistentVolumeClaim:
-          claimName: lf-mongo-data-from-kubectl
+          claimName: lf-mongo-data
 ---
 
 # https://kubernetes.io/docs/concepts/services-networking/service/#defining-a-service
@@ -36,8 +36,8 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: db-from-kubectl
-  name: db-from-kubectl
+    app: db
+  name: db
 spec:
   type: ClusterIP
   ports:
@@ -46,7 +46,7 @@ spec:
     protocol: TCP
     targetPort: 27017
   selector:
-    app: db-from-kubectl
+    app: db
 
 ---
 
@@ -54,7 +54,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: lf-mongo-data-from-kubectl
+  name: lf-mongo-data
 spec:
   accessModes:
     - ReadWriteOnce

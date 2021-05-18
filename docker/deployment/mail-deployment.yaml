@@ -3,20 +3,20 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: mail-from-kubectl
-  name: mail-from-kubectl
+    app: mail
+  name: mail
 spec:
   selector:
     matchLabels:
-      app: mail-from-kubectl
+      app: mail
   template:
     # https://kubernetes.io/docs/concepts/workloads/pods/#pod-templates
     metadata:
       labels:
-        app: mail-from-kubectl
+        app: mail
     spec:
       containers:
-      - name: mail-from-kubectl
+      - name: mail
         image: juanluisbaptiste/postfix:1.0.0
         env:
           - name: SERVER_HOSTNAME
@@ -39,18 +39,19 @@ spec:
 
 ---
 
+# https://kubernetes.io/docs/concepts/services-networking/service/#defining-a-service
 apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: mail-from-kubectl
-  name: mail-from-kubectl
+    app: mail
+  name: mail
 spec:
   type: ClusterIP
   ports:
   - name: default
-    port: 42
+    port: 25
     protocol: TCP
-    targetPort: 42
+    targetPort: 25
   selector:
-    app: mail-from-kubectl
+    app: mail

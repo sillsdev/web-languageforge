@@ -3,20 +3,20 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: app-from-kubectl
-  name: app-from-kubectl
+    app: app
+  name: app
 spec:
   selector:
     matchLabels:
-      app: app-from-kubectl
+      app: app
   template:
     # https://kubernetes.io/docs/concepts/workloads/pods/#pod-templates
     metadata:
       labels:
-        app: app-from-kubectl
+        app: app
     spec:
       containers:
-      - name: app-from-kubectl
+      - name: app
         image: sillsdev/web-languageforge:app-latest
         ports:
           - containerPort: 80
@@ -72,12 +72,13 @@ spec:
 
 ---
 
+# https://kubernetes.io/docs/concepts/services-networking/service/#defining-a-service
 apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: app-from-kubectl
-  name: app-from-kubectl
+    app: app
+  name: app
 spec:
   type: ClusterIP
   ports:
@@ -86,7 +87,7 @@ spec:
     protocol: TCP
     targetPort: 80
   selector:
-    app: app-from-kubectl
+    app: app
 
 ---
 
@@ -94,21 +95,21 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: languageforge-app-from-kubectl
+  name: languageforge-app
 spec:
   rules:
-  - host: qa-from-kubectl.languageforge.org
+  - host: qa.languageforge.org
     http:
       paths:
       - path: /
         pathType: ImplementationSpecific
         backend:
           service:
-            name: app-from-kubectl
+            name: app
             port:
               number: 80
   tls:
   - hosts:
-    - qa-from-kubectl.languageforge.com
+    - qa.languageforge.com
 
 
