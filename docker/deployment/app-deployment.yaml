@@ -3,20 +3,20 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: app
-  name: app
+    app: app-from-kubectl
+  name: app-from-kubectl
 spec:
   selector:
     matchLabels:
-      app: app
+      app: app-from-kubectl
   template:
     # https://kubernetes.io/docs/concepts/workloads/pods/#pod-templates
     metadata:
       labels:
-        app: app
+        app: app-from-kubectl
     spec:
       containers:
-      - name: app
+      - name: app-from-kubectl
         image: sillsdev/web-languageforge:app-latest
         ports:
           - containerPort: 80
@@ -69,3 +69,46 @@ spec:
               secretKeyRef:
                 key: GOOGLE_CLIENT_SECRET
                 name: oauth
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: app-from-kubectl
+  name: app-from-kubectl
+spec:
+  type: ClusterIP
+  ports:
+  - name: default
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: app-from-kubectl
+
+---
+
+# https://kubernetes.io/docs/concepts/services-networking/ingress/#the-ingress-resource
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: languageforge-app-from-kubectl
+spec:
+  rules:
+  - host: qa-from-kubectl.languageforge.org
+    http:
+      paths:
+      - path: /
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: app-from-kubectl
+            port:
+              number: 80
+  tls:
+  - hosts:
+    - qa-from-kubectl.languageforge.com
+
+

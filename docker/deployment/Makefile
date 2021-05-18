@@ -44,3 +44,21 @@ deploy-app-qa:
 deploy-app-prod:
 	sed -e s/{{ENVIRONMENT}}/production/ app-deployment.yaml \
   | sed -e s/{{WEBSITE}}/languageforge.org/ | kubectl apply -f -
+.PHONY: deploy-db
+deploy-db:
+	kubectl apply -f db-deployment.yaml
+.PHONY: deploy-qa
+deploy-qa: deploy-mail-qa deploy-app-qa deploy-db
+
+.PHONY: delete
+delete: delete-app delete-mail delete-db
+.PHONY: delete-db
+delete-db:
+	kubectl delete -f db-deployment.yaml
+.PHONY: delete-mail
+delete-mail:
+	kubectl delete deployment,service mail-from-kubectl
+.PHONY: delete-app
+delete-app:
+	kubectl delete deployment,service app-from-kubectl
+	kubectl delete ingress languageforge-app-from-kubectl

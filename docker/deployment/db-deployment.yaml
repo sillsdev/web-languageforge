@@ -1,0 +1,63 @@
+# https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#writing-a-deployment-spec
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: db-from-kubectl
+  name: db-from-kubectl
+spec:
+  selector:
+    matchLabels:
+      app: db-from-kubectl
+  template:
+    # https://kubernetes.io/docs/concepts/workloads/pods/#pod-templates
+    metadata:
+      labels:
+        app: db-from-kubectl
+    spec:
+      containers:
+      - name: db-from-kubectl
+        image: mongo:4.0
+        ports:
+        - containerPort: 27017
+          name: mongodb
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /data/db
+          name: vol1
+      volumes:
+      - name: vol1
+        persistentVolumeClaim:
+          claimName: lf-mongo-data-from-kubectl
+---
+
+# https://kubernetes.io/docs/concepts/services-networking/service/#defining-a-service
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: db-from-kubectl
+  name: db-from-kubectl
+spec:
+  type: ClusterIP
+  ports:
+  - name: default
+    port: 27017
+    protocol: TCP
+    targetPort: 27017
+  selector:
+    app: db-from-kubectl
+
+---
+
+# https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: lf-mongo-data-from-kubectl
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
