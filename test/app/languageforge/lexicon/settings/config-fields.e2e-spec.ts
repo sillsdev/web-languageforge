@@ -608,14 +608,14 @@ describe('Lexicon E2E Configuration Fields', () => {
       expect<any>(await Utils.isAllCheckboxes(configPage.unifiedPane.inputSystem.groupColumnCheckboxes(1), true)).toBe(true);
       expect<any>(await Utils.isAllCheckboxes(configPage.unifiedPane.inputSystem.columnCheckboxes('select-row'), true))
         .toBe(true);
-      expect<any>(await Utils.isAllCheckboxes(configPage.unifiedPane.entry.groupColumnCheckboxes(1), false)).toBe(true);
+      expect<any>(await Utils.isAllCheckboxes(configPage.unifiedPane.entry.groupColumnCheckboxes(1), true)).toBe(true);
       expect<any>(await Utils.isAllCheckboxes(configPage.unifiedPane.entry.columnCheckboxes('select-row'), false))
         .toBe(true);
-      expect<any>(await Utils.isAllCheckboxes(configPage.unifiedPane.sense.groupColumnCheckboxes(1), false)).toBe(true);
+      expect<any>(await Utils.isAllCheckboxes(configPage.unifiedPane.sense.groupColumnCheckboxes(1), true)).toBe(true);
       expect<any>(await Utils.isAllCheckboxes(configPage.unifiedPane.sense.columnCheckboxes('select-row'), false))
         .toBe(true);
-      expect<any>(await Utils.isAllCheckboxes(configPage.unifiedPane.example.groupColumnCheckboxes(1), false)).toBe(true);
-      expect<any>(await Utils.isAllCheckboxes(configPage.unifiedPane.example.columnCheckboxes('select-row'), false))
+      expect<any>(await Utils.isAllCheckboxes(configPage.unifiedPane.example.groupColumnCheckboxes(1), true)).toBe(true);
+      expect<any>(await Utils.isAllCheckboxes(configPage.unifiedPane.example.columnCheckboxes('select-row'), true))
         .toBe(true);
     });
 
