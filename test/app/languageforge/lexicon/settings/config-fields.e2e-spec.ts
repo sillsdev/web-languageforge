@@ -606,7 +606,7 @@ describe('Lexicon E2E Configuration Fields', () => {
       expect<any>(await configPage.unifiedPane.inputSystem.groupColumnCheckboxes(1).count()).toEqual(rowNumber);
       expect<any>(await configPage.unifiedPane.rowCheckboxes(rowLabel).count()).toEqual(7);
       expect<any>(await Utils.isAllCheckboxes(configPage.unifiedPane.inputSystem.groupColumnCheckboxes(1), true)).toBe(true);
-      expect<any>(await Utils.isAllCheckboxes(configPage.unifiedPane.inputSystem.columnCheckboxes('select-row'), false))
+      expect<any>(await Utils.isAllCheckboxes(configPage.unifiedPane.inputSystem.columnCheckboxes('select-row'), true))
         .toBe(true);
       expect<any>(await Utils.isAllCheckboxes(configPage.unifiedPane.entry.groupColumnCheckboxes(1), false)).toBe(true);
       expect<any>(await Utils.isAllCheckboxes(configPage.unifiedPane.entry.columnCheckboxes('select-row'), false))
