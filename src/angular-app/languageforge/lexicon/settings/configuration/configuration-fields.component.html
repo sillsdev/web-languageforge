@@ -276,7 +276,7 @@
                     <input class="position-static" data-ng-class="'checkbox-group-' + $index"
                            data-ng-model="group.show"
                            data-ng-change="$ctrl.checkIfAllGroupSelected(entryField, $ctrl.unifiedViewModel.entryFields.settings, $ctrl.unifiedViewModel.entryFields.selectAllColumns, $index)"
-                           aria-label="..." type="checkbox" data-ng-disabled="$ctrl.requiredConfigurationFields(entryField)">
+                           aria-label="..." type="checkbox" data-ng-disabled="$ctrl.ensureRequiredConfigurationFields(entryField)">
                 </td>
                 <td class="text-center align-middle">
                     <a data-ng-if="entryField.inputSystems.length > 0" data-ng-click="entryField.isCustomInputSystemsCollapsed = !entryField.isCustomInputSystemsCollapsed" class="field-specific-btn">
