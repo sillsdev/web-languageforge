@@ -57,8 +57,8 @@ delete-db:
 	kubectl delete -f db-deployment.yaml
 .PHONY: delete-mail
 delete-mail:
-	kubectl delete deployment,service mail-from-kubectl
+	kubectl delete deployment,service mail
 .PHONY: delete-app
 delete-app:
-	kubectl delete deployment,service app-from-kubectl
-	kubectl delete ingress languageforge-app-from-kubectl
+	kubectl delete deployment,service app
+	kubectl delete ingress languageforge-app
