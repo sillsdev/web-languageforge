@@ -19,9 +19,9 @@ spec:
       - name: app
         image: sillsdev/web-languageforge:app-latest
         ports:
-          - containerPort: 80
-            name: http
+          - name: http
             protocol: TCP
+            containerPort: 80
         env:
           - name: DATABASE
             value: scriptureforge
@@ -82,9 +82,9 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-  - name: default
-    port: 80
+  - name: http
     protocol: TCP
+    port: 80
     targetPort: 80
   selector:
     app: app
