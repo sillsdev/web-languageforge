@@ -40,11 +40,7 @@ metadata:
   name: db
 spec:
   type: ClusterIP
-  ports:
-  - name: default
-    port: 27017
-    protocol: TCP
-    targetPort: 27017
+  clusterIP: None
   selector:
     app: db
 

@@ -48,10 +48,6 @@ metadata:
   name: mail
 spec:
   type: ClusterIP
-  ports:
-  - name: default
-    port: 25
-    protocol: TCP
-    targetPort: 25
+  clusterIP: None
   selector:
     app: mail
