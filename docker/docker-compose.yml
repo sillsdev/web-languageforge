@@ -187,7 +187,6 @@ services:
     command: sh -c "/wait && /run.sh"
 
   test-php:
-    # TODO: get XDebug working with VSCode
     build:
       context: ..
       dockerfile: docker/test-php/Dockerfile
@@ -202,6 +201,12 @@ services:
       - DATABASE=scriptureforge_test
       - MONGODB_CONN=mongodb://db:27017
       - LANGUAGE_DEPOT_API_TOKEN=bogus-development-token
+      # Note: Uncomment to enable XDebug in Unit Tests.  The default mode is "off".
+      # These lines are commented out as this XDebug setup causes CI failures.
+      # XDebug is intended for local development only.  Uncomment the following 3 lines:
+      # - XDEBUG_MODE=develop,debug
+    # extra_hosts:
+      # - "host.docker.internal:host-gateway"
     command: sh -c "/wait && /run.sh"
     volumes:
       # for developer convenience
