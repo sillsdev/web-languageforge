@@ -1,3 +1,45 @@
+# https://kubernetes.io/docs/concepts/services-networking/service/#defining-a-service
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: app
+  name: app
+spec:
+  type: ClusterIP
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80
+    targetPort: 80
+  selector:
+    app: app
+
+---
+
+# https://kubernetes.io/docs/concepts/services-networking/ingress/#the-ingress-resource
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: languageforge-app
+spec:
+  rules:
+  - host: qa.languageforge.org
+    http:
+      paths:
+      - path: /
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: app
+            port:
+              number: 80
+  tls:
+  - hosts:
+    - qa.languageforge.com
+
+---
+
 # https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#writing-a-deployment-spec
 apiVersion: apps/v1
 kind: Deployment
@@ -69,47 +111,3 @@ spec:
               secretKeyRef:
                 key: GOOGLE_CLIENT_SECRET
                 name: oauth
-
----
-
-# https://kubernetes.io/docs/concepts/services-networking/service/#defining-a-service
-apiVersion: v1
-kind: Service
-metadata:
-  labels:
-    app: app
-  name: app
-spec:
-  type: ClusterIP
-  ports:
-  - name: http
-    protocol: TCP
-    port: 80
-    targetPort: 80
-  selector:
-    app: app
-
----
-
-# https://kubernetes.io/docs/concepts/services-networking/ingress/#the-ingress-resource
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: languageforge-app
-spec:
-  rules:
-  - host: qa.languageforge.org
-    http:
-      paths:
-      - path: /
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            name: app
-            port:
-              number: 80
-  tls:
-  - hosts:
-    - qa.languageforge.com
-
-
