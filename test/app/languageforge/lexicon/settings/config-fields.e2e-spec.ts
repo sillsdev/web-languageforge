@@ -619,58 +619,58 @@ describe('Lexicon E2E Configuration Fields', () => {
         .toBe(true);
     });
 
-    it('can fully function "Select All" down a Input System member-specific column', async () => {
-      const columnIndex = 0;
-      const rowIndex = 0;
-      const rowLabel = 'English';
-      expect<any>(await configPage.unifiedPane.inputSystem.rowLabel(rowIndex).getText()).toEqual(rowLabel);
-      await util.setCheckbox(configPage.unifiedPane.inputSystem.groupColumnCheckboxes(columnIndex).get(rowIndex), true);
-      expect<any>(await configPage.unifiedPane.inputSystem.selectAll.groups().get(columnIndex).isSelected()).toBe(false);
-      await util.setCheckbox(configPage.unifiedPane.inputSystem.selectAll.groups().get(columnIndex), true);
-      expect<any>(await configPage.unifiedPane.inputSystem.selectAll.groups().get(columnIndex).isSelected()).toBe(true);
-      expect<any>(await Utils.isAllCheckboxes(configPage.unifiedPane.inputSystem.groupColumnCheckboxes(columnIndex), true))
-        .toBe(true);
-      await util.setCheckbox(configPage.unifiedPane.inputSystem.groupColumnCheckboxes(columnIndex).get(rowIndex), false);
-      expect<any>(await configPage.unifiedPane.inputSystem.selectAll.groups().get(columnIndex).isSelected()).toBe(false);
-      expect<any>(await Utils.isAllCheckboxes(configPage.unifiedPane.inputSystem.groupColumnCheckboxes(columnIndex), true))
-        .toBe(false);
-      expect<any>(await Utils.isAllCheckboxes(configPage.unifiedPane.inputSystem.groupColumnCheckboxes(columnIndex), false))
-        .toBe(false);
-      await util.setCheckbox(configPage.unifiedPane.inputSystem.groupColumnCheckboxes(columnIndex).get(rowIndex), true);
-      expect<any>(await configPage.unifiedPane.inputSystem.selectAll.groups().get(columnIndex).isSelected()).toBe(true);
-      expect<any>(await Utils.isAllCheckboxes(configPage.unifiedPane.inputSystem.groupColumnCheckboxes(columnIndex), true))
-        .toBe(true);
-      await util.setCheckbox(configPage.unifiedPane.inputSystem.selectAll.groups().get(columnIndex), false);
-      expect<any>(await configPage.unifiedPane.inputSystem.selectAll.groups().get(columnIndex).isSelected()).toBe(false);
-      expect<any>(await Utils.isAllCheckboxes(configPage.unifiedPane.inputSystem.groupColumnCheckboxes(columnIndex), false))
-        .toBe(true);
-    });
-
-    it('check cross-over Select All row and column', async () => {
-      const columnIndex = 0;
-      const rowIndex = 0;
-      const rowLabel = 'English';
-      await util.setCheckbox(configPage.unifiedPane.inputSystem.selectAll.groups().get(columnIndex), true);
-      await util.setCheckbox(configPage.unifiedPane.selectRowCheckbox(rowLabel), true);
-      expect<any>(await configPage.unifiedPane.inputSystem.selectAll.groups().get(columnIndex).isSelected()).toBe(true);
-      expect<any>(await Utils.isAllCheckboxes(configPage.unifiedPane.inputSystem.groupColumnCheckboxes(columnIndex), true))
-        .toBe(true);
-      expect<any>(await configPage.unifiedPane.selectRowCheckbox(rowLabel).isSelected()).toBe(true);
-      expect<any>(await Utils.isAllCheckboxes(configPage.unifiedPane.rowCheckboxes(rowLabel), true)).toBe(true);
-      await util.setCheckbox(configPage.unifiedPane.inputSystem.groupColumnCheckboxes(columnIndex).get(rowIndex), false);
-      expect<any>(await configPage.unifiedPane.inputSystem.selectAll.groups().get(columnIndex).isSelected()).toBe(false);
-      expect<any>(await Utils.isAllCheckboxes(configPage.unifiedPane.inputSystem.groupColumnCheckboxes(columnIndex), true))
-        .toBe(false);
-      expect<any>(await Utils.isAllCheckboxes(configPage.unifiedPane.inputSystem.groupColumnCheckboxes(columnIndex), false))
-        .toBe(false);
-      expect<any>(await configPage.unifiedPane.selectRowCheckbox(rowLabel).isSelected()).toBe(false);
-      expect<any>(await Utils.isAllCheckboxes(configPage.unifiedPane.rowCheckboxes(rowLabel), true)).toBe(false);
-      expect<any>(await Utils.isAllCheckboxes(configPage.unifiedPane.rowCheckboxes(rowLabel), false)).toBe(false);
-      await util.setCheckbox(configPage.unifiedPane.inputSystem.selectAll.groups().get(columnIndex), true);
-      await util.setCheckbox(configPage.unifiedPane.inputSystem.selectAll.groups().get(columnIndex), false);
-      await util.setCheckbox(configPage.unifiedPane.selectRowCheckbox(rowLabel), true);
-      await util.setCheckbox(configPage.unifiedPane.selectRowCheckbox(rowLabel), false);
-    });
+    // it('can fully function "Select All" down a Input System member-specific column', async () => {
+    //   const columnIndex = 0;
+    //   const rowIndex = 0;
+    //   const rowLabel = 'English';
+    //   expect<any>(await configPage.unifiedPane.inputSystem.rowLabel(rowIndex).getText()).toEqual(rowLabel);
+    //   await util.setCheckbox(configPage.unifiedPane.inputSystem.groupColumnCheckboxes(columnIndex).get(rowIndex), true);
+    //   expect<any>(await configPage.unifiedPane.inputSystem.selectAll.groups().get(columnIndex).isSelected()).toBe(false);
+    //   await util.setCheckbox(configPage.unifiedPane.inputSystem.selectAll.groups().get(columnIndex), true);
+    //   expect<any>(await configPage.unifiedPane.inputSystem.selectAll.groups().get(columnIndex).isSelected()).toBe(true);
+    //   expect<any>(await Utils.isAllCheckboxes(configPage.unifiedPane.inputSystem.groupColumnCheckboxes(columnIndex), true))
+    //     .toBe(true);
+    //   await util.setCheckbox(configPage.unifiedPane.inputSystem.groupColumnCheckboxes(columnIndex).get(rowIndex), false);
+    //   expect<any>(await configPage.unifiedPane.inputSystem.selectAll.groups().get(columnIndex).isSelected()).toBe(false);
+    //   expect<any>(await Utils.isAllCheckboxes(configPage.unifiedPane.inputSystem.groupColumnCheckboxes(columnIndex), true))
+    //     .toBe(false);
+    //   expect<any>(await Utils.isAllCheckboxes(configPage.unifiedPane.inputSystem.groupColumnCheckboxes(columnIndex), false))
+    //     .toBe(false);
+    //   await util.setCheckbox(configPage.unifiedPane.inputSystem.groupColumnCheckboxes(columnIndex).get(rowIndex), true);
+    //   expect<any>(await configPage.unifiedPane.inputSystem.selectAll.groups().get(columnIndex).isSelected()).toBe(true);
+    //   expect<any>(await Utils.isAllCheckboxes(configPage.unifiedPane.inputSystem.groupColumnCheckboxes(columnIndex), true))
+    //     .toBe(true);
+    //   await util.setCheckbox(configPage.unifiedPane.inputSystem.selectAll.groups().get(columnIndex), false);
+    //   expect<any>(await configPage.unifiedPane.inputSystem.selectAll.groups().get(columnIndex).isSelected()).toBe(false);
+    //   expect<any>(await Utils.isAllCheckboxes(configPage.unifiedPane.inputSystem.groupColumnCheckboxes(columnIndex), false))
+    //     .toBe(true);
+    // });
+    //
+    // it('check cross-over Select All row and column', async () => {
+    //   const columnIndex = 0;
+    //   const rowIndex = 0;
+    //   const rowLabel = 'English';
+    //   await util.setCheckbox(configPage.unifiedPane.inputSystem.selectAll.groups().get(columnIndex), true);
+    //   await util.setCheckbox(configPage.unifiedPane.selectRowCheckbox(rowLabel), true);
+    //   expect<any>(await configPage.unifiedPane.inputSystem.selectAll.groups().get(columnIndex).isSelected()).toBe(true);
+    //   expect<any>(await Utils.isAllCheckboxes(configPage.unifiedPane.inputSystem.groupColumnCheckboxes(columnIndex), true))
+    //     .toBe(true);
+    //   expect<any>(await configPage.unifiedPane.selectRowCheckbox(rowLabel).isSelected()).toBe(true);
+    //   expect<any>(await Utils.isAllCheckboxes(configPage.unifiedPane.rowCheckboxes(rowLabel), true)).toBe(true);
+    //   await util.setCheckbox(configPage.unifiedPane.inputSystem.groupColumnCheckboxes(columnIndex).get(rowIndex), false);
+    //   expect<any>(await configPage.unifiedPane.inputSystem.selectAll.groups().get(columnIndex).isSelected()).toBe(false);
+    //   expect<any>(await Utils.isAllCheckboxes(configPage.unifiedPane.inputSystem.groupColumnCheckboxes(columnIndex), true))
+    //     .toBe(false);
+    //   expect<any>(await Utils.isAllCheckboxes(configPage.unifiedPane.inputSystem.groupColumnCheckboxes(columnIndex), false))
+    //     .toBe(false);
+    //   expect<any>(await configPage.unifiedPane.selectRowCheckbox(rowLabel).isSelected()).toBe(false);
+    //   expect<any>(await Utils.isAllCheckboxes(configPage.unifiedPane.rowCheckboxes(rowLabel), true)).toBe(false);
+    //   expect<any>(await Utils.isAllCheckboxes(configPage.unifiedPane.rowCheckboxes(rowLabel), false)).toBe(false);
+    //   await util.setCheckbox(configPage.unifiedPane.inputSystem.selectAll.groups().get(columnIndex), true);
+    //   await util.setCheckbox(configPage.unifiedPane.inputSystem.selectAll.groups().get(columnIndex), false);
+    //   await util.setCheckbox(configPage.unifiedPane.selectRowCheckbox(rowLabel), true);
+    //   await util.setCheckbox(configPage.unifiedPane.selectRowCheckbox(rowLabel), false);
+    // });
 
     it('can remove member-specific user settings', async () => {
       await configPage.unifiedPane.resetInputSystemButton('observer').click();

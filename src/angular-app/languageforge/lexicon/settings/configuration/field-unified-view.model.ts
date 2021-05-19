@@ -95,43 +95,43 @@ export class ConfigurationFieldUnifiedViewModel {
     }
   }
 
-  static ensureRequiredFields(fieldSettings: FieldSettings): boolean {
-    return RequiredFields.requiredFieldList().includes(fieldSettings.fieldName);
+  static ensureRequiredFields(setting: SettingsBase): boolean {
+    return RequiredFields.requiredFieldList().includes(setting.fieldName);
   }
 
-  static selectAllRow(fieldSettings: FieldSettings, settings: SettingsBase[], selectAll: SettingsBase): void {
+  static selectAllRow(setting: SettingsBase, settings: SettingsBase[], selectAll: SettingsBase): void {
     const roles = RoleType.roles();
     const requiredFieldList = RequiredFields.requiredFieldList();
     for (const role of roles) {
-      fieldSettings[role] = fieldSettings.isAllRowSelected;
+      setting[role] = setting.isAllRowSelected;
       ConfigurationFieldUnifiedViewModel.checkIfAllRoleColumnSelected(settings, selectAll, role);
     }
-    for (const group of fieldSettings.groups) {
-      if (requiredFieldList.includes(fieldSettings.fieldName)) {
+    for (const group of setting.groups) {
+      if (requiredFieldList.includes(setting.fieldName)) {
         group.show = true;
       } else {
-        group.show = fieldSettings.isAllRowSelected;
+        group.show = setting.isAllRowSelected;
       }
       ConfigurationFieldUnifiedViewModel
-        .checkIfAllGroupColumnSelected(settings, selectAll, fieldSettings.groups.indexOf(group));
+        .checkIfAllGroupColumnSelected(settings, selectAll, setting.groups.indexOf(group));
     }
   }
 
-  static checkIfAllEntryFieldsRowSelected(fieldSettings: FieldSettings): void {
+  static checkIfAllEntryFieldsRowSelected(setting: SettingsBase): void {
     const roles = RoleType.roles();
     const requiredFieldList = RequiredFields.requiredFieldList();
-    fieldSettings.isAllRowSelected = true;
+    setting.isAllRowSelected = true;
     for (const role of roles) {
-      if (!fieldSettings[role]) {
-        fieldSettings.isAllRowSelected = false;
+      if (!setting[role]) {
+        setting.isAllRowSelected = false;
         break;
       }
     }
-    if (fieldSettings.isAllRowSelected) {
-      for (const group of fieldSettings.groups) {
+    if (setting.isAllRowSelected) {
+      for (const group of setting.groups) {
         if (!group.show) {
-          if (requiredFieldList.includes(fieldSettings.fieldName)) {
-            group.show = fieldSettings.isAllRowSelected;
+          if (requiredFieldList.includes(setting.fieldName)) {
+            group.show = setting.isAllRowSelected;
             break;
           }
         }
@@ -165,7 +165,7 @@ export class ConfigurationFieldUnifiedViewModel {
     }
   }
 
-  static selectAllGroupColumn(settings: FieldSettings[], selectAll: SettingsBase, groupIndex: number): void {
+  static selectAllGroupColumn(settings: SettingsBase[], selectAll: SettingsBase, groupIndex: number): void {
     for (const setting of settings) {
       setting.groups[groupIndex].show = selectAll.groups[groupIndex].show;
       ConfigurationFieldUnifiedViewModel.checkIfAllEntryFieldsRowSelected(setting);
@@ -571,6 +571,7 @@ export class ConfigurationFieldUnifiedViewModel {
           for (const tag of multiTextLevelConfigField.inputSystems) {
             const inputSystemSettings = new InputSystemSettings();
             inputSystemSettings.tag = tag;
+            inputSystemSettings.fieldName = fieldName;
             inputSystemSettings.isAllRowSelected = true;
             fieldSettings.inputSystems.push(inputSystemSettings);
           }
@@ -578,6 +579,7 @@ export class ConfigurationFieldUnifiedViewModel {
             if (config.inputSystems.hasOwnProperty(tag) && !multiTextLevelConfigField.inputSystems.includes(tag)) {
               const inputSystemSettings = new InputSystemSettings();
               inputSystemSettings.tag = tag;
+              inputSystemSettings.fieldName = fieldName;
               inputSystemSettings.isAllRowSelected = false;
               fieldSettings.inputSystems.push(inputSystemSettings);
             }
@@ -640,6 +642,7 @@ export abstract class SettingsBase {
   contributor: boolean = false;
   manager: boolean = false;
   groups: Group[] = [];
+  fieldName: string;
 }
 
 export class InputSystemSettings extends SettingsBase {
@@ -647,7 +650,6 @@ export class InputSystemSettings extends SettingsBase {
 }
 
 export class FieldSettings extends SettingsBase {
-  fieldName: string;
   label: string;
   hiddenIfEmpty: boolean;
   captionHiddenIfEmpty?: boolean;
