@@ -575,7 +575,7 @@ describe('Lexicon E2E Configuration Fields', () => {
         .sendKeys(constants.managerUsername + protractor.Key.ENTER);
       await configPage.unifiedPane.addGroupModal.addMemberSpecificSettingsButton.click();
       expect<any>(await configPage.unifiedPane.inputSystem.groupColumnCheckboxes(0).count()).toEqual(rowNumber);
-      expect<any>(await Utils.isAllCheckboxes(configPage.unifiedPane.inputSystem.groupColumnCheckboxes(0), false)).toBe(true);
+      expect<any>(await Utils.isAllCheckboxes(configPage.unifiedPane.inputSystem.groupColumnCheckboxes(0), true)).toBe(true);
     });
 
     it('cannot add the same member-specific user settings', async () => {
@@ -605,7 +605,7 @@ describe('Lexicon E2E Configuration Fields', () => {
       expect<any>(await configPage.unifiedPane.inputSystem.selectAll.groups().count()).toEqual(2);
       expect<any>(await configPage.unifiedPane.inputSystem.groupColumnCheckboxes(1).count()).toEqual(rowNumber);
       expect<any>(await configPage.unifiedPane.rowCheckboxes(rowLabel).count()).toEqual(7);
-      expect<any>(await Utils.isAllCheckboxes(configPage.unifiedPane.inputSystem.groupColumnCheckboxes(1), false)).toBe(true);
+      expect<any>(await Utils.isAllCheckboxes(configPage.unifiedPane.inputSystem.groupColumnCheckboxes(1), true)).toBe(true);
       expect<any>(await Utils.isAllCheckboxes(configPage.unifiedPane.inputSystem.columnCheckboxes('select-row'), false))
         .toBe(true);
       expect<any>(await Utils.isAllCheckboxes(configPage.unifiedPane.entry.groupColumnCheckboxes(1), false)).toBe(true);
