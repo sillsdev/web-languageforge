@@ -30,7 +30,7 @@ create-new-deployment-mail:
 	kubectl create deployment mail --image=juanluisbaptiste/postfix:1.0.0 --dry-run=client -o yaml > mail-deployment-new.yaml
 
 .PHONY: deploy-qa
-deploy-qa: deploy-mail-qa deploy-app-qa deploy-db
+deploy-qa: deploy-db deploy-mail-qa deploy-app-qa
 .PHONY: deploy-mail-qa
 deploy-mail-qa:
 	sed -e s/{{SERVER_HOSTNAME}}/qa.languageforge.org/ mail-deployment.yaml | kubectl apply -f -
