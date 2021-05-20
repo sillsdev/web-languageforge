@@ -52,8 +52,11 @@ deploy-db:
 .PHONY: delete
 delete: delete-app delete-mail delete-db
 .PHONY: delete-db
-delete-db:
-	kubectl delete -f db-deployment.yaml
+delete-db: # does NOT delete the volume, i.e., the data in the database
+	kubectl delete deployment,service db
+.PHONY: delete-db-data
+delete-db-data:
+	kubectl delete pvc lf-mongo-data
 .PHONY: delete-mail
 delete-mail:
 	kubectl delete deployment,service mail
