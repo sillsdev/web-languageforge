@@ -183,6 +183,7 @@ services:
       - WEBSITE=localhost
       - DATABASE=scriptureforge_test
       - MONGODB_CONN=mongodb://db:27017
+      - MAIL_HOST=mail
       - REMEMBER_ME_SECRET=bogus-development-key
       - LANGUAGE_DEPOT_API_TOKEN=bogus-development-token
     command: sh -c "/wait && /run.sh"
