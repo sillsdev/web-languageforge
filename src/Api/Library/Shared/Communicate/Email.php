@@ -1,5 +1,7 @@
 <?php
 
+use Sil\PhpEnv\Env; // https://github.com/silinternational/php-env#class-env-summary-of-functions
+
 namespace Api\Library\Shared\Communicate;
 
 class Email
@@ -14,7 +16,7 @@ class Email
     public static function send($from, $to, $subject, $content, $htmlContent = '')
     {
         // Create the Transport
-        $transport = \Swift_SmtpTransport::newInstance('mail', 25);
+        $transport = \Swift_SmtpTransport::newInstance(Env::requireEnv('MAIL_HOST'));
 
         // Create the Mailer using your created Transport
         $mailer = \Swift_Mailer::newInstance($transport);

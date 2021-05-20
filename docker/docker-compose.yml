@@ -44,6 +44,7 @@ services:
       # - WEBSITE=qa.languageforge.org
       - DATABASE=scriptureforge
       - MONGODB_CONN=mongodb://db:27017
+      - MAIL_HOST=mail
       # only when ENVIRONMENT=production will BUGSNAG_API_KEY be utilized.
       # - BUGSNAG_API_KEY=some-key
       - GOOGLE_CLIENT_ID=bogus-development-token
