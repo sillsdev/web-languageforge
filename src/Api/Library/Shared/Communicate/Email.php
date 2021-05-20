@@ -1,8 +1,8 @@
 <?php
 
-use Sil\PhpEnv\Env; // https://github.com/silinternational/php-env#class-env-summary-of-functions
-
 namespace Api\Library\Shared\Communicate;
+
+use Sil\PhpEnv\Env; // https://github.com/silinternational/php-env#class-env-summary-of-functions
 
 class Email
 {
