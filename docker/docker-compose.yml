@@ -44,6 +44,7 @@ services:
       # - WEBSITE=qa.languageforge.org
       - DATABASE=scriptureforge
       - MONGODB_CONN=mongodb://db:27017
+      - MAIL_HOST=mail
       # only when ENVIRONMENT=production will BUGSNAG_API_KEY be utilized.
       # - BUGSNAG_API_KEY=some-key
       - GOOGLE_CLIENT_ID=bogus-development-token
@@ -182,6 +183,7 @@ services:
       - WEBSITE=localhost
       - DATABASE=scriptureforge_test
       - MONGODB_CONN=mongodb://db:27017
+      - MAIL_HOST=mail
       - REMEMBER_ME_SECRET=bogus-development-key
       - LANGUAGE_DEPOT_API_TOKEN=bogus-development-token
     command: sh -c "/wait && /run.sh"
@@ -201,6 +203,7 @@ services:
       - ENVIRONMENT=development
       - DATABASE=scriptureforge_test
       - MONGODB_CONN=mongodb://db:27017
+      - MAIL_HOST=mail
       - LANGUAGE_DEPOT_API_TOKEN=bogus-development-token
     command: sh -c "/wait && /run.sh"
     volumes:
