@@ -138,12 +138,37 @@ To debug the Language Forge application locally, follow these steps:
 - run `make` or `make dev`
 - In VS Code, set a breakpoint on a line of code that should be executed
 - Click on the `Run and Debug` area of VS Code, then click the green play icon next to `XDebug` in the configuration dropdown.
+
 ![XDebug](readme_images/xdebug1.png "Debugging with XDebug")] 
+
 - The VSCode status bar will turn orange when XDebug is active
+- open the application in your web browser (`https://localhost`) and use the application such that you execute the code where you have a breakpoint set
+
+A [tutorial on YouTube is available showing how to use XDebug and VSCode](https://www.youtube.com/watch?v=nKh5DHViKlA) to debug the LF back-end application.
+
+### PHP Tests Debugging ###
+
+To debug the PHP tests, follow these steps:
+- uncomment the 3 lines in the docker-compose.yml file related to XDebug under the service section `test-php`:
+```
+       - XDEBUG_MODE=develop,debug
+     extra_hosts:
+       - "host.docker.internal:host-gateway
+```
+- In VS Code, set a breakpoint on a line of code in one of the PHP tests (in the `test/php` folder)
+- Click on the `Run and Debug` area of VS Code, then click the green play icon next to `XDebug` in the configuration dropdown.
+
+![XDebug](readme_images/xdebug1.png "Debugging with XDebug")] 
+
+- The VSCode status bar will turn orange when XDebug is active
+- run `make unit-tests` in the terminal
+- VSCode will stop the unit test execution when the breakpoint is hit
+
+A [tutorial on YouTube is available showing how to use XDebug and VSCode](https://www.youtube.com/watch?v=SxIORImpxrQ) to debug the PHP Tests.
 
 Additional considerations:
 
-If you encounter errors such as VSCode cannot find a file in the path "vendor", these source files are not available to VSCode as they are running inside Docker.  If you want to debug vendor libraries (not required), you will have to use Composer to download them put them in your source tree.
+If you encounter errors such as VSCode cannot find a file in the path "vendor", these source files are not available to VSCode as they are running inside Docker.  If you want to debug vendor libraries (not required), you will have to use Composer to download dependencies and put them in your source tree.
 
 
 ### E2E Tests - TODO Needs Updating/Review ###
