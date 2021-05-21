@@ -72,6 +72,8 @@ spec:
             value: {{ENVIRONMENT}}
           - name: WEBSITE
             value: {{WEBSITE}}
+          - name: MAIL_HOST
+            value: mail
           - name: MONGODB_CONN
             valueFrom:
               secretKeyRef:
