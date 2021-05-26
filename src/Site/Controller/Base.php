@@ -116,8 +116,8 @@ class Base
         $this->data['faviconPath'] = $this->getFilePath('image/favicon.ico');
 
         $this->data['manifestFilename'] = '';
-        if (file_exists('appManifest/' . $this->website->base . '.manifest.json')) {
-            $this->data['manifestFilename'] = $this->website->base . '.manifest.json';
+        if (file_exists('appManifest/' . $this->website->base . '.webmanifest')) {
+            $this->data['manifestFilename'] = $this->website->base . '.webmanifest';
         }
         $this->data['themeColor'] = '#0a2440';
 
