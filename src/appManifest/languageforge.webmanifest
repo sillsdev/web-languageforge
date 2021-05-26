@@ -12,6 +12,22 @@
     "related_applications": [{
       "platform": "play",
       "id": "org.sil.languageforgeweb" }],
+    "shortcuts": [
+    {
+      "name": "List Projects",
+      "short_name": "Projects",
+      "description": "View the list of projects",
+      "url": "/app/projects",
+      "icons": [{ "src": "/appManifest/images/lf-logo-circle-192-xxxhdpi.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "User Profile",
+      "short_name": "User Profile",
+      "description": "View your user profile",
+      "url": "/app/userprofile",
+      "icons": [{ "src": "/appManifest/images/lf-logo-circle-192-xxxhdpi.png", "sizes": "192x192" }]
+    }
+  ],
     "icons": [
       {
         "src": "images/lf-logo-48-mdpi.png",
