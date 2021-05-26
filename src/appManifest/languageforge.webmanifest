@@ -9,6 +9,9 @@
     "iarc_rating_id": "d082fb89-410a-4736-94ab-a2bac7ecf2c5",
     "orientation": "portrait-primary",
     "categories": ["productivity"],
+    "related_applications": [{
+      "platform": "play",
+      "id": "org.sil.languageforgeweb" }],
     "icons": [
       {
         "src": "images/lf-logo-48-mdpi.png",
