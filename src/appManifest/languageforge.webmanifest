@@ -7,6 +7,7 @@
     "display": "fullscreen",
     "description": "Collaborative web-based dictionary building that syncs with FLEx",
     "iarc_rating_id": "d082fb89-410a-4736-94ab-a2bac7ecf2c5",
+    "orientation": "portrait-primary",
     "categories": ["productivity"],
     "icons": [
       {
