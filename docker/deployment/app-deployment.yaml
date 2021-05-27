@@ -36,7 +36,7 @@ spec:
               number: 80
   tls:
   - hosts:
-    - qa.languageforge.com
+    - qa.languageforge.org
 
 ---
 
