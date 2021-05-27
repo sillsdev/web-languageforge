@@ -46,10 +46,6 @@ spec:
       containers:
       - name: db
         image: mongo:4.0
-        ports:
-        - name: mongodb
-          protocol: TCP
-          containerPort: 27017
         volumeMounts:
         - mountPath: /data/db
           name: vol1

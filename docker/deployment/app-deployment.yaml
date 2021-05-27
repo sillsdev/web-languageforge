@@ -61,10 +61,6 @@ spec:
       - name: app
         image: sillsdev/web-languageforge:app-latest
         imagePullPolicy: Always # TODO: this can be removed (or changed to IfNotPresent) once the image is being tagged properly.
-        ports:
-          - name: http
-            protocol: TCP
-            containerPort: 80
         env:
           - name: DATABASE
             value: scriptureforge
