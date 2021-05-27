@@ -12,30 +12,23 @@ To report an issue using the **Language Forge** service, email "languageforgeiss
 
 ## Special Thanks To ##
 
-![BrowserStack Logo](readme_images/browserstack-logo.png "BrowserStack") for end-to-end test automation.
-
 [![Bugsnag logo](readme_images/bugsnag-logo.png "Bugsnag")](https://bugsnag.com/blog/bugsnag-loves-open-source) for error reporting.
 
 ## Developers ##
 
-We use [Gitflow](http://nvie.com/posts/a-successful-git-branching-model/) with two modifications:
+We use [Gitflow](http://nvie.com/posts/a-successful-git-branching-model/) mostly, however we do not utilize a `develop` branch.  All work starts and returns to the `master` branch.  Deployment of software to a staging and/or a production environment occur through the use of the respective branches being fast-forwarded to the appropriate commit on `master` which will in turn kick off our automated deployment processes.
 
-- The Gitflow **master** branch is our **live** branch.
-- The Gitflow **develop** branch is our **master** branch. All pull requests go against **master**.
-
-We merge from **master** to testing (**qa** branch) then ship to **live**.
-
-| Master Branch | QA/Staging Branch | Live/Production Branch |
+| Master Branch | Staging Branch (for testing) | Production Branch |
 | ------------- | --------- | ----------- |
-| `master` | `lf-qa` | `lf-live` |
+| `master` | `staging` | `prod` |
 
 ### CI Builds ###
 
 Status of builds from our continuous integration (CI) [server](https://build.palaso.org):
 
-| PHP Unit Tests | E2E Tests | Staging | Production |
-| ----------- | ---------- | -- | ---- |
-| [![Build Status](https://build.palaso.org/app/rest/builds/buildType:LanguageForgeDocker_PhpTests/statusIcon.svg)](https://build.palaso.org/buildConfiguration/LanguageForgeDocker_PhpTests) | [![Build Status](https://build.palaso.org/app/rest/builds/buildType:LanguageForgeDocker_E2eTests/statusIcon.svg)](https://build.palaso.org/buildConfiguration/LanguageForgeDocker_E2eTests) | [![Build Status](https://build.palaso.org/app/rest/builds/buildType:LanguageForge_LanguageForgeQa/statusIcon.svg)](https://build.palaso.org/buildConfiguration/LanguageForge_LanguageForgeQa) | [![Build Status](https://build.palaso.org/app/rest/builds/buildType:xForgeDeploy_LanguageForgeLiveBionic/statusIcon.svg)](https://build.palaso.org/buildConfiguration/xForgeDeploy_LanguageForgeLiveBionic) |
+| PHP Unit Tests | E2E Tests |
+| ----------- | ---------- |
+| [![Build Status](https://build.palaso.org/app/rest/builds/buildType:LanguageForgeDocker_PhpTests/statusIcon.svg)](https://build.palaso.org/buildConfiguration/LanguageForgeDocker_PhpTests) | [![Build Status](https://build.palaso.org/app/rest/builds/buildType:LanguageForgeDocker_E2eTests/statusIcon.svg)](https://build.palaso.org/buildConfiguration/LanguageForgeDocker_E2eTests) |
 
 ### Deployed Sites ###
 
@@ -75,7 +68,7 @@ Other useful resources:
 
 ## Docker Development Environment ##
 
-1. Install [Docker](https://www.docker.com/get-started) (Linux users will need some additional steps, please visit https://docs.docker.com/compose/install for info on install the engine and compose)
+1. Install [Docker](https://www.docker.com/get-started) (Linux users will need some additional steps, please visit https://docs.docker.com/compose/install for info on installing the engine and compose)
 1. Install [Make](https://www.gnu.org/software/make/).  This is actually optional but simplifies things a bit.
 1. Clone the repo:  `git clone https://github.com/sillsdev/web-languageforge`
 1. `cd web-languageforge/docker`
@@ -115,12 +108,6 @@ Other useful resources:
 ### Building for production
 
 1. `make prod` will build a production version of the app.
-
-### LiveReload ###
-
-### LiveReload Chrome extension ####
-
-Install the [LiveReload](https://chrome.google.com/webstore/detail/livereload/jnihajbhpnppcggbcgedagnkighmdlei?hl=en-US) extension.
 
 ### Visual Studio Code ###
 
