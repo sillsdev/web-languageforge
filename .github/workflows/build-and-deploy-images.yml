@@ -4,7 +4,7 @@ name: Deploy to Docker Hub
 on:
   push:
     branches:
-      - master
+      - staging
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -44,7 +44,7 @@ jobs:
         working-directory: ./docker/app-base
         run: |
           docker build . -t lf-app-base
-          docker tag lf-app-base sillsdev/web-languageforge:app-base-latest
+          docker tag lf-app-base sillsdev/web-languageforge:app-base-staging
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v1
@@ -54,7 +54,7 @@ jobs:
 
       - name: Publish base app image to Docker Hub
         run: |
-          docker push sillsdev/web-languageforge:app-base-latest
+          docker push sillsdev/web-languageforge:app-base-staging
 
       - name: Build app
         run: make --directory=docker deployable-app
@@ -63,11 +63,11 @@ jobs:
 
       - name: Tag app image with Docker Hub location
         run: |
-          docker tag lf-app sillsdev/web-languageforge:app-latest
+          docker tag lf-app sillsdev/web-languageforge:app-staging
 
       - name: Reveal images
         run: docker images
 
       - name: Publish images to Docker Hub
         run: |
-          docker push sillsdev/web-languageforge:app-latest
+          docker push sillsdev/web-languageforge:app-staging
