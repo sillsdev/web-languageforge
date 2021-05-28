@@ -5,6 +5,7 @@ var specs = [
   "/data/test/app/languageforge/**/" + specString + ".e2e-spec.js",
 ];
 exports.config = {
+  SELENIUM_PROMISE_MANAGER: false,
   seleniumAddress: 'http://selenium:4444/wd/hub',
   baseUrl: 'http://app-for-e2e',
   allScriptsTimeout: 12000,
