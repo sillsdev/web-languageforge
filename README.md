@@ -157,7 +157,6 @@ Additional considerations:
 
 If you encounter errors such as VSCode cannot find a file in the path "vendor", these source files are not available to VSCode as they are running inside Docker.  If you want to debug vendor libraries (not required), you will have to use Composer to download dependencies and put them in your source tree.
 
-
 ### E2E Tests - TODO Needs Updating/Review ###
 To test a certain test spec, add a parameter `--specs [spec name]`.  For example,
 
