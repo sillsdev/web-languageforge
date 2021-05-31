@@ -127,9 +127,7 @@ services:
     env_file: ld-api/ld.env
 
   ld-api:
-    build:
-      context: ld-api
-    image: ld-api
+    image: sillsdev/web-languagedepot-api
     container_name: ld-api
     depends_on:
       - ld-sql
