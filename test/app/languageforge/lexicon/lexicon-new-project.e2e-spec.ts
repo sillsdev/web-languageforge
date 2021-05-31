@@ -212,18 +212,10 @@ describe('Lexicon E2E New Project wizard app', () => {
     });
 
     it('with a cleared name does not show an error but is still invalid', async () => {
-
-      /**
-       * FIXME: added the following two lines so the test will work (previous error wasn't clearing)
-       * as I couldn't re-produce the problem manually,
-       * however is likely symptomatic of some funkiness with promises. IJH 2014-12
-       */
-
-      await page.namePage.projectNameInput.sendKeys('a' + Key.TAB);
-      await page.namePage.projectNameInput.clear();
-      await browser.waitForAngular();
-      await page.namePage.projectNameInput.sendKeys(Key.TAB);
-      await browser.sleep(CHECK_PAUSE);
+      // Can't use projectNameInput.clear() as Selenium's clear() does *not* trigger Angular updates!
+      // See https://stackoverflow.com/questions/50677760/selenium-clear-command-doesnt-clear-the-element
+      await page.namePage.projectNameInput.sendKeys(Key.chord(Key.CONTROL, 'a'), Key.BACK_SPACE);
+      await browser.wait(ExpectedConditions.stalenessOf(page.namePage.projectCodeExists), constants.conditionTimeout);
       expect<any>(await page.namePage.projectCodeExists.isPresent()).toBe(false);
       expect<any>(await page.namePage.projectCodeAlphanumeric.isPresent()).toBe(false);
       expect<any>(await page.namePage.projectCodeOk.isPresent()).toBe(false);
@@ -235,6 +227,7 @@ describe('Lexicon E2E New Project wizard app', () => {
     });
 
     it('can verify that an unused project name is available', async () => {
+      await page.namePage.projectNameInput.sendKeys(Key.chord(Key.CONTROL, 'a'), Key.BACK_SPACE);
       await page.namePage.projectNameInput.sendKeys(constants.newProjectName + Key.TAB);
       await browser.wait(ExpectedConditions.visibilityOf(page.namePage.projectCodeOk),
         constants.conditionTimeout);
@@ -253,7 +246,7 @@ describe('Lexicon E2E New Project wizard app', () => {
       expect<any>(await page.namePage.editProjectCodeCheckbox.isDisplayed()).toBe(true);
       await util.setCheckbox(page.namePage.editProjectCodeCheckbox, true);
       expect<any>(await page.namePage.projectCodeInput.isDisplayed()).toBe(true);
-      await page.namePage.projectCodeInput.clear();
+      await page.namePage.projectCodeInput.sendKeys(Key.chord(Key.CONTROL, 'a'), Key.BACK_SPACE);
       await page.namePage.projectCodeInput.sendKeys('changed_new_project');
       await page.namePage.projectNameInput.sendKeys(Key.TAB);     // trigger project code check
       expect<any>(await page.namePage.projectCodeInput.getAttribute('value')).toEqual('changed_new_project');
@@ -261,9 +254,9 @@ describe('Lexicon E2E New Project wizard app', () => {
     });
 
     it('project code cannot be empty; does not show an error but is still invalid', async () => {
-      await page.namePage.projectCodeInput.clear();
-      await page.namePage.projectNameInput.sendKeys(Key.TAB);     // trigger project code check
-      await browser.sleep(CHECK_PAUSE);
+      await page.namePage.projectCodeInput.sendKeys(Key.chord(Key.CONTROL, 'a'), Key.BACK_SPACE);
+      await page.namePage.projectCodeInput.sendKeys(Key.TAB);     // trigger project code check
+      await browser.wait(ExpectedConditions.stalenessOf(page.namePage.projectCodeExists), constants.conditionTimeout);
       expect<any>(await page.namePage.projectCodeExists.isPresent()).toBe(false);
       expect<any>(await page.namePage.projectCodeAlphanumeric.isPresent()).toBe(false);
       expect<any>(await page.namePage.projectCodeOk.isPresent()).toBe(false);
