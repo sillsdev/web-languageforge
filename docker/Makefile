@@ -14,7 +14,7 @@ e2e-tests: build
 	docker-compose build app-for-e2e test-e2e
 ifeq ($(TEAMCITY_VERSION),$())
 	# developer machine
-	docker-compose run test-e2e
+	docker-compose run -e TEST_SPECS=$(TEST_SPECS) test-e2e
 else
 	# teamcity CI
 	docker-compose run -e TEAMCITY_VERSION=TEAMCITY_VERSION test-e2e
