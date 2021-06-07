@@ -115,26 +115,36 @@ services:
     ports:
       - "5900:5900"
 
-  ld-sql:
-    build:
-      context: ld-sql
-    image: ld-sql
-    container_name: ld-sql
+  ld-db:
+    image: mysql:5.7
+    container_name: ld-db
     # To access the MySQL database via localhost:3306 on your dev machine (e.g., in VS Code), uncomment the "ports" config below
     # Note that if you're running MySQL on your dev machine already, change the first number to something else, like 3307 and access localhost:3307
     # ports:
     #   - 3306:3306
-    env_file: ld-api/ld.env
-
+    environment:
+      - MYSQL_HOST=ld-db
+      - MYSQL_DATABASE=testldapi
+      - MYSQL_DATABASE_PRIVATE=testldapipvt
+      - MYSQL_USER=redmine
+      - MYSQL_PASSWORD=not-a-secret
+      - MYSQL_ROOT_PASSWORD=also-not-a-secret
+    volumes:
+      - ./test-ld/schemas-and-data.sql:/docker-entrypoint-initdb.d/schemas-and-data.sql
+        
   ld-api:
     image: sillsdev/web-languagedepot-api
     container_name: ld-api
     depends_on:
-      - ld-sql
-    # env_file should be same one given to ld-sql image
-    env_file: ld-api/ld.env
+      - ld-db
     environment:
       - PORT=3000
+      - MYSQL_HOST=ld-db
+      - MYSQL_DATABASE=testldapi
+      - MYSQL_DATABASE_PRIVATE=testldapipvt
+      - MYSQL_USER=redmine
+      - MYSQL_PASSWORD=not-a-secret
+      - MYSQL_ROOT_PASSWORD=also-not-a-secret
 
   test-e2e:
     build:
