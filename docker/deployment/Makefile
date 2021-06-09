@@ -29,16 +29,16 @@ retrieve-current-deployments:
 create-new-deployment-mail:
 	kubectl create deployment mail --image=juanluisbaptiste/postfix:1.0.0 --dry-run=client -o yaml > mail-deployment-new.yaml
 
-.PHONY: deploy-qa
-deploy-qa: deploy-db deploy-mail-qa deploy-app-qa
-.PHONY: deploy-mail-qa
-deploy-mail-qa:
+.PHONY: deploy-staging
+deploy-staging: deploy-db deploy-mail-staging deploy-app-staging
+.PHONY: deploy-mail-staging
+deploy-mail-staging:
 	sed -e s/{{SERVER_HOSTNAME}}/qa.languageforge.org/ mail-deployment.yaml | kubectl apply -f -
 .PHONY: deploy-mail-prod
 deploy-mail-prod:
 	sed -e s/{{SERVER_HOSTNAME}}/languageforge.org/ mail-deployment.yaml | kubectl apply -f -
-.PHONY: deploy-app-qa
-deploy-app-qa:
+.PHONY: deploy-app-staging
+deploy-app-staging:
 	sed -e s/{{ENVIRONMENT}}/development/ app-deployment.yaml \
   | sed -e s/{{WEBSITE}}/qa.languageforge.org/ | kubectl apply -f -
 .PHONY: deploy-app-prod
