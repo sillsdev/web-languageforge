@@ -174,6 +174,23 @@ To debug the tests:
 - Start the tests with `./rune2e.sh`. Wait for the tests to actually start running before moving to the next steps.
 - To debug in Chrome, go to `chrome://inspect/#devices`. Under "Remote Target" click to inspect the Node.js process.
 - To debug in VSCode, select the "Node debugger" debug configuration and run it.
+
+## Application deployment ##
+Language Forge is built to run in a containerized environment.  For now, Kubernetes is the chosen runtime platform.
+
+### Staging (QA) ###
+Deployments are not currently automated and must be manually run with the appropriate credentials or from within our CD platform, TeamCity at this time.
+
+Deployment scripts for k8s can be found in `docker/deployment` and staging deployments can be run via `make deploy-staging` from within the same directory.
+
+Current workflow:
+1. move the `staging` branch to the appropriate commit on `master`
+1. this will kick off the GHA (`.github/workflows/build-and-deploy-images.yml`) to build and publish the necessary images to Docker Hub (https://hub.docker.com/r/sillsdev/web-languageforge/tags)
+1. then the deployment scripts can be run either manually or via the TeamCity deploy job
+
+### Production ###
+TBD
+
 ## Libraries Used ##
 
 [lamejs](https://github.com/zhuker/lamejs) is used for encoding recorded audio and is based on [LAME](http://lame.sourceforge.net/), which is licensed under the terms of [the LGPL](https://www.gnu.org/licenses/old-licenses/lgpl-2.0.html).
