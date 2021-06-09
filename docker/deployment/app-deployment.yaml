@@ -40,6 +40,19 @@ spec:
 
 ---
 
+  # https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: lf-project-assets
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+
 # https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#writing-a-deployment-spec
 apiVersion: apps/v1
 kind: Deployment
@@ -110,3 +123,10 @@ spec:
               secretKeyRef:
                 key: GOOGLE_CLIENT_SECRET
                 name: oauth
+        volumeMounts:
+          - mountPath: /var/www/src/assets
+            name: vol1
+      volumes:
+      - name: vol1
+        persistentVolumeClaim:
+          claimName: lf-project-assets
