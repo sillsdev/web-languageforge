@@ -57,8 +57,8 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
-      # persist user data uploads and assets
-      - lf-user-data-assets:/var/www/src/assets
+      # holds things like audio files or pictures attached to words within a project
+      - lf-project-assets:/var/www/src/assets
 
       # share dist folder between ui and api containers
       - lf-ui-dist:/var/www/html/dist
@@ -229,5 +229,5 @@ volumes:
   lf-caddy-config:
   lf-caddy-data:
   lf-mongo-data:
-  lf-user-data-assets:
+  lf-project-assets:
   lf-ui-dist:
