@@ -64,3 +64,5 @@ delete-mail:
 delete-app:
 	kubectl delete deployment,service app
 	kubectl delete ingress languageforge-app
+delete-app-assets:
+	kubectl delete pvc lf-project-assets
