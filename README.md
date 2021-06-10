@@ -11,7 +11,8 @@ To use **Language Forge** go to [languageforge.org](https://languageforge.org).
 To report an issue using the **Language Forge** service, email "languageforgeissues @ sil dot org".
 
 ## Special Thanks To ##
-
+- ![BrowserStack Logo](readme_images/browserstack-logo.png "BrowserStack") for mobile device testing.
+-
 [![Bugsnag logo](readme_images/bugsnag-logo.png "Bugsnag")](https://bugsnag.com/blog/bugsnag-loves-open-source) for error reporting.
 
 ## Developers ##
