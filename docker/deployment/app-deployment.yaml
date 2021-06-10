@@ -70,10 +70,19 @@ spec:
       labels:
         app: app
     spec:
+      securityContext: # see https://github.com/sillsdev/web-languageforge/pull/974 for further explanation of the need for a securityContext here
+        fsGroup: 33 # this is www-data from /etc/passwd, k8s requires explicit assignment otherwise the volume will get mounted with root and www-data won't be allowed to create folders on-the-fly in there.
+      volumes:
+      - name: assets
+        persistentVolumeClaim:
+          claimName: lf-project-assets
       containers:
       - name: app
         image: sillsdev/web-languageforge:app-staging
         imagePullPolicy: Always
+        volumeMounts:
+          - mountPath: /var/www/src/assets
+            name: assets
         env:
           - name: DATABASE
             value: scriptureforge
@@ -123,10 +132,3 @@ spec:
               secretKeyRef:
                 key: GOOGLE_CLIENT_SECRET
                 name: oauth
-        volumeMounts:
-          - mountPath: /var/www/src/assets
-            name: vol1
-      volumes:
-      - name: vol1
-        persistentVolumeClaim:
-          claimName: lf-project-assets
