@@ -1,4 +1,4 @@
-FROM juanluisbaptiste/postfix
+FROM juanluisbaptiste/postfix:1.0.0
 
 ENV SMTP_SERVER=nobody.localhost \
 SMTP_USERNAME=username \

@@ -1,4 +1,4 @@
-FROM sillsdev/web-languageforge:app-base-latest
+FROM sillsdev/web-languageforge:app-base-staging
 
 # php customizations
 RUN mv $PHP_INI_DIR/php.ini-development $PHP_INI_DIR/php.ini

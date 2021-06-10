@@ -11,31 +11,25 @@ To use **Language Forge** go to [languageforge.org](https://languageforge.org).
 To report an issue using the **Language Forge** service, email "languageforgeissues @ sil dot org".
 
 ## Special Thanks To ##
-
-![BrowserStack Logo](readme_images/browserstack-logo.png "BrowserStack") for end-to-end test automation.
-
+- ![BrowserStack Logo](readme_images/browserstack-logo.png "BrowserStack") for mobile device testing.
+-
 [![Bugsnag logo](readme_images/bugsnag-logo.png "Bugsnag")](https://bugsnag.com/blog/bugsnag-loves-open-source) for error reporting.
 
 ## Developers ##
 
-We use [Gitflow](http://nvie.com/posts/a-successful-git-branching-model/) with two modifications:
+We use [Gitflow](http://nvie.com/posts/a-successful-git-branching-model/) mostly, however we do not utilize a `develop` branch.  All work starts and returns to the `master` branch.  Deployment of software to a staging and/or a production environment occur through the use of the respective branches being fast-forwarded to the appropriate commit on `master` which will in turn kick off our automated deployment processes.
 
-- The Gitflow **master** branch is our **live** branch.
-- The Gitflow **develop** branch is our **master** branch. All pull requests go against **master**.
-
-We merge from **master** to testing (**qa** branch) then ship to **live**.
-
-| Master Branch | QA/Staging Branch | Live/Production Branch |
+| Master Branch | Staging Branch (for testing) | Production Branch |
 | ------------- | --------- | ----------- |
-| `master` | `lf-qa` | `lf-live` |
+| `master` | `staging` | `prod` |
 
 ### CI Builds ###
 
 Status of builds from our continuous integration (CI) [server](https://build.palaso.org):
 
-| PHP Unit Tests | E2E Tests | Staging | Production |
-| ----------- | ---------- | -- | ---- |
-| [![Build Status](https://build.palaso.org/app/rest/builds/buildType:LanguageForgeDocker_PhpTests/statusIcon.svg)](https://build.palaso.org/buildConfiguration/LanguageForgeDocker_PhpTests) | [![Build Status](https://build.palaso.org/app/rest/builds/buildType:LanguageForgeDocker_E2eTests/statusIcon.svg)](https://build.palaso.org/buildConfiguration/LanguageForgeDocker_E2eTests) | [![Build Status](https://build.palaso.org/app/rest/builds/buildType:LanguageForge_LanguageForgeQa/statusIcon.svg)](https://build.palaso.org/buildConfiguration/LanguageForge_LanguageForgeQa) | [![Build Status](https://build.palaso.org/app/rest/builds/buildType:xForgeDeploy_LanguageForgeLiveBionic/statusIcon.svg)](https://build.palaso.org/buildConfiguration/xForgeDeploy_LanguageForgeLiveBionic) |
+| PHP Unit Tests | E2E Tests |
+| ----------- | ---------- |
+| [![Build Status](https://build.palaso.org/app/rest/builds/buildType:LanguageForgeDocker_PhpTests/statusIcon.svg)](https://build.palaso.org/buildConfiguration/LanguageForgeDocker_PhpTests) | [![Build Status](https://build.palaso.org/app/rest/builds/buildType:LanguageForgeDocker_E2eTests/statusIcon.svg)](https://build.palaso.org/buildConfiguration/LanguageForgeDocker_E2eTests) |
 
 ### Deployed Sites ###
 
@@ -75,7 +69,7 @@ Other useful resources:
 
 ## Docker Development Environment ##
 
-1. Install [Docker](https://www.docker.com/get-started) (Linux users will need some additional steps, please visit https://docs.docker.com/compose/install for info on install the engine and compose)
+1. Install [Docker](https://www.docker.com/get-started) (Linux users will need some additional steps, please visit https://docs.docker.com/compose/install for info on installing the engine and compose)
 1. Install [Make](https://www.gnu.org/software/make/).  This is actually optional but simplifies things a bit.
 1. Clone the repo:  `git clone https://github.com/sillsdev/web-languageforge`
 1. `cd web-languageforge/docker`
@@ -137,12 +131,6 @@ To quickly re-run the tests without going through the `make build` process, you 
 
 1. `make prod` will build a production version of the app.
 
-### LiveReload ###
-
-### LiveReload Chrome extension ####
-
-Install the [LiveReload](https://chrome.google.com/webstore/detail/livereload/jnihajbhpnppcggbcgedagnkighmdlei?hl=en-US) extension.
-
 ### Visual Studio Code ###
 
 Visual Studio Code is a simple, free, cross-platform code editor. You can download VS Code from [here](https://code.visualstudio.com/).
@@ -191,7 +179,6 @@ Additional considerations:
 
 If you encounter errors such as VSCode cannot find a file in the path "vendor", these source files are not available to VSCode as they are running inside Docker.  If you want to debug vendor libraries (not required), you will have to use Composer to download dependencies and put them in your source tree.
 
-
 ### E2E Tests - TODO Needs Updating/Review ###
 To test a certain test spec, add a parameter `--specs [spec name]`.  For example,
 
@@ -209,6 +196,23 @@ To debug the tests:
 - Start the tests with `./rune2e.sh`. Wait for the tests to actually start running before moving to the next steps.
 - To debug in Chrome, go to `chrome://inspect/#devices`. Under "Remote Target" click to inspect the Node.js process.
 - To debug in VSCode, select the "Node debugger" debug configuration and run it.
+
+## Application deployment ##
+Language Forge is built to run in a containerized environment.  For now, Kubernetes is the chosen runtime platform.
+
+### Staging (QA) ###
+Deployments are not currently automated and must be manually run with the appropriate credentials or from within our CD platform, TeamCity at this time.
+
+Deployment scripts for k8s can be found in `docker/deployment` and staging deployments can be run via `make deploy-staging` from within the same directory.
+
+Current workflow:
+1. move the `staging` branch to the appropriate commit on `master`
+1. this will kick off the GHA (`.github/workflows/build-and-deploy-images.yml`) to build and publish the necessary images to Docker Hub (https://hub.docker.com/r/sillsdev/web-languageforge/tags)
+1. then the deployment scripts can be run either manually or via the TeamCity deploy job
+
+### Production ###
+TBD
+
 ## Libraries Used ##
 
 [lamejs](https://github.com/zhuker/lamejs) is used for encoding recorded audio and is based on [LAME](http://lame.sourceforge.net/), which is licensed under the terms of [the LGPL](https://www.gnu.org/licenses/old-licenses/lgpl-2.0.html).

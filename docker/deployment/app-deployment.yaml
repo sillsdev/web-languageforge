@@ -59,8 +59,8 @@ spec:
     spec:
       containers:
       - name: app
-        image: sillsdev/web-languageforge:app-latest
-        imagePullPolicy: Always # TODO: this can be removed (or changed to IfNotPresent) once the image is being tagged properly.
+        image: sillsdev/web-languageforge:app-staging
+        imagePullPolicy: Always
         env:
           - name: DATABASE
             value: scriptureforge
