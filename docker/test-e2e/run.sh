@@ -17,7 +17,12 @@ attach_debugger () {
 
 attach_debugger &
 cd /data
-npm run test-e2e
+if [ -n "$TEST_SPECS" ]; then
+  npm run test-e2e -- "--specs=${TEST_SPECS}"
+else
+  npm run test-e2e
+fi
+
 STATUS=$?
 
 exit $STATUS

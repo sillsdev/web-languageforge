@@ -93,6 +93,27 @@ Other useful resources:
 1. `make e2e-tests`
 1. Individual test results will appear in your terminal but if you'd like to watch them in real-time, simply VNC into the running tests via `localhost:5900`, e.g., Mac OSX users simply `open vnc://localhost:5900` and use `secret` as the password.  Other operating systems may require installing a separate VNC Viewer tool.
 
+To run a single E2E spec file, put its path (relative to the repo root) into the `TEST_SPECS` environment variable (don't forget to `export` it), or pass it as an option to `make e2e-tests` as follows:
+
+```bash
+make TEST_SPECS=test/app/languageforge/lexicon/lexicon-new-project.e2e-spec.js e2e-tests
+# Or:
+export TEST_SPECS=test/app/languageforge/lexicon/lexicon-new-project.e2e-spec.js
+make e2e-tests
+```
+
+**Important:** the `TEST_SPECS` file must end in `.js`, not `.ts`, because the test runner we're using doesn't understand Typescript.
+
+The easiest way to get the `TEST_SPECS` variable set up correctly is to go into VS Code and right-click the tab containing the spec file you want to run, then choose "Copy Relative Path" from the dropdown menu. Then do the following at the command line:
+
+1. `export TEST_SPECS=`
+1. Ctrl+V (or possibly Ctrl+Shift+V on a Linux command line)
+1. Backspace over `.ts` and change it to `.js`
+1. Enter
+1. `make e2e-tests`
+
+To quickly re-run the tests without going through the `make build` process, you can restart the `app-for-e2e` container and run the tests as follows:
+`docker-compose restart app-for-e2e && docker-compose run -e TEST_SPECS= test-e2e` where the relative path to the test spec file is optionally given after the `=` sign.
 ### Running Unit Tests
 
 1. `make unit-tests`
