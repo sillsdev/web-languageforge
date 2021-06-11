@@ -72,6 +72,7 @@ spec:
     spec:
       securityContext: # see https://github.com/sillsdev/web-languageforge/pull/974 for further explanation of the need for a securityContext here
         fsGroup: 33 # this is www-data from /etc/passwd, k8s requires explicit assignment otherwise the volume will get mounted with root and www-data won't be allowed to create folders on-the-fly in there.
+        fsGroupChangePolicy: OnRootMismatch
       volumes:
       - name: assets
         persistentVolumeClaim:
