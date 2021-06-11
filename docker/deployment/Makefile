@@ -61,6 +61,8 @@ delete-db-data:
 delete-mail:
 	kubectl delete deployment,service mail
 .PHONY: delete-app
-delete-app:
+delete-app: # does NOT delete the volume, i.e., the project assets like pictures and audio files
 	kubectl delete deployment,service app
 	kubectl delete ingress languageforge-app
+delete-app-assets:
+	kubectl delete pvc lf-project-assets

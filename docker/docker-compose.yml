@@ -53,12 +53,12 @@ services:
       - FACEBOOK_CLIENT_SECRET=bogus-development-token
       - REMEMBER_ME_SECRET=bogus-development-key
       - LANGUAGE_DEPOT_API_TOKEN=bogus-development-token
-    command: sh -c "/wait && umask 0002 && apache2-foreground"
+    command: sh -c "/wait && apache2-foreground"
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
-      # persist user data uploads and assets
-      - lf-user-data-assets:/var/www/src/assets
+      # holds things like audio files or pictures attached to words within a project
+      - lf-project-assets:/var/www/src/assets
 
       # share dist folder between ui and api containers
       - lf-ui-dist:/var/www/html/dist
@@ -229,5 +229,5 @@ volumes:
   lf-caddy-config:
   lf-caddy-data:
   lf-mongo-data:
-  lf-user-data-assets:
+  lf-project-assets:
   lf-ui-dist:

@@ -48,8 +48,8 @@ spec:
         image: mongo:4.0
         volumeMounts:
         - mountPath: /data/db
-          name: vol1
+          name: data
       volumes:
-      - name: vol1
+      - name: data
         persistentVolumeClaim:
           claimName: lf-mongo-data
