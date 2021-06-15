@@ -64,5 +64,9 @@ delete-mail:
 delete-app: # does NOT delete the volume, i.e., the project assets like pictures and audio files
 	kubectl delete deployment,service app
 	kubectl delete ingress languageforge-app
+.PHONY: delete-app-cert-staging
+delete-app-cert-staging:
+	kubectl delete cert qa-languageforge-org
+.PHONY: delete-app-assets
 delete-app-assets:
 	kubectl delete pvc lf-project-assets
