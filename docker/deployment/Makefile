@@ -25,6 +25,10 @@ retrieve-current-deployments:
 	kubectl get deploy mail -o yaml > mail-deployment-current.yaml
 	kubectl get deploy db   -o yaml > db-deployment-current.yaml
 
+.PHONY: shell-app
+shell-app:
+	kubectl exec -it deploy/app -- sh
+
 .PHONY: create-new-deployment-mail
 create-new-deployment-mail:
 	kubectl create deployment mail --image=juanluisbaptiste/postfix:1.0.0 --dry-run=client -o yaml > mail-deployment-new.yaml
@@ -61,7 +65,7 @@ delete-db-data:
 delete-mail:
 	kubectl delete deployment,service mail
 .PHONY: delete-app
-delete-app: # does NOT delete the volume, i.e., the project assets like pictures and audio files
+delete-app: # does NOT delete the volumes, e.g., the project assets like pictures and audio files
 	kubectl delete deployment,service app
 	kubectl delete ingress languageforge-app
 .PHONY: delete-app-cert-staging
@@ -73,3 +77,5 @@ delete-app-assets:
 .PHONY: delete-app-sendreceive-data
 delete-app-sendreceive-data:
 	kubectl delete pvc lfmerge-sendreceive-data
+
+	
