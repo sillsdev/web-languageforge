@@ -70,3 +70,6 @@ delete-app-cert-staging:
 .PHONY: delete-app-assets
 delete-app-assets:
 	kubectl delete pvc lf-project-assets
+.PHONY: delete-app-sendreceive-data
+delete-app-sendreceive-data:
+	kubectl delete pvc lfmerge-sendreceive-data

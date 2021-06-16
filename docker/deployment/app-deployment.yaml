@@ -70,6 +70,19 @@ spec:
       storage: 5Gi
 ---
 
+# https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: lfmerge-sendreceive-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 8Gi
+---
+
 # https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#writing-a-deployment-spec
 apiVersion: apps/v1
 kind: Deployment
@@ -94,6 +107,9 @@ spec:
       - name: assets
         persistentVolumeClaim:
           claimName: lf-project-assets
+      - name: sendreceive-data
+        persistentVolumeClaim:
+          claimName: lfmerge-sendreceive-data
       containers:
       - name: app
         image: sillsdev/web-languageforge:app-staging
@@ -101,6 +117,8 @@ spec:
         volumeMounts:
           - mountPath: /var/www/src/assets
             name: assets
+          - mountPath: /var/lib/languageforge/lexicon/sendreceive
+            name: sendreceive-data
         env:
           - name: DATABASE
             value: scriptureforge
