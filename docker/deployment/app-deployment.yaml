@@ -100,9 +100,6 @@ spec:
       labels:
         app: app
     spec:
-      securityContext: # see https://github.com/sillsdev/web-languageforge/pull/974 for further explanation of the need for a securityContext here
-        fsGroup: 33 # this is www-data from /etc/passwd, k8s requires explicit assignment otherwise the volume will get mounted with root and www-data won't be allowed to create folders on-the-fly in there.
-        fsGroupChangePolicy: OnRootMismatch
       volumes:
       - name: assets
         persistentVolumeClaim:
@@ -110,12 +107,21 @@ spec:
       - name: sendreceive-data
         persistentVolumeClaim:
           claimName: lfmerge-sendreceive-data
+      initContainers:
+      - name: initialize-volume-ownership
+        image: busybox:1.33
+        command: ['sh', '-c', 'mkdir -p /var/www/html/assets && chown www-data:www-data /var/www/html/assets && mkdir -p /var/lib/languageforge/lexicon/sendreceive && chown www-data:www-data /var/lib/languageforge/lexicon/sendreceive']
+        volumeMounts:
+          - mountPath: /var/www/html/assets
+            name: assets
+          - mountPath: /var/lib/languageforge/lexicon/sendreceive
+            name: sendreceive-data
       containers:
       - name: app
         image: sillsdev/web-languageforge:app-staging
         imagePullPolicy: Always
         volumeMounts:
-          - mountPath: /var/www/src/assets
+          - mountPath: /var/www/html/assets
             name: assets
           - mountPath: /var/lib/languageforge/lexicon/sendreceive
             name: sendreceive-data

@@ -1,5 +1,3 @@
-# WARNING: changing from deb-based images to alpine will break on volume configuration for the assets folder due to the 
-# gid of www-data changing from 33 to 82 on those systems respectively.  See note in app's Dockerfile.
 FROM php:7.3.28-apache
 
 # install Language Forge APT dependencies
