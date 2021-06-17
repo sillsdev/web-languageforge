@@ -45,6 +45,10 @@ deploy-mail-prod:
 deploy-app-staging:
 	sed -e s/{{ENVIRONMENT}}/development/ app-deployment.yaml \
   | sed -e s/{{WEBSITE}}/qa.languageforge.org/ | kubectl apply -f -
+
+	# this unfortunate hack is required to ensure the image is pulled, this is necessary because we don't tag our images properly, i.e., it's always :app-staging, 
+	# therefore the configuration may look unchanged to k8s even though the published image is actually different and needs to be pulled again
+	kubectl rollout restart deploy app
 .PHONY: deploy-app-prod
 deploy-app-prod:
 	sed -e s/{{ENVIRONMENT}}/production/ app-deployment.yaml \
