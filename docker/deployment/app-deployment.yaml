@@ -110,7 +110,8 @@ spec:
       initContainers:
       - name: initialize-volume-ownership
         image: busybox:1.33
-        command: ['sh', '-c', 'mkdir -p /var/www/html/assets && chown www-data:www-data /var/www/html/assets && mkdir -p /var/lib/languageforge/lexicon/sendreceive && chown www-data:www-data /var/lib/languageforge/lexicon/sendreceive']
+        command: ['sh', '-c']
+        args: ['mkdir -p /var/www/html/assets /var/lib/languageforge/lexicon/sendreceive && chown www-data:www-data /var/www/html/assets /var/lib/languageforge/lexicon/sendreceive']
         volumeMounts:
           - mountPath: /var/www/html/assets
             name: assets
