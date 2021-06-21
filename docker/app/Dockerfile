@@ -22,8 +22,5 @@ RUN ln -s /var/www/html /var/www/src
 COPY --from=lf-ui-builder /data/src/dist /var/www/html/dist
 
 # ensure correct write permissions for assets folders, 
-# WARNING:  k8s requires an explicit configuration of the ownership via a gid and on deb it's 33 for www-data but it's 82 on alpine so be very careful 
-# see app-deployment.yaml for "fsGroup" usage
 RUN    chown -R www-data:www-data /var/www/html/assets /var/www/html/cache \
-    && chmod -R g+ws /var/www/html/assets /var/www/html/cache \
-    && umask 0002
+    && chmod -R g+ws /var/www/html/assets /var/www/html/cache

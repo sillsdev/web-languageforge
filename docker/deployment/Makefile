@@ -25,6 +25,10 @@ retrieve-current-deployments:
 	kubectl get deploy mail -o yaml > mail-deployment-current.yaml
 	kubectl get deploy db   -o yaml > db-deployment-current.yaml
 
+.PHONY: shell-app
+shell-app:
+	kubectl exec -it deploy/app -- sh
+
 .PHONY: create-new-deployment-mail
 create-new-deployment-mail:
 	kubectl create deployment mail --image=juanluisbaptiste/postfix:1.0.0 --dry-run=client -o yaml > mail-deployment-new.yaml
@@ -41,6 +45,10 @@ deploy-mail-prod:
 deploy-app-staging:
 	sed -e s/{{ENVIRONMENT}}/development/ app-deployment.yaml \
   | sed -e s/{{WEBSITE}}/qa.languageforge.org/ | kubectl apply -f -
+
+	# this unfortunate hack is required to ensure the image is pulled, this is necessary because we don't tag our images properly, i.e., it's always :app-staging, 
+	# therefore the configuration may look unchanged to k8s even though the published image is actually different and needs to be pulled again
+	kubectl rollout restart deploy app
 .PHONY: deploy-app-prod
 deploy-app-prod:
 	sed -e s/{{ENVIRONMENT}}/production/ app-deployment.yaml \
@@ -61,7 +69,7 @@ delete-db-data:
 delete-mail:
 	kubectl delete deployment,service mail
 .PHONY: delete-app
-delete-app: # does NOT delete the volume, i.e., the project assets like pictures and audio files
+delete-app: # does NOT delete the volumes, e.g., the project assets like pictures and audio files
 	kubectl delete deployment,service app
 	kubectl delete ingress languageforge-app
 .PHONY: delete-app-cert-staging
@@ -70,3 +78,8 @@ delete-app-cert-staging:
 .PHONY: delete-app-assets
 delete-app-assets:
 	kubectl delete pvc lf-project-assets
+.PHONY: delete-app-sendreceive-data
+delete-app-sendreceive-data:
+	kubectl delete pvc lfmerge-sendreceive-data
+
+	

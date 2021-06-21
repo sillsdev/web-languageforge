@@ -70,6 +70,19 @@ spec:
       storage: 5Gi
 ---
 
+# https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: lfmerge-sendreceive-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 8Gi
+---
+
 # https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#writing-a-deployment-spec
 apiVersion: apps/v1
 kind: Deployment
@@ -87,20 +100,31 @@ spec:
       labels:
         app: app
     spec:
-      securityContext: # see https://github.com/sillsdev/web-languageforge/pull/974 for further explanation of the need for a securityContext here
-        fsGroup: 33 # this is www-data from /etc/passwd, k8s requires explicit assignment otherwise the volume will get mounted with root and www-data won't be allowed to create folders on-the-fly in there.
-        fsGroupChangePolicy: OnRootMismatch
       volumes:
       - name: assets
         persistentVolumeClaim:
           claimName: lf-project-assets
+      - name: sendreceive-data
+        persistentVolumeClaim:
+          claimName: lfmerge-sendreceive-data
+      initContainers:
+      - name: initialize-volume-ownership
+        image: busybox:1.33
+        command: ['sh', '-c', 'chown www-data:www-data /var/www/html/assets /var/lib/languageforge/lexicon/sendreceive']
+        volumeMounts:
+          - mountPath: /var/www/html/assets
+            name: assets
+          - mountPath: /var/lib/languageforge/lexicon/sendreceive
+            name: sendreceive-data
       containers:
       - name: app
         image: sillsdev/web-languageforge:app-staging
         imagePullPolicy: Always
         volumeMounts:
-          - mountPath: /var/www/src/assets
+          - mountPath: /var/www/html/assets
             name: assets
+          - mountPath: /var/lib/languageforge/lexicon/sendreceive
+            name: sendreceive-data
         env:
           - name: DATABASE
             value: scriptureforge

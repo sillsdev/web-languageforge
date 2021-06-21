@@ -1,5 +1,3 @@
-# WARNING: changing from deb-based images to alpine will break on volume configuration for the assets folder due to the 
-# gid of www-data changing from 33 to 82 on those systems respectively.  See note in app's Dockerfile.
 FROM php:7.3.28-apache
 
 # install Language Forge APT dependencies
@@ -13,7 +11,7 @@ RUN install-php-extensions gd xdebug mongodb intl @composer
 RUN curl -L http://linux.lsdev.sil.org/downloads/sil-testing.gpg | apt-key add - \
 && echo "deb http://linux.lsdev.sil.org/ubuntu bionic main" > /etc/apt/sources.list.d/linux-lsdev-sil-org.list \
 && apt-get update \
-&& apt-get install --yes --no-install-recommends python lfmerge rsyslog logrotate cron
+&& apt-get install --yes --no-install-recommends python lfmerge rsyslog logrotate cron iputils-ping
 
 COPY lfmerge.conf /etc/languageforge/conf/sendreceive.conf
 

@@ -60,6 +60,9 @@ services:
       # holds things like audio files or pictures attached to words within a project
       - lf-project-assets:/var/www/src/assets
 
+      # holds mercurial repos to avoid full clones/downloads on s/r projects
+      - lfmerge-sendreceive-data:/var/lib/languageforge/lexicon/sendreceive
+
       # share dist folder between ui and api containers
       - lf-ui-dist:/var/www/html/dist
 
@@ -230,4 +233,5 @@ volumes:
   lf-caddy-data:
   lf-mongo-data:
   lf-project-assets:
+  lfmerge-sendreceive-data:
   lf-ui-dist:
