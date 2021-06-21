@@ -91,11 +91,14 @@ services:
     restart: unless-stopped
 
   mail:
-    build:
-      context: .
-      dockerfile: mail/Dockerfile
-    image: lf-mail
+    image: juanluisbaptiste/postfix:1.0.0
     container_name: lf-mail
+    environment:
+      - SMTP_SERVER=nobody.localhost
+      - SMTP_USERNAME=username
+      - SMTP_PASSWORD=password
+      - SERVER_HOSTNAME=nobody.localhost
+    command: sh -c "postconf -e 'default_transport = retry:no outbound email allowed' && /run.sh"
 
   db:
     image: mongo:4.0
