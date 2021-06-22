@@ -110,7 +110,12 @@ spec:
       initContainers:
       - name: initialize-volume-ownership
         image: busybox:1.33
-        command: ['sh', '-c', 'chown www-data:www-data /var/www/html/assets /var/lib/languageforge/lexicon/sendreceive']
+        command:
+          - 'sh'
+          - '-c'
+          - |-
+            mkdir /var/lib/languageforge/lexicon/sendreceive/state
+            chown www-data:www-data /var/www/html/assets /var/lib/languageforge/lexicon/sendreceive /var/lib/languageforge/lexicon/sendreceive/state
         volumeMounts:
           - mountPath: /var/www/html/assets
             name: assets
