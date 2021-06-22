@@ -108,10 +108,46 @@ The easiest way to get the `TEST_SPECS` variable set up correctly is to go into 
 
 To quickly re-run the tests without going through the `make build` process, you can restart the `app-for-e2e` container and run the tests as follows:
 `docker-compose restart app-for-e2e && docker-compose run -e TEST_SPECS= test-e2e` where the relative path to the test spec file is optionally given after the `=` sign.
+
 ### Running Unit Tests
 
 1. `make unit-tests`
 1. Test results will appear in your terminal
+
+### Debugging E2E Tests
+
+You'll need the "Remote - Containers" extension (`ms-vscode-remote.remote-containers`) installed, and you'll need your version of Docker Compose to be at least 1.21. (The VS Code instructions say that the Ubuntu snap package for `docker-compose` is **not** supported, so if you don't have it installed already, go to https://github.com/docker/compose/releases and download an appropriate binary of the most recent release. On Linux, you should put that binary in `/usr/local/bin/docker-compose`, **not** in `/usr/bin`!)
+
+1. Run `docker-compose --version` and make sure it's at least version 1.21
+
+Now when you want to debug E2E tests, you can click on the small green square in the lower left corner of VS Code (it looks like `><`) and a menu will pop up. Choose **Reopen in Container**. This will build the `test-e2e` container and all its dependencies, and will then install VS Code inside the container and set up your local copy of VS Code to be communicating to the copy inside the container. For all intents and purposes, it will be as if you were running VS Code inside the container. If this is the first time you've done this, you might have to wait a minute or two: click on the "show log" link (lower right) if you want to see what's happening.
+
+Once you're running VS Code inside the `test-e2e` container, you can do the following to run E2E tests in debug mode:
+
+1. (Optional) Edit `.vscode/launch.json` inside the container and uncomment the `--` and `--specs=...` lines, and edit the second line with the filename(s) you want to run.
+1. Click on the Run and Debug icon on the left side of VS Code (looks like a "play" triangle with a bug icon in front of it)
+1. If **Debug E2E tests** isn't already selected in the dropdown, select it
+1. Set breakpoints in the tests you want to debug
+1. Click the green "play" icon just left of the debug dropdown
+
+**NOTE:** If you try to step out of a test function, you may find yourself inside a file called `primordials.js` which is part of Node. This is a [VS Code bug](https://github.com/microsoft/vscode-js-debug/issues/980) that has not yet been fixed (as of June 2021). If that happens, simply go back to your test file, set a new breakpoint, and then click the **Continue** icon (or press <kbd>F5</kbd>) in the debug toolbar to get back into your code.
+
+If you interrupt the E2E tests halfway through their run (easy to do when debugging), you might find that the test database gets into a situation where running the tests a second time causes lots of spurious failures. For example, if you interrupt the "change password" test right in the middle, after it has changed the test user's password but before it has reset the test user's password back to the original value, then a subsequent run of E2E tests will completely fail to run. If that's the case, you'll want to reset the E2E test app container so that it will re-run the test initialization script and reset the test database.
+
+To reset the E2E test app container, do the following:
+
+1. Exit the E2E container (click the green container menu in the lower left corner of VS Code and choose "Reopen folder locally")
+1. Hit `F1` or `Ctrl+Shift+P` and choose **Tasks: Run Task** (you can type "Run" to find it quickly)
+1. Pick the **Rest E2E tests** task
+
+Now you should be able to run the E2E tests again.
+
+If you edit files in the `src` or `data` folders of the test container, these changes will be applied to the files in your Git repository. But to make those changes "stick", you might have to exit the test container and rebuild it. To do that:
+
+1. Exit the E2E container (click the green container menu in the lower left corner of VS Code and choose "Reopen folder locally")
+1. Hit `F1` or `Ctrl+Shift+P` and choose **Remote-Containers: Rebuild and Reopen in Container** (type "Rebuild" to find it quickly)
+
+After a minute or two, your source or test changes should be applied and you should see the result of your changes when you run the E2E tests again.
 
 ### Viewing logs
 
