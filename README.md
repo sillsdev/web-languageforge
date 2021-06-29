@@ -134,13 +134,7 @@ Once you're running VS Code inside the `test-e2e` container, you can do the foll
 
 If you interrupt the E2E tests halfway through their run (easy to do when debugging), you might find that the test database gets into a situation where running the tests a second time causes lots of spurious failures. For example, if you interrupt the "change password" test right in the middle, after it has changed the test user's password but before it has reset the test user's password back to the original value, then a subsequent run of E2E tests will completely fail to run. If that's the case, you'll want to reset the E2E test app container so that it will re-run the test initialization script and reset the test database.
 
-To reset the E2E test app container, do the following:
-
-1. Exit the E2E container (click the green container menu in the lower left corner of VS Code and choose "Reopen folder locally")
-1. Hit `F1` or `Ctrl+Shift+P` and choose **Tasks: Run Task** (you can type "Run" to find it quickly)
-1. Pick the **Rest E2E tests** task
-
-Now you should be able to run the E2E tests again.
+To reset the E2E test app container, simply choose the **Reset and debug E2E tests** option in the debugging dropdown instead of the **Debug E2E tests** option. Now you should be able to run the E2E tests again.
 
 If you edit files in the `src` or `data` folders of the test container, these changes will be applied to the files in your Git repository. But to make those changes "stick", you might have to exit the test container and rebuild it. To do that:
 
