@@ -4,12 +4,6 @@
 .externalToolBuilders
 .idea/
 .settings
-.vagrant/
-deploy/**/*.retry
-deploy/callback_plugins/*.pyc
-deploy/site_files/
-deploy/site_info/
-deploy/output.log
 docs/semdom/*.xml
 docs/semdom/semdom lists/*.xml
 node_modules/
@@ -27,7 +21,6 @@ src/node_modules/
 !src/vendor/lift/
 src/vendor/
 test/CodeCoverage/
-vagrant_ansible_inventory_*
 test/app/protractorConfBrowserStack.js
 artifacts/
 src/userConfig.php
