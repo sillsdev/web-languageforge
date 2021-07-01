@@ -69,6 +69,8 @@ spec:
   resources:
     requests:
       storage: 5Gi
+  storageClassName: weekly-snapshots-retain-4 # provided by LTOps
+
 ---
 
 # https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims
@@ -82,6 +84,8 @@ spec:
   resources:
     requests:
       storage: 8Gi
+  storageClassName: weekly-snapshots-retain-4 # provided by LTOps
+
 ---
 
 # https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#writing-a-deployment-spec

@@ -24,6 +24,8 @@ spec:
   resources:
     requests:
       storage: 16Gi
+  storageClassName: weekly-snapshots-retain-4 # provided by LTOps
+
 ---
 
 # https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#writing-a-deployment-spec
