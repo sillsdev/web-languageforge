@@ -68,7 +68,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 5Gi
+      storage: 3Gi
   storageClassName: weekly-snapshots-retain-4 # provided by LTOps
 
 ---
@@ -83,7 +83,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 8Gi
+      storage: 30Gi
   storageClassName: weekly-snapshots-retain-4 # provided by LTOps
 
 ---
