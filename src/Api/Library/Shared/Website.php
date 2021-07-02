@@ -90,7 +90,7 @@ class Website
     {
         $protocol = ($this->ssl) ? "https" : "http";
 
-        return $protocol . "://" . $this->domain;
+        return $protocol . "://" . self::getHostname();
     }
 
     /**
