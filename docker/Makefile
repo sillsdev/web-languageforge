@@ -28,7 +28,7 @@ ifeq ("$(TEAMCITY_VERSION)",$())
 	docker-compose run test-php
 else
 	# teamcity CI
-	docker-compose run --name unittests test-php
+	docker-compose run -e WEBSITE=languageforge.org --name unittests test-php
 	docker cp unittests:/var/www/PhpUnitTests.xml ..
 endif
 
