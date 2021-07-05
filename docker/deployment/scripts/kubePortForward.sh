@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CONTAINER=app-7c76db448d-sq5st
+CONTAINER=deploy/app
 PORT=55555
 
 kubectl port-forward $CONTAINER $PORT:22
