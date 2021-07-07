@@ -23,8 +23,37 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 3Gi
-  storageClassName: weekly-snapshots-retain-4 # provided by LTOps
+      storage: 10Gi
+
+---
+# https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: lf-mongo-data-snapshot-runner
+spec:
+  schedule: "@weekly" # https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/#cron-schedule-syntax
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: snapshot-runner
+            image: docker.dallas.languagetechnology.org/ba-kb-snapshot
+            command:
+            - /bin/sh
+            - -c
+            - |- 
+              cat <<EOF | kubectl apply -f - 
+              apiVersion: snapshot.storage.k8s.io/v1
+              kind: VolumeSnapshot
+              metadata:
+                name: lf-mongo-data-snapshot
+              spec:
+                volumeSnapshotClassName: csi-longhorn-snap
+                source:
+                  persistentVolumeClaimName: lf-mongo-data
+              EOF
 
 ---
 
