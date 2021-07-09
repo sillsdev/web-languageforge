@@ -665,6 +665,13 @@ describe('Lexicon E2E Configuration Fields', () => {
     });
 
     it('can remove member-specific user settings', async () => {
+      // Setup, resetting state changed by previous tests
+      await util.setCheckbox(configPage.unifiedPane.inputSystem.selectAll.observer, true);
+      await util.setCheckbox(configPage.unifiedPane.inputSystem.selectAll.commenter, true);
+      await util.setCheckbox(configPage.unifiedPane.inputSystem.selectAll.contributor, true);
+      await util.setCheckbox(configPage.unifiedPane.inputSystem.selectAll.manager, true);
+
+      // Exercise
       await configPage.unifiedPane.entry.removeGroupButton(0).click();
       expect<any>(await configPage.unifiedPane.inputSystem.selectAll.groups().count()).toEqual(1);
       await configPage.unifiedPane.entry.removeGroupButton(0).click();
