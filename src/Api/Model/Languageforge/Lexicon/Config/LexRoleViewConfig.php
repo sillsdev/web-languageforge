@@ -9,6 +9,7 @@ class LexRoleViewConfig
 {
     public function __construct()
     {
+        $this->inputSystems = new ArrayOf();
         $this->fields = new MapOf(function ($data) {
             if (array_key_exists('overrideInputSystems', $data)) {
                 return new LexViewMultiTextFieldConfig();
@@ -18,6 +19,9 @@ class LexRoleViewConfig
         });
         $this->showTasks = new MapOf();
     }
+
+    /** @var ArrayOf<string> */
+    public $inputSystems;
 
     /**
      * key is LexConfig field const

@@ -205,9 +205,6 @@ export class ConfigurationPage {
       return this.getRowByLabel(label).all(by.xpath('following-sibling::tr')).get(0)
         .element(by.className('caption-hidden-if-empty-checkbox'));
     },
-    resetInputSystemButton: (label: string) => {
-      return this.activePane.element(by.id('reset-input-system-' + label + '-btn'));
-    },
     addGroupModal: {
       usernameTypeaheadInput: element(by.id('typeaheadInput')),
       usernameTypeaheadResults: element.all(by.repeater('user in $ctrl.typeahead.users')),
