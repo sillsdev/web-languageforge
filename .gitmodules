@@ -1,6 +1,0 @@
-[submodule "deploy/ops-ansible-common-roles"]
-	path = deploy/roles_common
-	url = https://github.com/sillsdev/ops-ansible-common-roles
-[submodule "deploy/roles/ansible-role-apache"]
-	path = deploy/roles/apache_config
-	url = https://github.com/saygoweb/ansible-role-apache.git

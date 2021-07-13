@@ -21,16 +21,11 @@ use Api\Model\Shared\UserModel;
 $constants = json_decode(file_get_contents(TestPath . 'app/testConstants.json'), true);
 
 // Fake some $_SERVER variables like HTTP_HOST for the sake of the code that needs it
-$hostname = "localhost";
 if (count($argv) > 1) {
     // hostname is passed in on command line
     $hostname = $argv[1];
 }
-$_SERVER['HTTP_HOST'] = $hostname;
-$website = Website::get($hostname);
-if (is_null($website)) {
-    exit("Error: $hostname is not a registered website hostname!\n\n");
-}
+$website = Website::get();
 $site = $website->base;
 
 // start with a fresh database

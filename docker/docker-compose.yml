@@ -44,6 +44,7 @@ services:
       # - WEBSITE=qa.languageforge.org
       - DATABASE=scriptureforge
       - MONGODB_CONN=mongodb://db:27017
+      - MAIL_HOST=mail
       # only when ENVIRONMENT=production will BUGSNAG_API_KEY be utilized.
       # - BUGSNAG_API_KEY=some-key
       - GOOGLE_CLIENT_ID=bogus-development-token
@@ -52,17 +53,22 @@ services:
       - FACEBOOK_CLIENT_SECRET=bogus-development-token
       - REMEMBER_ME_SECRET=bogus-development-key
       - LANGUAGE_DEPOT_API_TOKEN=bogus-development-token
-    command: sh -c "/wait && umask 0002 && apache2-foreground"
+    command: sh -c "/wait && apache2-foreground"
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
-      # persist user data uploads and assets
-      - lf-user-data-assets:/var/www/src/assets
+      # holds things like audio files or pictures attached to words within a project
+      - lf-project-assets:/var/www/src/assets
+
+      # holds mercurial repos to avoid full clones/downloads on s/r projects
+      - lfmerge-sendreceive-data:/var/lib/languageforge/lexicon/sendreceive
 
       # share dist folder between ui and api containers
       - lf-ui-dist:/var/www/html/dist
 
       # for developer convenience
+      - ../src/index.php:/var/www/src/index.php
+      - ../src/config.php:/var/www/src/config.php
       - ../src/Api:/var/www/src/Api
       - ../src/Site:/var/www/src/Site
 
@@ -85,11 +91,14 @@ services:
     restart: unless-stopped
 
   mail:
-    build:
-      context: .
-      dockerfile: mail/Dockerfile
-    image: lf-mail
+    image: juanluisbaptiste/postfix:1.0.0
     container_name: lf-mail
+    environment:
+      - SMTP_SERVER=nobody.localhost
+      - SMTP_USERNAME=username
+      - SMTP_PASSWORD=password
+      - SERVER_HOSTNAME=nobody.localhost
+    command: sh -c "postconf -e 'default_transport = retry:no outbound email allowed' && /run.sh"
 
   db:
     image: mongo:4.0
@@ -112,28 +121,36 @@ services:
     ports:
       - "5900:5900"
 
-  ld-sql:
-    build:
-      context: ld-sql
-    image: ld-sql
-    container_name: ld-sql
+  ld-db:
+    image: mysql:5.7
+    container_name: ld-db
     # To access the MySQL database via localhost:3306 on your dev machine (e.g., in VS Code), uncomment the "ports" config below
     # Note that if you're running MySQL on your dev machine already, change the first number to something else, like 3307 and access localhost:3307
     # ports:
     #   - 3306:3306
-    env_file: ld-api/ld.env
-
+    environment:
+      - MYSQL_HOST=ld-db
+      - MYSQL_DATABASE=testldapi
+      - MYSQL_DATABASE_PRIVATE=testldapipvt
+      - MYSQL_USER=redmine
+      - MYSQL_PASSWORD=not-a-secret
+      - MYSQL_ROOT_PASSWORD=also-not-a-secret
+    volumes:
+      - ./test-ld/schemas-and-data.sql:/docker-entrypoint-initdb.d/schemas-and-data.sql
+        
   ld-api:
-    build:
-      context: ld-api
-    image: ld-api
+    image: sillsdev/web-languagedepot-api
     container_name: ld-api
     depends_on:
-      - ld-sql
-    # env_file should be same one given to ld-sql image
-    env_file: ld-api/ld.env
+      - ld-db
     environment:
       - PORT=3000
+      - MYSQL_HOST=ld-db
+      - MYSQL_DATABASE=testldapi
+      - MYSQL_DATABASE_PRIVATE=testldapipvt
+      - MYSQL_USER=redmine
+      - MYSQL_PASSWORD=not-a-secret
+      - MYSQL_ROOT_PASSWORD=also-not-a-secret
 
   test-e2e:
     build:
@@ -180,12 +197,12 @@ services:
       - WEBSITE=localhost
       - DATABASE=scriptureforge_test
       - MONGODB_CONN=mongodb://db:27017
+      - MAIL_HOST=mail
       - REMEMBER_ME_SECRET=bogus-development-key
       - LANGUAGE_DEPOT_API_TOKEN=bogus-development-token
     command: sh -c "/wait && /run.sh"
 
   test-php:
-    # TODO: get XDebug working with VSCode
     build:
       context: ..
       dockerfile: docker/test-php/Dockerfile
@@ -199,7 +216,14 @@ services:
       - ENVIRONMENT=development
       - DATABASE=scriptureforge_test
       - MONGODB_CONN=mongodb://db:27017
+      - MAIL_HOST=mail
       - LANGUAGE_DEPOT_API_TOKEN=bogus-development-token
+      # Note: Uncomment to enable XDebug in Unit Tests.  The default mode is "off".
+      # These lines are commented out as this XDebug setup causes CI failures.
+      # XDebug is intended for local development only.  Uncomment the following 3 lines:
+      # - XDEBUG_MODE=develop,debug
+    # extra_hosts:
+      # - "host.docker.internal:host-gateway"
     command: sh -c "/wait && /run.sh"
     volumes:
       # for developer convenience
@@ -211,5 +235,6 @@ volumes:
   lf-caddy-config:
   lf-caddy-data:
   lf-mongo-data:
-  lf-user-data-assets:
+  lf-project-assets:
+  lfmerge-sendreceive-data:
   lf-ui-dist:

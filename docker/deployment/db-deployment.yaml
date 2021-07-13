@@ -1,0 +1,57 @@
+# https://kubernetes.io/docs/concepts/services-networking/service/#defining-a-service
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: db
+  name: db
+spec:
+  type: ClusterIP
+  clusterIP: None
+  selector:
+    app: db
+
+---
+
+# https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: lf-mongo-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 3Gi
+  storageClassName: weekly-snapshots-retain-4 # provided by LTOps
+
+---
+
+# https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#writing-a-deployment-spec
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: db
+  name: db
+spec:
+  selector:
+    matchLabels:
+      app: db
+  template:
+    # https://kubernetes.io/docs/concepts/workloads/pods/#pod-templates
+    metadata:
+      labels:
+        app: db
+    spec:
+      containers:
+      - name: db
+        image: mongo:4.0
+        volumeMounts:
+        - mountPath: /data/db
+          name: data
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: lf-mongo-data

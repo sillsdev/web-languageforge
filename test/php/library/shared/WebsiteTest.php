@@ -7,7 +7,7 @@ class WebsiteTest extends TestCase
 {
     public function testGet_Works()
     {
-        $website = Website::get('languageforge.org');
+        $website = Website::get();
         $this->assertEquals('languageforge.org', $website->domain);
         $this->assertEquals('languageforge', $website->base);
         $this->assertEquals('default', $website->theme);

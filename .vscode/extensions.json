@@ -4,6 +4,7 @@
 	"recommendations": [
     "JuanCasanova.awesometypescriptproblemmatcher",
     "msjsdiag.debugger-for-chrome",
+    "ms-vscode-remote.remote-containers",
     "EditorConfig.editorconfig",
     "felixfbecker.php-pack",
     "dbaeumer.vscode-eslint",

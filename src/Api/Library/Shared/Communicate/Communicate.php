@@ -5,6 +5,7 @@ namespace Api\Library\Shared\Communicate;
 use Api\Library\Shared\Communicate\Sms\SmsModel;
 use Api\Library\Shared\Communicate\Sms\SmsQueue;
 use Api\Library\Shared\Website;
+use Api\Library\Shared\UrlHelper;
 use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\ProjectSettingsModel;
 use Api\Model\Shared\MessageModel;
@@ -110,7 +111,7 @@ class Communicate
         $subject = $website->name . ' account signup validation';
         $vars = [
                 'user' => $userModel,
-                'link' => $website->baseUrl() . '/validate/' . $userModel->validationKey,
+                'link' => UrlHelper::baseUrl() . '/validate/' . $userModel->validationKey,
                 'website' => $website,
         ];
 
@@ -128,7 +129,7 @@ class Communicate
         $subject = 'Welcome to ' . $website->name;
         $vars = [
             'user' => $userModel,
-            'link' => $website->baseUrl(),
+            'link' => UrlHelper::baseUrl(),
             'website' => $website,
         ];
 
@@ -218,7 +219,7 @@ class Communicate
         $subject = $website->name . ' Forgotten Password Verification';
         $vars = [
             'user' => $user,
-            'link' => $website->baseUrl() . '/auth/reset_password/' . $user->resetPasswordKey,
+            'link' => UrlHelper::baseUrl() . '/auth/reset_password/' . $user->resetPasswordKey,
             'website' => $website,
         ];
 
@@ -265,7 +266,7 @@ class Communicate
             'user' => $user,
             'admin' => $admin,
             'project' => $projectModel,
-            'link' => $website->baseUrl() . '/app/usermanagement/' . $projectModel->id->asString() . '#!/joinRequests',
+            'link' => UrlHelper::baseUrl() . '/app/usermanagement/' . $projectModel->id->asString() . '#!/joinRequests',
             'website' => $website
         ];
 
@@ -285,7 +286,7 @@ class Communicate
         $vars = [
             'user' => $user,
             'project' => $projectModel,
-            'link' => $website->baseUrl() . "/app/{$projectModel->appName}/" . $projectModel->id->asString(),
+            'link' => UrlHelper::baseUrl() . "/app/{$projectModel->appName}/" . $projectModel->id->asString(),
             'website' => $website
         ];
 
@@ -332,7 +333,7 @@ class Communicate
      */
     public static function calculateSignupUrl(Website $website, string $email, string $name = null, string $avatar = null): string
     {
-        $url = $website->baseUrl() . '/public/signup#!/?e=' . urlencode($email);
+        $url = UrlHelper::baseUrl() . '/public/signup#!/?e=' . urlencode($email);
         if ($name) {
             $url = $url . '&n=' . urlencode($name);
         }

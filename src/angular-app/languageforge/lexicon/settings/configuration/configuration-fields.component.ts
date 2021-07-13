@@ -65,13 +65,6 @@ export class FieldsConfigurationController implements angular.IController {
   selectAllGroupColumn = ConfigurationFieldUnifiedViewModel.selectAllGroupColumn;
   checkIfAllRoleSelected = ConfigurationFieldUnifiedViewModel.checkIfAllRoleSelected;
   checkIfAllGroupSelected = ConfigurationFieldUnifiedViewModel.checkIfAllGroupSelected;
-  overrideRoleInputSystem = ConfigurationFieldUnifiedViewModel.overrideRoleInputSystem;
-  overrideGroupInputSystem = ConfigurationFieldUnifiedViewModel.overrideGroupInputSystem;
-  overrideRoleColumn = ConfigurationFieldUnifiedViewModel.overrideRoleColumn;
-  overrideGroupColumn = ConfigurationFieldUnifiedViewModel.overrideGroupColumn;
-  overrideAll = ConfigurationFieldUnifiedViewModel.overrideAll;
-  resetInputSystemsForRole = ConfigurationFieldUnifiedViewModel.resetInputSystemsForRole;
-  resetInputSystemsForGroup = ConfigurationFieldUnifiedViewModel.resetInputSystemsForGroup;
   ensureRequiredConfigurationFields = ConfigurationFieldUnifiedViewModel.ensureRequiredFields;
 
   openNewCustomFieldModal(fieldLevel: string): void {
@@ -230,7 +223,6 @@ export class FieldsConfigurationController implements angular.IController {
       typeahead.userName = '';
       this.removeFromUsersWithoutSettings(user.id);
       this.unifiedViewModel.groupLists.push({ label: user.username, userId: user.id } as GroupList);
-      this.unifiedViewModel.inputSystems.hasCustomInputSystemsOverride.groups.push(new Group());
       this.unifiedViewModel.inputSystems.selectAllColumns.groups.push(new Group());
       this.unifiedViewModel.entryFields.selectAllColumns.groups.push(new Group());
       this.unifiedViewModel.senseFields.selectAllColumns.groups.push(new Group());
@@ -265,7 +257,6 @@ export class FieldsConfigurationController implements angular.IController {
     const userId = this.unifiedViewModel.groupLists[index].userId;
     this.typeahead.usersWithoutSettings.push(this.fccUsers[userId]);
     this.unifiedViewModel.groupLists.splice(index, 1);
-    this.unifiedViewModel.inputSystems.hasCustomInputSystemsOverride.groups.splice(index, 1);
     this.unifiedViewModel.inputSystems.selectAllColumns.groups.splice(index, 1);
     this.unifiedViewModel.entryFields.selectAllColumns.groups.splice(index, 1);
     this.unifiedViewModel.senseFields.selectAllColumns.groups.splice(index, 1);
@@ -368,7 +359,6 @@ export const FieldsConfigurationComponent: angular.IComponentOptions = {
     fccUsers: '<',
     fccOptionLists: '<',
     fccAddInputSystem: '&',
-    fccResetInputSystems: '&',
     fccOnUpdate: '&'
   },
   controller: FieldsConfigurationController,

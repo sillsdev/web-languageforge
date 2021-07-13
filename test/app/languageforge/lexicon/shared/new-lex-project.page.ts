@@ -30,7 +30,7 @@ export class NewLexProjectPage {
 
   formStatus = {
     async expectHasNoError() {
-      expect(await element(by.id('form-status')).getAttribute('class')).not.toContain('alert');
+      expect(await element(by.id('form-status')).getAttribute('class')).not.toContain('alert-danger');
     },
     async expectContainsError(partialMsg: string) {
       if (!partialMsg) partialMsg = '';

@@ -1,4 +1,4 @@
-FROM sillsdev/web-languageforge:app-base-latest
+FROM sillsdev/web-languageforge:app-base-staging
 
 # php customizations
 RUN mv $PHP_INI_DIR/php.ini-development $PHP_INI_DIR/php.ini
@@ -21,6 +21,6 @@ RUN ln -s /var/www/html /var/www/src
 # grab the built assets from the ui image
 COPY --from=lf-ui-builder /data/src/dist /var/www/html/dist
 
-# ensure correct write permissions for assets folders
+# ensure correct write permissions for assets folders, 
 RUN    chown -R www-data:www-data /var/www/html/assets /var/www/html/cache \
     && chmod -R g+ws /var/www/html/assets /var/www/html/cache

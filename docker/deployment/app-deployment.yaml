@@ -1,0 +1,186 @@
+# https://kubernetes.io/docs/concepts/services-networking/service/#defining-a-service
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: app
+  name: app
+spec:
+  type: ClusterIP
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80
+    targetPort: 80
+  selector:
+    app: app
+
+---
+
+# https://cert-manager.io/docs/installation/kubernetes/#verifying-the-installation
+# TODO: need to uncomment this on or after Jul 8 to avoid letsencrupt's rate limit.
+# apiVersion: cert-manager.io/v1
+# kind: Certificate
+# metadata:
+#   name: qa-languageforge-org
+#   namespace: qa-languageforge
+# spec:
+#   secretName: qa-languageforge-tls
+#   issuerRef:
+#     name: le-languageforge-cluster-issuer
+#     kind: ClusterIssuer
+#   dnsNames:
+#   - qa.languageforge.org
+
+# ---
+
+# https://kubernetes.io/docs/concepts/services-networking/ingress/#the-ingress-resource
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: languageforge-app
+spec:
+  rules:
+  - host: qa.languageforge.org
+    http:
+      paths:
+      - path: /
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: app
+            port:
+              number: 80
+  tls:
+  - hosts:
+    - qa.languageforge.org
+    secretName: qa-languageforge-tls
+
+---
+
+# https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: lf-project-assets
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 3Gi
+  storageClassName: weekly-snapshots-retain-4 # provided by LTOps
+
+---
+
+# https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: lfmerge-sendreceive-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 30Gi
+  storageClassName: weekly-snapshots-retain-4 # provided by LTOps
+
+---
+
+# https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#writing-a-deployment-spec
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: app
+  name: app
+spec:
+  selector:
+    matchLabels:
+      app: app
+  template:
+    # https://kubernetes.io/docs/concepts/workloads/pods/#pod-templates
+    metadata:
+      labels:
+        app: app
+    spec:
+      volumes:
+      - name: assets
+        persistentVolumeClaim:
+          claimName: lf-project-assets
+      - name: sendreceive-data
+        persistentVolumeClaim:
+          claimName: lfmerge-sendreceive-data
+      initContainers:
+      - name: initialize-volume-ownership
+        image: busybox:1.33
+        command:
+          - 'sh'
+          - '-c'
+          - |-
+            mkdir /var/lib/languageforge/lexicon/sendreceive/state
+            chown www-data:www-data /var/www/html/assets /var/lib/languageforge/lexicon/sendreceive /var/lib/languageforge/lexicon/sendreceive/state
+        volumeMounts:
+          - mountPath: /var/www/html/assets
+            name: assets
+          - mountPath: /var/lib/languageforge/lexicon/sendreceive
+            name: sendreceive-data
+      containers:
+      - name: app
+        image: sillsdev/web-languageforge:app-staging
+        imagePullPolicy: Always
+        volumeMounts:
+          - mountPath: /var/www/html/assets
+            name: assets
+          - mountPath: /var/lib/languageforge/lexicon/sendreceive
+            name: sendreceive-data
+        env:
+          - name: DATABASE
+            value: scriptureforge
+          - name: ENVIRONMENT
+            value: {{ENVIRONMENT}}
+          - name: WEBSITE
+            value: {{WEBSITE}}
+          - name: MAIL_HOST
+            value: mail
+          - name: MONGODB_CONN
+            valueFrom:
+              secretKeyRef:
+                key: MONGODB_CONN
+                name: app
+          - name: REMEMBER_ME_SECRET
+            valueFrom:
+              secretKeyRef:
+                key: REMEMBER_ME_SECRET
+                name: app
+          - name: LDAPI_BASE_URL
+            valueFrom:
+              secretKeyRef:
+                key: LDAPI_BASE_URL
+                name: ld-api
+          - name: LANGUAGE_DEPOT_API_TOKEN
+            valueFrom:
+              secretKeyRef:
+                key: LANGUAGE_DEPOT_API_TOKEN
+                name: ld-api
+          - name: FACEBOOK_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                key: FACEBOOK_CLIENT_ID
+                name: oauth
+          - name: FACEBOOK_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                key: FACEBOOK_CLIENT_SECRET
+                name: oauth
+          - name: GOOGLE_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                key: GOOGLE_CLIENT_ID
+                name: oauth
+          - name: GOOGLE_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                key: GOOGLE_CLIENT_SECRET
+                name: oauth
