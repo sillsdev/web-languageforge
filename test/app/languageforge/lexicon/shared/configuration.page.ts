@@ -91,10 +91,12 @@ export class ConfigurationPage {
         return this.activePane.element(by.id('entry-header'))
           .element(by.className('remove-button-group-' + groupIndex));
       },
-      fieldSpecificInputSystemCheckbox: (label: string|RegExp, inputSystemIndex: number) => {
-        return this.getRowByLabel(label).element(by.xpath('..')).element(by.className('field-specific-input-systems'))
-          .all(by.repeater('inputSystemSettings in entryField.inputSystems'))
-          .get(inputSystemIndex).element(by.className('checkbox'));
+      fieldSpecificInputSystemCheckbox: (label: string|RegExp, inputSystemSelector: string|number) => {
+        const candidates = this.getRowByLabel(label).element(by.xpath('..')).element(by.className('field-specific-input-systems'))
+          .all(by.repeater('inputSystemSettings in entryField.inputSystems'));
+        const filtered = typeof inputSystemSelector === 'number' ? candidates.get(inputSystemSelector) :
+          candidates.filter(elem => elem.getText().then(text => text.includes(inputSystemSelector))).first();
+        return filtered.element(by.className('checkbox'));
       },
       addCustomEntryButton: this.activePane.element(by.id('add-custom-entry-btn'))
     },
@@ -129,10 +131,12 @@ export class ConfigurationPage {
         return this.activePane.element(by.id('sense-header'))
           .element(by.className('remove-button-group-' + groupIndex));
       },
-      fieldSpecificInputSystemCheckbox: (label: string|RegExp, inputSystemIndex: number) => {
-        return this.getRowByLabel(label).element(by.xpath('..')).element(by.className('field-specific-input-systems'))
-          .all(by.repeater('inputSystemSettings in senseField.inputSystems'))
-          .get(inputSystemIndex).element(by.className('checkbox'));
+      fieldSpecificInputSystemCheckbox: (label: string|RegExp, inputSystemSelector: string|number) => {
+        const candidates = this.getRowByLabel(label).element(by.xpath('..')).element(by.className('field-specific-input-systems'))
+          .all(by.repeater('inputSystemSettings in senseField.inputSystems'));
+        const filtered = typeof inputSystemSelector === 'number' ? candidates.get(inputSystemSelector) :
+          candidates.filter(elem => elem.getText().then(text => text.includes(inputSystemSelector))).first();
+        return filtered.element(by.className('checkbox'));
       },
       addCustomSenseButton: this.activePane.element(by.id('add-custom-sense-btn'))
     },
@@ -167,10 +171,12 @@ export class ConfigurationPage {
         return this.activePane.element(by.id('example-header'))
           .element(by.className('remove-button-group-' + groupIndex));
       },
-      fieldSpecificInputSystemCheckbox: (label: string|RegExp, inputSystemIndex: number) => {
-        return this.getRowByLabel(label).element(by.xpath('..')).element(by.className('field-specific-input-systems'))
-          .all(by.repeater('inputSystemSettings in exampleField.inputSystems'))
-          .get(inputSystemIndex).element(by.className('checkbox'));
+      fieldSpecificInputSystemCheckbox: (label: string|RegExp, inputSystemSelector: string|number) => {
+        const candidates = this.getRowByLabel(label).element(by.xpath('..')).element(by.className('field-specific-input-systems'))
+          .all(by.repeater('inputSystemSettings in exampleField.inputSystems'));
+        const filtered = typeof inputSystemSelector === 'number' ? candidates.get(inputSystemSelector) :
+          candidates.filter(elem => elem.getText().then(text => text.includes(inputSystemSelector))).first();
+        return filtered.element(by.className('checkbox'));
       },
       addCustomExampleButton: this.activePane.element(by.id('add-custom-example-btn'))
     },
@@ -204,9 +210,6 @@ export class ConfigurationPage {
     fieldSpecificCaptionHiddenIfEmptyCheckbox: (label: string|RegExp) => {
       return this.getRowByLabel(label).all(by.xpath('following-sibling::tr')).get(0)
         .element(by.className('caption-hidden-if-empty-checkbox'));
-    },
-    resetInputSystemButton: (label: string) => {
-      return this.activePane.element(by.id('reset-input-system-' + label + '-btn'));
     },
     addGroupModal: {
       usernameTypeaheadInput: element(by.id('typeaheadInput')),

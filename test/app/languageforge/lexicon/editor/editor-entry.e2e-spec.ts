@@ -506,13 +506,16 @@ describe('Lexicon E2E Editor List and Entry', () => {
     });
 
   describe('Configuration check', async () => {
-    const englishISIndex = 3;
+    const ipaRowLabel = /^Thai \(IPA\)$/;
+    const thaiAudioRowLabel = 'Thai Voice (Voice)';
+    const englishRowLabel = 'English';
 
     it('Word has only "th", "tipa" and "taud" visible', async () => {
-      expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).count()).toEqual(3);
+      expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).count()).toBeGreaterThanOrEqual(3);
       expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).get(0).getText()).toEqual('th');
       expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).get(1).getText()).toEqual('tipa');
       expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).get(2).getText()).toEqual('taud');
+      expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).count()).toEqual(3);
     });
 
     it('make "en" input system visible for "Word" field', async () => {
@@ -520,18 +523,19 @@ describe('Lexicon E2E Editor List and Entry', () => {
       await configPage.tabs.unified.click();
       await configPage.unifiedPane.fieldSpecificButton(lexemeLabel).click();
       await util.setCheckbox(
-        configPage.unifiedPane.entry.fieldSpecificInputSystemCheckbox(lexemeLabel, englishISIndex), true);
+        configPage.unifiedPane.entry.fieldSpecificInputSystemCheckbox(lexemeLabel, englishRowLabel), true);
       await configPage.applyButton.click();
       await Utils.clickBreadcrumb(constants.testProjectName);
       await editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
     });
 
     it('Word has "th", "tipa", "taud" and "en" visible', async () => {
-      expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).count()).toEqual(4);
+      expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).count()).toBeGreaterThanOrEqual(4);
       expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).get(0).getText()).toEqual('th');
       expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).get(1).getText()).toEqual('tipa');
       expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).get(2).getText()).toEqual('taud');
       expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).get(3).getText()).toEqual('en');
+      expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).count()).toEqual(4);
     });
 
     it('make "en" input system invisible for "Word" field', async () => {
@@ -539,17 +543,85 @@ describe('Lexicon E2E Editor List and Entry', () => {
       await configPage.tabs.unified.click();
       await configPage.unifiedPane.fieldSpecificButton(lexemeLabel).click();
       await util.setCheckbox(
-        configPage.unifiedPane.entry.fieldSpecificInputSystemCheckbox(lexemeLabel, englishISIndex), false);
+        configPage.unifiedPane.entry.fieldSpecificInputSystemCheckbox(lexemeLabel, englishRowLabel), false);
       await configPage.applyButton.click();
       await Utils.clickBreadcrumb(constants.testProjectName);
       await editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
     });
 
-    it('Word has only "th", "tipa" and "taud" visible', async () => {
-      expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).count()).toEqual(3);
+    it('Word has only "th", "tipa" and "taud" visible again', async () => {
+      expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).count()).toBeGreaterThanOrEqual(3);
       expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).get(0).getText()).toEqual('th');
       expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).get(1).getText()).toEqual('tipa');
       expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).get(2).getText()).toEqual('taud');
+      expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).count()).toEqual(3);
+    });
+
+    it('make "taud" input system invisible for "Word" field and "tipa" invisible for manager role', async () => {
+      await configPage.get();
+      await configPage.tabs.unified.click();
+
+      // Ensure field-specific input systems for Word are visible
+      const wordChevron = await configPage.unifiedPane.fieldSpecificIcon(lexemeLabel).getAttribute('class');
+      if (wordChevron.includes('fa-chevron-down')) {
+        await configPage.unifiedPane.fieldSpecificButton(lexemeLabel).click();
+      }
+
+      // Alternately, just do it regardless
+      // await configPage.unifiedPane.fieldSpecificButton(lexemeLabel).click();
+      await util.setCheckbox(
+        configPage.unifiedPane.entry.fieldSpecificInputSystemCheckbox(lexemeLabel, thaiAudioRowLabel), false);
+      await util.setCheckbox(configPage.unifiedPane.managerCheckbox(ipaRowLabel), false);
+
+      await configPage.applyButton.click();
+      await Utils.clickBreadcrumb(constants.testProjectName);
+      await editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
+    });
+
+    it('Word has only "th" visible', async () => {
+      expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).count()).toBeGreaterThanOrEqual(1);
+      expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).get(0).getText()).toEqual('th');
+      expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).count()).toEqual(1);
+    });
+
+    it('restore visibility of "taud" for "Word" field', async () => {
+      await configPage.get();
+      await configPage.tabs.unified.click();
+      // Ensure field-specific input systems for Word are visible
+      const wordChevron = await configPage.unifiedPane.fieldSpecificIcon(lexemeLabel).getAttribute('class');
+      if (wordChevron.includes('fa-chevron-down')) {
+        await configPage.unifiedPane.fieldSpecificButton(lexemeLabel).click();
+      }
+      // await configPage.unifiedPane.fieldSpecificButton(lexemeLabel).click();
+      await util.setCheckbox(
+        configPage.unifiedPane.entry.fieldSpecificInputSystemCheckbox(lexemeLabel, thaiAudioRowLabel), true);
+      await configPage.applyButton.click();
+      await Utils.clickBreadcrumb(constants.testProjectName);
+      await editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
+    });
+
+    it('Word has only "th" and "taud" visible for manager role', async () => {
+      expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).count()).toBeGreaterThanOrEqual(2);
+      expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).get(0).getText()).toEqual('th');
+      expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).get(1).getText()).toEqual('taud');
+      expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).count()).toEqual(2);
+    });
+
+    it('restore visibility of "tipa" input system for manager role', async () => {
+      await configPage.get();
+      await configPage.tabs.unified.click();
+      await util.setCheckbox(configPage.unifiedPane.managerCheckbox(ipaRowLabel), true);
+      await configPage.applyButton.click();
+      await Utils.clickBreadcrumb(constants.testProjectName);
+      await editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
+    });
+
+    it('Word has "th", "tipa" and "taud" visible again for manager role', async () => {
+      expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).count()).toBeGreaterThanOrEqual(3);
+      expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).get(0).getText()).toEqual('th');
+      expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).get(1).getText()).toEqual('tipa');
+      expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).get(2).getText()).toEqual('taud');
+      expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).count()).toEqual(3);
     });
 
   });

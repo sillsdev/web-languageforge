@@ -54,7 +54,7 @@ describe('Lexicon E2E Configuration Fields', () => {
     expect<any>(await configPage.applyButton.isEnabled()).toBe(false);
     await configPage.unifiedPane.observerCheckbox('English').click();
     expect<any>(await configPage.applyButton.isEnabled()).toBe(true);
-    await configPage.unifiedPane.resetInputSystemButton('observer').click();
+    await configPage.unifiedPane.observerCheckbox('English').click();
     expect<any>(await configPage.applyButton.isEnabled()).toBe(false);
   });
 
@@ -208,7 +208,6 @@ describe('Lexicon E2E Configuration Fields', () => {
         .toBe(false);
       await util.setCheckbox(configPage.unifiedPane.inputSystem.selectAll.observer, true);
       expect<any>(await configPage.unifiedPane.inputSystem.selectAll.observer.isSelected()).toBe(true);
-      await configPage.unifiedPane.resetInputSystemButton('observer').click();
     });
 
     it('can select and de-select all down the Input System commenter column', async () => {
@@ -224,7 +223,6 @@ describe('Lexicon E2E Configuration Fields', () => {
       expect<any>(await configPage.unifiedPane.inputSystem.selectAll.commenter.isSelected()).toBe(true);
       expect<any>(await Utils.isAllCheckboxes(configPage.unifiedPane.inputSystem.columnCheckboxes(column), true))
         .toBe(true);
-      await configPage.unifiedPane.resetInputSystemButton('commenter').click();
     });
 
     it('can select and de-select all down the Input System contributor column', async () => {
@@ -240,7 +238,6 @@ describe('Lexicon E2E Configuration Fields', () => {
       expect<any>(await configPage.unifiedPane.inputSystem.selectAll.contributor.isSelected()).toBe(true);
       expect<any>(await Utils.isAllCheckboxes(configPage.unifiedPane.inputSystem.columnCheckboxes(column), true))
         .toBe(true);
-      await configPage.unifiedPane.resetInputSystemButton('contributor').click();
     });
 
     it('can select and de-select all down the Input System manager column', async () => {
@@ -256,7 +253,6 @@ describe('Lexicon E2E Configuration Fields', () => {
       expect<any>(await configPage.unifiedPane.inputSystem.selectAll.manager.isSelected()).toBe(true);
       expect<any>(await Utils.isAllCheckboxes(configPage.unifiedPane.inputSystem.columnCheckboxes(column), true))
         .toBe(true);
-      await configPage.unifiedPane.resetInputSystemButton('manager').click();
     });
 
     it('can de-select and select all down the entry observer column', async () => {
@@ -489,10 +485,6 @@ describe('Lexicon E2E Configuration Fields', () => {
       expect<any>(await Utils.isAllCheckboxes(configPage.unifiedPane.rowCheckboxes(rowLabel), true)).toBe(true);
       await util.setCheckbox(configPage.unifiedPane.selectRowCheckbox(rowLabel), false);
       expect<any>(await Utils.isAllCheckboxes(configPage.unifiedPane.rowCheckboxes(rowLabel), false)).toBe(true);
-      await configPage.unifiedPane.resetInputSystemButton('observer').click();
-      await configPage.unifiedPane.resetInputSystemButton('commenter').click();
-      await configPage.unifiedPane.resetInputSystemButton('contributor').click();
-      await configPage.unifiedPane.resetInputSystemButton('manager').click();
     });
 
     it('can fully function "Select All" along an entry row', async () => {
@@ -673,10 +665,13 @@ describe('Lexicon E2E Configuration Fields', () => {
     });
 
     it('can remove member-specific user settings', async () => {
-      await configPage.unifiedPane.resetInputSystemButton('observer').click();
-      await configPage.unifiedPane.resetInputSystemButton('commenter').click();
-      await configPage.unifiedPane.resetInputSystemButton('contributor').click();
-      await configPage.unifiedPane.resetInputSystemButton('manager').click();
+      // Setup, resetting state changed by previous tests
+      await util.setCheckbox(configPage.unifiedPane.inputSystem.selectAll.observer, true);
+      await util.setCheckbox(configPage.unifiedPane.inputSystem.selectAll.commenter, true);
+      await util.setCheckbox(configPage.unifiedPane.inputSystem.selectAll.contributor, true);
+      await util.setCheckbox(configPage.unifiedPane.inputSystem.selectAll.manager, true);
+
+      // Exercise
       await configPage.unifiedPane.entry.removeGroupButton(0).click();
       expect<any>(await configPage.unifiedPane.inputSystem.selectAll.groups().count()).toEqual(1);
       await configPage.unifiedPane.entry.removeGroupButton(0).click();

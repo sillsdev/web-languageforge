@@ -31,37 +31,32 @@
                 <td class="text-center align-middle">
                     <input class="position-static" id="input-system-select-all-observer-checkbox"
                            data-ng-model="$ctrl.unifiedViewModel.inputSystems.selectAllColumns.observer"
-                           data-ng-change="$ctrl.selectAllRoleColumn($ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.selectAllColumns, 'observer');
-                                          $ctrl.overrideRoleColumn($ctrl.unifiedViewModel.inputSystems.hasCustomInputSystemsOverride, 'observer')"
+                           data-ng-change="$ctrl.selectAllRoleColumn($ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.selectAllColumns, 'observer')"
                            aria-label="..."  type="checkbox">
                 </td>
                 <td class="text-center align-middle">
                     <input class="position-static" id="input-system-select-all-commenter-checkbox"
                            data-ng-model="$ctrl.unifiedViewModel.inputSystems.selectAllColumns.commenter"
-                           data-ng-change="$ctrl.selectAllRoleColumn($ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.selectAllColumns, 'commenter');
-                                          $ctrl.overrideRoleColumn($ctrl.unifiedViewModel.inputSystems.hasCustomInputSystemsOverride, 'commenter')"
+                           data-ng-change="$ctrl.selectAllRoleColumn($ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.selectAllColumns, 'commenter')"
                            aria-label="..." type="checkbox">
                 </td>
                 <td class="text-center align-middle">
                     <input class="position-static" id="input-system-select-all-contributor-checkbox"
                            data-ng-model="$ctrl.unifiedViewModel.inputSystems.selectAllColumns.contributor"
-                           data-ng-change="$ctrl.selectAllRoleColumn($ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.selectAllColumns, 'contributor');
-                                          $ctrl.overrideRoleColumn($ctrl.unifiedViewModel.inputSystems.hasCustomInputSystemsOverride, 'contributor')"
+                           data-ng-change="$ctrl.selectAllRoleColumn($ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.selectAllColumns, 'contributor')"
                            aria-label="..." type="checkbox">
                 </td>
                 <td class="text-center align-middle">
                     <input class="position-static" id="input-system-select-all-manager-checkbox"
                            data-ng-model="$ctrl.unifiedViewModel.inputSystems.selectAllColumns.manager"
-                           data-ng-change="$ctrl.selectAllRoleColumn($ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.selectAllColumns, 'manager');
-                                          $ctrl.overrideRoleColumn($ctrl.unifiedViewModel.inputSystems.hasCustomInputSystemsOverride, 'manager')"
+                           data-ng-change="$ctrl.selectAllRoleColumn($ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.selectAllColumns, 'manager')"
                            aria-label="..." type="checkbox">
                 </td>
                 <!--suppress JSUnusedLocalSymbols -->
                 <td class="text-center align-middle" data-ng-repeat="group in $ctrl.unifiedViewModel.inputSystems.selectAllColumns.groups">
                     <input class="position-static input-system-select-all-group-checkbox"
                            data-ng-model="group.show"
-                           data-ng-change="$ctrl.selectAllGroupColumn($ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.selectAllColumns, $index);
-                                          $ctrl.overrideGroupColumn($ctrl.unifiedViewModel.inputSystems.hasCustomInputSystemsOverride, $index)"
+                           data-ng-change="$ctrl.selectAllGroupColumn($ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.selectAllColumns, $index)"
                            aria-label="..." type="checkbox">
                 </td>
                 <td></td>
@@ -73,39 +68,38 @@
                 <th class="table-secondary text-center align-middle">
                     <input class="position-static select-row-checkbox"
                            data-ng-model="inputSystem.isAllRowSelected"
-                           data-ng-change="$ctrl.selectAllRow(inputSystem, $ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.selectAllColumns);
-                                          $ctrl.overrideAll(inputSystem, $ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.hasCustomInputSystemsOverride, $ctrl.unifiedViewModel.inputSystems.selectAllColumns)"
+                           data-ng-change="$ctrl.selectAllRow(inputSystem, $ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.selectAllColumns)"
                            aria-label="..." type="checkbox">
                 </th>
                 <td class="text-center align-middle">
                     <input class="position-static observer-checkbox"
                            data-ng-model="inputSystem.observer"
-                           data-ng-change="$ctrl.overrideRoleInputSystem(inputSystem, $ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.hasCustomInputSystemsOverride, $ctrl.unifiedViewModel.inputSystems.selectAllColumns, 'observer')"
+                           data-ng-change="$ctrl.checkIfAllRoleSelected(inputSystem, $ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.selectAllColumns, 'observer')"
                            aria-label="..." type="checkbox">
                 </td>
                 <td class="text-center align-middle">
                     <input class="position-static commenter-checkbox"
                            data-ng-model="inputSystem.commenter"
-                           data-ng-change="$ctrl.overrideRoleInputSystem(inputSystem, $ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.hasCustomInputSystemsOverride, $ctrl.unifiedViewModel.inputSystems.selectAllColumns, 'commenter')"
+                           data-ng-change="$ctrl.checkIfAllRoleSelected(inputSystem, $ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.selectAllColumns, 'commenter')"
                            aria-label="..." type="checkbox">
                 </td>
                 <td class="text-center align-middle">
                     <input class="position-static contributor-checkbox"
                            data-ng-model="inputSystem.contributor"
-                           data-ng-change="$ctrl.overrideRoleInputSystem(inputSystem, $ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.hasCustomInputSystemsOverride, $ctrl.unifiedViewModel.inputSystems.selectAllColumns, 'contributor')"
+                           data-ng-change="$ctrl.checkIfAllRoleSelected(inputSystem, $ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.selectAllColumns, 'contributor')"
                            aria-label="..." type="checkbox">
                 </td>
                 <td class="text-center align-middle">
                     <input class="position-static manager-checkbox"
                            data-ng-model="inputSystem.manager"
-                           data-ng-change="$ctrl.overrideRoleInputSystem(inputSystem, $ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.hasCustomInputSystemsOverride, $ctrl.unifiedViewModel.inputSystems.selectAllColumns, 'manager')"
+                           data-ng-change="$ctrl.checkIfAllRoleSelected(inputSystem, $ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.selectAllColumns, 'manager')"
                            aria-label="..." type="checkbox">
                 </td>
                 <!--suppress JSUnusedLocalSymbols -->
                 <td class="text-center align-middle" data-ng-repeat="group in inputSystem.groups">
                     <input class="position-static" data-ng-class="'checkbox-group-' + $index"
                            data-ng-model="group.show"
-                           data-ng-change="$ctrl.overrideGroupInputSystem(inputSystem, $ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.hasCustomInputSystemsOverride, $ctrl.unifiedViewModel.inputSystems.selectAllColumns, $index)"
+                           data-ng-change="$ctrl.checkIfAllGroupSelected(inputSystem, $ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.selectAllColumns, $index)"
                            aria-label="..." type="checkbox">
                 </td>
                 <td></td>
@@ -118,55 +112,15 @@
                         <i class="fa fa-plus"></i>
                     </button>
                 </th>
-                <td></td>
-                <td></td>
-                <td class="text-middle align-middle">
-                    <button type="button" class="btn btn-std text-middle" data-ng-click="$ctrl.resetInputSystemsForRole($ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.hasCustomInputSystemsOverride, $ctrl.unifiedViewModel.inputSystems.selectAllColumns, $ctrl.fccConfigDirty, 'observer')"
-                            data-ng-show="$ctrl.unifiedViewModel.inputSystems.hasCustomInputSystemsOverride.observer"
-                            id="reset-input-system-observer-btn" title="Reset input systems for observer">
-                        Reset
-                    </button>
-                </td>
-                <td>
-                    <button type="button" class="btn btn-std" data-ng-click="$ctrl.resetInputSystemsForRole($ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.hasCustomInputSystemsOverride, $ctrl.unifiedViewModel.inputSystems.selectAllColumns, $ctrl.fccConfigDirty, 'commenter')"
-                            data-ng-show="$ctrl.unifiedViewModel.inputSystems.hasCustomInputSystemsOverride.commenter"
-                            id="reset-input-system-commenter-btn" title="Reset input systems for commenter">
-                        Reset
-                    </button>
-                </td>
-                <td>
-                    <button type="button" class="btn btn-std" data-ng-click="$ctrl.resetInputSystemsForRole($ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.hasCustomInputSystemsOverride, $ctrl.unifiedViewModel.inputSystems.selectAllColumns, $ctrl.fccConfigDirty, 'contributor')"
-                            data-ng-show="$ctrl.unifiedViewModel.inputSystems.hasCustomInputSystemsOverride.contributor"
-                            id="reset-input-system-contributor-btn" title="Reset input systems for contributor">
-                        Reset
-                    </button>
-                </td>
-                <td>
-                    <button type="button" class="btn btn-std" data-ng-click="$ctrl.resetInputSystemsForRole($ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.hasCustomInputSystemsOverride, $ctrl.unifiedViewModel.inputSystems.selectAllColumns, $ctrl.fccConfigDirty, 'manager')"
-                            data-ng-show="$ctrl.unifiedViewModel.inputSystems.hasCustomInputSystemsOverride.manager"
-                            id="reset-input-system-manager-btn" title="Reset input systems for manager">
-                        Reset
-                    </button>
-                </td>
+                <td colspan="6"></td>
                 <!--suppress JSUnusedLocalSymbols -->
-                <td data-ng-repeat="group in $ctrl.unifiedViewModel.inputSystems.selectAllColumns.groups">
-                    <button type="button" class="btn btn-std" data-ng-click="$ctrl.resetInputSystemsForGroup($ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.hasCustomInputSystemsOverride, $ctrl.unifiedViewModel.inputSystems.selectAllColumns, $ctrl.fccConfigDirty, $index)"
-                            data-ng-show="$ctrl.unifiedViewModel.inputSystems.hasCustomInputSystemsOverride.groups[$index]"
-                            title="Reset input systems for user">
-                        Reset
-                    </button>
-                </td>
+                <td data-ng-repeat="group in $ctrl.unifiedViewModel.inputSystems.selectAllColumns.groups"></td>
                 <td></td>
             </tr>
             <tr style="background-color: initial; height: 2rem">
                 <td></td>
                 <th></th>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td colspan="6"></td>
                 <!--suppress JSUnusedLocalSymbols -->
                 <td data-ng-repeat="group in $ctrl.unifiedViewModel.inputSystems.selectAllColumns.groups"></td>
                 <td></td>
@@ -324,12 +278,7 @@
                         <i class="fa fa-plus"></i>
                     </button>
                 </th>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td colspan="6"></td>
                 <!--suppress JSUnusedLocalSymbols -->
                 <td data-ng-repeat="group in $ctrl.unifiedViewModel.entryFields.selectAllColumns.groups"></td>
                 <td></td>
@@ -339,12 +288,7 @@
                 <th class="text-left align-top">
                     <small>Custom Fields shown in <i>italics</i></small>
                 </th>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td colspan="6"></td>
                 <!--suppress JSUnusedLocalSymbols -->
                 <td data-ng-repeat="group in $ctrl.unifiedViewModel.entryFields.selectAllColumns.groups"></td>
                 <td></td>
@@ -511,12 +455,7 @@
                         <i class="fa fa-plus"></i>
                     </button>
                 </th>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td colspan="6"></td>
                 <!--suppress JSUnusedLocalSymbols -->
                 <td data-ng-repeat="group in $ctrl.unifiedViewModel.senseFields.selectAllColumns.groups"></td>
                 <td></td>
@@ -526,12 +465,7 @@
                 <th class="text-left align-top">
                     <small>Custom Fields shown in <i>italics</i></small>
                 </th>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td colspan="6"></td>
                 <!--suppress JSUnusedLocalSymbols -->
                 <td data-ng-repeat="group in $ctrl.unifiedViewModel.senseFields.selectAllColumns.groups"></td>
                 <td></td>
@@ -690,12 +624,7 @@
                         <i class="fa fa-plus"></i>
                     </button>
                 </th>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td colspan="6"></td>
                 <!--suppress JSUnusedLocalSymbols -->
                 <td data-ng-repeat="group in $ctrl.unifiedViewModel.exampleFields.selectAllColumns.groups"></td>
                 <td></td>
@@ -705,12 +634,7 @@
                 <th class="text-left align-top">
                     <small>Custom Fields shown in <i>italics</i></small>
                 </th>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td colspan="6"></td>
                 <!--suppress JSUnusedLocalSymbols -->
                 <td data-ng-repeat="group in $ctrl.unifiedViewModel.exampleFields.selectAllColumns.groups"></td>
                 <td></td>

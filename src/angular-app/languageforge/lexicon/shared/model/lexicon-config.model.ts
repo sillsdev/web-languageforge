@@ -48,6 +48,7 @@ export class LexViewMultiTextFieldConfig extends LexViewFieldConfig {
 }
 
 export class LexRoleViewConfig {
+  inputSystems: string[];
   fields: { [fieldType: string]: LexViewFieldConfig | LexViewMultiTextFieldConfig };
   showTasks: { [taskType: string]: boolean };
 }
