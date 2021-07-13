@@ -394,7 +394,7 @@ export class ConfigurationFieldUnifiedViewModel {
       if (roleView.inputSystems && roleView.inputSystems.length) {
         inputSystemSettings[role] = roleView.inputSystems.includes(tag);
       } else {
-        inputSystemSettings[role] = ConfigurationFieldUnifiedViewModel.isInputSystemUsed(tag, config);
+        inputSystemSettings[role] = true;
       }
     }
   }
@@ -406,55 +406,9 @@ export class ConfigurationFieldUnifiedViewModel {
       if (userView.inputSystems && userView.inputSystems.length) {
         inputSystemSettings.groups[groupIndex].show = userView.inputSystems.includes(tag);
       } else {
-        inputSystemSettings.groups[groupIndex].show = ConfigurationFieldUnifiedViewModel.isInputSystemUsed(tag, config);
+        inputSystemSettings.groups[groupIndex].show = true;
       }
     }
-  }
-
-  private static isInputSystemUsed(tag: string, config: LexiconConfig): boolean {
-    if (!config) {
-      return false;
-    }
-    const entryConfig = config.entry;
-    if (!entryConfig || !entryConfig.fields) {
-      return false;
-    }
-    for (const fieldName in entryConfig.fields) {
-      if (ConfigurationFieldUnifiedViewModel.isInputSystemUsedInFieldList(tag, fieldName, entryConfig)) {
-        return true;
-      }
-    }
-    const sensesConfig = entryConfig.fields.senses as LexConfigFieldList;
-    if (!sensesConfig || !sensesConfig.fields) {
-      return false;
-    }
-    for (const fieldName in sensesConfig.fields) {
-      if (ConfigurationFieldUnifiedViewModel.isInputSystemUsedInFieldList(tag, fieldName, sensesConfig)) {
-        return true;
-      }
-    }
-    const examplesConfig = sensesConfig.fields.examples as LexConfigFieldList;
-    if (!examplesConfig || !examplesConfig.fields) {
-      return false;
-    }
-    for (const fieldName in examplesConfig.fields) {
-      if (ConfigurationFieldUnifiedViewModel.isInputSystemUsedInFieldList(tag, fieldName, examplesConfig)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  private static isInputSystemUsedInFieldList(tag: string, fieldName: string, fieldList: LexConfigFieldList): boolean {
-    if (fieldList.fields.hasOwnProperty(fieldName)) {
-      if (ConfigurationFieldUnifiedViewModel.isMultitextFieldType(fieldList.fields[fieldName].type)) {
-        const fieldConfig = fieldList.fields[fieldName] as LexConfigMultiText;
-        if (fieldConfig.inputSystems.includes(tag)) {
-          return true;
-        }
-      }
-    }
-    return false;
   }
 
   private static setLevelViewModel(levelConfig: LexConfigFieldList, config: LexiconConfig): FieldSettings[] {
