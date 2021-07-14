@@ -10,7 +10,9 @@ PhpUnitTests.xml
 phpUnitConsole.txt
 src/angular-app/**/helps/**/page/*.html
 src/assets/*
+!src/assets/.gitkeep
 src/cache/*
+!src/cache/.gitkeep
 src/js/lib/languageforge.min.js
 src/node_modules/
 !src/vendor/lift/
