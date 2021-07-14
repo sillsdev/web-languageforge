@@ -9,8 +9,8 @@ output/chrome/
 PhpUnitTests.xml
 phpUnitConsole.txt
 src/angular-app/**/helps/**/page/*.html
-src/assets/
-src/cache/
+src/assets/*
+src/cache/*
 src/js/lib/languageforge.min.js
 src/node_modules/
 !src/vendor/lift/
