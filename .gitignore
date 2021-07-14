@@ -4,8 +4,6 @@
 .externalToolBuilders
 .idea/
 .settings
-docs/semdom/*.xml
-docs/semdom/semdom lists/*.xml
 node_modules/
 output/chrome/
 PhpUnitTests.xml
