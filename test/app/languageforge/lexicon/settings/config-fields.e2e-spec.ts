@@ -145,6 +145,15 @@ describe('Lexicon E2E Configuration Fields', () => {
       await configPage.tabs.unified.click();
     });
 
+    it('can restore sense field-specific settings back to how they were', async () => {
+      const rowLabel = new RegExp('^Scientific Name$');
+      const wordChevron = await configPage.unifiedPane.fieldSpecificIcon(rowLabel).getAttribute('class');
+      if (wordChevron.includes('fa-chevron-down')) {
+        await configPage.unifiedPane.fieldSpecificButton(rowLabel).click();
+      }
+      await util.setCheckbox(configPage.unifiedPane.sense.fieldSpecificInputSystemCheckbox(rowLabel, 1), false);
+    });
+
     it('can reorder Entry rows back to how they were', async () => {
       await browser.executeScript(Utils.simulateDragDrop, await configPage.unifiedPane.entry.rows().get(2).getWebElement(),
         await configPage.unifiedPane.entry.rows().get(0).getWebElement());
@@ -485,6 +494,7 @@ describe('Lexicon E2E Configuration Fields', () => {
       expect<any>(await Utils.isAllCheckboxes(configPage.unifiedPane.rowCheckboxes(rowLabel), true)).toBe(true);
       await util.setCheckbox(configPage.unifiedPane.selectRowCheckbox(rowLabel), false);
       expect<any>(await Utils.isAllCheckboxes(configPage.unifiedPane.rowCheckboxes(rowLabel), false)).toBe(true);
+      await util.setCheckbox(configPage.unifiedPane.selectRowCheckbox(rowLabel), true);
     });
 
     it('can fully function "Select All" along an entry row', async () => {
@@ -616,7 +626,8 @@ describe('Lexicon E2E Configuration Fields', () => {
       const rowIndex = 0;
       const rowLabel = 'English';
       expect<any>(await configPage.unifiedPane.inputSystem.rowLabel(rowIndex).getText()).toEqual(rowLabel);
-      await util.setCheckbox(configPage.unifiedPane.inputSystem.groupColumnCheckboxes(columnIndex).get(rowIndex), true);
+      await util.setCheckbox(configPage.unifiedPane.inputSystem.selectAll.groups().get(columnIndex), true);
+      await util.setCheckbox(configPage.unifiedPane.inputSystem.groupColumnCheckboxes(columnIndex).get(rowIndex), false);
       expect<any>(await configPage.unifiedPane.inputSystem.selectAll.groups().get(columnIndex).isSelected()).toBe(false);
       await util.setCheckbox(configPage.unifiedPane.inputSystem.selectAll.groups().get(columnIndex), true);
       expect<any>(await configPage.unifiedPane.inputSystem.selectAll.groups().get(columnIndex).isSelected()).toBe(true);
