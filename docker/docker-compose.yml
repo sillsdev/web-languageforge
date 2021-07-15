@@ -36,9 +36,6 @@ services:
       - WAIT_HOSTS=db:27017, mail:25
       - XDEBUG_MODE=develop,debug
       - LDAPI_BASE_URL=http://ld-api:3000/api/v2/
-      # LDAPI_BASE_URL hostname and port need to match container name and port of the ld-api container (defined further down)
-      # TODO: Make a run.sh that sets umask and then runs apache2-foreground
-
       - ENVIRONMENT=development
       - WEBSITE=localhost
       # - WEBSITE=qa.languageforge.org
@@ -114,7 +111,6 @@ services:
       - MONGO_INITDB_DATABASE=scriptureforge
 
   selenium:
-    # image: selenium/standalone-chrome
     image: selenium/standalone-chrome-debug
     volumes:
       - /dev/shm:/dev/shm
