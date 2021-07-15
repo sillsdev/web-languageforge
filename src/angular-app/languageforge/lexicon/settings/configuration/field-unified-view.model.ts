@@ -17,7 +17,6 @@ export class ConfigurationFieldUnifiedViewModel {
 
   constructor(config: LexiconConfig, users: { [userId: string]: User }) {
     this.groupLists = ConfigurationFieldUnifiedViewModel.setGroupLists(config, users);
-
     this.inputSystems = new InputSystemSettingsList();
     const settings = ConfigurationFieldUnifiedViewModel.setInputSystemsViewModel(config);
     this.inputSystems.settings = settings;
@@ -94,8 +93,17 @@ export class ConfigurationFieldUnifiedViewModel {
     }
   }
 
+  static ensureRequiredFields(setting: SettingsBase): boolean {
+    return RequiredFields.requiredFieldList.includes(setting.fieldName);
+  }
+
   static selectAllRow(setting: SettingsBase, settings: SettingsBase[], selectAll: SettingsBase): void {
     const roles = RoleType.roles();
+    const requiredFieldList = RequiredFields.requiredFieldList;
+    if (requiredFieldList.includes(setting.fieldName)) {
+      // Even if the user was trying to turn the checkbox off, force it to be on
+      setting.isAllRowSelected = true;
+    }
     for (const role of roles) {
       setting[role] = setting.isAllRowSelected;
       ConfigurationFieldUnifiedViewModel.checkIfAllRoleColumnSelected(settings, selectAll, role);
@@ -128,14 +136,22 @@ export class ConfigurationFieldUnifiedViewModel {
 
   static selectAllRoleColumn(settings: SettingsBase[], selectAll: SettingsBase, role: string): void {
     for (const setting of settings) {
-      setting[role] = selectAll[role];
+      if (RequiredFields.requiredFieldList.includes(setting.fieldName)) {
+        setting[role] = true;
+      } else {
+        setting[role] = selectAll[role];
+      }
       ConfigurationFieldUnifiedViewModel.checkIfAllRowSelected(setting);
     }
   }
 
   static selectAllGroupColumn(settings: SettingsBase[], selectAll: SettingsBase, groupIndex: number): void {
     for (const setting of settings) {
-      setting.groups[groupIndex].show = selectAll.groups[groupIndex].show;
+      if (RequiredFields.requiredFieldList.includes(setting.fieldName)) {
+        setting.groups[groupIndex].show = true;
+      } else {
+        setting.groups[groupIndex].show = selectAll.groups[groupIndex].show;
+      }
       ConfigurationFieldUnifiedViewModel.checkIfAllRowSelected(setting);
     }
   }
@@ -375,7 +391,7 @@ export class ConfigurationFieldUnifiedViewModel {
     if (roleView != null && roleView.fields != null) {
       for (const fieldName in roleView.fields) {
         if (roleView.fields.hasOwnProperty(fieldName) &&
-            ConfigurationFieldUnifiedViewModel.isMultitextFieldType(roleView.fields[fieldName].type)) {
+          ConfigurationFieldUnifiedViewModel.isMultitextFieldType(roleView.fields[fieldName].type)) {
           const multiTextField = roleView.fields[fieldName] as LexViewMultiTextFieldConfig;
           if (multiTextField.overrideInputSystems) {
             ConfigurationFieldUnifiedViewModel.addWithoutDuplicates(tags, multiTextField.inputSystems);
@@ -431,6 +447,7 @@ export class ConfigurationFieldUnifiedViewModel {
           for (const tag of multiTextLevelConfigField.inputSystems) {
             const inputSystemSettings = new InputSystemSettings();
             inputSystemSettings.tag = tag;
+            inputSystemSettings.fieldName = fieldName;
             inputSystemSettings.isAllRowSelected = true;
             fieldSettings.inputSystems.push(inputSystemSettings);
           }
@@ -438,6 +455,7 @@ export class ConfigurationFieldUnifiedViewModel {
             if (config.inputSystems.hasOwnProperty(tag) && !multiTextLevelConfigField.inputSystems.includes(tag)) {
               const inputSystemSettings = new InputSystemSettings();
               inputSystemSettings.tag = tag;
+              inputSystemSettings.fieldName = fieldName;
               inputSystemSettings.isAllRowSelected = false;
               fieldSettings.inputSystems.push(inputSystemSettings);
             }
@@ -480,7 +498,7 @@ export class ConfigurationFieldUnifiedViewModel {
     let groupIndex = 0;
     for (const userId in config.userViews) {
       if (config.userViews.hasOwnProperty(userId) && config.userViews[userId] != null && (userId in users)) {
-        groupLists[groupIndex++] = { label: users[userId].username, userId } as GroupList;
+        groupLists[groupIndex++] = {label: users[userId].username, userId} as GroupList;
       }
     }
 
@@ -490,7 +508,7 @@ export class ConfigurationFieldUnifiedViewModel {
 }
 
 export class Group {
-  show: boolean = false;
+  show: boolean = true;
 }
 
 export abstract class SettingsBase {
@@ -500,6 +518,7 @@ export abstract class SettingsBase {
   contributor: boolean = false;
   manager: boolean = false;
   groups: Group[] = [];
+  fieldName: string;
 }
 
 export class InputSystemSettings extends SettingsBase {
@@ -507,7 +526,6 @@ export class InputSystemSettings extends SettingsBase {
 }
 
 export class FieldSettings extends SettingsBase {
-  fieldName: string;
   label: string;
   hiddenIfEmpty: boolean;
   captionHiddenIfEmpty?: boolean;
@@ -540,4 +558,9 @@ export class RoleType {
 export interface GroupList {
   label: string;
   userId: string;
+}
+
+/* disable all fields that should not be available for changes by the user */
+export class RequiredFields {
+  static requiredFieldList: string[] = ['lexeme'];
 }

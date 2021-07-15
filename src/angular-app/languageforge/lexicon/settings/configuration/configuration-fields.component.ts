@@ -65,6 +65,7 @@ export class FieldsConfigurationController implements angular.IController {
   selectAllGroupColumn = ConfigurationFieldUnifiedViewModel.selectAllGroupColumn;
   checkIfAllRoleSelected = ConfigurationFieldUnifiedViewModel.checkIfAllRoleSelected;
   checkIfAllGroupSelected = ConfigurationFieldUnifiedViewModel.checkIfAllGroupSelected;
+  ensureRequiredConfigurationFields = ConfigurationFieldUnifiedViewModel.ensureRequiredFields;
 
   openNewCustomFieldModal(fieldLevel: string): void {
     interface NewCustomData {

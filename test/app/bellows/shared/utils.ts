@@ -144,10 +144,11 @@ export class Utils {
 
   static isAllCheckboxes(elementArray: ElementArrayFinder, state: boolean = true) {
     const all: boolean[] = [];
-    return elementArray.each((checkboxElement: ElementFinder) => {
-      checkboxElement.isSelected().then((isSelected: boolean) => {
-        all.push(isSelected);
-      });
+    return elementArray.each(async (checkboxElement: ElementFinder) => {
+      const isEnabled = await checkboxElement.isEnabled();
+      if (isEnabled) {
+        all.push(await checkboxElement.isSelected());
+      }
     }).then(() => all.every((elem: boolean) => elem === state));
   }
 
