@@ -94,12 +94,12 @@ export class ConfigurationFieldUnifiedViewModel {
   }
 
   static ensureRequiredFields(setting: SettingsBase): boolean {
-    return RequiredFields.requiredFieldList().includes(setting.fieldName);
+    return RequiredFields.requiredFieldList.includes(setting.fieldName);
   }
 
   static selectAllRow(setting: SettingsBase, settings: SettingsBase[], selectAll: SettingsBase): void {
     const roles = RoleType.roles();
-    const requiredFieldList = RequiredFields.requiredFieldList();
+    const requiredFieldList = RequiredFields.requiredFieldList;
     for (const role of roles) {
       setting[role] = setting.isAllRowSelected;
       ConfigurationFieldUnifiedViewModel.checkIfAllRoleColumnSelected(settings, selectAll, role);
@@ -117,7 +117,7 @@ export class ConfigurationFieldUnifiedViewModel {
 
   static checkIfAllEntryFieldsRowSelected(setting: SettingsBase): void {
     const roles = RoleType.roles();
-    const requiredFieldList = RequiredFields.requiredFieldList();
+    const requiredFieldList = RequiredFields.requiredFieldList;
     setting.isAllRowSelected = true;
     for (const role of roles) {
       if (!setting[role]) {
@@ -576,7 +576,5 @@ export interface GroupList {
 
 /* disable all fields that should not be available for changes by the user */
 export class RequiredFields {
-  static requiredFieldList(): string[] {
-    return ['lexeme'];
-  }
+  static requiredFieldList: string[] = ['lexeme'];
 }
