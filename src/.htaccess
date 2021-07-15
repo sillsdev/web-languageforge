@@ -1,6 +1,10 @@
+# https://httpd.apache.org/docs/2.4/mod/mod_rewrite.html
 <IfModule mod_rewrite.c>
     Options -MultiViews
 
-    RewriteCond %{REQUEST_FILENAME} !-f
+		RewriteEngine On
+
+    # https://httpd.apache.org/docs/2.4/mod/mod_rewrite.html#rewritecond
+		RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [QSA,L]
 </IfModule>
