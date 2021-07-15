@@ -100,40 +100,18 @@ export class ConfigurationFieldUnifiedViewModel {
   static selectAllRow(setting: SettingsBase, settings: SettingsBase[], selectAll: SettingsBase): void {
     const roles = RoleType.roles();
     const requiredFieldList = RequiredFields.requiredFieldList;
+    if (requiredFieldList.includes(setting.fieldName)) {
+      // Even if the user was trying to turn the checkbox off, force it to be on
+      setting.isAllRowSelected = true;
+    }
     for (const role of roles) {
       setting[role] = setting.isAllRowSelected;
       ConfigurationFieldUnifiedViewModel.checkIfAllRoleColumnSelected(settings, selectAll, role);
     }
     for (const group of setting.groups) {
-      if (requiredFieldList.includes(setting.fieldName)) {
-        group.show = true;
-      } else {
-        group.show = setting.isAllRowSelected;
-      }
+      group.show = setting.isAllRowSelected;
       ConfigurationFieldUnifiedViewModel
         .checkIfAllGroupColumnSelected(settings, selectAll, setting.groups.indexOf(group));
-    }
-  }
-
-  static checkIfAllEntryFieldsRowSelected(setting: SettingsBase): void {
-    const roles = RoleType.roles();
-    const requiredFieldList = RequiredFields.requiredFieldList;
-    setting.isAllRowSelected = true;
-    for (const role of roles) {
-      if (!setting[role]) {
-        setting.isAllRowSelected = false;
-        break;
-      }
-    }
-    if (setting.isAllRowSelected) {
-      for (const group of setting.groups) {
-        if (!group.show) {
-          if (requiredFieldList.includes(setting.fieldName)) {
-            group.show = setting.isAllRowSelected;
-            break;
-          }
-        }
-      }
     }
   }
 
@@ -158,15 +136,23 @@ export class ConfigurationFieldUnifiedViewModel {
 
   static selectAllRoleColumn(settings: SettingsBase[], selectAll: SettingsBase, role: string): void {
     for (const setting of settings) {
-      setting[role] = selectAll[role];
+      if (RequiredFields.requiredFieldList.includes(setting.fieldName)) {
+        setting[role] = true;
+      } else {
+        setting[role] = selectAll[role];
+      }
       ConfigurationFieldUnifiedViewModel.checkIfAllRowSelected(setting);
     }
   }
 
   static selectAllGroupColumn(settings: SettingsBase[], selectAll: SettingsBase, groupIndex: number): void {
     for (const setting of settings) {
-      setting.groups[groupIndex].show = selectAll.groups[groupIndex].show;
-      ConfigurationFieldUnifiedViewModel.checkIfAllEntryFieldsRowSelected(setting);
+      if (RequiredFields.requiredFieldList.includes(setting.fieldName)) {
+        setting.groups[groupIndex].show = true;
+      } else {
+        setting.groups[groupIndex].show = selectAll.groups[groupIndex].show;
+      }
+      ConfigurationFieldUnifiedViewModel.checkIfAllRowSelected(setting);
     }
   }
 
