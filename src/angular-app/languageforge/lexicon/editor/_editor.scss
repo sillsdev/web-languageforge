@@ -338,6 +338,12 @@ dc-entry .card {
       font-size: 24px;
     }
   }
+  .word-definition-title-sticky{
+    position: sticky;
+    top: 0px;
+    z-index: 5;
+    background: white;
+  }
   .card-body .addItem {
     margin-right: 0;
   }

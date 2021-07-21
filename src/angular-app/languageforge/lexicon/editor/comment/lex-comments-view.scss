@@ -8,6 +8,17 @@
   }
 }
 
+.container-sticky{
+  position: sticky; 
+  top: 0px; 
+  z-index: 3;
+}
+
+.container-scroll {
+  overflow-y: scroll;
+  height: calc(100vh - 260px);
+  }
+
 .comments-right-panel {
   color: $Eden;
   font-size: 14px;

@@ -4,5 +4,6 @@
     "test/php/phpunit.xml"
   ],
   "phpcs.composerJsonPath": "src",
-  "php.suggest.basic": false
+  "php.suggest.basic": false,
+  "git.ignoreLimitWarning": true
 }
