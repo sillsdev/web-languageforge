@@ -28,7 +28,7 @@ export class ProjectsAppController implements angular.IController {
   rights: Rights = new Rights();
   newProjectCollapsed: boolean = true;
   selected: Project[] = [];
-  projects: ViewModelProject[] = [];
+  projects: Project[] = [];
   projectTypeNames: any;
   projectTypesBySite: () => string[];
   siteName: string;
@@ -80,33 +80,11 @@ export class ProjectsAppController implements angular.IController {
 
   queryProjectsForUser() {
     this.projectService.list().then(projects => {
-      const projectsArr = Array.isArray(projects) ? projects : [];
-      this.projects = projectsArr;
-
-      this.sessionService.getSession().then(session => {
-        const username = session.username();  // TODO: Handle cases where LF username and LD username differ (search by email address)
-        this.userService.getProjectsForUser(username).then(result => {
-          if (result.ok) {
-            angular.forEach(result.data, ({projectCode, name, role}) => {
-              this.rolesService.ldRoleToLfRole(role).then(convertedRole => {
-                const project: ViewModelProject = {
-                  id: projectCode,
-                  projectName: name,
-                  appName: 'ldproject',
-                  role: convertedRole.key,
-                };
-                if (this.isManager(project)) {
-                  this.projects.push(project);
-                }
-              });
-            });
-          }
-        }).catch(console.error);
-      });
+      this.projects = projects;
 
       // Is this perhaps wrong? Maybe not all projects are included in the JSONRPC response?
       // That might explain the existance of the previous result.data.count
-      this.projectCount = projectsArr.length;
+      this.projectCount = projects.length;
       this.finishedLoading = true;
     }).catch(console.error);
   }
@@ -115,7 +93,7 @@ export class ProjectsAppController implements angular.IController {
     return (project.role !== 'none');
   }
 
-  isManager(project: ViewModelProject) {
+  isManager(project: Project) {
     return project.role === 'project_manager' || project.role === 'tech_support';
   }
 
