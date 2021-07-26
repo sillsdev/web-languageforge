@@ -304,7 +304,7 @@ dc-entry .card {
     .lexiconItemListContainer {
       margin-bottom: 15px;
       @include media-breakpoint-up(sm) {
-        height: 460px;
+        height: calc(100vh - 420px);
         overflow: auto;
         }
     }
@@ -327,7 +327,7 @@ dc-entry .card {
 
 #lexAppEditView {
   .lexiconItemListContainer {
-    max-height: 460px;
+    max-height: calc(100vh - 420px);
     overflow: auto;
   }
   .word-definition-title {
@@ -337,6 +337,12 @@ dc-entry .card {
       margin: -7px 0 10px;
       font-size: 24px;
     }
+  }
+  .word-definition-title-sticky{
+    position: sticky;
+    top: 0px;
+    z-index: 5;
+    background: white;
   }
   .card-body .addItem {
     margin-right: 0;

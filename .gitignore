@@ -5,3 +5,4 @@ src/cache/*
 !src/cache/.gitkeep
 !/src/releasenotes
 test/php/\.phpunit\.result\.cache
+node_modules

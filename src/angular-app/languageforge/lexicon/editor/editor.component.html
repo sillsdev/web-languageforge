@@ -1,5 +1,5 @@
 <div data-ng-cloak id="lexAppContainer">
-    <div class="container">
+    <div class="container container-sticky">
         <div class="row">
             <div class="col">
                 <div class="lexAppToolbar" id="lexAppToolbar" data-ng-show="!$ctrl.isAtEditorList()">
@@ -41,6 +41,14 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col">
+                <div class="word-definition-title">
+                    <dc-rendered config="$ctrl.lecConfig.entry" global-config="$ctrl.lecConfig"
+                                 model="$ctrl.currentEntry" option-lists="$ctrl.lecOptionLists"></dc-rendered>
+                </div>
+            </div>
+        </div>        
     </div>
 
     <div data-ui-view></div>
