@@ -47,6 +47,7 @@ export class EditorPage {
 
   browseDiv = element(by.id('lexAppListView'));
   editDiv = element(by.id('lexAppEditView'));
+  appDiv = element(by.id('lexAppContainer'));
   editToolbarDiv = element(by.id('lexAppToolbar'));
   commentDiv = element(by.id('lexAppCommentView'));
 
@@ -168,7 +169,7 @@ export class EditorPage {
     },
 
     // Top-row
-    renderedDiv: this.editDiv.element(by.className('dc-rendered-entryContainer')),
+    renderedDiv: this.appDiv.element(by.className('dc-rendered-entryContainer')),
     actionMenu: this.editDiv.element(by.css('.entry-card .card-header .ellipsis-menu-toggle')),
     deleteMenuItem: this.editDiv.element(by.css('.entry-card .card-header .dropdown-menu .dropdown-item')),
 
