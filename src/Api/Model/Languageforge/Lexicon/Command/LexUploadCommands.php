@@ -153,11 +153,16 @@ class LexUploadCommands
         $allowedTypes = array(
             "image/jpeg",
             "image/jpg",
+            // SVG disabled until we can ensure no embedded Javascript; see https://github.com/w3c/svgwg/issues/266
+            // "image/svg+xml",
+            "image/gif",
             "image/png"
         );
         $allowedExtensions = array(
             ".jpg",
             ".jpeg",
+            // ".svg",
+            ".gif",
             ".png"
         );
 
