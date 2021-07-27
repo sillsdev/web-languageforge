@@ -37,7 +37,6 @@ export class ProjectService {
     this.data = {
       projectTypeNames: {
         lexicon: 'Dictionary',
-        ldproject: 'Language Depot'
       },
       projectTypesBySite: () => {
         return this.projectTypesBySite;
@@ -48,7 +47,6 @@ export class ProjectService {
       const types = {
         // 'languageforge': ['lexicon', 'semdomtrans'],
         languageforge: ['lexicon'],
-        languagedepot: ['ldproject']
       };
 
       this.projectTypesBySite = types[session.baseSite()];
