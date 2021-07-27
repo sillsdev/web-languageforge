@@ -79,8 +79,8 @@ export class ProjectsAppController implements angular.IController {
   }
 
   queryProjectsForUser() {
-    this.projectService.list().then(projects => {
-      this.projects = projects;
+    this.projectService.list().then((projects: Project[]) => {
+      this.projects = projects || [];
 
       // Is this perhaps wrong? Maybe not all projects are included in the JSONRPC response?
       // That might explain the existance of the previous result.data.count
