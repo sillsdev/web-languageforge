@@ -76,5 +76,9 @@ ARG BUILD_VERSION=9.9.9.9
 ENV BUILD_VERSION=${BUILD_VERSION}
 
 COPY --from=composer-builder /composer/vendor /var/www/html/vendor
+
+RUN echo "${BUILD_VERSION}" > /var/www/html/build-version.txt \
+ && sed -i /var/www/html/version.php -e "s/^\\(define('VERSION', '\\).*;\$/\\1${BUILD_VERSION}'\\);/"
+
 ENTRYPOINT [ "/entrypoint.sh" ]
 CMD [ "apache2-foreground" ]
