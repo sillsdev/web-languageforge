@@ -37,7 +37,7 @@ spec:
   tls:
   - hosts:
     - qa.languageforge.org
-    secretName: qa-languageforge-tls
+    secretName: languageforge-tls
 
 ---
 
