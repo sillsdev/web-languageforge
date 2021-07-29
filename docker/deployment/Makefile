@@ -38,9 +38,6 @@ deploy-staging: deploy-db deploy-mail-staging deploy-app-staging
 .PHONY: deploy-mail-staging
 deploy-mail-staging:
 	sed -e s/{{SERVER_HOSTNAME}}/qa.languageforge.org/ mail-deployment.yaml | kubectl apply -f -
-.PHONY: deploy-mail-prod
-deploy-mail-prod:
-	sed -e s/{{SERVER_HOSTNAME}}/languageforge.org/ mail-deployment.yaml | kubectl apply -f -
 .PHONY: deploy-app-staging
 deploy-app-staging:
 	sed -e s/{{ENVIRONMENT}}/development/ app-deployment.yaml \
@@ -49,10 +46,19 @@ deploy-app-staging:
 	# this unfortunate hack is required to ensure the image is pulled, this is necessary because we don't tag our images properly, i.e., it's always :app-staging, 
 	# therefore the configuration may look unchanged to k8s even though the published image is actually different and needs to be pulled again
 	kubectl rollout restart deploy app
+.PHONY: deploy-prod
+deploy-prod: deploy-db deploy-mail-prod deploy-app-prod
+.PHONY: deploy-mail-prod
+deploy-mail-prod:
+	sed -e s/{{SERVER_HOSTNAME}}/beta.languageforge.org/ mail-deployment.yaml | kubectl apply -f -
 .PHONY: deploy-app-prod
 deploy-app-prod:
 	sed -e s/{{ENVIRONMENT}}/production/ app-deployment.yaml \
-  | sed -e s/{{WEBSITE}}/languageforge.org/ | kubectl apply -f -
+  | sed -e s/{{WEBSITE}}/beta.languageforge.org/ | kubectl apply -f -
+
+	# this unfortunate hack is required to ensure the image is pulled, this is necessary because we don't tag our images properly, i.e., it's always :app-staging, 
+	# therefore the configuration may look unchanged to k8s even though the published image is actually different and needs to be pulled again
+	kubectl rollout restart deploy app
 .PHONY: deploy-db
 deploy-db:
 	kubectl apply -f db-deployment.yaml
