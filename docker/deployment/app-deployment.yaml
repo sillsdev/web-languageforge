@@ -24,7 +24,7 @@ metadata:
   name: languageforge-app
 spec:
   rules:
-  - host: qa.languageforge.org
+  - host: {{WEBSITE}}
     http:
       paths:
       - path: /
@@ -36,7 +36,7 @@ spec:
               number: 80
   tls:
   - hosts:
-    - qa.languageforge.org
+    - {{WEBSITE}}
     secretName: languageforge-tls
 
 ---
