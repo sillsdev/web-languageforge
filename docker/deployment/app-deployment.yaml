@@ -17,22 +17,6 @@ spec:
 
 ---
 
-# https://cert-manager.io/docs/installation/kubernetes/#verifying-the-installation
-apiVersion: cert-manager.io/v1
-kind: Certificate
-metadata:
-  name: qa-languageforge-org
-  namespace: qa-languageforge
-spec:
-  secretName: qa-languageforge-tls
-  issuerRef:
-    name: le-languageforge-cluster-issuer
-    kind: ClusterIssuer
-  dnsNames:
-  - qa.languageforge.org
-
----
-
 # https://kubernetes.io/docs/concepts/services-networking/ingress/#the-ingress-resource
 apiVersion: networking.k8s.io/v1
 kind: Ingress
