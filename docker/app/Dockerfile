@@ -65,7 +65,6 @@ RUN rm /usr/local/bin/install-php-extensions
 RUN apt-get remove -y gnupg2
 RUN mv $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini
 
-
 FROM base-app AS development-app
 RUN install-php-extensions xdebug
 COPY docker/app/docker-php-ext-xdebug.ini /usr/local/etc/php/conf.d
@@ -73,6 +72,8 @@ RUN mv $PHP_INI_DIR/php.ini-development $PHP_INI_DIR/php.ini
 COPY --from=sillsdev/web-languageforge:wait-latest /wait /wait
 
 FROM ${ENVIRONMENT}-app AS languageforge-app
+ARG BUILD_VERSION=9.9.9.9
+ENV BUILD_VERSION=${BUILD_VERSION}
 
 COPY --from=composer-builder /composer/vendor /var/www/html/vendor
 ENTRYPOINT [ "/entrypoint.sh" ]

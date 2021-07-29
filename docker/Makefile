@@ -42,7 +42,7 @@ build-ui:
 
 .PHONY: deployable-app
 deployable-app: build-ui
-	docker-compose build app
+	docker-compose build --build-arg BUILD_VERSION=${BUILD_VERSION} app
 
 .PHONY: prod
 prod: build-ui
