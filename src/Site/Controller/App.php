@@ -126,11 +126,7 @@ class App extends Base
         $this->addCssFiles('angular-app/bellows/shared');
         $this->addCssFiles($model->appFolder, ['node_modules']);
 
-        if ($model->appName !== 'ldproject') {
-            // Special case: LD project management does not use project IDs from Mongo,
-            // so don't try to load the language code from LF Mongo since there's no LF project yet
-            $this->addSemanticDomainFile($model);
-        }
+        $this->addSemanticDomainFile($model);
     }
 
     /**
