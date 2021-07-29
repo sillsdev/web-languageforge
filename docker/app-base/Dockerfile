@@ -24,6 +24,7 @@ RUN adduser www-data fieldworks \
 && chown www-data:www-data /var/www/.local
 
 COPY entrypoint.sh /
+COPY lfmergeqm-background.sh /
 
 ENTRYPOINT [ "/entrypoint.sh" ]
 CMD [ "apache2-foreground" ]

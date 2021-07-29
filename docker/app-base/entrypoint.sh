@@ -4,7 +4,10 @@
 /etc/init.d/rsyslog start
 
 # run lfmergeqm on startup to clear out any failed send/receive sessions from previous container
-which lfmergeqm && su www-data -s /bin/bash -c lfmergeqm
+if [ which /lfmergeqm-background.sh ]; then
+    # MUST be run as a background process as it kicks off an infinite loop to run every 24 hours
+    /lfmergeqm-background.sh &
+fi
 
 # Now chain to Docker entrypoint from base php:apache image
 exec docker-php-entrypoint "$@"
