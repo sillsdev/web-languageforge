@@ -132,6 +132,11 @@ spec:
               secretKeyRef:
                 key: MONGODB_CONN
                 name: app
+          - name: BUGSNAG_API_KEY
+            valueFrom:
+              secretKeyRef:
+                key: BUGSNAG_API_KEY
+                name: app
           - name: REMEMBER_ME_SECRET
             valueFrom:
               secretKeyRef:
