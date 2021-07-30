@@ -32,15 +32,14 @@ ARG BUGSNAG_API_KEY
 ENV BUGSNAG_API_KEY=${BUGSNAG_API_KEY:-'missing-bugsnag-api-key'}
 
 FROM ui-builder-base AS production-ui-builder
-# artifacts built to /data/src/dist
-RUN npm run build:prd
+ENV NPM_BUILD_SUFFIX=prd
 
 FROM ui-builder-base AS development-ui-builder
-# artifacts built to /data/src/dist
-RUN npm run build:dev
+ENV NPM_BUILD_SUFFIX=dev
 
 FROM ${ENVIRONMENT}-ui-builder AS ui-builder
-# empty, this just allows doing `COPY --from=ui-builder` later since `COPY --from=${ENVIRONMENT}-ui-builder` seems to be an error
+# artifacts built to /data/src/dist
+RUN npm run build:${NPM_BUILD_SUFFIX}
 
 # APP-BASE
 FROM php:7.3.28-apache AS base-app
