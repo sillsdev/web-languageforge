@@ -33,22 +33,12 @@ else
 endif
 
 .PHONY: build
-build: build-ui
+build:
 	docker-compose build mail app ld-api
 
-.PHONY: build-ui
-build-ui:
-	docker-compose build --build-arg BUGSNAG_API_KEY=${BUGSNAG_API_KEY} ui-builder
-
 .PHONY: deployable-app
-deployable-app: build-ui
+deployable-app:
 	docker-compose build --build-arg BUILD_VERSION=${BUILD_VERSION} app
-
-.PHONY: prod
-prod: build-ui
-	docker build -f ui-builder/Dockerfile.prod . -t lf-ui-builder:prod
-	docker-compose build app
-	docker build -f app/Dockerfile.prod .. -t lf-app:prod
 
 .PHONY: logs
 logs:
