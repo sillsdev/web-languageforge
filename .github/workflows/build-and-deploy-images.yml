@@ -54,11 +54,11 @@ jobs:
 
       - name: Tag app image with Docker Hub location
         run: |
-          docker tag lf-app sillsdev/web-languageforge:app-staging
+          docker tag lf-app sillsdev/web-languageforge:app-$BUILD_VERSION
 
       - name: Reveal images
         run: docker images
 
       - name: Publish images to Docker Hub
         run: |
-          docker push sillsdev/web-languageforge:app-staging
+          docker push sillsdev/web-languageforge:app-$BUILD_VERSION
