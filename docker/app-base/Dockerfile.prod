@@ -1,3 +1,0 @@
-FROM lf-app-base:latest
-
-RUN rm -f /wait

@@ -26,6 +26,8 @@ services:
     build:
       context: ..
       dockerfile: docker/app/Dockerfile
+      args:
+        - ENVIRONMENT=development
     image: lf-app
     container_name: lf-app
     depends_on:
@@ -50,7 +52,6 @@ services:
       - FACEBOOK_CLIENT_SECRET=bogus-development-token
       - REMEMBER_ME_SECRET=bogus-development-key
       - LANGUAGE_DEPOT_API_TOKEN=bogus-development-token
-    command: sh -c "/wait && apache2-foreground"
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
@@ -133,7 +134,7 @@ services:
       - MYSQL_ROOT_PASSWORD=also-not-a-secret
     volumes:
       - ./test-ld/schemas-and-data.sql:/docker-entrypoint-initdb.d/schemas-and-data.sql
-        
+
   ld-api:
     image: sillsdev/web-languagedepot-api
     container_name: ld-api

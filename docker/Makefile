@@ -42,13 +42,11 @@ build-ui:
 
 .PHONY: deployable-app
 deployable-app: build-ui
-	docker-compose build app
+	docker-compose build --build-arg BUILD_VERSION=${BUILD_VERSION} app
 
 .PHONY: prod
 prod: build-ui
 	docker build -f ui-builder/Dockerfile.prod . -t lf-ui-builder:prod
-	docker build app-base -t lf-app-base
-	docker build -f app-base/Dockerfile.prod app-base -t lf-app-base:prod
 	docker-compose build app
 	docker build -f app/Dockerfile.prod .. -t lf-app:prod
 
