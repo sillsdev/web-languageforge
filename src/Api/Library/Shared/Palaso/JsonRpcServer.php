@@ -23,7 +23,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 namespace Api\Library\Shared\Palaso;
 
-use Api\Library\Shared\Palaso\Exception\BugsnagExceptionHandler;
 use Api\Library\Shared\Palaso\Exception\ErrorHandler;
 use Api\Library\Shared\Palaso\Exception\ResourceNotAvailableException;
 use Api\Library\Shared\Palaso\Exception\UserNotAuthenticatedException;
@@ -102,6 +101,7 @@ class JsonRpcServer
                         CodeGuard::getStackTrace($e->getTrace())
                 ]
             ];
+            // Don't include filenames and line numbers in errors we report to the user
             if ($e instanceof ResourceNotAvailableException) {
                 $response['error']['type'] = 'ResourceNotAvailableException';
                 $response['error']['message'] = $e->getMessage();
@@ -111,10 +111,6 @@ class JsonRpcServer
             } elseif ($e instanceof UserUnauthorizedException) {
                 $response['error']['type'] = 'UserUnauthorizedException';
                 $response['error']['message'] = $e->getMessage();
-            }
-            else {
-                $bugsnag = BugsnagExceptionHandler::getBugsnag($app);
-                if ($bugsnag != null) $bugsnag->notifyException($e);
             }
             $message = '';
             $message .= $e->getMessage() . "\n";

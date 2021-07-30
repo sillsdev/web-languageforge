@@ -102,9 +102,6 @@ module.exports = {
             // your Angular Async Route paths relative to this root directory
             {}
           ),
-          new webpack.DefinePlugin({
-            'process.env.BUGSNAG_API_KEY': JSON.stringify(process.env.BUGSNAG_API_KEY),
-          }),
           new LoaderOptionsPlugin({
             debug: true,
             options: {
