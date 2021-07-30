@@ -1,3 +1,4 @@
+# ENVIRONMENT value can be either "production" or "development"
 ARG ENVIRONMENT=production
 
 # APP-BASE
@@ -6,10 +7,9 @@ FROM php:7.3.28-apache AS base-app
 # install apt packages
 # p7zip-full - used by LF application for unzipping lexicon uploads
 # unzip - used by LF application for unzipping lexicon uploads
-# git - TODO: why do we need git?
 # gnupg2 - necessary for LFMerge package installation via SIL sources (will be uninstalled in production)
 # curl - used by LF application
-RUN apt-get update && apt-get -y install p7zip-full unzip git gnupg2 curl
+RUN apt-get update && apt-get -y install p7zip-full unzip gnupg2 curl && rm -rf /var/lib/apt/lists/*
 
 # see https://github.com/mlocati/docker-php-extension-installer
 # PHP extensions required by the LF application
@@ -17,10 +17,17 @@ COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr
 RUN install-php-extensions gd mongodb intl
 
 # install and configure LFMerge
+# LFMerge required apt packages
+# python - required by Mercurial (written in Python), which is bundled in the LFMerge apt package
+# lfmerge - main package, from SIL sources
+# rsyslog - lfmerge logs to rsyslog and expects this to exist
+# logrotate - TODO: is this required?
+# iputils-ping - Chorus (part of LFMerge) requires the "ping" command to be available on the command line
 RUN curl -L http://linux.lsdev.sil.org/downloads/sil-testing.gpg | apt-key add - \
 && echo "deb http://linux.lsdev.sil.org/ubuntu bionic main" > /etc/apt/sources.list.d/linux-lsdev-sil-org.list \
 && apt-get update \
-&& apt-get install --yes --no-install-recommends python lfmerge rsyslog logrotate cron iputils-ping
+&& apt-get install --yes --no-install-recommends python lfmerge rsyslog logrotate iputils-ping \
+&& rm -rf /var/lib/apt/lists/*
 COPY docker/app/lfmerge.conf /etc/languageforge/conf/sendreceive.conf
 COPY docker/app/lfmergeqm-background.sh /
 RUN adduser www-data fieldworks \
@@ -52,19 +59,21 @@ COPY docker/app/entrypoint.sh /
 
 # COMPOSER-BUILDER
 # download composer app dependencies
+# git - needed for composer install
 FROM base-app AS composer-builder
-RUN install-php-extensions @composer
-RUN mkdir /composer
 WORKDIR /composer
 COPY src/composer.json src/composer.lock /composer/
 ENV COMPOSER_ALLOW_SUPERUSER=1
-RUN composer install
+RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/* \
+    && install-php-extensions @composer && composer install
 
+# PRODUCTION IMAGE
 FROM base-app AS production-app
 RUN rm /usr/local/bin/install-php-extensions
 RUN apt-get remove -y gnupg2
 RUN mv $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini
 
+# DEVELOPMENT IMAGE
 FROM base-app AS development-app
 RUN install-php-extensions xdebug
 COPY docker/app/docker-php-ext-xdebug.ini /usr/local/etc/php/conf.d
@@ -72,7 +81,7 @@ RUN mv $PHP_INI_DIR/php.ini-development $PHP_INI_DIR/php.ini
 COPY --from=sillsdev/web-languageforge:wait-latest /wait /wait
 
 FROM ${ENVIRONMENT}-app AS languageforge-app
-ARG BUILD_VERSION=9.9.9.9
+ARG BUILD_VERSION=9.9.9
 ENV BUILD_VERSION=${BUILD_VERSION}
 
 COPY --from=composer-builder /composer/vendor /var/www/html/vendor
