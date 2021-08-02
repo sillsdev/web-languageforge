@@ -3,7 +3,6 @@ import * as angular from 'angular';
 import { ProjectSettings } from '../shared/model/project-settings.model';
 import { Project } from '../shared/model/project.model';
 import { ApiService, JsonRpcCallback } from './api/api.service';
-import {ExceptionHandlingService} from './exception-handling.service';
 
 export class Session {
   constructor(public data?: SessionData) { }
@@ -107,8 +106,7 @@ export class SessionService {
   private sessionDataPromise: angular.IPromise<SessionData>;
 
   static $inject: string[] = ['apiService', '$q', 'exceptionHandler'];
-  constructor(private api: ApiService, private $q: angular.IQService,
-              private exceptionHandler: ExceptionHandlingService) {
+  constructor(private api: ApiService, private $q: angular.IQService) {
     const domains: Domains = {
       ANY:       this.rightsFunction(1000),
       USERS:     this.rightsFunction(1100),
@@ -148,15 +146,10 @@ export class SessionService {
 
     return this.fetchSessionData(forceRefresh).then((data: SessionData) => {
       this.session.data = data;
-      this.exceptionHandler.updateInformation({
-        version: data.version,
-        userId: data.userId,
-        userName: data.username,
-        projectCode: data.project != null ? data.project.projectCode : null,
-        projectName: data.project != null ? data.project.projectName : null
-      });
-      if (callback) callback(this.session);
-      return this.session;
+
+			if (callback) callback(this.session);
+
+			return this.session;
     });
   }
 
