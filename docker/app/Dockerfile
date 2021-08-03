@@ -28,9 +28,6 @@ COPY src/sass ./src/sass
 COPY src/service-worker ./src/service-worker
 COPY src/Site/views ./src/Site/views
 
-ARG BUGSNAG_API_KEY
-ENV BUGSNAG_API_KEY=${BUGSNAG_API_KEY:-'missing-bugsnag-api-key'}
-
 FROM ui-builder-base AS production-ui-builder
 ENV NPM_BUILD_SUFFIX=prd
 
