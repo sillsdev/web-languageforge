@@ -241,7 +241,12 @@ Current workflow:
 1. then the deployment scripts can be run either manually or via the TeamCity deploy job
 
 ### Production ###
-TBD
+WIP:  `docker/deployment/Makefile` currently has a `make deploy-prod` that can be run locally with the right cluster credenitals.
+
+- [ ] build prod images
+- [ ] publish prod images via GHA workflow
+- [ ] parameterize image reference in `app-deployment.yaml`
+- [ ] set up CD for prod
 
 ## Libraries Used ##
 

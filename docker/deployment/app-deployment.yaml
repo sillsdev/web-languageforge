@@ -17,22 +17,6 @@ spec:
 
 ---
 
-# https://cert-manager.io/docs/installation/kubernetes/#verifying-the-installation
-apiVersion: cert-manager.io/v1
-kind: Certificate
-metadata:
-  name: qa-languageforge-org
-  namespace: qa-languageforge
-spec:
-  secretName: qa-languageforge-tls
-  issuerRef:
-    name: le-languageforge-cluster-issuer
-    kind: ClusterIssuer
-  dnsNames:
-  - qa.languageforge.org
-
----
-
 # https://kubernetes.io/docs/concepts/services-networking/ingress/#the-ingress-resource
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -40,7 +24,7 @@ metadata:
   name: languageforge-app
 spec:
   rules:
-  - host: qa.languageforge.org
+  - host: {{WEBSITE}}
     http:
       paths:
       - path: /
@@ -52,8 +36,8 @@ spec:
               number: 80
   tls:
   - hosts:
-    - qa.languageforge.org
-    secretName: qa-languageforge-tls
+    - {{WEBSITE}}
+    secretName: languageforge-tls
 
 ---
 
@@ -67,7 +51,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 4Gi
+      storage: 7Gi
   storageClassName: weekly-snapshots-retain-4 # provided by LTOps
 
 ---
@@ -82,7 +66,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 50Gi
+      storage: 10Gi
   storageClassName: weekly-snapshots-retain-4 # provided by LTOps
 
 ---
