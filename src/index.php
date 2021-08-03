@@ -3,7 +3,6 @@
 use Symfony\Component\Debug\ExceptionHandler;
 use Symfony\Component\HttpFoundation\Request;
 use Api\Library\Shared\Website;
-use Api\Library\Shared\Palaso\Exception\BugsnagExceptionHandler;
 use Sil\PhpEnv\Env; // https://github.com/silinternational/php-env#class-env-summary-of-functions
 
 require_once __DIR__ . '/vendor/autoload.php';
@@ -25,20 +24,18 @@ $app = new Silex\Application();
  *---------------------------------------------------------------
  *
  * Different environments will require different levels of error reporting and debugging.
- * By default development will show errors but testing and live will hide them and instead report errors to bugsnag.com.
+ * By default development will show errors but testing and live will hide them.
  * By default development will have debugging on but testing and live will turn it off.
  */
 
 switch (ENVIRONMENT) {
     case 'development':
-        $app['bugsnag'] = null;
         error_reporting(E_ALL);
         $app['debug'] = true;
         break;
 
     case 'testing':
     case 'production':
-        BugsnagExceptionHandler::setup($app);
         error_reporting(0);
         $app['debug'] = false;
         break;
@@ -247,8 +244,6 @@ $app->get('/download/assets/{appName}/{projectSlug}/audio/{filename}', 'Site\Con
 $app->get('/download/assets/{appName}/{projectSlug}/{filename}', 'Site\Controller\Download::assets');
 $app->get('/{pageName}/',       'Site\Controller\Page::view')->value('pageName', 'home');
 $app->get('/{pageName}',        'Site\Controller\Page::view')->value('pageName', 'home');
-
-BugsnagExceptionHandler::finishInitialization($app);
 
 /*--------------------------------------------------------------------
  * And away we go...

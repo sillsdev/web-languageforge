@@ -1,7 +1,7 @@
 import * as angular from 'angular';
 
 import { ErrorModule, ErrorService } from '../error.service';
-import { ExceptionHandlingService, ExceptionOverrideModule } from '../exception-handling.service';
+import { ExceptionHandlingService } from '../exception-handling.service';
 
 export interface JsonRpcResult extends angular.IHttpPromiseCallbackArg<any> {
   ok?: boolean;
@@ -75,13 +75,11 @@ export class JsonRpcService {
       if (response.data === null) {
         // TODO error handling for jsonRpc CP 2013-07
         this.error.notify('RPC Error', 'data is null');
-        this.exceptionHandler.reportError('RPC Error - data is null');
         return;
       }
 
       if (typeof response.data === 'string') {
         this.error.notify('RPC Error', response.data);
-        this.exceptionHandler.reportError('RPC Error - ' + response.data);
         return;
       }
 
@@ -102,10 +100,10 @@ export class JsonRpcService {
             type = 'You don\'t have sufficient privileges.';
             break;
           default:
-            // The exception has already been reported to bugsnag by the PHP code
-            this.error.notify('Exception',
-              'An exception occurred in the application, but\nthe developers have already been notified.',
-              response.data.error.message);
+            // silently swallow unknown exceptions and don't bug (heh) the user about things they can't fix
+            // this.error.notify('Exception',
+            //   'An exception occurred in the application, but\nthe developers have already been notified.',
+            //   response.data.error.message);
             return;
         }
         this.error.error(type, response.data.error.message);
@@ -129,7 +127,6 @@ export class JsonRpcService {
       // otherwise fail silently (the browser will console log a failed connection anyway)
       if (response.status > 0 && response.status !== '0') {
         this.error.notify('RPC Error', 'Server Status Code ' + response.status);
-        this.exceptionHandler.reportError('RPC Error - Server Status Code ' + response.status);
         result.ok = false;
         result.data = response.data;
         result.status = response.status;

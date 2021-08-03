@@ -24,7 +24,5 @@ COPY src/sass ./src/sass
 COPY src/service-worker ./src/service-worker
 COPY src/Site/views ./src/Site/views
 
-ARG BUGSNAG_API_KEY
-ENV BUGSNAG_API_KEY=${BUGSNAG_API_KEY:-'missing-bugsnag-api-key'}
-
-CMD npm run build:dev:watch
+# artifacts built to /data/src/dist
+RUN npm run build:dev

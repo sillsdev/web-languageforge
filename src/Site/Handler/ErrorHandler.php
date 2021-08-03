@@ -16,7 +16,6 @@ class ErrorHandler
                 return $app['twig']->render('error404.twig', array());
                 break;
             default:
-                if ($app['bugsnag'] != null) $app['bugsnag']->notifyException($e);
                 return new Response('We are sorry, something went wrong.' . "\nCode: $code \nException: " . $e->getMessage() . "\nStack Trace: " . $e->getTraceAsString());
         }
     }

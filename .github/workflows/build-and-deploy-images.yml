@@ -51,8 +51,6 @@ jobs:
 
       - name: Build app
         run: make --directory=docker deployable-app
-        env:
-          BUGSNAG_API_KEY: ${{ secrets.BUGSNAG_API_KEY }}
 
       - name: Tag app image with Docker Hub location
         run: |
