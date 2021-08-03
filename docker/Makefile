@@ -12,9 +12,9 @@ dev: start
 .PHONY: e2e-tests
 e2e-tests: build
 	docker-compose build app-for-e2e test-e2e
-	docker-compose restart app-for-e2e || docker-compose up -d app-for-e2e
 ifeq ($(TEAMCITY_VERSION),$())
 	# developer machine
+	docker-compose restart app-for-e2e || docker-compose up -d app-for-e2e
 	docker-compose run -e TEST_SPECS=$(TEST_SPECS) test-e2e
 else
 	# teamcity CI
