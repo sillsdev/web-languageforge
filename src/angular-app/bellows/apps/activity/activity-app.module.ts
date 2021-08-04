@@ -1,6 +1,6 @@
 import * as angular from 'angular';
-import 'angular-moment-picker/dist/angular-moment-picker.css';
-import 'angular-moment-picker/dist/angular-moment-picker.js';
+import 'angular-moment-picker/dist/angular-moment-picker.min.css';
+import 'angular-moment-picker/dist/angular-moment-picker.min.js';
 
 import {BreadcrumbModule} from '../../core/breadcrumbs/breadcrumb.module';
 import {SiteWideNoticeModule} from '../../core/site-wide-notice-service';

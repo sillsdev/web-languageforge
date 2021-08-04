@@ -13,6 +13,7 @@ const CopyPlugin = require("copy-webpack-plugin");
 const webpack = require('webpack')
 //UglifyJsPlugin has been depreciated using TerserPlugin
 const TerserPlugin = require("terser-webpack-plugin");
+const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 
 module.exports = {
     context: ROOT,
@@ -120,6 +121,7 @@ module.exports = {
             ],
             include: [] // To be changed once ready to start caching the whole app
           }),
+          new MomentLocalesPlugin(),
           new LiveReloadPlugin()
     ],
 

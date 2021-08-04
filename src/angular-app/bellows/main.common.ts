@@ -5,7 +5,7 @@ import 'angular-ui-router';
 import 'angular-ui-validate';
 import 'angular-zxcvbn';
 
-import 'ng-file-upload/dist/ng-file-upload-all.js';
+import 'ng-file-upload/dist/ng-file-upload-all.min.js';
 
 import './core/service-worker-registration.js';
 
