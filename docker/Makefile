@@ -35,7 +35,7 @@ endif
 
 .PHONY: build
 build:
-	docker-compose build mail ui-builder app ld-api
+	docker-compose build mail app ld-api
 
 .PHONY: deployable-app
 deployable-app:

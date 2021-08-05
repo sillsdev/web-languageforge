@@ -24,5 +24,4 @@ COPY src/sass ./src/sass
 COPY src/service-worker ./src/service-worker
 COPY src/Site/views ./src/Site/views
 
-# artifacts built to /data/src/dist
-RUN npm run build:dev
+CMD npm run build:dev:watch
