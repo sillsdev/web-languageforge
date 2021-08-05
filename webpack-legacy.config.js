@@ -45,12 +45,7 @@ module.exports = function (env) {
 
         // your Angular Async Route paths relative to this root directory
         {}
-      ),
-      new webpack.DefinePlugin({
-        'process.env.XFORGE_BUGSNAG_API_KEY': JSON.stringify(process.env.XFORGE_BUGSNAG_API_KEY
-          || 'missing-bugsnag-api-key'),
-        'process.env.NOTIFY_RELEASE_STAGES': process.env.NOTIFY_RELEASE_STAGES || "['live', 'qa']"
-      })
+      )
     ],
 
     module: {
