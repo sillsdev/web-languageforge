@@ -73,6 +73,9 @@ RUN adduser www-data fieldworks \
 && mkdir -m 02775 -p /var/www/.local \
 && chown www-data:www-data /var/www/.local
 
+# rsyslog customizations (imklog reads kernel messages, which isn't allowed or desired in Docker containers)
+RUN sed -i '/load="imklog"/s/^/#/' /etc/rsyslog.conf
+
 # php customizations
 COPY docker/app/customizations.php.ini $PHP_INI_DIR/conf.d/
 
