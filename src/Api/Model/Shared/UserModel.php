@@ -32,7 +32,7 @@ class UserModel extends MapperModel
     const ADMIN_ACCESSIBLE =
         ['username', 'name', 'email', 'role', 'active', 'isInvited',
          'avatar_color', 'avatar_shape', 'avatar_ref', 'mobile_phone', 'communicate_via',
-         'name', 'age', 'gender', 'interfaceLanguageCode'];
+         'name', 'age', 'gender', 'interfaceLanguageCode', 'languageDepotUsername'];
 
     public function __construct($id = '')
     {
