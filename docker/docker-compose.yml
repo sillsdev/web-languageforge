@@ -145,6 +145,7 @@ services:
       - MYSQL_USER=redmine
       - MYSQL_PASSWORD=not-a-secret
       - MYSQL_ROOT_PASSWORD=also-not-a-secret
+      - JWT_SIGNING_KEY=bogus-development-token
 
   test-e2e:
     build:

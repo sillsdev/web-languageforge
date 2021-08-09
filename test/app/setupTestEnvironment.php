@@ -64,6 +64,7 @@ $adminUserId = UserCommands::updateUser([
     'username' => $constants['adminUsername'],
     'password' => $constants['adminPassword'],
     'active' => true,
+    'languageDepotUsername' => 'admin',
     'role' => SystemRoles::SYSTEM_ADMIN
 ],
     $website
