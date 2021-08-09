@@ -80,29 +80,24 @@
             </nav>
             <nav class="navbar navbar-expand navbar-dark align-items-center justify-content-between">
                 <div class="page-header-detail">
-                    <div class="page-name-settings">
-                            <div class="btn-group" id="settings-dropdown-button" uib-dropdown data-ng-class="{'app-settings-available': $ctrl.header.settings.length > 0 && $ctrl.currentUserIsProjectManager}">
-                                <li class='nav-item'>
-                                    <a id="settingsBtn" class="btn btn-std" uib-dropdown-toggle
-                                    title="Settings" href="#">
-                                        <i class="fa fa-cog"></i>
-                                    </a>
-                                </li>
-                                <div class="dropdown-menu dropdown-menu-left" uib-dropdown-menu>
-                                    {% verbatim %}
-                                    <div data-ng-repeat="setting in $ctrl.header.settings">
-                                        <div class="dropdown-divider" data-ng-show="setting.divider"></div>
-                                        <a ng-if="setting.id === 'userManagementLink'" id="{{ setting.id }}" class="dropdown-item" data-ng-href="{{ setting.href }}" ng-click="$ctrl.openShareWithOthersModal()">{{ setting.label }}</a>
-                                        <a ng-if="setting.id !== 'userManagementLink'" id="{{ setting.id }}" class="dropdown-item" data-ng-href="{{ setting.href }}">{{ setting.label }}</a>
-                                    </div>
-                                    {% endverbatim %}
-                                </div>
-                            </div>
-                        <div class="page-name" data-ng-bind="$ctrl.header.pageName"></div>
-                    </div>
+                    <div class="page-name" data-ng-bind="$ctrl.header.pageName"></div>
                     <breadcrumbs id="top" class="breadcrumbs d-none d-md-block"></breadcrumbs>
                 </div>
                 <ul class="nav navbar-nav">
+                    <li class="nav-item" ng-if="$ctrl.project" id="settings-dropdown-button" uib-dropdown data-ng-class="{'app-settings-available': $ctrl.header.settings.length > 0 && $ctrl.currentUserIsProjectManager}">
+                        <a id="settingsBtn" class="btn btn-primary my-auto" uib-dropdown-toggle title="Settings" href="#">
+                            <i class="fa fa-cog iconPadding"></i><span>Settings</span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-left" uib-dropdown-menu>
+                            {% verbatim %}
+                            <div data-ng-repeat="setting in $ctrl.header.settings">
+                                <div class="dropdown-divider" data-ng-show="setting.divider"></div>
+                                <a ng-if="setting.id === 'userManagementLink'" id="{{ setting.id }}" class="dropdown-item" data-ng-href="{{ setting.href }}" ng-click="$ctrl.openShareWithOthersModal()">{{ setting.label }}</a>
+                                <a ng-if="setting.id !== 'userManagementLink'" id="{{ setting.id }}" class="dropdown-item" data-ng-href="{{ setting.href }}">{{ setting.label }}</a>
+                            </div>
+                            {% endverbatim %}
+                        </div>
+                    </li>
                     <li class='nav-item' ng-if="$ctrl.project && $ctrl.displayShareButton">
                         <a id="shareBtn" class="btn btn-primary my-auto" title="Share" href="#"
                                          ng-click="$ctrl.openShareWithOthersModal()">
