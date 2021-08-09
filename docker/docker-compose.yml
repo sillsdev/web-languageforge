@@ -150,6 +150,8 @@ services:
     build:
       context: ..
       dockerfile: docker/test-e2e/Dockerfile
+      args:
+        - ENVIRONMENT=development
     image: test-e2e
     container_name: test-e2e
     depends_on:
