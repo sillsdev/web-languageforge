@@ -83,19 +83,6 @@ COPY docker/app/customizations.php.ini $PHP_INI_DIR/conf.d/
 RUN a2enmod headers rewrite
 COPY docker/app/000-default.conf /etc/apache2/sites-enabled
 
-# copy app into image
-COPY src /var/www/html/
-RUN ln -s /var/www/html /var/www/src
-
-# grab the built assets from the ui image
-COPY --from=ui-builder /data/src/dist /var/www/html/dist
-
-# ensure correct write permissions for assets folders,
-RUN    chown -R www-data:www-data /var/www/html/assets /var/www/html/cache \
-    && chmod -R g+ws /var/www/html/assets /var/www/html/cache
-
-COPY docker/app/entrypoint.sh /
-
 # COMPOSER-BUILDER
 # download composer app dependencies
 # git - needed for composer install
@@ -122,6 +109,19 @@ COPY --from=sillsdev/web-languageforge:wait-latest /wait /wait
 FROM ${ENVIRONMENT}-app AS languageforge-app
 ARG BUILD_VERSION=9.9.9
 ENV BUILD_VERSION=${BUILD_VERSION}
+
+# copy app into image
+COPY src /var/www/html/
+RUN ln -s /var/www/html /var/www/src
+
+# grab the built assets from the ui image
+COPY --from=ui-builder /data/src/dist /var/www/html/dist
+
+# ensure correct write permissions for assets folders,
+RUN    chown -R www-data:www-data /var/www/html/assets /var/www/html/cache \
+    && chmod -R g+ws /var/www/html/assets /var/www/html/cache
+
+COPY docker/app/entrypoint.sh /
 
 COPY --from=composer-builder /composer/vendor /var/www/html/vendor
 
