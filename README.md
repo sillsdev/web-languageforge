@@ -233,7 +233,7 @@ Language Forge is built to run in a containerized environment.  For now, Kuberne
 ### Staging (QA) ###
 Deployments are not currently automated and must be manually run with the appropriate credentials or from within our CD platform, TeamCity at this time.
 
-Deployment scripts for k8s can be found in `docker/deployment` and staging deployments can be run via `make deploy-staging` from within the same directory.
+Deployment scripts for k8s can be found in `docker/deployment` and staging deployments can be run via `VERSION=<some-docker-tag-or-semver> make deploy-staging` from within the same directory.
 
 Current workflow:
 1. move the `staging` branch to the appropriate commit on `master`
@@ -241,11 +241,11 @@ Current workflow:
 1. then the deployment scripts can be run either manually or via the TeamCity deploy job
 
 ### Production ###
-WIP:  `docker/deployment/Makefile` currently has a `make deploy-prod` that can be run locally with the right cluster credenitals.
+WIP:  `docker/deployment/Makefile` currently has a `VERSION=<some-docker-tag-or-semver> make deploy-prod` that can be run locally with the right cluster credenitals.
 
 - [ ] build prod images
 - [ ] publish prod images via GHA workflow
-- [ ] parameterize image reference in `app-deployment.yaml`
+- [x] parameterize image reference in `app-deployment.yaml`
 - [ ] set up CD for prod
 
 ## Libraries Used ##
