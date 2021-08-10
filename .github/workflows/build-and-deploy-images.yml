@@ -48,10 +48,10 @@ jobs:
         run: echo "BUILD_VERSION_LATEST=staging" >> "$GITHUB_ENV"
 
       - name: Set BUILD_VERSION for Production from git tag
-        if: contains(github.ref, 'refs/tags/')
+        if: startsWith(github.ref, 'refs/tags/v')
         # define GIT_TAG as stripping off initial 11 characters, i.e. "refs/tags/v"
         run: echo "GIT_TAG=$(echo ${GITHUB_REF:11})" >> $GITHUB_ENV
-        run: echo "BUILD_VERSION=$GITHUB_TAG" >> "$GITHUB_ENV"
+        run: echo "BUILD_VERSION=$GIT_TAG" >> "$GITHUB_ENV"
         run: echo "BUILD_VERSION_LATEST=latest" >> "$GITHUB_ENV"
 
       - name: Log in to Docker Hub
