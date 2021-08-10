@@ -48,7 +48,7 @@ metadata:
   name: lf-project-assets
 spec:
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   resources:
     requests:
       storage: 7Gi
@@ -63,7 +63,7 @@ metadata:
   name: lfmerge-sendreceive-data
 spec:
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   resources:
     requests:
       storage: 10Gi
