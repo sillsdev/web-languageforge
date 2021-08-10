@@ -1,7 +1,4 @@
 import * as angular from 'angular';
-import 'angular-moment-picker/dist/angular-moment-picker.min.css';
-import 'angular-moment-picker/dist/angular-moment-picker.min.js';
-
 import {BreadcrumbModule} from '../../core/breadcrumbs/breadcrumb.module';
 import {SiteWideNoticeModule} from '../../core/site-wide-notice-service';
 import {CoreModule} from '../../core/core.module';
@@ -12,7 +9,6 @@ export const ActivityAppModule = angular
   .module('activity', [
     'ngRoute',
     'ui.bootstrap',
-    'moment-picker',
     CoreModule,
     BreadcrumbModule,
     SiteWideNoticeModule
