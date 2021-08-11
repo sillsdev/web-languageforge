@@ -48,7 +48,7 @@ metadata:
   name: lf-project-assets
 spec:
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   resources:
     requests:
       storage: 7Gi
@@ -63,7 +63,7 @@ metadata:
   name: lfmerge-sendreceive-data
 spec:
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   resources:
     requests:
       storage: 10Gi
@@ -111,7 +111,7 @@ spec:
             name: sendreceive-data
       containers:
       - name: app
-        image: sillsdev/web-languageforge:app-staging
+        image: sillsdev/web-languageforge:{{VERSION}}
         imagePullPolicy: Always
         volumeMounts:
           - mountPath: /var/www/html/assets
