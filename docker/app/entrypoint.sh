@@ -1,13 +1,5 @@
 #!/bin/sh
 
-if [ "x$ENVIRONMENT" = "xdevelopment" ]; then
-    /wait
-    RETCODE=$?
-    if [ "$RETCODE" -gt 0 ]; then
-        exit $RETCODE
-    fi
-fi
-
 # rsyslog needs to run so that lfmerge can log to /var/log/syslog
 /etc/init.d/rsyslog start
 
