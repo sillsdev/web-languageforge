@@ -1,4 +1,4 @@
-import { format, isValid, formatDistance } from 'date-fns';
+import { format, isValid, formatDistance, parseISO } from 'date-fns';
 export type BytesFilterFunction = (bytes: any, precision?: number) => string;
 
 export function BytesFilter(): BytesFilterFunction {
@@ -19,7 +19,7 @@ export type RelativeTimeFilterFunction = (timestamp?: string, timeFormat?: strin
 
 export function RelativeTimeFilter(): RelativeTimeFilterFunction {
   return (timestamp?: string, timeFormat?: string): string => {
-    const date = new Date(timestamp);
+    const date = parseISO(timestamp);
     const dateNow = new Date();
     if (isValid(date) && isValid(dateNow)) {
       return formatDistance(date, dateNow, { addSuffix: true });

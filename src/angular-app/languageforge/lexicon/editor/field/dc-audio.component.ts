@@ -145,7 +145,7 @@ export class FieldAudioController implements angular.IController {
   audioRecorderCallback = (blob: Blob) => {
     if (blob) {
       const date = new Date();
-      const fileName = 'recording_' + format(addMinutes(date, date.getTimezoneOffset()), 'YYYY_MM_DD_HH_mm_ss') + '.mp3';
+      const fileName = 'recording_' + format(addMinutes(date, date.getTimezoneOffset()), 'yyyy_MM_dd_HH_mm_ss') + '.mp3';
       const file = new File([blob], fileName);
       this.uploadAudio(file);
     }
