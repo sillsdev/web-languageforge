@@ -1,6 +1,3 @@
-# ENVIRONMENT value can be either "production" or "development"
-ARG ENVIRONMENT=development
-
 # UI-BUILDER
 FROM node:14.16.1-alpine3.11 AS ui-builder-base
 
@@ -34,7 +31,7 @@ ENV NPM_BUILD_SUFFIX=prd
 FROM ui-builder-base AS development-ui-builder
 ENV NPM_BUILD_SUFFIX=dev
 
-FROM ${ENVIRONMENT}-ui-builder AS ui-builder
+FROM development-ui-builder AS ui-builder
 # artifacts built to /data/src/dist
 RUN npm run build:${NPM_BUILD_SUFFIX}
 

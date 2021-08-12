@@ -1,3 +1,6 @@
+# ENVIRONMENT value can be either "production" or "development"
+ARG ENVIRONMENT=${ENVIRONMENT:-'production'}
+
 # UI-BUILDER
 FROM node:14.16.1-alpine3.11 AS ui-builder-base
 
@@ -31,8 +34,6 @@ ENV NPM_BUILD_SUFFIX=prd
 FROM ui-builder-base AS development-ui-builder
 ENV NPM_BUILD_SUFFIX=dev
 
-# ENVIRONMENT value can be either "production" or "development"
-ARG ENVIRONMENT=${ENVIRONMENT:-'production'}
 FROM ${ENVIRONMENT}-ui-builder AS ui-builder
 # artifacts built to /data/src/dist
 RUN npm run build:${NPM_BUILD_SUFFIX}
@@ -105,7 +106,6 @@ COPY docker/app/docker-php-ext-xdebug.ini /usr/local/etc/php/conf.d
 RUN mv $PHP_INI_DIR/php.ini-development $PHP_INI_DIR/php.ini
 COPY --from=sillsdev/web-languageforge:wait-latest /wait /wait
 
-# ENVIRONMENT value can be either "production" or "development"
 FROM ${ENVIRONMENT}-app AS languageforge-app
 ARG BUILD_VERSION=9.9.9
 ENV BUILD_VERSION=${BUILD_VERSION}
