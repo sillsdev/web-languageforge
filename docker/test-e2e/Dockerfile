@@ -1,5 +1,5 @@
 # UI-BUILDER
-FROM node:14.16.1-alpine3.11 AS ui-builder-base
+FROM node:14.16.1-alpine3.11
 
 # install npm globally
 RUN npm config set unsafe-perm true && npm install -g npm@7.6.3
@@ -25,15 +25,8 @@ COPY src/sass ./src/sass
 COPY src/service-worker ./src/service-worker
 COPY src/Site/views ./src/Site/views
 
-FROM ui-builder-base AS production-ui-builder
-ENV NPM_BUILD_SUFFIX=prd
-
-FROM ui-builder-base AS development-ui-builder
-ENV NPM_BUILD_SUFFIX=dev
-
-FROM development-ui-builder AS ui-builder
 # artifacts built to /data/src/dist
-RUN npm run build:${NPM_BUILD_SUFFIX}
+RUN npm run build:dev
 
 # make wait available for container ochestration
 COPY --from=sillsdev/web-languageforge:wait-latest /wait /wait
