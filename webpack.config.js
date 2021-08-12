@@ -41,6 +41,7 @@ module.exports = {
       },
       minimize: true,
       minimizer: [new TerserPlugin()],
+      usedExports: true
     },
 
     devServer: {
