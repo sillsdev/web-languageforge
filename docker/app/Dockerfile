@@ -1,5 +1,5 @@
 # ENVIRONMENT value can be either "production" or "development"
-ARG ENVIRONMENT=production
+ARG ENVIRONMENT=${ENVIRONMENT:-'production'}
 
 # UI-BUILDER
 FROM node:14.16.1-alpine3.11 AS ui-builder-base

@@ -122,7 +122,7 @@ spec:
           - name: DATABASE
             value: scriptureforge
           - name: ENVIRONMENT
-            value: {{ENVIRONMENT}}
+            value: production
           - name: WEBSITE
             value: {{WEBSITE}}
           - name: MAIL_HOST
