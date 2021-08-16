@@ -4,8 +4,7 @@ import { ProjectService } from '../../bellows/core/api/project.service';
 import { UserService } from '../../bellows/core/api/user.service';
 import { RolesService } from '../../bellows/core/api/roles.service';
 import { NoticeService } from '../../bellows/core/notice/notice.service';
-import { SessionService } from '../../bellows/core/session.service';
-import { Project, ProjectRole, ProjectRoles } from '../../bellows/shared/model/project.model';
+import { ProjectRole, ProjectRoles } from '../../bellows/shared/model/project.model';
 import { LdapiProjectDto, LdapiUserInfo } from '../../bellows/shared/model/ldapi.model';
 import { JsonRpcResult } from '../../bellows/core/api/api.service';
 

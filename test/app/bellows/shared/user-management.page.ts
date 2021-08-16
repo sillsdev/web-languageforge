@@ -1,4 +1,4 @@
-import { browser, by, element, ElementArrayFinder, ElementFinder, protractor } from 'protractor';
+import { browser, by, element, ElementFinder, protractor } from 'protractor';
 import { ProjectsPage } from './projects.page';
 import { Utils } from './utils';
 
