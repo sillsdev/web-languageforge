@@ -248,6 +248,17 @@ WIP:  `docker/deployment/Makefile` currently has a `VERSION=<some-docker-tag-or-
 - [x] parameterize image reference in `app-deployment.yaml`
 - [ ] set up CD for prod
 
+### Backup/Restore ###
+Backups will be established automatically by LTOps and utilized by LF through the `storageClassName` property in a Persistent Volume Claim.  Any time a restoration is needed, the LF team will need to coordinate the effort with LTOps.  The process of restoring from a point in time will require the application be brought down for maintenance.  The process will roughly follow these steps:
+1. Notify LTOps of the need to restore a backup (App team)
+1. Coordinate a time to bring the app down for maintenance (LTOps/App team)
+1. Scale the app down (LTOps/App team)
+1. Initiate the Backup restore (LTOps)
+1. Notify app team of the restoration completion (LTOps)
+1. Scale the app up (LTOps/App team)
+1. Test the app (App team)
+1. Communicate maintenance completion
+
 ## Libraries Used ##
 
 [lamejs](https://github.com/zhuker/lamejs) is used for encoding recorded audio and is based on [LAME](http://lame.sourceforge.net/), which is licensed under the terms of [the LGPL](https://www.gnu.org/licenses/old-licenses/lgpl-2.0.html).
