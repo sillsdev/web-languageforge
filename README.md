@@ -236,7 +236,7 @@ Deployments are not currently automated and must be manually run with the approp
 Deployment scripts for k8s can be found in `docker/deployment` and staging deployments can be run via `VERSION=<some-docker-tag-or-semver> make deploy-staging` from within the same directory.
 
 Current workflow:
-1. move the `staging` branch to the appropriate commit on `master`
+1. merge commits into or make commits on `staging` branch
 1. this will kick off the GHA (`.github/workflows/build-and-deploy-images.yml`) to build and publish the necessary images to Docker Hub (https://hub.docker.com/r/sillsdev/web-languageforge/tags)
 1. then the deployment scripts can be run either manually or via the TeamCity deploy job
 
