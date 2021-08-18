@@ -249,7 +249,7 @@ WIP:  `docker/deployment/Makefile` currently has a `VERSION=<some-docker-tag-or-
 - [ ] set up CD for prod
 
 ### Backup/Restore ###
-Backups will be established automatically by LTOps and utilized by LF through the `storageClassName` property in a Persistent Volume Claim.  Any time a restoration is needed, the LF team will need to coordinate the effort with LTOps.  The process of restoring from a point in time will require the application be brought down for maintenance.  The process will roughly follow these steps:
+Backups will be established automatically by LTOps and utilized by LF through the `storageClassName` property in a Persistent Volume Claim.  This storage class provided by LTOps establishes both a frequency and retention for a backup.  Any time a restoration is needed, the LF team will need to coordinate the effort with LTOps.  The process of restoring from a point in time will require the application be brought down for maintenance.  The process will roughly follow these steps:
 1. Notify LTOps of the need to restore a backup (App team)
 1. Coordinate a time to bring the app down for maintenance (LTOps/App team)
 1. Scale the app down (LTOps/App team)
