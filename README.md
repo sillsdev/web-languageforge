@@ -236,7 +236,7 @@ Deployments are not currently automated and must be manually run with the approp
 Deployment scripts for k8s can be found in `docker/deployment` and staging deployments can be run via `VERSION=<some-docker-tag-or-semver> make deploy-staging` from within the same directory.
 
 Current workflow:
-1. move the `staging` branch to the appropriate commit on `master`
+1. merge commits into or make commits on `staging` branch
 1. this will kick off the GHA (`.github/workflows/build-and-deploy-images.yml`) to build and publish the necessary images to Docker Hub (https://hub.docker.com/r/sillsdev/web-languageforge/tags)
 1. then the deployment scripts can be run either manually or via the TeamCity deploy job
 
@@ -247,6 +247,17 @@ WIP:  `docker/deployment/Makefile` currently has a `VERSION=<some-docker-tag-or-
 - [ ] publish prod images via GHA workflow
 - [x] parameterize image reference in `app-deployment.yaml`
 - [ ] set up CD for prod
+
+### Backup/Restore ###
+Backups will be established automatically by LTOps and utilized by LF through the `storageClassName` property in a Persistent Volume Claim.  This storage class provided by LTOps establishes both a frequency and retention for a backup.  Any time a restoration is needed, the LF team will need to coordinate the effort with LTOps.  The process of restoring from a point in time will require the application be brought down for maintenance.  The process will roughly follow these steps:
+1. Notify LTOps of the need to restore a backup (App team)
+1. Coordinate a time to bring the app down for maintenance (LTOps/App team)
+1. Scale the app down (LTOps/App team)
+1. Initiate the Backup restore (LTOps)
+1. Notify app team of the restoration completion (LTOps)
+1. Scale the app up (LTOps/App team)
+1. Test the app (App team)
+1. Communicate maintenance completion
 
 ## Libraries Used ##
 
