@@ -143,10 +143,6 @@ If you edit files in the `src` or `data` folders of the test container, these ch
 
 After a minute or two, your source or test changes should be applied and you should see the result of your changes when you run the E2E tests again.
 
-### Viewing logs
-
-1. `make logs` will show logs from any running containers, results can be filtered by simply grepping, e.g., `make logs | grep lf-ui-builder`
-
 ### Cleanup
 
 1. `make clean` is the most common, it shuts down and cleans up running containers
@@ -157,9 +153,9 @@ After a minute or two, your source or test changes should be applied and you sho
 
 1. `make dev` will start the app in development mode, i.e. changes to source code will immediately be reflected in the locally running app.
 
-### Building for production
+### Building for deployment
 
-1. `make prod` will build a production version of the app.
+1. Refer to `/.github/workflows/build-and-deploy-images.yml` for build commands.
 
 ### Visual Studio Code ###
 
@@ -228,12 +224,10 @@ To debug the tests:
 - To debug in VSCode, select the "Node debugger" debug configuration and run it.
 
 ## Application deployment ##
-Language Forge is built to run in a containerized environment.  For now, Kubernetes is the chosen runtime platform.
+Language Forge is built to run in a containerized environment.  For now, Kubernetes is the chosen runtime platform.  Deployments are not currently automated and must be manually run with the appropriate credentials or from within our CD platform, TeamCity at this time.  Deployment scripts for k8s can be found in `docker/deployment`
 
 ### Staging (QA) ###
-Deployments are not currently automated and must be manually run with the appropriate credentials or from within our CD platform, TeamCity at this time.
-
-Deployment scripts for k8s can be found in `docker/deployment` and staging deployments can be run via `VERSION=<some-docker-tag-or-semver> make deploy-staging` from within the same directory.
+Staging deployments can be run with `VERSION=<some-docker-tag-or-semver> make deploy-staging`.
 
 Current workflow:
 1. merge commits into or make commits on `staging` branch
@@ -241,12 +235,13 @@ Current workflow:
 1. then the deployment scripts can be run either manually or via the TeamCity deploy job
 
 ### Production ###
-WIP:  `docker/deployment/Makefile` currently has a `VERSION=<some-docker-tag-or-semver> make deploy-prod` that can be run locally with the right cluster credenitals.
+Production deployments can be run with `VERSION=<some-docker-tag-or-semver> make deploy-prod`.
 
-- [ ] build prod images
-- [ ] publish prod images via GHA workflow
-- [x] parameterize image reference in `app-deployment.yaml`
-- [ ] set up CD for prod
+Current workflow:
+1. merge from `staging` into `master`
+1. tag the desired commit on `master` with a `v#.#.#` format and push the tag
+1. this will kick off the GHA (`.github/workflows/build-and-deploy-images.yml`) to build and publish the necessary images to Docker Hub (https://hub.docker.com/r/sillsdev/web-languageforge/tags)
+1. then the deployment scripts can be run either manually or via the TeamCity deploy job
 
 ### Backup/Restore ###
 Backups will be established automatically by LTOps and utilized by LF through the `storageClassName` property in a Persistent Volume Claim.  This storage class provided by LTOps establishes both a frequency and retention for a backup.  Any time a restoration is needed, the LF team will need to coordinate the effort with LTOps.  The process of restoring from a point in time will require the application be brought down for maintenance.  The process will roughly follow these steps:

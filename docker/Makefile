@@ -37,14 +37,6 @@ endif
 build:
 	docker-compose build mail app ld-api
 
-.PHONY: deployable-app
-deployable-app:
-	docker-compose build --build-arg BUILD_VERSION=${BUILD_VERSION} app
-
-.PHONY: logs
-logs:
-	docker-compose logs
-
 .PHONY: clean
 clean:
 	docker-compose down

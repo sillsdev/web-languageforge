@@ -55,12 +55,6 @@ jobs:
           echo "BUILD_VERSION=$(echo ${GITHUB_REF:11})" >> "$GITHUB_ENV"
           echo "BUILD_VERSION_LATEST=latest" >> "$GITHUB_ENV"
 
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
-
       - name: Build and tag app
         run: docker build -t $IMAGE_NAME:$BUILD_VERSION -t $IMAGE_NAME:$BUILD_VERSION_LATEST --build-arg BUILD_VERSION=${BUILD_VERSION} -f docker/app/Dockerfile .
         env:
@@ -68,6 +62,12 @@ jobs:
 
       - name: Reveal images
         run: docker images
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
       - name: Publish all tagged images to Docker Hub
         run: |
