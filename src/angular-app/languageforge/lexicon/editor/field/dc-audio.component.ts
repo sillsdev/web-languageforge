@@ -1,5 +1,5 @@
 import * as angular from 'angular';
-import * as moment from 'moment';
+import { format, addMinutes } from 'date-fns';
 
 import {BytesFilterFunction} from '../../../../bellows/core/filters';
 import {ModalService} from '../../../../bellows/core/modal/modal.service';
@@ -144,7 +144,8 @@ export class FieldAudioController implements angular.IController {
 
   audioRecorderCallback = (blob: Blob) => {
     if (blob) {
-      const fileName = 'recording_' + moment.utc().format('YYYY_MM_DD_HH_mm_ss') + '.mp3';
+      const date = new Date();
+      const fileName = 'recording_' + format(addMinutes(date, date.getTimezoneOffset()), 'yyyy_MM_dd_HH_mm_ss') + '.mp3';
       const file = new File([blob], fileName);
       this.uploadAudio(file);
     }

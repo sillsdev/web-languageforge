@@ -1,4 +1,4 @@
-import {by, element, browser, ExpectedConditions} from 'protractor';
+import {by, browser, ExpectedConditions} from 'protractor';
 import {ElementFinder} from 'protractor/built/element';
 
 import {BellowsLoginPage} from './shared/login.page';

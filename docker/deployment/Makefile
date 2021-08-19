@@ -28,15 +28,13 @@ deploy-staging: deploy-db deploy-mail-staging deploy-app-staging
 deploy-mail-staging:
 	sed -e s/{{SERVER_HOSTNAME}}/qa.languageforge.org/ mail-deployment.yaml | kubectl apply -f -
 deploy-app-staging:
-	sed -e s/{{ENVIRONMENT}}/development/ app-deployment.yaml \
-  | sed -e s/{{WEBSITE}}/qa.languageforge.org/ \
+	sed -e s/{{WEBSITE}}/qa.languageforge.org/ app-deployment.yaml \
   | sed -e s/{{VERSION}}/$(VERSION)/ | kubectl apply -f -
 deploy-prod: deploy-db deploy-mail-prod deploy-app-prod
 deploy-mail-prod:
 	sed -e s/{{SERVER_HOSTNAME}}/beta.languageforge.org/ mail-deployment.yaml | kubectl apply -f -
 deploy-app-prod:
-	sed -e s/{{ENVIRONMENT}}/production/ app-deployment.yaml \
-  | sed -e s/{{WEBSITE}}/beta.languageforge.org/ \
+	sed -e s/{{WEBSITE}}/beta.languageforge.org/ app-deployment.yaml \
   | sed -e s/{{VERSION}}/$(VERSION)/ | kubectl apply -f -
 deploy-db:
 	kubectl apply -f db-deployment.yaml

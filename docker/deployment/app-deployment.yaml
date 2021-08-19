@@ -22,6 +22,10 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: languageforge-app
+  annotations:
+    # https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/#custom-max-body-size
+    # Added this to allow large file uploads, this setting should match the php custom config, i.e., upload_max_filesize, found in the app's customizations.php.ini
+    nginx.ingress.kubernetes.io/proxy-body-size: 60M
 spec:
   rules:
   - host: {{WEBSITE}}
@@ -51,7 +55,7 @@ spec:
     - ReadWriteMany
   resources:
     requests:
-      storage: 7Gi
+      storage: 10Gi
   storageClassName: weekly-snapshots-retain-4 # provided by LTOps
 
 ---
@@ -66,7 +70,7 @@ spec:
     - ReadWriteMany
   resources:
     requests:
-      storage: 10Gi
+      storage: 35Gi
   storageClassName: weekly-snapshots-retain-4 # provided by LTOps
 
 ---
@@ -122,7 +126,7 @@ spec:
           - name: DATABASE
             value: scriptureforge
           - name: ENVIRONMENT
-            value: {{ENVIRONMENT}}
+            value: production
           - name: WEBSITE
             value: {{WEBSITE}}
           - name: MAIL_HOST

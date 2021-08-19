@@ -20,7 +20,9 @@ export class ShareWithOthersModalInstanceController implements angular.IControll
     this.sessionService.getSession().then(session => {
       this.session = session;
       this.project = session.data.project;
-      this.currentUserIsManager = this.session.data.userProjectRole === LexRoles.MANAGER.key;
+      this.currentUserIsManager =
+        this.session.data.userProjectRole === LexRoles.MANAGER.key ||
+        this.session.data.userProjectRole === LexRoles.TECH_SUPPORT.key;
     });
   }
 
