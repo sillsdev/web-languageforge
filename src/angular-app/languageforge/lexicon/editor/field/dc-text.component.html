@@ -1,9 +1,9 @@
-<!-- TODO switch on data-ng-if="!$ctrl.fteMultiline"  and provide proper multi-line textbox -->
 <div>
-    <input type="text"
-           dir="{{$ctrl.fteDir}}"
-           data-ng-model="$ctrl.textFieldValue"
-           data-ng-change="$ctrl.inputChanged()"
-           data-ng-disabled="$ctrl.fteDisabled"
-           title="{{$ctrl.fteDisabled ? $ctrl.disabledMsg() : ''}}">
+    <textarea 
+        dir="{{$ctrl.fteDir}}" 
+        data-ng-model="$ctrl.textFieldValue" 
+        data-ng-change="$ctrl.inputChanged()"
+        data-ng-disabled="$ctrl.fteDisabled" 
+        title="{{$ctrl.fteDisabled ? $ctrl.disabledMsg() : ''}}">
+    </textarea>
 </div>
