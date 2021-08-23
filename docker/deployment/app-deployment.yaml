@@ -171,3 +171,8 @@ spec:
               secretKeyRef:
                 key: GOOGLE_CLIENT_SECRET
                 name: oauth
+          - name: LD_TRUST_TOKEN
+            valueFrom:
+              secretKeyRef:
+                key: LD_TRUST_TOKEN
+                name: ld-trust-token
