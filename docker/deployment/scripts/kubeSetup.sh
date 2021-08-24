@@ -13,13 +13,3 @@ kubectl exec -c app $APPPOD -- bash -c "apt-get update \
 # add my public key to the container so I can "ssh root@localhost"
 # --no-preserve=true keeps the permissions intact for root on the container side
 kubectl cp -c app ~/.ssh/authorized_keys $APPPOD:/root/.ssh/authorized_keys --no-preserve=true
-
-echo Installing SSH on pod $MONGOPOD
-kubectl exec -c db $MONGOPOD -- bash -c "apt-get update \
-&& apt-get install -y openssh-server openssh-client rsync \
-&& mkdir -p -m 700 /root/.ssh \
-&& service ssh start"
-
-# add my public key to the container so I can "ssh root@localhost"
-# --no-preserve=true keeps the permissions intact for root on the container side
-kubectl cp -c db ~/.ssh/authorized_keys $MONGOPOD:/root/.ssh/authorized_keys --no-preserve=true
