@@ -39,6 +39,12 @@ spec:
   selector:
     matchLabels:
       app: db
+  strategy:
+      # we don't ever want more than 1 "db" running at any time
+      type: RollingUpdate
+      rollingUpdate:
+        maxSurge: 0
+        maxUnavailable: 25%
   template:
     # https://kubernetes.io/docs/concepts/workloads/pods/#pod-templates
     metadata:
