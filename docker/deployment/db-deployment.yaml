@@ -40,11 +40,7 @@ spec:
     matchLabels:
       app: db
   strategy:
-      # we don't ever want more than 1 "db" running at any time since the pvc above is RWO
-      type: RollingUpdate
-      rollingUpdate:
-        maxSurge: 0
-        maxUnavailable: 25%
+      type: Recreate
   template:
     # https://kubernetes.io/docs/concepts/workloads/pods/#pod-templates
     metadata:
