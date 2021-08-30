@@ -21,6 +21,9 @@ retrieve-current-deployments:
 shell-app:
 	kubectl exec -it deploy/app -- sh
 
+init-secrets:
+	kubectl apply -f secrets.yaml
+
 create-new-deployment-mail:
 	kubectl create deployment mail --image=juanluisbaptiste/postfix:1.0.0 --dry-run=client -o yaml > mail-deployment-new.yaml
 
@@ -34,7 +37,7 @@ deploy-prod: deploy-db deploy-mail-prod deploy-app-prod
 deploy-mail-prod:
 	sed -e s/{{SERVER_HOSTNAME}}/beta.languageforge.org/ mail-deployment.yaml | kubectl apply -f -
 deploy-app-prod:
-  sed -e s/{{WEBSITE}}/beta.languageforge.org/ app-deployment.yaml \
+	sed -e s/{{WEBSITE}}/beta.languageforge.org/ app-deployment.yaml \
   | sed -e s/{{VERSION}}/$(VERSION)/ | kubectl apply -f -
 deploy-db:
 	kubectl apply -f db-deployment.yaml
