@@ -6,5 +6,4 @@
   "phpcs.composerJsonPath": "src",
   "php.suggest.basic": false,
   "git.ignoreLimitWarning": true,
-  "terminal.integrated.cwd": "${workspaceFolder}/docker"
 }
