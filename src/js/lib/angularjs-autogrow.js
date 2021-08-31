@@ -1,3 +1,6 @@
+// fork from https://github.com/evyros/angularjs-autogrow
+// with changes that allow changing height offset
+
 (function(){
     'use strict';
     angular.module('angularjs-autogrow', []).directive('autogrow', ['$window', function($window){
