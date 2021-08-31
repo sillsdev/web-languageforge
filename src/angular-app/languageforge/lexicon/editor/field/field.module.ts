@@ -19,16 +19,18 @@ import {FieldRenderedComponent} from './dc-rendered.component';
 import {FieldSemanticDomainComponent} from './dc-semanticdomain.component';
 import {FieldSenseComponent} from './dc-sense.component';
 import {FieldTextComponent} from './dc-text.component';
+import '../../../../../js/lib/angularjs-autogrow.js';
 
 export const EditorFieldModule = angular
   .module('editorFieldModule', [
     'ngFileUpload',
+    'angularjs-autogrow',
     MockModule,
     NoticeModule,
     SoundModule,
     LexiconCoreModule,
     EditorCommentsModule,
-    AudioRecorder
+    AudioRecorder    
   ])
   .component('dcAudio', FieldAudioComponent)
   .component('dcEntry', FieldEntryComponent)

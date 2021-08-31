@@ -13,8 +13,8 @@
         "run-script",
         "test-e2e",
         // Uncomment the two lines below and edit the --specs value to run just one file (for more than one file, make it a comma-separated list)
-        // "--",
-        // "--specs=test/app/bellows/change-password.e2e-spec.js"
+        "--",
+        "--specs=test/app/languageforge/lexicon/settings/semantic-domains.e2e-spec.js"
       ],
       "sourceMaps": true,
       "runtimeExecutable": "npm",
@@ -37,8 +37,8 @@
         "run-script",
         "test-e2e",
         // Uncomment the two lines below and edit the --specs value to run just one file (for more than one file, make it a comma-separated list)
-        // "--",
-        // "--specs=test/app/bellows/change-password.e2e-spec.js"
+        "--",
+        "--specs=test/app/languageforge/lexicon/settings/semantic-domains.e2e-spec.js"
       ],
       "sourceMaps": true,
       "runtimeExecutable": "npm",
