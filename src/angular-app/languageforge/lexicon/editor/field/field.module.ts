@@ -19,12 +19,11 @@ import {FieldRenderedComponent} from './dc-rendered.component';
 import {FieldSemanticDomainComponent} from './dc-semanticdomain.component';
 import {FieldSenseComponent} from './dc-sense.component';
 import {FieldTextComponent} from './dc-text.component';
-import '../../../../../js/lib/angularjs-autogrow.js';
+import { FitTextDirective } from '../../shared/fit-text.directive';
 
 export const EditorFieldModule = angular
   .module('editorFieldModule', [
     'ngFileUpload',
-    'angularjs-autogrow',
     MockModule,
     NoticeModule,
     SoundModule,
@@ -45,4 +44,5 @@ export const EditorFieldModule = angular
   .component('dcSemanticdomain', FieldSemanticDomainComponent)
   .component('dcSense', FieldSenseComponent)
   .component('dcText', FieldTextComponent)
+  .directive('fitText', FitTextDirective.factory())
   .name;
