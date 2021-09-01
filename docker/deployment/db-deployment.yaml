@@ -39,6 +39,8 @@ spec:
   selector:
     matchLabels:
       app: db
+  strategy:
+      type: Recreate
   template:
     # https://kubernetes.io/docs/concepts/workloads/pods/#pod-templates
     metadata:
