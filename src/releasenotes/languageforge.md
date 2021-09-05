@@ -1,5 +1,21 @@
 # Language Forge Release Notes #
 
+### 1.8 Release (31-August-2021)
+#### User Improvements/Fixes ####
+- More projects can now do Send/Receive with FLEx
+- Improved single entry scrolling - removed unnecessary scrollbar in editor
+- More prominent settings cog button
+- Support image uploads in GIF format
+- Bug fixes in dictionary configuration checkbox grid
+
+#### Developer Improvements/Fixes ####
+- Development and Deployment environment using Docker containers
+- Deployment on new K8s infrastructure
+- Tech support role fixed
+- Many upgraded dependencies
+
+### 1.7 Release (March-2020)
+- New Share Project Dialog
 ### 1.6 Release (6-August-2018)
 - Activity on each entry can be shown next to each entry. Click **Activity Feed**
 - Activity across all projects. Click **My Projects** > **Activity for All Projects**
