@@ -29,5 +29,6 @@ Please describe the manual tests that you ran to verify your changes. Provide in
 ## Checklist:
 
 - [ ] I have performed a self-review of my own code
+- [ ] I have reviewed the title/description of this PR which will be used as the squashed PR commit message
 - [ ] I have commented my code, particularly in hard-to-understand areas
 - [ ] I have added tests that prove my fix is effective or that my feature works
