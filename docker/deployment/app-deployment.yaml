@@ -131,6 +131,8 @@ spec:
             value: {{WEBSITE}}
           - name: MAIL_HOST
             value: mail
+          - name: LFMERGE_LOGGING_DEST
+            value: syslog
           - name: MONGODB_CONN
             valueFrom:
               secretKeyRef:
