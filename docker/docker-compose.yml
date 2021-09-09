@@ -210,6 +210,7 @@ services:
       dockerfile: docker/test-php/Dockerfile
     image: test-php
     container_name: test-php
+    platform: linux/amd64
     depends_on:
       - db
       - mail
