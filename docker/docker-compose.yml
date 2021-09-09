@@ -122,6 +122,7 @@ services:
   ld-db:
     image: mysql:5.7
     container_name: ld-db
+    platform: linux/amd64
     # To access the MySQL database via localhost:3306 on your dev machine (e.g., in VS Code), uncomment the "ports" config below
     # Note that if you're running MySQL on your dev machine already, change the first number to something else, like 3307 and access localhost:3307
     # ports:
