@@ -42,7 +42,7 @@ build:
 scan:
 	docker build -t lf-app:prod -f app/Dockerfile --platform linux/amd64 ..
 	docker login
-	docker scan --accept-license lf-app:prod > docker-scan-results.txt
+	-docker scan --accept-license lf-app:prod > docker-scan-results.txt
 
 .PHONY: clean
 clean:
