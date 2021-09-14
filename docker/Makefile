@@ -2,7 +2,7 @@
 
 .PHONY: start
 start: build
-  # starts the entire runtime infrastructure
+    # starts the entire runtime infrastructure
 	docker-compose up -d ssl
 
 .PHONY: dev
@@ -36,6 +36,13 @@ endif
 .PHONY: build
 build:
 	docker-compose build mail app ld-api
+
+.PHONY: scan
+# https://docs.docker.com/engine/scan
+scan:
+	docker build -t lf-app:prod -f app/Dockerfile --platform linux/amd64 ..
+	docker login
+	-docker scan --accept-license lf-app:prod > docker-scan-results.txt
 
 .PHONY: clean
 clean:
