@@ -7,6 +7,8 @@ import { SiteWideNoticeService } from '../../core/site-wide-notice-service';
 import { NoticeService } from '../../core/notice/notice.service';
 import { SessionService } from '../../core/session.service';
 import { Project } from '../../shared/model/project.model';
+import { UserService } from '../../core/api/user.service';
+import { RolesService } from '../../core/api/roles.service';
 
 class Rights {
   canEditProjects: boolean;
@@ -33,12 +35,16 @@ export class ProjectsAppController implements angular.IController {
   projectCount: number;
 
   static $inject = ['$window', 'projectService',
+                    'userService',
+                    'rolesService',
                     'sessionService', 'silNoticeService',
                     'breadcrumbService',
                     'siteWideNoticeService',
                     'applicationHeaderService',
                    ];
   constructor(private $window: angular.IWindowService, private projectService: ProjectService,
+              private userService: UserService,
+              private rolesService: RolesService,
               private sessionService: SessionService, private notice: NoticeService,
               private breadcrumbService: BreadcrumbService,
               private siteWideNoticeService: SiteWideNoticeService,
@@ -62,22 +68,6 @@ export class ProjectsAppController implements angular.IController {
         session.hasSiteRight(this.sessionService.domain.PROJECTS, this.sessionService.operation.CREATE);
       this.rights.showControlBar = this.rights.canCreateProject;
       this.siteName = session.baseSite();
-      let project = session.project();
-      if (project && project.appName && project.id) {
-        this.$window.location.href = `/app/${project.appName}/${project.id}/`;
-      } else {
-        this.projectService.list().then((projects: Project[]) => {
-          if (projects && projects.length === 1) {
-            project = projects[0];
-            if (project && project.appName && project.id) {
-              this.$window.location.href = `/app/${project.appName}/${project.id}/`;
-            }
-          } else if (!projects || projects.length === 0) {
-            this.startProject();
-          }
-          // Only show projects page if there are two or more projects, *and* no valid most-recently-used project
-        });
-      }
     });
 
     this.notice.checkUrlForNotices();
