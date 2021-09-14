@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col-md-5 col-lg-4 entries-list-container d-none d-md-block">
                 <div class="entry-words-minimized"><button class="btn btn-primary" data-ng-click="$ctrl.hideRightPanel()">Show words in dictionary</button></div>
-                <div class="entry-words-container">
+                <div id="scrolling-entry-words-container" class="entry-words-container">
                     <div class="row">
                         <div class="col">
                             <div class="words-container-title list-group-item list-group-item-action active">
@@ -92,7 +92,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-7 col-lg-8 entry-primary-container container-scroll">
+            <div id="scrolling-editor-container" class="col-md-7 col-lg-8 entry-primary-container container-scroll">
                 <div>
                     <div class="entryItemView" data-ng-if="$ctrl.entryLoaded()">
                         <dc-entry config="$ctrl.lecConfig.entry" model="$ctrl.currentEntry" control="$ctrl.control"></dc-entry>
