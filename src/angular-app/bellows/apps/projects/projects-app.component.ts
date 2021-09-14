@@ -50,7 +50,7 @@ export class ProjectsAppController implements angular.IController {
     this.projectTypesBySite = this.projectService.data.projectTypesBySite;
     this.applicationHeaderService.setPageName('My Projects');
     this.breadcrumbService.set('top', [{
-          href: '/app/projects?redirect=no',
+          href: '/app/projects',
           label: 'My Projects'
         }]);
     this.siteWideNoticeService.displayNotices();
@@ -62,23 +62,21 @@ export class ProjectsAppController implements angular.IController {
         session.hasSiteRight(this.sessionService.domain.PROJECTS, this.sessionService.operation.CREATE);
       this.rights.showControlBar = this.rights.canCreateProject;
       this.siteName = session.baseSite();
-      if (this.$window.location.search && this.$window.location.search.indexOf('redirect=no') === -1) {
-        let project = session.project();
-        if (project && project.appName && project.id) {
-          this.$window.location.href = `/app/${project.appName}/${project.id}/`;
-        } else {
-          this.projectService.list().then((projects: Project[]) => {
-            if (projects && projects.length === 1) {
-              project = projects[0];
-              if (project && project.appName && project.id) {
-                this.$window.location.href = `/app/${project.appName}/${project.id}/`;
-              }
-            } else if (!projects || projects.length === 0) {
-              this.startProject();
+      let project = session.project();
+      if (project && project.appName && project.id) {
+        this.$window.location.href = `/app/${project.appName}/${project.id}/`;
+      } else {
+        this.projectService.list().then((projects: Project[]) => {
+          if (projects && projects.length === 1) {
+            project = projects[0];
+            if (project && project.appName && project.id) {
+              this.$window.location.href = `/app/${project.appName}/${project.id}/`;
             }
-            // Only show projects page if there are two or more projects, *and* no valid most-recently-used project
-          });
-        }
+          } else if (!projects || projects.length === 0) {
+            this.startProject();
+          }
+          // Only show projects page if there are two or more projects, *and* no valid most-recently-used project
+        });
       }
     });
 
