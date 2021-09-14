@@ -19,8 +19,10 @@ services:
       - ../package.json:/data/package.json
       - ../package-lock.json:/data/package-lock.json
 
-      # needed this volume mapping so changes to typescript would be reflected in running app, actually rebundled and output to dist which is then shared to the app container.
+      # needed these volume maps so changes to typescript/scss would be reflected in running app, actually rebundled and output to dist which is then shared to the app container.
       - ../src/angular-app:/data/src/angular-app
+      - ../src/sass:/data/src/sass
+      - ../src/Site/views/languageforge/theme/default/sass:/data/src/Site/views/languageforge/theme/default/sass
 
   app:
     build:

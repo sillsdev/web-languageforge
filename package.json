@@ -8,7 +8,7 @@
     "build:dev:watch": "npm-run-all -p -l sass:watch webpack:dev:watch",
     "build:prd": "npm-run-all -p -l sass webpack:prd",
     "sass": "sass src/sass:src/dist/css",
-    "sass:watch": "npm run sass && sass src/sass:src/dist/css --watch --recursive",
+    "sass:watch": "sass --watch src/sass:src/dist/css src/Site/views/languageforge/theme/default/sass:src/dist/css src/angular-app:src/dist/css",
     "webpack:dev": "webpack --config webpack-dev.config.js",
     "webpack:dev:watch": "webpack -w --config webpack-dev.config.js",
     "webpack:prd": "webpack --config webpack-prd.config.js",
