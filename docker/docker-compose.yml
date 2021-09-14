@@ -1,4 +1,5 @@
 # https://docs.docker.com/compose/compose-file
+# https://github.com/compose-spec/compose-spec/blob/master/spec.md
 version: '3.5'
 services:
   ui-builder:
@@ -29,6 +30,7 @@ services:
         - ENVIRONMENT=development
     image: lf-app
     container_name: lf-app
+    platform: linux/amd64
     depends_on:
       - db
       - mail
@@ -120,6 +122,7 @@ services:
   ld-db:
     image: mysql:5.7
     container_name: ld-db
+    platform: linux/amd64
     # To access the MySQL database via localhost:3306 on your dev machine (e.g., in VS Code), uncomment the "ports" config below
     # Note that if you're running MySQL on your dev machine already, change the first number to something else, like 3307 and access localhost:3307
     # ports:
@@ -186,6 +189,7 @@ services:
       dockerfile: docker/app-for-e2e/Dockerfile
     image: app-for-e2e
     container_name: app-for-e2e
+    platform: linux/amd64
     depends_on:
       - db
       - mail
@@ -207,6 +211,7 @@ services:
       dockerfile: docker/test-php/Dockerfile
     image: test-php
     container_name: test-php
+    platform: linux/amd64
     depends_on:
       - db
       - mail

@@ -84,7 +84,7 @@ Other useful resources:
 
 ### Running E2E Tests
 
-1. `make e2e-tests`
+1. `make e2e-tests` (⚠️ these do not work on Apple Silicon at this time)
 1. Individual test results will appear in your terminal but if you'd like to watch them in real-time, simply VNC into the running tests via `localhost:5900`, e.g., Mac OSX users simply `open vnc://localhost:5900` and use `secret` as the password.  Other operating systems may require installing a separate VNC Viewer tool.
 
 To run a single E2E spec file, put its path (relative to the repo root) into the `TEST_SPECS` environment variable (don't forget to `export` it), or pass it as an option to `make e2e-tests` as follows:
