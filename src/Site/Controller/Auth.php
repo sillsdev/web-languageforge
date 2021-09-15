@@ -51,7 +51,7 @@ class Auth extends App
             case 'oauth-signup':
             case 'link_oauth_account':
                 if($this->isLoggedIn($app)) {
-                    return $app->redirect('/redirect/projects');
+                    return $app->redirect('/redirect/project');
                 }
                 $model = new AppModel($app, $appName, $this->website);
                 $this->setupAngularAppVariables($model);
