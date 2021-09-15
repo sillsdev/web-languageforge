@@ -4,11 +4,9 @@
 }
 
 localhost {
-	# NOTE: "app" here is the name of the service found in the docker-compose.yml
-	reverse_proxy app:80
+	reverse_proxy {$APP_ADDRESS}
 }
 
 :80 {
-	# NOTE: "app" here is the name of the service found in the docker-compose.yml
-	reverse_proxy app:80
+	reverse_proxy {$APP_ADDRESS}
 }

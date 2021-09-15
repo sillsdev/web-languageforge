@@ -85,6 +85,8 @@ services:
     restart: unless-stopped
     depends_on:
       - app
+    environment:
+      - APP_ADDRESS=app:80
     volumes:
       - lf-caddy-data:/data
       - lf-caddy-config:/config
