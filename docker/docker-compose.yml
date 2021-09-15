@@ -82,14 +82,15 @@ services:
     ports:
       - 80:80
       - 443:443
+    restart: unless-stopped
     depends_on:
       - app
     volumes:
       - lf-caddy-data:/data
       - lf-caddy-config:/config
-    # https://caddyserver.com/docs/command-line
-    command: caddy reverse-proxy --from localhost --to app
-    restart: unless-stopped
+
+      # for developer convenience
+      - ./ssl/Caddyfile:/etc/caddy/Caddyfile
 
   mail:
     image: juanluisbaptiste/postfix:1.0.0
