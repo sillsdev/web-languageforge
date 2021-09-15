@@ -93,6 +93,8 @@ Other useful resources:
 > ```
 > 
 > then hit `http://192.168.161.99` from your phone or other device on the same network.
+>
+> NOTE: disabling cache on your device may not be trivial, you'll either need to wipe the site settings on your device's browser or you'll need some do it via USB debugging.
 
 ### Running E2E Tests
 
