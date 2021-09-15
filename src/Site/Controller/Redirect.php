@@ -27,7 +27,6 @@ class Redirect extends App
         try {
             $this->setupBaseVariables($app);
         } catch (\Exception $e) {
-            \error_log('Exception setting up base variables in /redirect');
             return $app->redirect('/auth/logout');
         }
         try {
@@ -42,24 +41,19 @@ class Redirect extends App
         } catch (UserUnauthorizedException $e) {
             if (SilexSessionHelper::getUserId($app)) {
                 // User tried to access project they're not a member of, so show them projects view so they can pick a different one
-                \error_log('UserUnauthorizedException in /redirect, SilexSessionHelper::getUserId returned true');
                 return $app->redirect("/app/projects");
             }
-            \error_log('UserUnauthorizedException in /redirect, SilexSessionHelper::getUserId returned false');
             return $app->redirect('/auth/logout');
         } catch (\Exception $e) {
-            \error_log('Exception getting project ID in /redirect');
             return $app->redirect('/auth/logout');
         }
         if ($model->projectId) {
             try {
                 $project = new ProjectModel($model->projectId);
                 if ($project && $project->appName) {
-                    \error_log("Recent project, redirecting to /app/$project->appName/$model->projectId");
                     return $app->redirect("/app/$project->appName/$model->projectId");
                 }
             } catch (\Exception $e) {
-                \error_log("Exception trying to create ProjectModel for recent project with ID $model->projectId");
                 return $app->redirect('/auth/logout');
             }
         }
@@ -71,28 +65,21 @@ class Redirect extends App
                     $project = new ProjectModel($projectId);
                     if ($project && $project->appName) {
                         $projectId = $project->id->asString();
-                        \error_log("Single project, redirecting to /app/$project->appName/$projectId");
                         return $app->redirect("/app/$project->appName/$projectId");
                     } else {
-                        \error_log("Could not load single project correctly, redirecting to /app/projects");
                         return $app->redirect('/app/projects');
                     }
                 } catch (\Exception $e) {
-                    \error_log("Exception trying to find appName of single project, redirecting to /app/projects");
                     return $app->redirect('/app/projects');
                 }
                 if ($project && $project->appName) {
                     $projectId = $project->id->asString();
-                    \error_log("Single project, redirecting to /app/$project->appName/$projectId");
                     return $app->redirect("/app/$project->appName/$projectId");
                 }
             } else if (count($this->_user->projects->refs) == 0) {
-                \error_log("User has no projects; redirecting to new-project page");
                 return $app->redirect('/app/lexicon/new-project');
             }
-            \error_log("Found many projects: " . \print_r($this->_user->projects->refs, true));
         }
-        \error_log("Redirect controller could not make a decision, redirecting to /app/projects");
         return $app->redirect('/app/projects');
     }
 }
