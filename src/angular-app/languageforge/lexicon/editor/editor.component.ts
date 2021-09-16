@@ -107,18 +107,24 @@ export class LexiconEditorController implements angular.IController {
   ) { }
 
   $onInit(): void {
-    angular.element(window).bind('keyup', (e: Event) => {
-      if ((e as KeyboardEvent).key === 'PageUp') {
-        this.$scope.$apply(() => {
-          this.skipToEntry(-1);
-        });
-      }
+    this.$scope.$on('$viewContentLoaded', () => {
+      angular.element(window).bind('keyup', (e: Event) => {
+        if ((e as KeyboardEvent).key === 'PageUp') {
+          this.$scope.$apply(() => {
+            if (this.canSkipToEntry(-1)){
+              this.skipToEntry(-1);
+            }
+          });
+        }
 
-      if ((e as KeyboardEvent).key === 'PageDown') {
-        this.$scope.$apply(() => {
-          this.skipToEntry(1);
-        });
-      }
+        if ((e as KeyboardEvent).key === 'PageDown') {
+          this.$scope.$apply(() => {
+            if (this.canSkipToEntry(1)){
+              this.skipToEntry(1);
+            }
+          });
+        }
+      });
     });
 
     this.show.more = this.editorService.showMoreEntries;
@@ -142,6 +148,9 @@ export class LexiconEditorController implements angular.IController {
       if (this.hasUnsavedChanges()) {
         this.saveCurrentEntry();
       }
+      // destroy listeners when leaving editor page
+      angular.element(window).unbind('keyup', (e: Event) => {});
+      this.$scope.$destroy();
     };
 
     this.show.entryListModifiers = !(this.$window.localStorage.getItem('viewFilter') == null ||
