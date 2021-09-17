@@ -150,7 +150,6 @@ export class LexiconEditorController implements angular.IController {
       }
       // destroy listeners when leaving editor page
       angular.element(window).unbind('keyup', (e: Event) => {});
-      this.$scope.$destroy();
     };
 
     this.show.entryListModifiers = !(this.$window.localStorage.getItem('viewFilter') == null ||
