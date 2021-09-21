@@ -82,6 +82,20 @@ Other useful resources:
 1. You should see a landing page, click "Login"
 1. Use `admin` and `password` to get in
 
+> Sometimes there may be a need to hit the locally running app from a device other than the machine the app is running on.  In order to do that, you'll need to do the following:
+> 1. Figure out your local ip address
+> 1. Access the app via http at that address
+> 
+> On a Mac for example:
+> ```
+> ifconfig | grep broadcast
+> 	inet 192.168.161.99 netmask 0xfffffc00 broadcast 192.168.163.255
+> ```
+> 
+> then hit `http://192.168.161.99` from your phone or other device on the same network.
+>
+> NOTE: disabling cache on your device may not be trivial, you'll either need to wipe the site settings on your device's browser or you'll need to do it via USB debugging.
+
 ### Running E2E Tests
 
 1. `make e2e-tests` (⚠️ these do not work on Apple Silicon at this time)
