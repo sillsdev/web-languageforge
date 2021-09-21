@@ -1,6 +1,7 @@
 import * as angular from 'angular';
 
 // cross-ref src/Api/Model/Languageforge/Lexicon/Config/LexConfig.php for expected field names
+// https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/autocapitalize
 const autocapitalizeHints = {
   anthropologyNote: 'sentences',
   cvPattern: 'characters',
