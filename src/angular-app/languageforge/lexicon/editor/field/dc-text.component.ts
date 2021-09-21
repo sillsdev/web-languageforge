@@ -1,5 +1,25 @@
 import * as angular from 'angular';
 
+// cross-ref src/Api/Model/Languageforge/Lexicon/Config/LexConfig.php for expected field names
+const autocapitalizeHints = {
+  anthropologyNote: 'sentences',
+  cvPattern: 'characters',
+  discourseNote: 'sentences',
+  encyclopedicNote: 'sentences',
+  entryBibliography: 'sentences',
+  etymologyComment: 'sentences',
+  generalNote: 'sentences',
+  grammarNote: 'sentences',
+  note: 'sentences',
+  phonologyNote: 'sentences',
+  scientificName: 'sentences',
+  semanticsNote: 'sentences',
+  senseBibliography: 'sentences',
+  sociolinguisticsNote: 'sentences',
+  sentence: 'sentences',
+  reference: 'sentences',
+}
+
 export class FieldTextController implements angular.IController {
   fteModel: string;
   fteToolbar: string;
@@ -7,9 +27,11 @@ export class FieldTextController implements angular.IController {
   fteDisabledReason: string;
   fteMultiline: boolean;
   fteDir: string;
-
+  fteFieldName: string;
+  
   fte: any = {};
   textFieldValue: string = '';
+  autocapitalize: string
 
   static $inject = ['$scope'];
   constructor(private $scope: angular.IScope) { }
@@ -26,6 +48,8 @@ export class FieldTextController implements angular.IController {
     } else {
       this.fte.toolbar = '[[]]';
     }
+
+    this.autocapitalize = autocapitalizeHints[this.fteFieldName] || 'none'
   }
 
   disabledMsg(): string {
@@ -73,7 +97,8 @@ export const FieldTextComponent: angular.IComponentOptions = {
     fteDisabled: '<',
     fteDisabledReason: '<',
     fteMultiline: '<',
-    fteDir: '<'
+    fteDir: '<',
+    fteFieldName: '<',
   },
   controller: FieldTextController,
   templateUrl: '/angular-app/languageforge/lexicon/editor/field/dc-text.component.html'

@@ -5,6 +5,7 @@
         data-ng-model="$ctrl.textFieldValue" 
         data-ng-change="$ctrl.inputChanged()"
         data-ng-disabled="$ctrl.fteDisabled" 
-        title="{{$ctrl.fteDisabled ? $ctrl.disabledMsg() : ''}}">
+        title="{{$ctrl.fteDisabled ? $ctrl.disabledMsg() : ''}}"
+        autocapitalize="{{$ctrl.autocapitalize}}">
     </textarea>
 </div>
