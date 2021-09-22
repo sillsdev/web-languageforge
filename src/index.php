@@ -214,6 +214,8 @@ $app->get('/app/{appName}/{projectId}/',    'Site\Controller\App::view');
 $app->get('/app/{appName}/{projectId}',     'Site\Controller\App::view');
 $app->get('/app/{appName}/',    'Site\Controller\App::view')->value('appName', 'projects');
 $app->get('/app/{appName}',     'Site\Controller\App::view')->value('appName', 'projects');
+$app->get('/redirect/project/',    'Site\Controller\Redirect::view');
+$app->get('/redirect/project',     'Site\Controller\Redirect::view');
 $app->get('/script/{folder}/{scriptName}/{runType}', 'Site\Controller\Script::run');
 $app->get('/script/{folder}/{scriptName}/', 'Site\Controller\Script::run');
 $app->get('/script/{folder}/{scriptName}',  'Site\Controller\Script::run');
