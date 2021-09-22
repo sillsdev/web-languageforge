@@ -15,8 +15,6 @@ class Redirect extends App
     /**
      * @param Request $request
      * @param Application $app
-     * @param $appName
-     * @param string $projectId
      * @return Response
      */
     public function view(
