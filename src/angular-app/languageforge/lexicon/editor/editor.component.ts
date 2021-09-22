@@ -1,4 +1,5 @@
 import * as angular from 'angular';
+import { diff } from 'deep-diff';
 
 import { ActivityService } from '../../../bellows/core/api/activity.service';
 import { ApplicationHeaderService } from '../../../bellows/core/application-header.service';
@@ -333,8 +334,10 @@ export class LexiconEditorController implements angular.IController {
     // entry and is NOT going to a different entry (as is the case with editing another entry.
     let isNewEntry = false;
     let newEntryTempId: string;
+    console.log('saveCurrentEntry() called');
 
     if (this.hasUnsavedChanges() && this.lecRights.canEditEntry()) {
+      console.log('Actually saving entry');
       this.cancelAutoSaveTimer();
       this.sendReceive.setStateUnsynced();
       this.saveStatus = 'saving';
@@ -342,10 +345,15 @@ export class LexiconEditorController implements angular.IController {
       this.control.currentEntry = this.currentEntry;
       const entryToSave = angular.copy(this.currentEntry);
       if (LexiconEditorController.entryIsNew(entryToSave)) {
+        console.log('entry is new');
         isNewEntry = true;
         newEntryTempId = entryToSave.id;
         entryToSave.id = ''; // send empty id to indicate "create new"
+      } else {
+        console.log('entry is not new');
       }
+      const diffs = diff(this.pristineEntry, entryToSave);
+      console.log('Would save the following diff', diffs);
 
       return this.$q.all({
         entry: this.lexService.update(this.prepEntryForUpdate(entryToSave)),
