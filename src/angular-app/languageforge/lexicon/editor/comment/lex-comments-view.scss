@@ -17,7 +17,8 @@
 
 .container-scroll {
   overflow-y: scroll;
-  height: calc(100vh - 360px);
+  overflow-x: hidden;
+  height: calc(100vh - 296px);
   }
 
 .comments-right-panel {
