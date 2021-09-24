@@ -280,7 +280,7 @@ export class EditorPage {
       list: EditorUtil.getOneField('Pictures'),
       images: EditorUtil.getOneField('Pictures').all(by.css('img')),
       captions: EditorUtil.getOneField('Pictures')
-        .all(by.css('.input-group > .dc-text input')),
+        .all(by.css('.input-group > .dc-text textarea')),
       removeImages: EditorUtil.getOneField('Pictures').all(by.className('fa-trash')),
       getFileName: (index: number) => {
         return this.editorUtil.getOneFieldValue('Pictures').then((pictures: any) =>
@@ -305,7 +305,7 @@ export class EditorPage {
 
     getMultiTextInputs: (searchLabel: string) => {
       return EditorUtil.getOneField(searchLabel)
-        .all(by.css('.input-group > .dc-text input'));
+        .all(by.css('.input-group > .dc-text textarea'));
     },
 
     getMultiTextInputSystems: (searchLabel: string) => {

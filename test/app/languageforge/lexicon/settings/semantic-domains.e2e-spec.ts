@@ -62,6 +62,8 @@ describe('Lexicon E2E Semantic Domains Lazy Load', () => {
   });
 
   it('can change Project default language back to Thai', async () => {
+    await browser.refresh();
+    await browser.wait(ExpectedConditions.visibilityOf(editorPage.edit.entryCountElem), Utils.conditionTimeout);
     await projectSettingsPage.getByLink();
     expect<any>(await projectSettingsPage.projectTab.defaultLanguageSelected.getText()).toContain('English');
     await projectSettingsPage.projectTab.defaultLanguageSelect.sendKeys('ภาษาไทย');

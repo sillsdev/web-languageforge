@@ -1,26 +1,26 @@
 import * as angular from 'angular';
 
-import {ActivityService} from '../../../bellows/core/api/activity.service';
-import {ApplicationHeaderService} from '../../../bellows/core/application-header.service';
-import {ModalService} from '../../../bellows/core/modal/modal.service';
-import {NoticeService} from '../../../bellows/core/notice/notice.service';
+import { ActivityService } from '../../../bellows/core/api/activity.service';
+import { ApplicationHeaderService } from '../../../bellows/core/application-header.service';
+import { ModalService } from '../../../bellows/core/modal/modal.service';
+import { NoticeService } from '../../../bellows/core/notice/notice.service';
 import {
   EditorDataService,
   FilterOption,
   LabeledOption,
   SortOption
 } from '../../../bellows/core/offline/editor-data.service';
-import {LexiconCommentService} from '../../../bellows/core/offline/lexicon-comments.service';
-import {SessionService} from '../../../bellows/core/session.service';
-import {InterfaceConfig} from '../../../bellows/shared/model/interface-config.model';
-import {SemanticDomainsService} from '../../core/semantic-domains/semantic-domains.service';
-import {LexiconEntryApiService} from '../core/lexicon-entry-api.service';
-import {LexiconProjectService} from '../core/lexicon-project.service';
-import {LexiconRightsService, Rights} from '../core/lexicon-rights.service';
-import {LexiconSendReceiveService} from '../core/lexicon-send-receive.service';
-import {LexiconUtilityService} from '../core/lexicon-utility.service';
-import {LexEntry} from '../shared/model/lex-entry.model';
-import {LexPicture} from '../shared/model/lex-picture.model';
+import { LexiconCommentService } from '../../../bellows/core/offline/lexicon-comments.service';
+import { SessionService } from '../../../bellows/core/session.service';
+import { InterfaceConfig } from '../../../bellows/shared/model/interface-config.model';
+import { SemanticDomainsService } from '../../core/semantic-domains/semantic-domains.service';
+import { LexiconEntryApiService } from '../core/lexicon-entry-api.service';
+import { LexiconProjectService } from '../core/lexicon-project.service';
+import { LexiconRightsService, Rights } from '../core/lexicon-rights.service';
+import { LexiconSendReceiveService } from '../core/lexicon-send-receive.service';
+import { LexiconUtilityService } from '../core/lexicon-utility.service';
+import { LexEntry } from '../shared/model/lex-entry.model';
+import { LexPicture } from '../shared/model/lex-picture.model';
 import {
   LexConfig,
   LexConfigField,
@@ -28,9 +28,9 @@ import {
   LexConfigMultiText, LexConfigOptionList,
   LexiconConfig
 } from '../shared/model/lexicon-config.model';
-import {LexiconProject} from '../shared/model/lexicon-project.model';
-import {LexOptionList} from '../shared/model/option-list.model';
-import {FieldControl} from './field/field-control.model';
+import { LexiconProject } from '../shared/model/lexicon-project.model';
+import { LexOptionList } from '../shared/model/option-list.model';
+import { FieldControl } from './field/field-control.model';
 
 class Show {
   more: () => void;
@@ -87,26 +87,46 @@ export class LexiconEditorController implements angular.IController {
   ];
 
   constructor(private readonly $filter: angular.IFilterService,
-              private readonly $interval: angular.IIntervalService,
-              private readonly $q: angular.IQService,
-              private readonly $scope: angular.IScope,
-              private readonly $state: angular.ui.IStateService,
-              private readonly $window: angular.IWindowService,
-              private readonly activityService: ActivityService,
-              private readonly applicationHeaderService: ApplicationHeaderService,
-              private readonly modal: ModalService,
-              private readonly notice: NoticeService,
-              private readonly sessionService: SessionService,
-              private readonly semanticDomains: SemanticDomainsService,
-              private readonly commentService: LexiconCommentService,
-              private readonly editorService: EditorDataService,
-              private readonly lexService: LexiconEntryApiService,
-              private readonly lexProjectService: LexiconProjectService,
-              private readonly rightsService: LexiconRightsService,
-              private readonly sendReceive: LexiconSendReceiveService,
-             ) {}
+    private readonly $interval: angular.IIntervalService,
+    private readonly $q: angular.IQService,
+    private readonly $scope: angular.IScope,
+    private readonly $state: angular.ui.IStateService,
+    private readonly $window: angular.IWindowService,
+    private readonly activityService: ActivityService,
+    private readonly applicationHeaderService: ApplicationHeaderService,
+    private readonly modal: ModalService,
+    private readonly notice: NoticeService,
+    private readonly sessionService: SessionService,
+    private readonly semanticDomains: SemanticDomainsService,
+    private readonly commentService: LexiconCommentService,
+    private readonly editorService: EditorDataService,
+    private readonly lexService: LexiconEntryApiService,
+    private readonly lexProjectService: LexiconProjectService,
+    private readonly rightsService: LexiconRightsService,
+    private readonly sendReceive: LexiconSendReceiveService,
+  ) { }
 
   $onInit(): void {
+    this.$scope.$on('$viewContentLoaded', () => {
+      angular.element(window).bind('keyup', (e: Event) => {
+        if ((e as KeyboardEvent).key === 'PageUp') {
+          this.$scope.$apply(() => {
+            if (this.canSkipToEntry(-1)){
+              this.skipToEntry(-1);
+            }
+          });
+        }
+
+        if ((e as KeyboardEvent).key === 'PageDown') {
+          this.$scope.$apply(() => {
+            if (this.canSkipToEntry(1)){
+              this.skipToEntry(1);
+            }
+          });
+        }
+      });
+    });
+
     this.show.more = this.editorService.showMoreEntries;
 
     this.$scope.$watch(() => this.lecConfig, () => {
@@ -128,6 +148,8 @@ export class LexiconEditorController implements angular.IController {
       if (this.hasUnsavedChanges()) {
         this.saveCurrentEntry();
       }
+      // destroy listeners when leaving editor page
+      angular.element(window).unbind('keyup', (e: Event) => {});
     };
 
     this.show.entryListModifiers = !(this.$window.localStorage.getItem('viewFilter') == null ||
@@ -210,7 +232,7 @@ export class LexiconEditorController implements angular.IController {
       sortReverse: this.$state.params.sortReverse,
       filterType: this.$state.params.filterType,
       filterBy: this.$state.params.filterBy
-    }, {notify: true});
+    }, { notify: true });
   }
 
   isAtEditorList(): boolean {
@@ -253,7 +275,7 @@ export class LexiconEditorController implements angular.IController {
         this.entryListModifiers.filterBy = {
           text: this.$state.params.filterText || '',
           option: this.$state.params.filterBy ?
-                  this.findSelectedFilter(this.entryListModifiers.filterOptions, this.$state.params.filterBy) : null
+            this.findSelectedFilter(this.entryListModifiers.filterOptions, this.$state.params.filterBy) : null
         };
       }
 
@@ -306,7 +328,7 @@ export class LexiconEditorController implements angular.IController {
   }
 
   saveCurrentEntry = (doSetEntry: boolean = false, successCallback: () => void = () => { },
-                      failCallback: (reason?: any) => void = () => { }) => {
+    failCallback: (reason?: any) => void = () => { }) => {
     // `doSetEntry` is mainly used for when the save button is pressed, that is when the user is saving the current
     // entry and is NOT going to a different entry (as is the case with editing another entry.
     let isNewEntry = false;
@@ -630,7 +652,7 @@ export class LexiconEditorController implements angular.IController {
       const resultIndex = upperCaseText.indexOf(filterText, previousIndex);
       const end = resultIndex + filterText.length;
       output += text.slice(previousIndex, resultIndex) + '<span class="highlight-result">'
-              + text.slice(resultIndex, end) + '</span>';
+        + text.slice(resultIndex, end) + '</span>';
       previousIndex = end;
     }
     output += text.slice(previousIndex);
@@ -725,7 +747,7 @@ export class LexiconEditorController implements angular.IController {
     this.rightPanelVisible = false;
     this.control.rightPanelVisible = this.rightPanelVisible;
     this.setCommentContext('');
-}
+  }
 
   setCommentContext = (contextGuid: string): void => {
     this.commentContext.contextGuid = contextGuid;
@@ -920,7 +942,7 @@ export class LexiconEditorController implements angular.IController {
     });
   }
 
-  private findSelectedFilter<T extends LabeledOption>(collections: T[], params: string) : T {
+  private findSelectedFilter<T extends LabeledOption>(collections: T[], params: string): T {
     if (collections && params) return collections.filter(item => item.label === params)[0];
   }
 

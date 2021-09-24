@@ -43,7 +43,7 @@ describe('Lexicon E2E Editor Comments', () => {
     expect<any>(await comment.score.getText()).toEqual('0 Likes');
     expect<any>(await comment.plusOne.isPresent()).toBe(true);
     expect<any>(await comment.content.getText()).toEqual('First comment on this word.');
-    expect<any>(await comment.date.getText()).toMatch(/ago|in a few seconds/);
+    expect<any>(await comment.date.getText()).toMatch(/ago|in a few seconds|in less than a minute/);
   });
 
   it('comments panel: add comment to another part of the entry', async () => {
@@ -66,7 +66,7 @@ describe('Lexicon E2E Editor Comments', () => {
     expect<any>(await comment.score.getText()).toEqual('0 Likes');
     expect<any>(await comment.plusOne.isPresent()).toBe(true);
     expect<any>(await comment.content.getText()).toEqual('Second comment.');
-    expect<any>(await comment.date.getText()).toMatch(/ago|in a few seconds/);
+    expect<any>(await comment.date.getText()).toMatch(/ago|in a few seconds|in less than a minute/);
   });
 
   it('comments panel: check regarding value is hidden when the field value matches', async () => {

@@ -126,7 +126,8 @@ export class JsonRpcService {
       // only report error if the browser/network is not OFFLINE and not timeout (status -1)
       // otherwise fail silently (the browser will console log a failed connection anyway)
       if (response.status > 0 && response.status !== '0') {
-        this.error.notify('RPC Error', 'Server Status Code ' + response.status);
+        // just absorb 502's, nothing the user can do about it.
+        response.status !== 502 && this.error.notify('RPC Error', 'Server Status Code ' + response.status);
         result.ok = false;
         result.data = response.data;
         result.status = response.status;

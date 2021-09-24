@@ -29,7 +29,7 @@ class Page extends Base
         // special case for "brochure" HTML5 homepage
         if ($pageName == 'home') {
             if ($this->_isLoggedIn) {
-                return $app->redirect('/app/projects');
+                return $app->redirect('/redirect/project');
             }
             $homepageInAFolder = $this->getThemePath() . '/page/home';
             if (is_dir($homepageInAFolder)) {
