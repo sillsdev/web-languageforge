@@ -328,6 +328,14 @@ export class LexiconEditorController implements angular.IController {
     return this.currentEntry.id != null;
   }
 
+  hasAddedOrDeletedSenseOrExample(diffs: any[]): boolean {
+    return diffs.some(diff =>
+      diff.kind === 'A' &&  // Kind 'A' means an addition or a deletion from an array
+      (diff.path[diff.path.length - 1] === 'senses' ||
+       diff.path[diff.path.length - 1] === 'examples')
+    );
+  }
+
   saveCurrentEntry = (doSetEntry: boolean = false, successCallback: () => void = () => { },
     failCallback: (reason?: any) => void = () => { }) => {
     // `doSetEntry` is mainly used for when the save button is pressed, that is when the user is saving the current
@@ -358,8 +366,12 @@ export class LexiconEditorController implements angular.IController {
         id: entryForUpdate.id,
         _update_deep_diff: diff(pristineEntryForDiffing, entryForUpdate)
       };
-      const entryOrDiff = isNewEntry ? entryForUpdate : diffForUpdate;
+      let entryOrDiff = isNewEntry ? entryForUpdate : diffForUpdate;
       if (!isNewEntry) console.log('Would save the following diff', diffForUpdate);
+      if (!isNewEntry && this.hasAddedOrDeletedSenseOrExample(diffForUpdate._update_deep_diff)) {
+        // Updates involving adding or deleting a sense or example cannot be delta updates
+        entryOrDiff = entryForUpdate;
+      }
 
       return this.$q.all({
         entry: this.lexService.update(entryOrDiff),

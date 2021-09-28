@@ -36,6 +36,8 @@ export class FieldEntryController implements angular.IController {
   }
 
   addSense($position: number): void {
+    // Adding or removing senses makes for a non-delta update, so save a possible delta update first
+    this.control.saveCurrentEntry();
     const newSense = {};
     this.control.makeValidModelRecursive(this.config.fields.senses, newSense, 'examples');
     if ($position === 0) {
@@ -53,6 +55,8 @@ export class FieldEntryController implements angular.IController {
         this.model.senses[index]) + ' \'</b>';
     this.modal.showModalSimple('Delete Meaning', deletemsg, 'Cancel', 'Delete Meaning')
       .then(() => {
+        // Adding or removing senses makes for a non-delta update, so save a possible delta update first
+        this.control.saveCurrentEntry();
         this.model.senses.splice(index, 1);
         this.control.saveCurrentEntry();
         this.control.hideRightPanel();
