@@ -120,6 +120,44 @@ class MapperModel extends ObjectForEncoding
     }
 
     /**
+     * Writes the model to the mongo collection
+     * @return string The unique id of the object written
+     * @see MongoMapper::write()
+     */
+    public function writeDiff()
+    {
+        // TODO: Implement. Code below is the write() implementation.
+        CodeGuard::checkTypeAndThrow($this->id, 'Api\Model\Shared\Mapper\Id');
+        $now = UniversalTimestamp::now();
+        if (! defined('MAPPERMODEL_NO_TIMESTAMP_UPDATE')) {
+            $this->dateModified = $now;
+        }
+        if (Id::isEmpty($this->id)) {
+            $this->dateCreated = $now;
+        }
+        $rearrangeableProperties = $this->getRearrangeableProperties();
+        $rearrangeableSubproperties = [];
+        foreach ($rearrangeableProperties as $property) {
+            $value = $this->$property;
+            if (is_a($value, 'Api\Model\Shared\Mapper\ArrayOf')) {
+                foreach ($value as $item) {
+                    if (is_a($item, 'Api\Model\Shared\Mapper\ObjectForEncoding')) {
+                        foreach ($item->getRearrangeableProperties() as $subProperty) {
+                            if (! array_key_exists($property, $rearrangeableSubproperties)) {
+                                $rearrangeableSubproperties[$property] = [];
+                            }
+                            $rearrangeableSubproperties[$property][] = $subProperty;
+                        }
+                    }
+                }
+            }
+        }
+        $this->id->id = $this->_mapper->write($this, $this->id->id, $rearrangeableProperties, $rearrangeableSubproperties);
+
+        return $this->id->id;
+    }
+
+    /**
      * returns true if the Id exists in the collection, false otherwise
      * @param string $id
      * @return bool

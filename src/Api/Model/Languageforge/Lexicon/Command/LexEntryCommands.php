@@ -12,6 +12,7 @@ use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\Shared\ActivityModel;
 use Api\Model\Shared\Command\ActivityCommands;
 use Api\Model\Shared\Command\ProjectCommands;
+use Api\Model\Shared\DeepDiff\DeepDiffDecoder;
 use Api\Model\Shared\Mapper\JsonEncoder;
 use Api\Model\Shared\ProjectModel;
 use Litipk\Jiffy\UniversalTimestamp;
@@ -129,7 +130,14 @@ class LexEntryCommands
             if (SendReceiveCommands::isInProgress($projectId)) return false;
         }
 
-        LexEntryDecoder::decode($entry, $params);
+        $isDeltaUpdate = false;
+        if (array_key_exists('_update_deep_diff', $params)) {
+            $isDeltaUpdate = true;
+            $deepDiff = $params['_update_deep_diff'];
+            DeepDiffDecoder::applyDeepDiff($entry, $deepDiff);
+        } else {
+            LexEntryDecoder::decode($entry, $params);
+        }
 
         if ($action === 'update') {
             $differences = $oldEntry->calculateDifferences($entry);
@@ -138,7 +146,15 @@ class LexEntryCommands
             $differences = null; // TODO: Do we want differences even on a brand-new, added, entry?
         }
 
-        $entry->write();
+        if ($isDeltaUpdate) {
+            $update = DeepDiffDecoder::toMongoUpdate($deepDiff);
+            error_log('Would send the following Mongo update:');
+            error_log(print_r($update, true));
+            // TODO: Actually apply the Mongo update
+        } else {
+            error_log('Was not a deep diff update');
+            $entry->write();
+        }
         $project->write();
         ActivityCommands::writeEntry($project, $userId, $entry, $action, $differences);
 

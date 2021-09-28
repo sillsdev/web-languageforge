@@ -352,11 +352,17 @@ export class LexiconEditorController implements angular.IController {
       } else {
         console.log('entry is not new');
       }
-      const diffs = diff(this.pristineEntry, entryToSave);
-      console.log('Would save the following diff', diffs);
+      const entryForUpdate = this.prepEntryForUpdate(entryToSave);
+      const pristineEntryForDiffing = this.prepEntryForUpdate(this.pristineEntry);
+      const diffForUpdate = isNewEntry ? undefined : {
+        id: entryForUpdate.id,
+        _update_deep_diff: diff(pristineEntryForDiffing, entryForUpdate)
+      };
+      const entryOrDiff = isNewEntry ? entryForUpdate : diffForUpdate;
+      if (!isNewEntry) console.log('Would save the following diff', diffForUpdate);
 
       return this.$q.all({
-        entry: this.lexService.update(this.prepEntryForUpdate(entryToSave)),
+        entry: this.lexService.update(entryOrDiff),
         isSR: this.sendReceive.isSendReceiveProject()
       }).then(data => {
         const entry = data.entry.data;
