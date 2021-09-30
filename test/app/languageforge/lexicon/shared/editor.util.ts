@@ -11,7 +11,7 @@ export class EditorUtil {
     const inputSystemDivs = elem.all(by.repeater('tag in $ctrl.config.inputSystems'));
     return inputSystemDivs.map((div: any) => {
       const wsidSpan = div.element(by.css('.input-group > span.wsid'));
-      const wordInput = div.element(by.css('.input-group > .dc-text input'));
+      const wordInput = div.element(by.css('.input-group > .dc-text textarea'));
       return wsidSpan.getText().then((wsid: any) => {
         return wordInput.isPresent().then((isWordPresent: boolean) => {
           if (isWordPresent) {

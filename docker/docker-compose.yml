@@ -1,4 +1,5 @@
 # https://docs.docker.com/compose/compose-file
+# https://github.com/compose-spec/compose-spec/blob/master/spec.md
 version: '3.5'
 services:
   ui-builder:
@@ -18,8 +19,10 @@ services:
       - ../package.json:/data/package.json
       - ../package-lock.json:/data/package-lock.json
 
-      # needed this volume mapping so changes to typescript would be reflected in running app, actually rebundled and outpt to dist which is then shared to the app container.
+      # needed these volume maps so changes to typescript/scss would be reflected in running app, actually rebundled and output to dist which is then shared to the app container.
       - ../src/angular-app:/data/src/angular-app
+      - ../src/sass:/data/src/sass
+      - ../src/Site/views/languageforge/theme/default/sass:/data/src/Site/views/languageforge/theme/default/sass
 
   app:
     build:
@@ -29,6 +32,7 @@ services:
         - ENVIRONMENT=development
     image: lf-app
     container_name: lf-app
+    platform: linux/amd64
     depends_on:
       - db
       - mail
@@ -49,6 +53,7 @@ services:
       - FACEBOOK_CLIENT_SECRET=bogus-development-token
       - REMEMBER_ME_SECRET=bogus-development-key
       - LANGUAGE_DEPOT_API_TOKEN=bogus-development-token
+      - LFMERGE_LOGGING_DEST=syslog
     command: sh -c "/wait && apache2-foreground"
     extra_hosts:
       - "host.docker.internal:host-gateway"
@@ -77,14 +82,17 @@ services:
     ports:
       - 80:80
       - 443:443
+    restart: unless-stopped
     depends_on:
       - app
+    environment:
+      - APP_ADDRESS=app:80
     volumes:
       - lf-caddy-data:/data
       - lf-caddy-config:/config
-    # https://caddyserver.com/docs/command-line
-    command: caddy reverse-proxy --from localhost --to app
-    restart: unless-stopped
+
+      # for developer convenience
+      - ./ssl/Caddyfile:/etc/caddy/Caddyfile
 
   mail:
     image: juanluisbaptiste/postfix:1.0.0
@@ -119,6 +127,7 @@ services:
   ld-db:
     image: mysql:5.7
     container_name: ld-db
+    platform: linux/amd64
     # To access the MySQL database via localhost:3306 on your dev machine (e.g., in VS Code), uncomment the "ports" config below
     # Note that if you're running MySQL on your dev machine already, change the first number to something else, like 3307 and access localhost:3307
     # ports:
@@ -185,6 +194,7 @@ services:
       dockerfile: docker/app-for-e2e/Dockerfile
     image: app-for-e2e
     container_name: app-for-e2e
+    platform: linux/amd64
     depends_on:
       - db
       - mail
@@ -206,6 +216,7 @@ services:
       dockerfile: docker/test-php/Dockerfile
     image: test-php
     container_name: test-php
+    platform: linux/amd64
     depends_on:
       - db
       - mail

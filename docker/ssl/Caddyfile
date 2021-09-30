@@ -1,0 +1,12 @@
+# https://caddyserver.com/docs/caddyfile
+{
+	#debug
+}
+
+localhost {
+	reverse_proxy {$APP_ADDRESS}
+}
+
+:80 {
+	reverse_proxy {$APP_ADDRESS}
+}

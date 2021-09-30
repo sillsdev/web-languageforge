@@ -21,6 +21,9 @@ retrieve-current-deployments:
 shell-app:
 	kubectl exec -it deploy/app -- sh
 
+init-secrets:
+	kubectl apply -f secrets.yaml
+
 create-new-deployment-mail:
 	kubectl create deployment mail --image=juanluisbaptiste/postfix:1.0.0 --dry-run=client -o yaml > mail-deployment-new.yaml
 
