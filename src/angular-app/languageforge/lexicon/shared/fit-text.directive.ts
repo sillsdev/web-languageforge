@@ -24,13 +24,11 @@ export class FitTextDirective implements angular.IDirective {
       var primaryNavigationElement = angular.element(document).find('#primary-navigation');
       var primaryNavigationHeight = primaryNavigationElement.height();
       var scrollingEditorContainerElement = angular.element(document).find('#scrolling-editor-container');
-      var compactEntryListContainerElement = angular.element(document).find('#compactEntryListContainer');
 
       var adjHeight = wHeight - (tHeight - defaultHeight);
       var sHeight = adjHeight - (177 + primaryNavigationHeight);
       var lHeight = adjHeight - (447 + primaryNavigationHeight);
       scrollingEditorContainerElement.css({ height: sHeight + 'px' });
-      compactEntryListContainerElement.css({ height: lHeight + 'px' });
     }
 
     element.on('keyup', () => {
