@@ -117,7 +117,7 @@
   display: grid;
 }
 .grow-wrap::after {
-  /* Note the weird space! Needed to preventy jumpy behavior */
+  /* Note the weird space! Needed to prevent jumpy behavior */
   content: attr(data-replicated-value) " ";
 
   /* This is how textarea text behaves */
@@ -136,7 +136,6 @@
 .grow-wrap > textarea,
 .grow-wrap::after {
   /* Identical styling required!! */
-  border: 1px solid black;
   padding: 0.5rem;
   font: inherit;
   width: 100%;
