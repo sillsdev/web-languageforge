@@ -19,7 +19,7 @@ class Redirect extends App
      */
     public function view(
         /** @noinspection PhpUnusedParameterInspection */
-        Request $request, Application $app
+        Request $request, Application $app, $appName = 'project', $projectId = ''
     ) {
         try {
             $this->setupBaseVariables($app);
