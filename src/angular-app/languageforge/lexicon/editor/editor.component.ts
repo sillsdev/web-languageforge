@@ -107,24 +107,23 @@ export class LexiconEditorController implements angular.IController {
   ) { }
 
   $onInit(): void {
-    this.$scope.$on('$viewContentLoaded', () => {
-      angular.element(window).bind('keyup', (e: Event) => {
-        if ((e as KeyboardEvent).key === 'PageUp') {
-          this.$scope.$apply(() => {
-            if (this.canSkipToEntry(-1)){
-              this.skipToEntry(-1);
-            }
-          });
-        }
 
-        if ((e as KeyboardEvent).key === 'PageDown') {
-          this.$scope.$apply(() => {
-            if (this.canSkipToEntry(1)){
-              this.skipToEntry(1);
-            }
-          });
-        }
-      });
+    // add PgUp and PgDn global window handlers to facilitate paging through entries
+    angular.element(window).bind('keydown', (e: Event) => {
+      var key = (e as KeyboardEvent).key;
+      if (key == 'PageUp' || key == 'PageDown') {
+        e.preventDefault();
+        this.$scope.$apply(() => {
+          if (key == 'PageUp' && this.canSkipToEntry(-1)) {
+            console.log("page up");
+            this.skipToEntry(-1);
+          }
+          if (key == 'PageDown' && this.canSkipToEntry(1)) {
+            console.log("page down");
+            this.skipToEntry(1);
+          }
+        });
+      }
     });
 
     this.show.more = this.editorService.showMoreEntries;
@@ -148,8 +147,6 @@ export class LexiconEditorController implements angular.IController {
       if (this.hasUnsavedChanges()) {
         this.saveCurrentEntry();
       }
-      // destroy listeners when leaving editor page
-      angular.element(window).unbind('keyup', (e: Event) => {});
     };
 
     this.show.entryListModifiers = !(this.$window.localStorage.getItem('viewFilter') == null ||
@@ -216,6 +213,7 @@ export class LexiconEditorController implements angular.IController {
   $onDestroy(): void {
     this.cancelAutoSaveTimer();
     this.saveCurrentEntry();
+    angular.element(window).unbind('keydown', (e: Event) => {});
   }
 
   navigateToLiftImport(): void {
