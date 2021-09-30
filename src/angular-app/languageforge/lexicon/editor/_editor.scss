@@ -293,11 +293,14 @@ dc-entry .card {
         }
     }
     .lexiconItemListContainer {
-      margin-bottom: 15px;
       @include media-breakpoint-up(sm) {
-        height: calc(100vh - 568px);
-        overflow: auto;
-        }
+        margin-bottom: 5px;
+        height: calc(100vh - 310px);
+      }
+      @include media-breakpoint-down(sm) {
+        height: calc(100vh - 260px);
+      }
+      overflow: auto;
     }
     .lexiconListItem.active {
         cursor: default;
@@ -317,8 +320,8 @@ dc-entry .card {
 }
 
 #lexAppEditView {
-  .lexiconItemListContainer {
-    height: calc(100vh - 568px);
+  #compactEntryListContainer {
+    height: calc(100vh - 400px);
     overflow: auto;
   }
   .word-definition-title {
