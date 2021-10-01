@@ -18,8 +18,14 @@
 .container-scroll {
   overflow-y: scroll;
   overflow-x: hidden;
-  height: calc(100vh - 296px);
+
+  @include media-breakpoint-up(sm) {
+    height: calc(100vh - 296px);
   }
+  @include media-breakpoint-down(sm) {
+    height: calc(100vh - 270px);
+  }
+}
 
 .comments-right-panel {
   color: $Eden;
