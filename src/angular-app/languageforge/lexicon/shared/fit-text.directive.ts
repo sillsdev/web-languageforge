@@ -3,52 +3,34 @@ import * as angular from 'angular';
 export class FitTextDirective implements angular.IDirective {
 
   link(scope: angular.IScope, element: angular.IAugmentedJQuery, attr: angular.IAttributes) {
-    let kInput: boolean = false;
-    var defaultHeight = 24;
-    element.height(40);
-    element.css({ 'max-height': '40px' });
-    element.css({ height: '40px' });
+    function updateHeight(): void {
 
-    function updateHeight(): any {
-      let height = element.prop('scrollHeight');
-      element.height = height;
-      element.css({ 'max-height': height + 'px' });
-      element.css({ height: height + 'px' });
-      updateContainersHeight();
-    }
+        // element is a JQuery object, and element[0] is the textarea DOM object
+        // the DOM object is the only way we can access the calculated "scrollHeight",
+        // since the JQuery object doesn't have that property
+        let el = element[0] as HTMLTextAreaElement;
 
-    function updateContainersHeight(): any {
-      var wHeight = angular.element(window).height();
-      var editorTitleTextElement = angular.element(document).find('#editor-title-text');
-      var tHeight = editorTitleTextElement.height();
-      var primaryNavigationElement = angular.element(document).find('#primary-navigation');
-      var primaryNavigationHeight = primaryNavigationElement.height();
-      var scrollingEditorContainerElement = angular.element(document).find('#scrolling-editor-container');
+        // start with a small minimum height
+      	el.style.height = "10px";
 
-      var adjHeight = wHeight - (tHeight - defaultHeight);
-      var sHeight = adjHeight - (177 + primaryNavigationHeight);
-      var lHeight = adjHeight - (447 + primaryNavigationHeight);
-      scrollingEditorContainerElement.css({ height: sHeight + 'px' });
+        // grow to the height necessary to fit all the text
+        el.style.height = el.scrollHeight+"px";
     }
 
     element.on('keyup', () => {
-      kInput = true;
       scope.$apply(() => {
         updateHeight();
       });
     });
 
-    angular.element(window).on('resize',() => { 
+    angular.element(window).on('resize',() => {
       updateHeight();
     });
 
+    // this is required in order to resize the text area when switching between entries
     scope.$watch(() => {
-      if (!kInput){
-        kInput = false;
-        updateHeight();
-      }
+      updateHeight();
     });
-
   }
 
   static factory(): angular.IDirectiveFactory {
