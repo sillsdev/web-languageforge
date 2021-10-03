@@ -25,6 +25,11 @@
     font-style: normal;
   }
 }
+@include media-breakpoint-down(sm) {
+  .dc-rendered-container {
+    display: none;
+  }
+}
 .dc-rendered-overflow{
   display: -webkit-box;
   -webkit-line-clamp: 2;
