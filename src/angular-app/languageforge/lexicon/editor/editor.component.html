@@ -41,14 +41,14 @@
                 </div>
             </div>
         </div>
-        <div class="row">
+        <div class="row" data-ng-show="$ctrl.isAtEditorEntry()">
             <div class="col">
                 <div id="editor-title-text" class="word-definition-title">
                     <dc-rendered config="$ctrl.lecConfig.entry" global-config="$ctrl.lecConfig"
                                  model="$ctrl.currentEntry" option-lists="$ctrl.lecOptionLists"></dc-rendered>
                 </div>
             </div>
-        </div>        
+        </div>
     </div>
 
     <div data-ui-view></div>
