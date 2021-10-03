@@ -11,7 +11,7 @@
         <div id="primary-navigation" class="fixed-nav-bar" data-ng-cloak data-ng-controller="navbarController as $ctrl">
             <nav class="navbar navbar-expand navbar-dark align-items-stretch">
                 <span class="navbar-brand d-md-inline-block mr-auto">
-                    <img class="navbar-logo" src="/Site/views/languageforge/theme/default/image/lf_logo_medium.png">
+                    <img class="navbar-logo" title="v{{ version }}" src="/Site/views/languageforge/theme/default/image/lf_logo_medium.png">
                     <a class="website-title" href="/">{{ app.website.name }}</a>
                 </span>
                 <ul class="nav navbar-nav">
@@ -127,7 +127,7 @@
         <div id="primary-navigation" class="logged-out" data-ng-cloak data-ng-controller="navbarController as $ctrl">
             <nav class="fixed-nav-bar navbar navbar-expand navbar-dark align-items-stretch logged-out">
                 <span class="navbar-brand d-md-inline-block mr-auto">
-                    <img class="navbar-logo" src="/Site/views/languageforge/theme/default/image/lf_logo_medium.png">
+                    <img class="navbar-logo" title="v{{ version }}" src="/Site/views/languageforge/theme/default/image/lf_logo_medium.png">
                     <a class="" href="/">{{ app.website.name }}</a>
                 </span>
                 <ul class="nav navbar-nav">
@@ -149,28 +149,6 @@
             </nav>
         </div>
     {% endif %}
-{% endblock %}
-
-{% block footer %}
-    <footer class="footer">
-        <div class="d-flex">
-            <div class="d-none d-sm-flex align-items-end">
-                <div>
-                    <a href="https://inter.payap.ac.th/"><img src="/Site/views/shared/image/payap_logo.png"
-                                                          alt="Payap University Logo" width="85" height="25" /></a>
-                    <a href="http://www.sil.org"><img src="/Site/views/shared/image/sil_logo_small.png"
-                                                      alt="SIL International Logo" width="25" height="30" /></a>
-                </div>
-            </div>
-            <div class="d-flex flex-grow justify-content-end align-items-end">
-                <small>
-                    v {{ version }}.
-                    Copyright <span class="notranslate">{{ "now"|date("Y") }}</span> <a href="http://www.sil.org" class="links">SIL International</a>.
-                    <a href="/terms_and_conditions" class="links">Terms and conditions</a>.
-                </small>
-            </div>
-        </div>
-    </footer>
 {% endblock %}
 
 {% block analytics %}
