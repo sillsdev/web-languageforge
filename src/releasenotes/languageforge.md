@@ -14,6 +14,7 @@
 - Test developer builds on their local network; useful for device testing
 - Use dart-sass instead of node-sass for CSS compilation
 - Use date-fn instead of moment.js dependency
+
 ### 1.8 Release (31-August-2021)
 #### User Improvements/Fixes ####
 - More projects can now do Send/Receive with FLEx
