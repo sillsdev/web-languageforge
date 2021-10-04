@@ -38,7 +38,7 @@ class ArrayDiff extends DiffBase
         }
         // ArrayDiffs cannot contain anything other than Added or Deleted, so if they do, it's invalid and we omit it
         // But first log it for later analysis
-        \error_log('ArrayDiff contained item with kind other than A or D: ' . print_r($this->item, true));
+        error_log('ArrayDiff contained item with kind other than A or D: ' . print_r($this->item, true));
         return [];
     }
 }

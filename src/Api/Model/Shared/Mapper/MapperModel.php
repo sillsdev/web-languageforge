@@ -124,35 +124,19 @@ class MapperModel extends ObjectForEncoding
      * @return string The unique id of the object written
      * @see MongoMapper::write()
      */
-    public function writeDiff()
+    public function writeDiff($update)
     {
         // TODO: Implement. Code below is the write() implementation.
         CodeGuard::checkTypeAndThrow($this->id, 'Api\Model\Shared\Mapper\Id');
-        $now = UniversalTimestamp::now();
-        if (! defined('MAPPERMODEL_NO_TIMESTAMP_UPDATE')) {
-            $this->dateModified = $now;
-        }
-        if (Id::isEmpty($this->id)) {
-            $this->dateCreated = $now;
-        }
-        $rearrangeableProperties = $this->getRearrangeableProperties();
-        $rearrangeableSubproperties = [];
-        foreach ($rearrangeableProperties as $property) {
-            $value = $this->$property;
-            if (is_a($value, 'Api\Model\Shared\Mapper\ArrayOf')) {
-                foreach ($value as $item) {
-                    if (is_a($item, 'Api\Model\Shared\Mapper\ObjectForEncoding')) {
-                        foreach ($item->getRearrangeableProperties() as $subProperty) {
-                            if (! array_key_exists($property, $rearrangeableSubproperties)) {
-                                $rearrangeableSubproperties[$property] = [];
-                            }
-                            $rearrangeableSubproperties[$property][] = $subProperty;
-                        }
-                    }
-                }
-            }
-        }
-        $this->id->id = $this->_mapper->write($this, $this->id->id, $rearrangeableProperties, $rearrangeableSubproperties);
+        // $now = UniversalTimestamp::now();
+        // if (! defined('MAPPERMODEL_NO_TIMESTAMP_UPDATE')) {
+        //     $this->dateModified = $now;
+        // }
+        // if (Id::isEmpty($this->id)) {
+        //     $this->dateCreated = $now;
+        // }
+        // TODO: Pass update time into writeDiff? Pass update user into writeDiff?
+        $this->_mapper->writeDiff($this->id->id, $update);
 
         return $this->id->id;
     }

@@ -342,10 +342,8 @@ export class LexiconEditorController implements angular.IController {
     // entry and is NOT going to a different entry (as is the case with editing another entry.
     let isNewEntry = false;
     let newEntryTempId: string;
-    console.log('saveCurrentEntry() called');
 
     if (this.hasUnsavedChanges() && this.lecRights.canEditEntry()) {
-      console.log('Actually saving entry');
       this.cancelAutoSaveTimer();
       this.sendReceive.setStateUnsynced();
       this.saveStatus = 'saving';
@@ -353,12 +351,10 @@ export class LexiconEditorController implements angular.IController {
       this.control.currentEntry = this.currentEntry;
       const entryToSave = angular.copy(this.currentEntry);
       if (LexiconEditorController.entryIsNew(entryToSave)) {
-        console.log('entry is new');
         isNewEntry = true;
         newEntryTempId = entryToSave.id;
         entryToSave.id = ''; // send empty id to indicate "create new"
       } else {
-        console.log('entry is not new');
       }
       const entryForUpdate = this.prepEntryForUpdate(entryToSave);
       const pristineEntryForDiffing = this.prepEntryForUpdate(this.pristineEntry);
@@ -367,7 +363,6 @@ export class LexiconEditorController implements angular.IController {
         _update_deep_diff: diff(pristineEntryForDiffing, entryForUpdate)
       };
       let entryOrDiff = isNewEntry ? entryForUpdate : diffForUpdate;
-      if (!isNewEntry) console.log('Would save the following diff', diffForUpdate);
       if (!isNewEntry && this.hasAddedOrDeletedSenseOrExample(diffForUpdate._update_deep_diff)) {
         // Updates involving adding or deleting a sense or example cannot be delta updates
         entryOrDiff = entryForUpdate;

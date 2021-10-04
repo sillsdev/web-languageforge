@@ -96,7 +96,6 @@ class DeepDiffDecoder
                 }
             } else {
                 // Invalid ArrayDiff; do nothing
-                error_log('DEBUG: Invalid ArrayDiff ' . print_r($diff, true));
             }
         } else {
             if ($target instanceof \ArrayObject) {

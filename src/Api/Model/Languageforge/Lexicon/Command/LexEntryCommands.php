@@ -148,11 +148,8 @@ class LexEntryCommands
 
         if ($isDeltaUpdate) {
             $update = DeepDiffDecoder::toMongoUpdate($deepDiff);
-            error_log('Would send the following Mongo update:');
-            error_log(print_r($update, true));
-            // TODO: Actually apply the Mongo update
+            $entry->writeDiff($update);
         } else {
-            error_log('Was not a deep diff update');
             $entry->write();
         }
         $project->write();

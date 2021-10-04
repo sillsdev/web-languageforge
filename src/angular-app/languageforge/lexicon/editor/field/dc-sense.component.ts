@@ -44,11 +44,13 @@ export class FieldSenseController implements angular.IController {
 
   addExample = (): void => {
     // Adding or removing examples makes for a non-delta update, so save a possible delta update first
-    this.control.saveCurrentEntry();
-    const newExample: LexExample = new LexExample();
-    this.control.makeValidModelRecursive(this.config.fields.examples, newExample);
-    this.model.examples.push(newExample);
-    this.control.hideRightPanel();
+    this.control.saveCurrentEntry(false, () => {
+      const newExample: LexExample = new LexExample();
+      this.control.makeValidModelRecursive(this.config.fields.examples, newExample);
+      this.model.examples.push(newExample);
+      this.control.saveCurrentEntry();
+      this.control.hideRightPanel();
+    });
   }
 
   numExamples = (): number => this.model.examples.length;
@@ -72,9 +74,11 @@ export class FieldSenseController implements angular.IController {
     this.modal.showModalSimple('Delete Example', deletemsg, 'Cancel', 'Delete Example')
       .then(() => {
         // Adding or removing examples makes for a non-delta update, so save a possible delta update first
-        this.control.saveCurrentEntry();
-        this.model.examples.splice(index, 1);
-        this.control.hideRightPanel();
+        this.control.saveCurrentEntry(false, () => {
+          this.model.examples.splice(index, 1);
+          this.control.saveCurrentEntry();
+          this.control.hideRightPanel();
+        });
       }, () => {});
   }
 
