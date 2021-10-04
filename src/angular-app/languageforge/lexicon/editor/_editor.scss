@@ -323,6 +323,10 @@ dc-entry .card {
   #compactEntryListContainer {
     height: calc(100vh - 325px);
     overflow: auto;
+
+    .list-group-item {
+      padding: .25rem 1.25rem;
+    }
   }
   .word-definition-title {
     margin-bottom: 5px;
@@ -721,7 +725,7 @@ dc-entry .card {
     position: relative;
     overflow-y: hidden;
     min-height: 40px;
-    height: 55px;
+    height: 50px;
     border-bottom: solid 1px darkgrey;
     width: 100%;
     line-height: 1.2em;
@@ -736,10 +740,8 @@ dc-entry .card {
 }
 
 .entryItemView {
-    /*  TODO: review this in light of animation and the footer staying at the bottom. IJH 2014-09
-        The view is used in edit and comment view */
+  min-height: 580px;
 
-    min-height: 580px;
   .field-container {
     position: relative;
     .comment-bubble-group {
@@ -782,13 +784,16 @@ dc-entry .card {
 }
 
 .entryItemView {
-    i.fa-times {
-        cursor: pointer;
-        color: #888;
-    }
-    button i.fa-times {
-        color: inherit;
-    }
+  .form-group {
+    margin-bottom: 5px;
+  }
+  i.fa-times {
+    cursor: pointer;
+    color: #888;
+  }
+  button i.fa-times {
+    color: inherit;
+  }
 }
 
 #lexAppCommentView .commentCount {
