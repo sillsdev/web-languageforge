@@ -1,4 +1,7 @@
 @import '../../../../../Site/views/languageforge/theme/default/sass/variables';
+@import '../../../../../../node_modules/bootstrap/scss/functions';
+@import '../../../../../../node_modules/bootstrap/scss/variables';
+@import '../../../../../../node_modules/bootstrap/scss/mixins';
 
 #lexAppEditView {
   display: flex;
@@ -19,11 +22,12 @@
   overflow-y: scroll;
   overflow-x: hidden;
 
-  @include media-breakpoint-up(sm) {
-    height: calc(100vh - 296px);
+  @include media-breakpoint-up(md) {
+    height: calc(100vh - 230px);
   }
+
   @include media-breakpoint-down(sm) {
-    height: calc(100vh - 270px);
+    height: calc(100vh - 215px);
   }
 }
 
