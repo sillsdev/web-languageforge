@@ -121,21 +121,32 @@ class MapperModel extends ObjectForEncoding
 
     /**
      * Writes the model to the mongo collection
+     * @param array $update
+     * @param IdReference $modifiedUserId
+     * @param UniversalTimestamp $now
      * @return string The unique id of the object written
      * @see MongoMapper::write()
      */
-    public function writeDiff($update)
+    public function writeDiff($update, $modifiedUserId, $now)
     {
-        // TODO: Implement. Code below is the write() implementation.
+        // Add "modified by" field updates since $update won't include them
         CodeGuard::checkTypeAndThrow($this->id, 'Api\Model\Shared\Mapper\Id');
-        // $now = UniversalTimestamp::now();
-        // if (! defined('MAPPERMODEL_NO_TIMESTAMP_UPDATE')) {
-        //     $this->dateModified = $now;
-        // }
-        // if (Id::isEmpty($this->id)) {
-        //     $this->dateCreated = $now;
-        // }
-        // TODO: Pass update time into writeDiff? Pass update user into writeDiff?
+        $mongoNow = $this->_mapper;
+        $encoder = new MongoEncoder();
+        if (is_a($now, 'DateTime')) {
+            $mongoNow = $encoder->encodeDateTime($now);
+        } else if (is_a($now, 'Litipk\Jiffy\UniversalTimestamp')) {
+            $mongoNow = $encoder->encodeUniversalTimestamp($now);
+        } else {
+            $mongoNow = $now; // Hopefully already encoded
+        }
+        $userId = is_string($modifiedUserId) ? MongoMapper::mongoID($modifiedUserId) : $encoder->encodeIdReference($modifiedUserId);
+        $update = array_merge_recursive(['$set' => [
+            'dateModified' => $mongoNow,
+            'authorInfo.modifiedDate' => $mongoNow,
+            'authorInfo.modifiedByUserRef' => $userId,
+        ]], $update);
+
         $this->_mapper->writeDiff($this->id->id, $update);
 
         return $this->id->id;

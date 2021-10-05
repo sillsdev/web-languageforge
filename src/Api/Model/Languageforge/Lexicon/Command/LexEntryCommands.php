@@ -148,7 +148,7 @@ class LexEntryCommands
 
         if ($isDeltaUpdate) {
             $update = DeepDiffDecoder::toMongoUpdate($deepDiff);
-            $entry->writeDiff($update);
+            $entry->writeDiff($update, $userId, $now);
         } else {
             $entry->write();
         }
