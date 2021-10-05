@@ -125,6 +125,10 @@ COPY docker/app/entrypoint.sh /
 
 COPY --from=composer-builder /composer/vendor /var/www/html/vendor
 
+# patch exception handling from Symfony to actually show exceptions instead of swallowing them
+COPY docker/app/symfony-exceptions.patch /
+RUN patch -p4 -i /symfony-exceptions.patch
+
 RUN echo "${BUILD_VERSION}" > /var/www/html/build-version.txt \
  && sed -i /var/www/html/version.php -e "s/^\\(define('VERSION', '\\).*;\$/\\1${BUILD_VERSION}'\\);/"
 
