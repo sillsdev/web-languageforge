@@ -26,11 +26,11 @@ class ArrayDiff extends DiffBase
 
     public function toMongoUpdateEntry() {
         $path = $this->toMongoPath();
-        $kind = $item['kind'];
+        $kind = $this->item['kind'];
         if ($kind == 'N') {
             // Pushes should happen in low-to-high index order, and it's the calling function's responsibility to ensure that this has been arranged
-            $newData = $item['rhs'];
-            return [ '$push' => [ $path => $this->newData ] ];
+            $newData = $this->item['rhs'];
+            return [ '$push' => [ $path => $this->getValue() ] ];
         }
         if ($kind == 'D') {
             // Pops should happen in high-to-low index order, which is what deep-diff already returns
