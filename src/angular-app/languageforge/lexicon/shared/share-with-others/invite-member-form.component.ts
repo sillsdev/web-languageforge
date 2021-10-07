@@ -67,7 +67,7 @@ export class InviteMemberFormController implements angular.IController {
 
   sendEmailInvite() {
     this.userService.sendInvite(this.inviteEmail, this.emailInviteRole.key).then(() => {
-      if (this.onSendEmailInvite) this.onSendEmailInvite();
+      this.onSendEmailInvite();
     });
   }
 
