@@ -1,5 +1,4 @@
 import * as angular from 'angular';
-import { JsonRpcResult } from 'src/angular-app/bellows/core/api/api.service';
 import { ProjectService } from '../../../../bellows/core/api/project.service';
 import { UserService } from '../../../../bellows/core/api/user.service';
 import { Session, SessionService } from '../../../../bellows/core/session.service';
