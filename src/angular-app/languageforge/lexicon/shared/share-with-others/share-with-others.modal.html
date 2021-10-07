@@ -3,6 +3,7 @@
     <h3 class="modal-title">Share with Others</h3>
     <i ng-click="$ctrl.dismiss()" class="close-modal fa fa-times"></i>
   </div>
+  
   <div class="modal-body">
     <user-management    ng-if="$ctrl.currentUserIsManager" project="$ctrl.project" session="$ctrl.session"></user-management>
     <invite-member-form ng-if="!$ctrl.currentUserIsManager" style="max-width: 30em;"></invite-member-form>
