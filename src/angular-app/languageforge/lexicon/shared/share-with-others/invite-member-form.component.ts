@@ -71,10 +71,6 @@ export class InviteMemberFormController implements angular.IController {
     });
   }
 
-  inviteEmailDisabled() {
-    return !/^\S+@\S+\.\S+$/.test(this.inviteEmail);
-  }
-
   onRoleChanged($event: {roleDetail: RoleDetail, target: any}) {
     if ($event.target === 'email_invite') this.emailInviteRole = $event.roleDetail.role;
     if ($event.target === 'reusable_invite_link') this.handleInviteLinkChange($event.roleDetail.role);

@@ -2,7 +2,7 @@
   <b>Invite a new member</b>
   <div class="inline-invite-form" style="margin-top: 8px;">
     <label>via: </label>
-    <input type="email" class="form-control" placeholder="Email" ng-model="$ctrl.inviteEmail">
+    <input type="email" ng-form="email" class="form-control" placeholder="Email" ng-model="$ctrl.inviteEmail">
     <role-dropdown class="sm-no-margin"
                    ng-if="$ctrl.currentUserIsManager"
                    target="'email_invite'"
@@ -10,7 +10,7 @@
                    selected-role="$ctrl.emailInviteRole"
                    on-role-changed="$ctrl.onRoleChanged($event)"></role-dropdown>
     <button type="button" class="btn btn-primary"
-            ng-click="$ctrl.sendEmailInvite()" data-ng-disabled="$ctrl.inviteEmailDisabled()">
+            ng-click="$ctrl.sendEmailInvite()" data-ng-disabled="! (email.$dirty && email.$valid)">
       <i class="fa fa-paper-plane pr-1"></i> Send
     </button>
   </div>
