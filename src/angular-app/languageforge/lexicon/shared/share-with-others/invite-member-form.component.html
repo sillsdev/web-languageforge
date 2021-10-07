@@ -10,7 +10,7 @@
                    selected-role="$ctrl.emailInviteRole"
                    on-role-changed="$ctrl.onRoleChanged($event)"></role-dropdown>
     <button type="button" class="btn btn-primary"
-            ng-click="$ctrl.sendEmailInvite()" data-ng-disabled="! (email.$dirty && email.$valid)">
+            ng-click="$ctrl.sendEmailInvite()" data-ng-disabled="! ($ctrl.inviteEmail && email.$valid)">
       <i class="fa fa-paper-plane pr-1"></i> Send
     </button>
   </div>
