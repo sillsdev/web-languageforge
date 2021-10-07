@@ -1,4 +1,5 @@
 import * as angular from 'angular';
+import { JsonRpcResult } from 'src/angular-app/bellows/core/api/api.service';
 import { ProjectService } from '../../../../bellows/core/api/project.service';
 import { UserService } from '../../../../bellows/core/api/user.service';
 import { Session, SessionService } from '../../../../bellows/core/session.service';
@@ -39,7 +40,7 @@ export class InviteMemberFormController implements angular.IController {
       LexRoles.NONE
     ];
 
-    this.sessionService.getSession().then(session => {
+    this.sessionService.getSession().then((session: Session) => {
       this.session = session;
       this.project = session.data.project;
       this.currentUserIsManager =
@@ -53,7 +54,7 @@ export class InviteMemberFormController implements angular.IController {
       }
 
       if (this.project.inviteToken.token) {
-        this.projectService.getInviteLink().then(result => {
+        this.projectService.getInviteLink().then((result: any) => {
           this.inviteLink = result.data;
         });
       }
@@ -84,7 +85,7 @@ export class InviteMemberFormController implements angular.IController {
     } else {
       // if the invite link was just disabled, create a new one. Otherwise, update it.
       if (!this.inviteLink) {
-        this.projectService.createInviteLink(newRole.key).then(result => {
+        this.projectService.createInviteLink(newRole.key).then((result: any) => {
           this.project.inviteToken.defaultRole = newRole.key;
           this.inviteLink = result.data;
         });
