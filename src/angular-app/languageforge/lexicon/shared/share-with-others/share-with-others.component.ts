@@ -34,6 +34,11 @@ export class ShareWithOthersModalInstanceController implements angular.IControll
       });
     });
   }
+
+  dismissWithNotification(message: string): void {
+    this.modalInstance.dismiss();
+    console.log(message);
+  }
 }
 
 export const ShareWithOthersComponent: angular.IComponentOptions = {

@@ -17,7 +17,8 @@ export class InviteMemberFormController implements angular.IController {
   emailInviteRoles: ProjectRole[];
   emailInviteRole: ProjectRole;
   displayManagerElements: boolean;
-  onInvited: () => void;
+  onEmailSent: () => void;
+  onUrlCopied: () => void;
 
   static $inject = ['projectService', 'sessionService', 'userService'];
   constructor(private readonly projectService: ProjectService,
@@ -67,7 +68,7 @@ export class InviteMemberFormController implements angular.IController {
   sendEmailInvite() {
     this.userService.sendInvite(this.inviteEmail, this.emailInviteRole.key).then(() => {
       this.inviteEmail = '';
-      this.onInvited();
+      this.onEmailSent();
     });
   }
 
@@ -104,13 +105,14 @@ export class InviteMemberFormController implements angular.IController {
   async copy() {
     await navigator.clipboard.writeText(this.inviteLink);
 
-    this.onInvited();
+    this.onUrlCopied();
   }
 }
 
 export const InviteMemberFormComponent: angular.IComponentOptions = {
   bindings: {
-    onInvited: '&'
+    onEmailSent: '&',
+    onUrlCopied: '&',
   },
   controller: InviteMemberFormController,
   templateUrl: '/angular-app/languageforge/lexicon/shared/share-with-others/invite-member-form.component.html'
