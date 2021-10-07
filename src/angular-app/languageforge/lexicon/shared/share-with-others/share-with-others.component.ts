@@ -43,7 +43,6 @@ export class ShareWithOthersModalInstanceController implements angular.IControll
 export const ShareWithOthersComponent: angular.IComponentOptions = {
   bindings: {
     modalInstance: '<',
-    close: '&',
     dismiss: '&'
   },
   controller: ShareWithOthersModalInstanceController,
