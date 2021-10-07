@@ -73,6 +73,11 @@ class DeepDiffDecoder
         $path = $diff->path;
         $allButLast = $path; // This is a copy
         $last = array_pop($allButLast);
+        $isLexValue = false;
+        if ($last === 'value') {
+            $isLexValue = true;
+            $last = array_pop($allButLast);
+        }
         $target = $model;
         foreach ($allButLast as $step) {
             if ($target instanceof \ArrayObject) {
@@ -98,7 +103,9 @@ class DeepDiffDecoder
                 // Invalid ArrayDiff; do nothing
             }
         } else {
-            if ($target instanceof \ArrayObject) {
+            if ($isLexValue && $target instanceof LexMultiText) {
+                $target->form($last, $diff->getValue());
+            } else if ($target instanceof \ArrayObject) {
                 $target[$last] = $diff->getValue();
             } else {
                 $target->$last = $diff->getValue();
