@@ -100,7 +100,10 @@ export class InviteMemberFormController implements angular.IController {
   getInviteRole() {
     return this.reusableInviteLinkRoles.find(role => role.key === this.project.inviteToken.defaultRole);
   }
-
+  
+  async copy() {
+    await navigator.clipboard.writeText(this.inviteLink);
+  }
 }
 
 export const InviteMemberFormComponent: angular.IComponentOptions = {

@@ -33,6 +33,10 @@
                     roles="$ctrl.reusableInviteLinkRoles"
                     selected-role="$ctrl.getInviteRole()"
                     on-role-changed="$ctrl.onRoleChanged($event)"></role-dropdown>
+      <button type="button" class="btn btn-primary"
+              ng-click="$ctrl.copy()" data-ng-disabled="! $ctrl.inviteLink">
+        <i class="fa fa-clipboard pr-1"></i> Copy
+      </button>
     </div>
   </div>
 </div>
