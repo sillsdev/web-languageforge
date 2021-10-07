@@ -3,16 +3,16 @@
   <div class="inline-invite-form" style="margin-top: 8px;">
     <label>via: </label>
     <input type="email" class="form-control" placeholder="Email" ng-model="$ctrl.inviteEmail">
-    <button type="button" class="btn btn-primary"
-            ng-click="$ctrl.sendEmailInvite()" data-ng-disabled="$ctrl.inviteEmailDisabled()">
-      <i class="fa fa-paper-plane"></i>
-    </button>
     <role-dropdown class="sm-no-margin"
                    ng-if="$ctrl.currentUserIsManager"
                    target="'email_invite'"
                    roles="$ctrl.emailInviteRoles"
                    selected-role="$ctrl.emailInviteRole"
                    on-role-changed="$ctrl.onRoleChanged($event)"></role-dropdown>
+    <button type="button" class="btn btn-primary"
+            ng-click="$ctrl.sendEmailInvite()" data-ng-disabled="$ctrl.inviteEmailDisabled()">
+      <i class="fa fa-paper-plane"></i>
+    </button>
   </div>
 
   <div ng-if="$ctrl.currentUserIsManager || !$ctrl.inviteLink">
