@@ -34,10 +34,6 @@ export class ShareWithOthersModalInstanceController implements angular.IControll
       });
     });
   }
-
-  setProjectListability(): void {
-    console.log('TODO: actually set project.listProject = ' + this.listProject);
-  }
 }
 
 export const ShareWithOthersComponent: angular.IComponentOptions = {
