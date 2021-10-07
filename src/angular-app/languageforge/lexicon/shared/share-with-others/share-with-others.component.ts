@@ -17,7 +17,7 @@ export class ShareWithOthersModalInstanceController implements angular.IControll
               private readonly sessionService: SessionService) {}
 
   $onInit(): void {
-    this.sessionService.getSession().then(session => {
+    this.sessionService.getSession().then((session: Session) => {
       this.session = session;
       this.project = session.data.project;
       this.currentUserIsManager =
@@ -27,8 +27,8 @@ export class ShareWithOthersModalInstanceController implements angular.IControll
   }
 
   setProjectSharability(): void {
-    this.lexProjectService.updateProject({allowSharing: this.project.allowSharing}).then(result => {
-      this.sessionService.getSession(true).then(session => {
+    this.lexProjectService.updateProject({allowSharing: this.project.allowSharing}).then((result: any) => {
+      this.sessionService.getSession(true).then((session: Session) => {
         this.session = session;
         this.project = session.data.project;
       });
