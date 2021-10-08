@@ -473,6 +473,8 @@ export class LexiconEditorController implements angular.IController {
     if (isValid) {
       let id = this.editorService.getIdInFilteredList(Number(index));
       this.editEntryAndScroll(id);
+      let gotoElement = (<HTMLInputElement>document.getElementById('goto'));
+      gotoElement.value = '';
     }
   }
 
