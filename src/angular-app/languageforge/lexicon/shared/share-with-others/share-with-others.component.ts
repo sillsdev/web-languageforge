@@ -1,4 +1,5 @@
 import * as angular from 'angular';
+import { NoticeService } from '../../../../bellows/core/notice/notice.service';
 import { Session, SessionService } from '../../../../bellows/core/session.service';
 import { Project } from '../../../../bellows/shared/model/project.model';
 import { LexiconProjectService } from '../../core/lexicon-project.service';
@@ -12,9 +13,10 @@ export class ShareWithOthersModalInstanceController implements angular.IControll
   session: Session;
   currentUserIsManager: boolean;
 
-  static $inject = ['lexProjectService', 'sessionService'];
+  static $inject = ['lexProjectService', 'sessionService', 'silNoticeService'];
   constructor(private readonly lexProjectService: LexiconProjectService,
-              private readonly sessionService: SessionService) {}
+              private readonly sessionService: SessionService,
+              private readonly notice: NoticeService) {}
 
   $onInit(): void {
     this.sessionService.getSession().then((session: Session) => {
@@ -37,7 +39,8 @@ export class ShareWithOthersModalInstanceController implements angular.IControll
 
   dismissWithNotification(message: string): void {
     this.modalInstance.dismiss();
-    console.log(message);
+
+    this.notice.push(this.notice.SUCCESS, message);
   }
 }
 
