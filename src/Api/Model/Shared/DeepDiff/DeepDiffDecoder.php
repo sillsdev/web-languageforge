@@ -80,19 +80,11 @@ class DeepDiffDecoder
         }
         $target = $model;
         foreach ($allButLast as $step) {
-            if ($target instanceof \ArrayObject) {
-                $target = $target[$step];
-            } else {
-                $target = $target->$step;
-            }
+            $target = static::getNextStep($target, $step);
         }
         if ($diff instanceof ArrayDiff) {
             if ($diff->item['kind'] == 'N') {
-                if ($target instanceof \ArrayObject) {
-                    $target[$last][] = $diff->getValue();
-                } else {
-                    $target->$last[] = $diff->getValue();
-                }
+                static::setValue($target, $last, $diff->getValue());
             } elseif ($diff->item['kind'] == 'D') {
                 if ($target instanceof \ArrayObject) {
                     array_pop($target[$last]);
@@ -103,14 +95,38 @@ class DeepDiffDecoder
                 // Invalid ArrayDiff; do nothing
             }
         } else {
-            if ($isLexValue && $target instanceof LexMultiText) {
-                $target->form($last, $diff->getValue());
-            } else if ($target instanceof \ArrayObject) {
-                $target[$last] = $diff->getValue();
-            } else {
-                $target->$last = $diff->getValue();
-            }
+            static::setValue($target, $last, $diff->getValue());
             // TODO: Verify that this works as desired for deletions
+        }
+    }
+
+    private static function getNextStep($target, $step) {
+        if ($target instanceof \Api\Model\Shared\Mapper\MapOf && strpos($step, 'customField_') === 0) {
+            // Custom fields should be created if they do not exist
+            if (isset($target[$step])) {
+                return $target[$step];
+            } else {
+                if ($target->hasGenerator()) {
+                    return $target->generate([$step]);
+                } else {
+                    // This will probably fail
+                    return $target[$step];
+                }
+            }
+        } else if ($target instanceof \ArrayObject) {
+            return $target[$step];
+        } else {
+            return $target->$step;
+        }
+    }
+
+    private static function setValue(&$target, $last, $value) {
+        if ($target instanceof \Api\Model\Languageforge\Lexicon\LexMultiText) {
+            $target->form($last, $value);
+        } else if ($target instanceof \ArrayObject) {
+            $target[$last][] = $value;
+        } else {
+            $target->$last[] = $value;
         }
     }
 

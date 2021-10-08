@@ -329,7 +329,7 @@ export class LexiconEditorController implements angular.IController {
   }
 
   hasArrayChange(diffs: any[]): boolean {
-    return diffs.some((diff) => diff.kind === 'A');
+    return diffs && diffs.length && diffs.some((diff) => diff.kind === 'A');
   }
 
   saveCurrentEntry = (doSetEntry: boolean = false, successCallback: () => void = () => { },
@@ -353,10 +353,11 @@ export class LexiconEditorController implements angular.IController {
       } else {
       }
       const entryForUpdate = this.prepEntryForUpdate(entryToSave);
-      const pristineEntryForDiffing = this.prepEntryForUpdate(this.pristineEntry);
+      const entryForDiffing = this.removeCustomFieldsForDeltaUpdate(angular.copy(entryForUpdate));
+      const pristineEntryForDiffing = this.removeCustomFieldsForDeltaUpdate(this.prepEntryForUpdate(this.pristineEntry));
       const diffForUpdate = isNewEntry ? undefined : {
         id: entryForUpdate.id,
-        _update_deep_diff: diff(pristineEntryForDiffing, entryForUpdate)
+        _update_deep_diff: diff(pristineEntryForDiffing, entryForDiffing)
       };
       let entryOrDiff = isNewEntry ? entryForUpdate : diffForUpdate;
       if (!isNewEntry && this.hasArrayChange(diffForUpdate._update_deep_diff)) {
@@ -1127,6 +1128,23 @@ export class LexiconEditorController implements angular.IController {
       }
     }
 
+    return data;
+  }
+
+  private removeCustomFieldsForDeltaUpdate(data: any): any {
+    if ('customFields' in data) {
+      for (const fieldName in data.customFields) {
+        if (data.hasOwnProperty(fieldName)) {
+          delete data[fieldName];
+        }
+      }
+      if ('senses' in data) {
+        data.senses = data.senses.map((sense: any) => this.removeCustomFieldsForDeltaUpdate(sense));
+      }
+      if ('examples' in data) {
+        data.examples = data.examples.map((example: any) => this.removeCustomFieldsForDeltaUpdate(example));
+      }
+    }
     return data;
   }
 
