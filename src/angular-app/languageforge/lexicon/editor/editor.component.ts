@@ -328,12 +328,8 @@ export class LexiconEditorController implements angular.IController {
     return this.currentEntry.id != null;
   }
 
-  hasAddedOrDeletedSenseOrExample(diffs: any[]): boolean {
-    return diffs.some(diff =>
-      diff.kind === 'A' &&  // Kind 'A' means an addition or a deletion from an array
-      (diff.path[diff.path.length - 1] === 'senses' ||
-       diff.path[diff.path.length - 1] === 'examples')
-    );
+  hasArrayChange(diffs: any[]): boolean {
+    return diffs.some((diff) => diff.kind === 'A');
   }
 
   saveCurrentEntry = (doSetEntry: boolean = false, successCallback: () => void = () => { },
@@ -363,8 +359,8 @@ export class LexiconEditorController implements angular.IController {
         _update_deep_diff: diff(pristineEntryForDiffing, entryForUpdate)
       };
       let entryOrDiff = isNewEntry ? entryForUpdate : diffForUpdate;
-      if (!isNewEntry && this.hasAddedOrDeletedSenseOrExample(diffForUpdate._update_deep_diff)) {
-        // Updates involving adding or deleting a sense or example cannot be delta updates
+      if (!isNewEntry && this.hasArrayChange(diffForUpdate._update_deep_diff)) {
+        // Updates involving adding or deleting any array item cannot be delta updates due to MongoDB limitations
         entryOrDiff = entryForUpdate;
       }
 
