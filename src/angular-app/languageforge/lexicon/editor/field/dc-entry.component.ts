@@ -6,11 +6,6 @@ import {LexEntry} from '../../shared/model/lex-entry.model';
 import {LexSense} from '../../shared/model/lex-sense.model';
 import {LexConfigFieldList} from '../../shared/model/lexicon-config.model';
 import {FieldControl} from './field-control.model';
-
-import {
-  EditorDataService
-} from '../../../../bellows/core/offline/editor-data.service';
-
 export class FieldEntryController implements angular.IController {
   model: LexEntry;
   config: LexConfigFieldList;
