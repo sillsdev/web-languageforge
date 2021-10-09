@@ -17,6 +17,12 @@ class PropertyObject extends ObjectForEncoding
 
     public $name;
 
+    public $color;
+
+    public $size;
+
+    public $language;
+
     public $shouldBeReadOnly;
 
     public $shouldBePrivate;
@@ -241,5 +247,85 @@ class JsonEncoderDecoderTest extends TestCase
         $this->assertEquals('different name1', $object->data2[$key]->name);
         $this->assertEquals('different name', $object->data2[$key]->data[$key]->name);
         $this->assertEquals('cannot change this', $object->data2[$key]->data[$key]->shouldBeReadOnly);
+    }
+
+    public function testDecode_onlySomeParamsSet_existingSimpleObjectIsUpdatedNotOverwritten()
+    {
+        $object = new PropertyObject();
+        $object->name = 'John';
+        $object->color = 'blue';
+        $object->size = 'big';
+        $object->language = 'Chinese';
+
+        $paramsToUpdate = ['color' => 'red'];
+
+        JsonDecoder::decode($object, $paramsToUpdate);
+        $this->assertEquals('John', $object->name);
+        $this->assertEquals('red', $object->color);
+        $this->assertEquals('big', $object->size);
+        $this->assertEquals('Chinese', $object->language);
+    }
+
+    public function testDecode_propertyArrayElementChanged_existingObjectIsUpdatedNotOverwritten()
+    {
+        $person1 = new PropertyObject();
+        $person1->name = 'John';
+        $person1->color = 'blue';
+        $person1->size = 'big';
+        $person1->language = 'Chinese';
+
+        $person2 = new PropertyObject();
+        $person2->name = 'Jane';
+        $person2->color = 'pink';
+        $person2->size = 'small';
+        $person2->language = 'English';
+
+        $person3 = new PropertyObject();
+        $person3->name = 'Johannes';
+        $person3->color = 'green';
+        $person3->size = 'big';
+        $person3->language = 'German';
+
+        $team = new PropertyObjectInArray();
+        $team->data[] = $person1;
+        $team->data[] = $person2;
+        $team->data[] = $person3;
+
+
+        $paramsToUpdate = ['data' => []];
+
+        // person 1 - change color to purple
+        $paramsToUpdate['data'][] = ['color' => 'purple'];
+
+        // person 2 - change size to huge
+        $paramsToUpdate['data'][] = ['size' => 'huge'];
+
+        // person 3 - change name to empty string
+        $paramsToUpdate['data'][] = ['name' => ''];
+
+        print_r($paramsToUpdate);
+        JsonDecoder::decode($team, $paramsToUpdate);
+        print_r($team);
+
+        // person 1
+        $this->assertEquals('John', $team->data[0]->name);
+        // color changed from blue to purple
+        $this->assertEquals('purple', $team->data[0]->color);
+        $this->assertEquals('big', $team->data[0]->size);
+        $this->assertEquals('Chinese', $team->data[0]->language);
+
+        // person 2
+        $this->assertEquals('Jane', $team->data[1]->name);
+        $this->assertEquals('pink', $team->data[1]->color);
+        // size changed from small to huge
+        $this->assertEquals('huge', $team->data[1]->size);
+        $this->assertEquals('English', $team->data[1]->language);
+
+        // person 3
+        // deleted name (set to empty string)
+        $this->assertEquals('', $team->data[2]->name);
+        $this->assertEquals('green', $team->data[2]->color);
+        $this->assertEquals('big', $team->data[2]->size);
+        $this->assertEquals('German', $team->data[2]->language);
     }
 }

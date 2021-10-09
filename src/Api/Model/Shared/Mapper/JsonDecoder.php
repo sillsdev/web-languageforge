@@ -120,38 +120,23 @@ class JsonDecoder
             $data = [];
         }
         CodeGuard::checkTypeAndThrow($data, 'array');
-        $propertiesToKeep = [];
 
-        // check if array item class has any private, read-only or recursive properties
-        if (get_class($this) != 'Api\Model\Shared\Mapper\MongoDecoder' && $model->hasGenerator()) {
-            $arrayItem = $model->generate();
-            $propertiesToKeep = $this->getPrivateAndReadOnlyProperties($arrayItem);
-            $propertiesToKeep = $this->getRecursiveProperties($arrayItem, $propertiesToKeep);
-        }
-
-        $oldModelArray = $model->exchangeArray([]);
-        foreach ($data as $index => $item) {
-            if ($model->hasGenerator()) {
-                $object = $model->generate($item);
-
-                // put back private, read-only and recursive properties into new object that was just generated
-                foreach ($propertiesToKeep as $property) {
-                    if (array_key_exists($index, $oldModelArray) && property_exists($oldModelArray[$index], $property)) {
-                        if (is_object($oldModelArray[$index]->{$property})) {
-                            $object->{$property} = clone $oldModelArray[$index]->{$property};
-                        } else {
-                            $object->{$property} = $oldModelArray[$index]->{$property};
-                        }
+        if ($data) {
+            foreach ($data as $index => $item) {
+                if ($model->hasGenerator()) {
+                    if (!isset($model[$index])) {
+                        $model[$index] = $model->generate($item);
                     }
+                    $this->_decode($model[$index], $item, '');
+                } else {
+                    if (is_array($item)) {
+                        throw new \Exception("Must not decode array for value type '$key'");
+                    }
+                    $model[$index] = $item;
                 }
-                $this->_decode($object, $item, '');
-                $model[] = $object;
-            } else {
-                if (is_array($item)) {
-                    throw new \Exception("Must not decode array for value type '$key'");
-                }
-                $model[] = $item;
             }
+        } else {
+            $model->exchangeArray([]);
         }
     }
 
