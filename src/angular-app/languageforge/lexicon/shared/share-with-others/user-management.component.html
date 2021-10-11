@@ -1,5 +1,3 @@
-<invite-member-form style="max-width: 30em;" on-send-email-invite="$ctrl.loadMemberData()"></invite-member-form>
-
 <div id="who-has-access" style="max-width: 30em;">
   <div class="row" style="position: relative;">
     <div class="col-6">
@@ -15,28 +13,6 @@
 
   <listview search="$ctrl.loadMemberData()" items="$ctrl.allMembers" items-filter="$ctrl.userFilter" visible-items="$ctrl.visibleMembers" select="">
     <ul class="list-group">
-      <!-- <li class="list-group-item user-summary-item">
-        <div>
-          <img src="/Site/views/shared/image/globe.png" class="rounded-circle" id="smallAvatarURL"/>
-        </div>
-        <div style="flex-grow: 1;">
-          <span ng-class="{'text-muted': $ctrl.project.anonymousUserRole === 'none'}">Anyone</span><br>
-          <div style="display: flex; flex-direction: row;">
-            <span ng-class="{'text-muted': $ctrl.project.anonymousUserRole === 'none'}">via</span>
-            <input ng-if="$ctrl.project.anonymousUserRole === 'none'" type="text" disabled
-                   class="form-control" value="{{$ctrl.projectUrl}}" ng-readonly="true">
-            <input ng-if="$ctrl.project.anonymousUserRole !== 'none'" type="text"
-                   class="form-control" value="{{$ctrl.projectUrl}}" ng-readonly="true" onfocus="this.select();">
-          </div>
-        </div>
-        <role-dropdown target="'anonymous_user'"
-                              roles="$ctrl.anonymousUserRoles"
-                              selected-role="$ctrl.anonymousUser.role"
-                              on-role-changed=$ctrl.onSpecialRoleChanged($event)
-                              class="sm-no-margin"></role-dropdown>
-        <div class="delete-member d-none d-md-block"></div>
-      </li> -->
-
       <li class="list-group-item user-summary-item" data-ng-repeat="user in $ctrl.visibleMembers">
         <div>
           <img ng-src="{{$ctrl.getAvatarUrl(user.avatar_ref)}}" class="rounded-circle" id="smallAvatarURL" />
