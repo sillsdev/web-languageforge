@@ -1,0 +1,85 @@
+--- a/var/www/html/vendor/symfony/debug/ExceptionHandler.php	2019-07-23 15:39:19.000000000 +0700
++++ b/var/www/html/vendor/symfony/debug/ExceptionHandler.php	2021-09-27 15:08:37.000000000 +0700
+@@ -103,7 +103,7 @@
+      * The latter takes precedence and any output from the former is cancelled,
+      * if and only if nothing bad happens in this handling path.
+      */
+-    public function handle(\Exception $exception)
++    public function handle(\Error $exception)
+     {
+         if (null === $this->handler || $exception instanceof OutOfMemoryException) {
+             $this->sendPhpResponse($exception);
+@@ -144,7 +144,7 @@
+         try {
+             \call_user_func($this->handler, $exception);
+             $this->caughtLength = $caughtLength;
+-        } catch (\Exception $e) {
++        } catch (\Error $e) {
+             if (!$caughtLength) {
+                 // All handlers failed. Let PHP handle that now.
+                 throw $exception;
+@@ -158,7 +158,7 @@
+      * This method uses plain PHP functions like header() and echo to output
+      * the response.
+      *
+-     * @param \Exception|FlattenException $exception An \Exception or FlattenException instance
++     * @param \Error|FlattenException $exception An \Error or FlattenException instance
+      */
+     public function sendPhpResponse($exception)
+     {
+@@ -180,7 +180,7 @@
+     /**
+      * Gets the full HTML content associated with the given exception.
+      *
+-     * @param \Exception|FlattenException $exception An \Exception or FlattenException instance
++     * @param \Error|FlattenException $exception An \Error or FlattenException instance
+      *
+      * @return string The HTML content as a string
+      */
+@@ -250,7 +250,7 @@
+
+                 $content .= "</tbody>\n</table>\n</div>\n";
+             }
+-        } catch (\Exception $e) {
++        } catch (\Error $e) {
+             // something nasty happened and we cannot throw an exception anymore
+             if ($this->debug) {
+                 $title = sprintf('Exception thrown when handling an exception (%s: %s)', \get_class($e), $this->escapeHtml($e->getMessage()));
+@@ -390,7 +390,7 @@
+         } else {
+             try {
+                 $link = $fmt->format($path, $line);
+-            } catch (\Exception $e) {
++            } catch (\Error $e) {
+                 return sprintf('<span class="block trace-file-path">in <span title="%s%3$s"><strong>%s</strong>%s</span></span>', $this->escapeHtml($path), $file, 0 < $line ? ' line '.$line : '');
+             }
+         }
+--- a/var/www/html/vendor/symfony/debug/Exception/FlattenException.php	2019-07-23 15:39:19.000000000 +0700
++++ b/var/www/html/vendor/symfony/debug/Exception/FlattenException.php	2021-09-27 15:09:06.000000000 +0700
+@@ -33,7 +33,7 @@
+     private $file;
+     private $line;
+
+-    public static function create(\Exception $exception, $statusCode = null, array $headers = [])
++    public static function create(\Error $exception, $statusCode = null, array $headers = [])
+     {
+         $e = new static();
+         $e->setMessage($exception->getMessage());
+@@ -59,7 +59,7 @@
+
+         $previous = $exception->getPrevious();
+
+-        if ($previous instanceof \Exception) {
++        if ($previous instanceof \Error) {
+             $e->setPrevious(static::create($previous));
+         } elseif ($previous instanceof \Throwable) {
+             $e->setPrevious(static::create(new FatalThrowableError($previous)));
+@@ -178,7 +178,7 @@
+         return $this->trace;
+     }
+
+-    public function setTraceFromException(\Exception $exception)
++    public function setTraceFromException(\Error $exception)
+     {
+         $this->setTrace($exception->getTrace(), $exception->getFile(), $exception->getLine());
+     }

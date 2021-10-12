@@ -173,27 +173,6 @@ nav {
   @include button-variant(white, #ADADAD, #E6E6E6);
 }
 
-.footer{
-  background-color: $theme-primary;
-  color: white;
-  padding: 0.5em;
-  margin-top: 0.5em;
-
-  .links{
-    color: white;
-    border-bottom: 1px dotted white;
-    text-decoration: none;
-  }
-
-  .footerimages {
-    padding-bottom: 10px;
-  }
-
-  img {
-   margin-right: 5px;
-  }
-}
-
 // TODO: Remove hack for modal box issue as a result of ui.bootstrap
 .modal-select-language {
 

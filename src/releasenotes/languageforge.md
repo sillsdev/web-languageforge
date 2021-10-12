@@ -1,5 +1,20 @@
 # Language Forge Release Notes #
 
+### 1.9 Release (30-September-2021)
+#### User Improvements/Fixes ####
+- Keyboard shortcut PgUp/PgDn to page through entries
+- Fixed a bug where the last login date was not being updated for Google/Facebook logins
+- Users now go directly to their project on sign-in
+- Optimized mobile keyboard: prevent auto-capitalization on some fields
+- Input fields now auto-resize for display and editing of longer text
+- Fixed bug introduced in 1.8: extra whitespace in list view
+- Send/Receive fixes
+
+#### Developer Improvements/Fixes ####
+- Test developer builds on their local network; useful for device testing
+- Use dart-sass instead of node-sass for CSS compilation
+- Use date-fn instead of moment.js dependency
+
 ### 1.8 Release (31-August-2021)
 #### User Improvements/Fixes ####
 - More projects can now do Send/Receive with FLEx

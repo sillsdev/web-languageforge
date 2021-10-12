@@ -66,7 +66,7 @@ export class UserManagementController implements angular.IController {
   }
 
   loadMemberData(): angular.IPromise<void> {
-    return this.projectService.listUsers().then( result => {
+    return this.projectService.listUsers().then((result: any) => {
       if (result.ok) {
         // include invitees in the list of members
         this.allMembers = result.data.users.concat(result.data.invitees.map((invitee: User) => {

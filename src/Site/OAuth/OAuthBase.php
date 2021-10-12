@@ -156,12 +156,14 @@ abstract class OAuthBase extends Base
         return $userModel;
     }
 
-    public static function setSilexAuthToken(UserModel $userModel, Application $app): string
+    public static function doSilexLogin(UserModel $userModel, Application $app): string
     {
         $roles = AuthUserProvider::getSiteRoles($userModel, $app['website']);
         $oauthUser = new UserWithId($userModel->username, '', $userModel->username, $roles);
         $oauthToken = new UsernamePasswordToken($oauthUser, '', 'site', $oauthUser->getRoles());
         $tokenStorage = $app['security.token_storage'];
+        $userModel->last_login = time();
+        $userModel->write();
         if (!is_null($tokenStorage) && $tokenStorage instanceof TokenStorageInterface) {
             $tokenStorage->setToken($oauthToken);
             return true;
@@ -277,7 +279,7 @@ abstract class OAuthBase extends Base
                         // so that any changes made by Validate::check won't be overwritten by our write() call
                         Validate::check($app, $userModel->validationKey);
                     }
-                    $success = $this->setSilexAuthToken($userModel, $app);
+                    $success = $this->doSilexLogin($userModel, $app);
                     if (! $success) {
                         $this->addErrorMessage($app, 'Sorry, we couldn\'t process the ' . ucwords($this->getProviderName()) . ' login data. This may be a temporary failure, so please try again. If the problem persists, try logging in with a username and password instead.');
                     }
@@ -286,7 +288,7 @@ abstract class OAuthBase extends Base
                 }
             } else {
                 // OAuth ID found in our user model
-                $success = $this->setSilexAuthToken($userModel, $app);
+                $success = $this->doSilexLogin($userModel, $app);
                 if (! $success) {
                     $this->addErrorMessage($app, 'Sorry, we couldn\'t process the ' . ucwords($this->getProviderName()) . ' login data. This may be a temporary failure, so please try again. If the problem persists, try logging in with a username and password instead.');
                 }

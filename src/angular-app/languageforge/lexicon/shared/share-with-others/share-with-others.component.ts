@@ -1,4 +1,5 @@
 import * as angular from 'angular';
+import { NoticeService } from '../../../../bellows/core/notice/notice.service';
 import { Session, SessionService } from '../../../../bellows/core/session.service';
 import { Project } from '../../../../bellows/shared/model/project.model';
 import { LexiconProjectService } from '../../core/lexicon-project.service';
@@ -12,12 +13,13 @@ export class ShareWithOthersModalInstanceController implements angular.IControll
   session: Session;
   currentUserIsManager: boolean;
 
-  static $inject = ['lexProjectService', 'sessionService'];
+  static $inject = ['lexProjectService', 'sessionService', 'silNoticeService'];
   constructor(private readonly lexProjectService: LexiconProjectService,
-              private readonly sessionService: SessionService) {}
+              private readonly sessionService: SessionService,
+              private readonly notice: NoticeService) {}
 
   $onInit(): void {
-    this.sessionService.getSession().then(session => {
+    this.sessionService.getSession().then((session: Session) => {
       this.session = session;
       this.project = session.data.project;
       this.currentUserIsManager =
@@ -27,23 +29,24 @@ export class ShareWithOthersModalInstanceController implements angular.IControll
   }
 
   setProjectSharability(): void {
-    this.lexProjectService.updateProject({allowSharing: this.project.allowSharing}).then(result => {
-      this.sessionService.getSession(true).then(session => {
+    this.lexProjectService.updateProject({allowSharing: this.project.allowSharing}).then((result: any) => {
+      this.sessionService.getSession(true).then((session: Session) => {
         this.session = session;
         this.project = session.data.project;
       });
     });
   }
 
-  setProjectListability(): void {
-    console.log('TODO: actually set project.listProject = ' + this.listProject);
+  dismissWithNotification(message: string): void {
+    this.modalInstance.dismiss();
+
+    this.notice.push(this.notice.SUCCESS, message);
   }
 }
 
 export const ShareWithOthersComponent: angular.IComponentOptions = {
   bindings: {
     modalInstance: '<',
-    close: '&',
     dismiss: '&'
   },
   controller: ShareWithOthersModalInstanceController,

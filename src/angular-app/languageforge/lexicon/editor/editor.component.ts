@@ -147,6 +147,8 @@ export class LexiconEditorController implements angular.IController {
       if (this.hasUnsavedChanges()) {
         this.saveCurrentEntry();
       }
+      // destroy listeners when leaving editor page
+      angular.element(window).unbind('keyup', (e: Event) => {});
     };
 
     this.show.entryListModifiers = !(this.$window.localStorage.getItem('viewFilter') == null ||
