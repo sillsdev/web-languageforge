@@ -25,6 +25,7 @@ export class LexiconSendReceiveService {
   cloneProjectStatusFailedCallback: SRFailedCallback = () => {};
   syncStatusTimer: angular.IPromise<void>;
   pollUpdateTimer: angular.IPromise<void>;
+  pollUpdateInterval: number = 0; // ms, defaults to POLL_UPDATE_INTERVAL if <= 0
   cloneStatusTimer: angular.IPromise<void>;
   pendingMessageId: string;
   projectSettings: LexiconProjectSettings;
@@ -327,13 +328,22 @@ export class LexiconSendReceiveService {
       return;
     }
 
-    this.pollUpdateTimer = this.$interval(this.getPollUpdate, this.POLL_UPDATE_INTERVAL);
+    const ms = this.pollUpdateInterval > 0 ? this.pollUpdateInterval : this.POLL_UPDATE_INTERVAL;
+    this.pollUpdateTimer = this.$interval(this.getPollUpdate, ms);
   }
 
   cancelPollUpdateTimer(): void {
     if (this.pollUpdateTimer != null) {
       this.$interval.cancel(this.pollUpdateTimer);
       this.pollUpdateTimer = undefined;
+    }
+  }
+
+  setPollUpdateInterval(ms: number): void {
+    this.pollUpdateInterval = ms;
+    if (this.pollUpdateTimer) {
+      this.$interval.cancel(this.pollUpdateTimer);
+      this.pollUpdateTimer = this.$interval(this.getPollUpdate, ms);
     }
   }
 
