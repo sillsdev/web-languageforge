@@ -321,15 +321,18 @@ export class LexiconSendReceiveService {
     });
   }
 
-  startPollUpdateTimer(): void {
+  startPollUpdateTimer(newUpdateInterval?: number): void {
     this.cancelSyncStatusTimer();
     this.cancelCloneStatusTimer();
     if (this.pollUpdateTimer != null) {
       return;
     }
 
-    const ms = this.pollUpdateInterval > 0 ? this.pollUpdateInterval : this.POLL_UPDATE_INTERVAL;
-    this.pollUpdateTimer = this.$interval(this.getPollUpdate, ms);
+    if (newUpdateInterval != null) {
+      this.pollUpdateInterval = newUpdateInterval;
+    }
+    const interval = this.pollUpdateInterval > 0 ? this.pollUpdateInterval : this.POLL_UPDATE_INTERVAL;
+    this.pollUpdateTimer = this.$interval(this.getPollUpdate, interval);
   }
 
   cancelPollUpdateTimer(): void {
@@ -339,11 +342,15 @@ export class LexiconSendReceiveService {
     }
   }
 
-  setPollUpdateInterval(ms: number): void {
-    this.pollUpdateInterval = ms;
+  setPollUpdateInterval(newUpdateInterval: number): void {
+    if (this.pollUpdateInterval === newUpdateInterval) {
+      // Don't restart the timer if the interval didn't change
+      return;
+    }
+    this.pollUpdateInterval = newUpdateInterval;
     if (this.pollUpdateTimer) {
       this.$interval.cancel(this.pollUpdateTimer);
-      this.pollUpdateTimer = this.$interval(this.getPollUpdate, ms);
+      this.pollUpdateTimer = this.$interval(this.getPollUpdate, newUpdateInterval);
     }
   }
 

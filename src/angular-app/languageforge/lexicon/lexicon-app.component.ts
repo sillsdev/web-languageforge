@@ -110,6 +110,7 @@ export class LexiconAppController implements angular.IController {
 
     if ($event.config) {
       this.config = $event.config;
+      this.sendReceive.setPollUpdateInterval(this.config.pollUpdateIntervalMs);
     }
 
     if ($event.optionLists) {

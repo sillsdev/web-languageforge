@@ -14,8 +14,10 @@ export class ConfigurationFieldUnifiedViewModel {
   entryFields: FieldSettingsList;
   senseFields: FieldSettingsList;
   exampleFields: FieldSettingsList;
+  pollUpdateIntervalMs?: number;
 
   constructor(config: LexiconConfig, users: { [userId: string]: User }) {
+    this.pollUpdateIntervalMs = config.pollUpdateIntervalMs;
     this.groupLists = ConfigurationFieldUnifiedViewModel.setGroupLists(config, users);
     this.inputSystems = new InputSystemSettingsList();
     const settings = ConfigurationFieldUnifiedViewModel.setInputSystemsViewModel(config);
