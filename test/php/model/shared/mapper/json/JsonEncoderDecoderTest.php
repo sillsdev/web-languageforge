@@ -266,7 +266,7 @@ class JsonEncoderDecoderTest extends TestCase
         $this->assertEquals('Chinese', $object->language);
     }
 
-    public function testDecode_propertyArrayElementChanged_existingObjectIsUpdatedNotOverwritten()
+    public function testDecodeDeltaUpdate_propertyArrayElementChanged_existingObjectIsUpdatedNotOverwritten()
     {
         $person1 = new PropertyObject();
         $person1->name = 'John';
@@ -303,9 +303,7 @@ class JsonEncoderDecoderTest extends TestCase
         // person 3 - change name to empty string
         $paramsToUpdate['data'][] = ['name' => ''];
 
-        print_r($paramsToUpdate);
-        JsonDecoder::decode($team, $paramsToUpdate);
-        print_r($team);
+        JsonDecoder::decode($team, $paramsToUpdate, true);
 
         // person 1
         $this->assertEquals('John', $team->data[0]->name);

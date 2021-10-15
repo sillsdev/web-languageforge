@@ -13,9 +13,10 @@ class LexEntryDecoder extends JsonDecoder
      * @param array $values A mixed array of JSON (like) data.
      * @param string $id
      */
-    public static function decode($model, $values, $id = '')
+    public static function decode($model, $values, $isDeltaUpdate = false, $id = '')
     {
         $decoder = new LexEntryDecoder();
+        $decoder->isDeltaUpdate = $isDeltaUpdate;
         $decoder->_decode($model, $values, $id);
     }
 

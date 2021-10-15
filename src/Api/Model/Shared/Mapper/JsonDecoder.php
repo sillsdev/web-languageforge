@@ -7,6 +7,14 @@ use Palaso\Utilities\CodeGuard;
 
 class JsonDecoder
 {
+
+    /**
+     * @var boolean
+     * If true, values inside an array or map are assumed to be updates to existing or new elements in the array or map.
+     * if false (default) The values to update contain the entire array, necessary for deletions or re-arrangements of elements.
+     */
+    private $isDeltaUpdate;
+
     /**
      * @param array $array
      * @return bool true if at least one key is a string, false otherwise
@@ -20,12 +28,14 @@ class JsonDecoder
      * Sets the public properties of $model to values from $values[propertyName]
      * @param object $model
      * @param array $values A mixed array of JSON (like) data.
+     * @param boolean $isDeltaUpdate default false.
      * @param string $id
      * @throws \Exception
      */
-    public static function decode($model, $values, $id = '')
+    public static function decode($model, $values, $isDeltaUpdate = false, $id = '')
     {
         $decoder = new JsonDecoder();
+        $decoder->isDeltaUpdate = $isDeltaUpdate;
         $decoder->_decode($model, $values, $id);
     }
 
@@ -121,22 +131,59 @@ class JsonDecoder
         }
         CodeGuard::checkTypeAndThrow($data, 'array');
 
-        if ($data) {
+        if ($this->isDeltaUpdate) {
+            if ($data) {
+                foreach ($data as $index => $item) {
+                    if ($model->hasGenerator()) {
+                        if (!isset($model[$index])) {
+                            $model[$index] = $model->generate($item);
+                        }
+                        $this->_decode($model[$index], $item, '');
+                    } else {
+                        if (is_array($item)) {
+                            throw new \Exception("Must not decode array for value type '$key'");
+                        }
+                        $model[$index] = $item;
+                    }
+                }
+            } else {
+                $model->exchangeArray([]);
+            }
+        } else {
+            // regular update which replaces the array with incoming values
+            $propertiesToKeep = [];
+
+            // check if array item class has any private, read-only or recursive properties
+            if (get_class($this) != 'Api\Model\Shared\Mapper\MongoDecoder' && $model->hasGenerator()) {
+                $arrayItem = $model->generate();
+                $propertiesToKeep = $this->getPrivateAndReadOnlyProperties($arrayItem);
+                $propertiesToKeep = $this->getRecursiveProperties($arrayItem, $propertiesToKeep);
+            }
+
+            $oldModelArray = $model->exchangeArray([]);
             foreach ($data as $index => $item) {
                 if ($model->hasGenerator()) {
-                    if (!isset($model[$index])) {
-                        $model[$index] = $model->generate($item);
+                    $object = $model->generate($item);
+
+                    // put back private, read-only and recursive properties into new object that was just generated
+                    foreach ($propertiesToKeep as $property) {
+                        if (array_key_exists($index, $oldModelArray) && property_exists($oldModelArray[$index], $property)) {
+                            if (is_object($oldModelArray[$index]->{$property})) {
+                                $object->{$property} = clone $oldModelArray[$index]->{$property};
+                            } else {
+                                $object->{$property} = $oldModelArray[$index]->{$property};
+                            }
+                        }
                     }
-                    $this->_decode($model[$index], $item, '');
+                    $this->_decode($object, $item, '');
+                    $model[] = $object;
                 } else {
                     if (is_array($item)) {
                         throw new \Exception("Must not decode array for value type '$key'");
                     }
-                    $model[$index] = $item;
+                    $model[] = $item;
                 }
             }
-        } else {
-            $model->exchangeArray([]);
         }
     }
 

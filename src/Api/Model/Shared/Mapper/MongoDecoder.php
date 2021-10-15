@@ -22,9 +22,10 @@ class MongoDecoder extends JsonDecoder
      * @param string $id
      * @throws \Exception
      */
-    public static function decode($model, $values, $id = '')
+    public static function decode($model, $values, $isDeltaUpdate = false, $id = '')
     {
         $decoder = new MongoDecoder();
+        $decoder->isDeltaUpdate = $isDeltaUpdate;
         $decoder->_decode($model, $values, $id);
     }
 

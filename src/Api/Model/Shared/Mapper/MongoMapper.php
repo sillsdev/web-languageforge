@@ -197,7 +197,7 @@ class MongoMapper
             return;
         }
         try {
-            MongoDecoder::decode($model, $data, (string) $data['_id']);
+            MongoDecoder::decode($model, $data, false, (string) $data['_id']);
         } catch (\Exception $ex) {
             throw new \Exception("Exception thrown while reading", $ex->getCode(), $ex);
         }
@@ -233,7 +233,7 @@ class MongoMapper
             throw new \Exception("Could not find id '$id' in '$collection'");
         }
         try {
-            MongoDecoder::decode($model, $data, $id);
+            MongoDecoder::decode($model, $data, false, $id);
         } catch (\Exception $ex) {
             CodeGuard::exception("Exception thrown while decoding " . get_class($model) . "('$id')", $ex->getCode(), $ex);
         }
@@ -253,7 +253,7 @@ class MongoMapper
         CodeGuard::checkTypeAndThrow($value, 'string');
         $data = $this->_collection->findOne(array($property => $value));
         if ($data != NULL) {
-            MongoDecoder::decode($model, $data, (string) $data['_id']);
+            MongoDecoder::decode($model, $data, false, (string) $data['_id']);
             return true;
         }
         return false;
@@ -269,7 +269,7 @@ class MongoMapper
         CodeGuard::checkTypeAndThrow($properties, 'array');
         $data = $this->_collection->findOne($properties);
         if ($data != NULL) {
-            MongoDecoder::decode($model, $data, (string) $data['_id']);
+            MongoDecoder::decode($model, $data, false, (string) $data['_id']);
             return true;
         }
         return false;
@@ -280,7 +280,7 @@ class MongoMapper
         CodeGuard::checkTypeAndThrow($value, 'string');
         $data = $this->_collection->findOne([$property => $value]);  // Yes, it's that simple
         if ($data != NULL) {
-            MongoDecoder::decode($model, $data, (string) $data['_id']);
+            MongoDecoder::decode($model, $data, false, (string) $data['_id']);
             return true;
         }
         return false;
@@ -296,7 +296,7 @@ class MongoMapper
         }
         // TODO Check this out on nested sub docs > 1
         $data = $data[$property][$id];
-        MongoDecoder::decode($model, $data, $id);
+        MongoDecoder::decode($model, $data, false, $id);
     }
 
     /**
