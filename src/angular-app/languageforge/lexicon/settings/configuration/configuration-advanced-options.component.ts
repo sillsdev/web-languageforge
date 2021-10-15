@@ -6,6 +6,15 @@ export class AdvancedOptionsConfigurationController implements angular.IControll
 
   static $inject: string[] = ['$scope'];
   constructor(private $scope: angular.IScope) {
+    $scope.$watch(
+      () => this.accPollUpdateTimerSecondsDirty,
+      (newVal: number, oldVal: number) => {
+        if (newVal != null && newVal !== oldVal) {
+          this.accOnUpdate({ $event: { pollUpdateTimerSecondsDirty: this.accPollUpdateTimerSecondsDirty } });
+        }
+      },
+      true
+    );
   }
 }
 
