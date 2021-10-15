@@ -26,7 +26,12 @@
   }
 }
 @include media-breakpoint-down(sm) {
-  .dc-rendered-container {
+  .dc-rendered-on-desktop {
+    display: none;
+  }
+}
+@include media-breakpoint-up(md) {
+  .dc-rendered-on-mobile {
     display: none;
   }
 }
