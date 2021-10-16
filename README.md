@@ -253,7 +253,8 @@ Production deployments can be run with `VERSION=<some-docker-tag-or-semver> make
 
 Current workflow:
 1. merge from `staging` into `master`
-1. tag the desired commit on `master` with a `v#.#.#` format and push the tag
+1. "Draft a new release" on https://github.com/sillsdev/web-languageforge/releases with a `v#.#.#` tag format
+1. "Publish" the new release
 1. this will kick off the GHA (`.github/workflows/build-and-deploy-images.yml`) to build and publish the necessary images to Docker Hub (https://hub.docker.com/r/sillsdev/web-languageforge/tags)
 1. then the deployment scripts can be run either manually or via the TeamCity deploy job
 
