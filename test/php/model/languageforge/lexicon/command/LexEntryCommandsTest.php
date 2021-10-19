@@ -1805,23 +1805,15 @@ class LexEntryCommandsTest extends TestCase
             $this->senseUpdate(0, 'definition', 'fr', 'pomme'),
             $this->senseUpdate(1, 'definition', 'en', 'apple'),
             $this->senseUpdate(1, 'definition', 'fr', ''),
+            $this->exampleUpdate(0, 0, 'guid', null, 'example1guid'),
+            $this->exampleUpdate(0, 0, 'sentence', 'en', ''),
+            $this->exampleUpdate(0, 0, 'sentence', 'fr', 'manger une pomme'),
+            $this->exampleUpdate(1, 0, 'guid', null, 'example0guid'),
+            $this->exampleUpdate(1, 0, 'sentence', 'en', 'eat an apple'),
+            $this->exampleUpdate(1, 0, 'sentence', 'fr', ''),
         ], [
             'moved.senses@0#sense0guid' => '1',
             'moved.senses@1#sense1guid' => '0',
-            // Unfortunately the differences calculation doesn't figure out that the example sentences moved
-            // with their parents, so we end up with a bunch of extra difference baggage here
-            'deleted.senses@0#sense0guid.examples@0#example0guid' => 'eat an apple',
-            'oldValue.senses@0#sense0guid.examples@0#example0guid.sentence.en' => 'eat an apple',
-            'newValue.senses@0#sense0guid.examples@0#example0guid.sentence.en' => '',
-            'added.senses@1#sense0guid.examples@0#example1guid' => 'manger une pomme',
-            'oldValue.senses@0#sense0guid.examples@0#example1guid.sentence.fr' => '',
-            'newValue.senses@0#sense0guid.examples@0#example1guid.sentence.fr' => 'manger une pomme',
-            'deleted.senses@1#sense1guid.examples@0#example1guid' => 'manger une pomme',
-            'oldValue.senses@1#sense1guid.examples@0#example1guid.sentence.fr' => 'manger une pomme',
-            'newValue.senses@1#sense1guid.examples@0#example1guid.sentence.fr' => '',
-            'added.senses@0#sense1guid.examples@0#example0guid' => 'eat an apple',
-            'oldValue.senses@1#sense1guid.examples@0#example0guid.sentence.en' => '',
-            'newValue.senses@1#sense1guid.examples@0#example0guid.sentence.en' => 'eat an apple',
         ]);
     }
 }
