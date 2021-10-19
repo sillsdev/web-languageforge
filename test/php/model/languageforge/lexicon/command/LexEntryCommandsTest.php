@@ -1779,6 +1779,15 @@ class LexEntryCommandsTest extends TestCase
 
     public function testDeepDiff_oneEntryFieldChanged() {
         $this->runDeepDiffTest([
+            $this->entryUpdate('lexeme', 'th', 'new lexeme')
+        ], [
+            'oldValue.lexeme.th' => 'apple',
+            'newValue.lexeme.th' => 'new lexeme',
+        ]);
+    }
+
+    public function testDeepDiff_oneEntryWsAdded() {
+        $this->runDeepDiffTest([
             $this->entryUpdate('lexeme', 'fr', 'une pomme')
         ], [
             'oldValue.lexeme.fr' => '',
@@ -1786,12 +1795,87 @@ class LexEntryCommandsTest extends TestCase
         ]);
     }
 
-    public function testDeepDiff_oneSenseFieldChanged() {
+    public function testDeepDiff_oneEntryFieldAdded() {
+        $this->runDeepDiffTest([
+            $this->entryUpdate('etymology', 'en', 'English etymology goes here')
+        ], [
+            'oldValue.etymology.en' => '',
+            'newValue.etymology.en' => 'English etymology goes here',
+        ]);
+    }
+
+    public function testDeepDiff_oneEntryFieldAddedAndOneEntryFieldChanged() {
+        $this->runDeepDiffTest([
+            $this->entryUpdate('lexeme', 'fr', 'une pomme'),
+            $this->entryUpdate('etymology', 'en', 'English etymology goes here')
+        ], [
+            'oldValue.lexeme.fr' => '',
+            'newValue.lexeme.fr' => 'une pomme',
+            'oldValue.etymology.en' => '',
+            'newValue.etymology.en' => 'English etymology goes here',
+        ]);
+    }
+
+    public function testDeepDiff_oneSenseFieldAdded() {
         $this->runDeepDiffTest([
             $this->senseUpdate(0, 'definition', 'fr', 'une pomme')
         ], [
             'oldValue.senses@0#sense0guid.definition.fr' => '',
             'newValue.senses@0#sense0guid.definition.fr' => 'une pomme',
+        ]);
+    }
+
+    public function testDeepDiff_oneSenseFieldChanged() {
+        $this->runDeepDiffTest([
+            $this->senseUpdate(0, 'definition', 'en', 'apple tart')
+        ], [
+            'oldValue.senses@0#sense0guid.definition.en' => 'apple',
+            'newValue.senses@0#sense0guid.definition.en' => 'apple tart',
+        ]);
+    }
+
+    public function testDeepDiff_oneExampleFieldChanged() {
+        $this->runDeepDiffTest([
+            $this->exampleUpdate(0, 0, 'sentence', 'en', 'modified')
+        ], [
+            'oldValue.senses@0#sense0guid.examples@0#example0guid.sentence.en' => 'eat an apple',
+            'newValue.senses@0#sense0guid.examples@0#example0guid.sentence.en' => 'modified',
+        ]);
+    }
+
+    public function testDeepDiff_twoExampleFieldsChanged() {
+        $this->runDeepDiffTest([
+            $this->exampleUpdate(0, 0, 'sentence', 'en', 'modified'),
+            $this->exampleUpdate(1, 0, 'sentence', 'fr', 'nouvelle phrase')
+        ], [
+            'oldValue.senses@0#sense0guid.examples@0#example0guid.sentence.en' => 'eat an apple',
+            'newValue.senses@0#sense0guid.examples@0#example0guid.sentence.en' => 'modified',
+            'oldValue.senses@1#sense1guid.examples@0#example1guid.sentence.fr' => 'manger une pomme',
+            'newValue.senses@1#sense1guid.examples@0#example1guid.sentence.fr' => 'nouvelle phrase',
+        ]);
+    }
+
+    public function testDeepDiff_fieldsChangedAtEveryLevel() {
+        $this->runDeepDiffTest([
+            $this->entryUpdate('lexeme', 'th', 'new lexeme'),
+            $this->entryUpdate('etymology', 'en', 'English etymology goes here'),
+            $this->senseUpdate(0, 'definition', 'en', 'apple tart'),
+            $this->senseUpdate(0, 'definition', 'fr', 'une pomme'),
+            $this->exampleUpdate(0, 0, 'sentence', 'en', 'modified'),
+            $this->exampleUpdate(1, 0, 'sentence', 'fr', 'nouvelle phrase')
+        ], [
+            'oldValue.lexeme.th' => 'apple',
+            'newValue.lexeme.th' => 'new lexeme',
+            'oldValue.etymology.en' => '',
+            'newValue.etymology.en' => 'English etymology goes here',
+            'oldValue.senses@0#sense0guid.definition.en' => 'apple',
+            'newValue.senses@0#sense0guid.definition.en' => 'apple tart',
+            'oldValue.senses@0#sense0guid.definition.fr' => '',
+            'newValue.senses@0#sense0guid.definition.fr' => 'une pomme',
+            'oldValue.senses@0#sense0guid.examples@0#example0guid.sentence.en' => 'eat an apple',
+            'newValue.senses@0#sense0guid.examples@0#example0guid.sentence.en' => 'modified',
+            'oldValue.senses@1#sense1guid.examples@0#example1guid.sentence.fr' => 'manger une pomme',
+            'newValue.senses@1#sense1guid.examples@0#example1guid.sentence.fr' => 'nouvelle phrase',
         ]);
     }
 
