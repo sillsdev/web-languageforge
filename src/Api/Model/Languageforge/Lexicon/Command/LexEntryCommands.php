@@ -12,6 +12,7 @@ use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\Shared\ActivityModel;
 use Api\Model\Shared\Command\ActivityCommands;
 use Api\Model\Shared\Command\ProjectCommands;
+use Api\Model\Shared\DeepDiff\DeepDiffDecoder;
 use Api\Model\Shared\Mapper\JsonEncoder;
 use Api\Model\Shared\ProjectModel;
 use Litipk\Jiffy\UniversalTimestamp;
@@ -129,7 +130,12 @@ class LexEntryCommands
             if (SendReceiveCommands::isInProgress($projectId)) return false;
         }
 
-        LexEntryDecoder::decode($entry, $params);
+        if (array_key_exists('_update_deep_diff', $params)) {
+            $deepDiff = $params['_update_deep_diff'];
+            DeepDiffDecoder::applyDeepDiff($entry, $deepDiff);
+        } else {
+            LexEntryDecoder::decode($entry, $params);
+        }
 
         if ($action === 'update') {
             $differences = $oldEntry->calculateDifferences($entry);

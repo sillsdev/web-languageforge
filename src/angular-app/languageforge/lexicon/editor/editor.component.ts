@@ -1,4 +1,5 @@
 import * as angular from 'angular';
+import { diff } from 'deep-diff';
 
 import { ActivityService } from '../../../bellows/core/api/activity.service';
 import { ApplicationHeaderService } from '../../../bellows/core/application-header.service';
@@ -327,6 +328,10 @@ export class LexiconEditorController implements angular.IController {
     return this.currentEntry.id != null;
   }
 
+  hasArrayChange(diffs: any[]): boolean {
+    return diffs && diffs.length && diffs.some((diff) => diff.kind === 'A');
+  }
+
   saveCurrentEntry = (doSetEntry: boolean = false, successCallback: () => void = () => { },
     failCallback: (reason?: any) => void = () => { }) => {
     // `doSetEntry` is mainly used for when the save button is pressed, that is when the user is saving the current
@@ -346,9 +351,21 @@ export class LexiconEditorController implements angular.IController {
         newEntryTempId = entryToSave.id;
         entryToSave.id = ''; // send empty id to indicate "create new"
       }
+      const entryForUpdate = this.prepEntryForUpdate(entryToSave);
+      const entryForDiffing = this.removeCustomFieldsForDeltaUpdate(angular.copy(entryForUpdate));
+      const pristineEntryForDiffing = this.removeCustomFieldsForDeltaUpdate(this.prepEntryForUpdate(this.pristineEntry));
+      const diffForUpdate = isNewEntry ? undefined : {
+        id: entryForUpdate.id,
+        _update_deep_diff: diff(pristineEntryForDiffing, entryForDiffing)
+      };
+      let entryOrDiff = isNewEntry ? entryForUpdate : diffForUpdate;
+      if (!isNewEntry && this.hasArrayChange(diffForUpdate._update_deep_diff)) {
+        // Updates involving adding or deleting any array item cannot be delta updates due to MongoDB limitations
+        entryOrDiff = entryForUpdate;
+      }
 
       return this.$q.all({
-        entry: this.lexService.update(this.prepEntryForUpdate(entryToSave)),
+        entry: this.lexService.update(entryOrDiff),
         isSR: this.sendReceive.isSendReceiveProject()
       }).then(data => {
         const entry = data.entry.data;
@@ -1110,6 +1127,23 @@ export class LexiconEditorController implements angular.IController {
       }
     }
 
+    return data;
+  }
+
+  private removeCustomFieldsForDeltaUpdate(data: any): any {
+    if ('customFields' in data) {
+      for (const fieldName in data.customFields) {
+        if (data.hasOwnProperty(fieldName)) {
+          delete data[fieldName];
+        }
+      }
+      if ('senses' in data) {
+        data.senses = data.senses.map((sense: any) => this.removeCustomFieldsForDeltaUpdate(sense));
+      }
+      if ('examples' in data) {
+        data.examples = data.examples.map((example: any) => this.removeCustomFieldsForDeltaUpdate(example));
+      }
+    }
     return data;
   }
 
