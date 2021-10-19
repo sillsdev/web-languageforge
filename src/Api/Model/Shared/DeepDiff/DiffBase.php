@@ -20,8 +20,6 @@ class DiffBase
         return join('.', $this->path);
     }
 
-    public function toMongoUpdateEntry() {}
-
     public function getValue() {}
 
     public static function fromDeepDiff($deepDiff) {

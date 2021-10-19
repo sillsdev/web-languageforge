@@ -16,11 +16,6 @@ class DeletedDiff extends DiffBase
         $this->oldData = $diff['lhs'];
     }
 
-    public function toMongoUpdateEntry() {
-        $path = $this->toMongoPath();
-        return [ '$unset' => [ $path => '' ] ];
-    }
-
     public function getValue() {
         return null;
     }

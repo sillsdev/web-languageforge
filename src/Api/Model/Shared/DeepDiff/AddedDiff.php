@@ -16,11 +16,6 @@ class AddedDiff extends DiffBase
         $this->newData = $diff['rhs'];
     }
 
-    public function toMongoUpdateEntry() {
-        $path = $this->toMongoPath();
-        return [ '$set' => [ $path => $this->newData ] ];
-    }
-
     public function getValue() {
         return $this->newData;
     }

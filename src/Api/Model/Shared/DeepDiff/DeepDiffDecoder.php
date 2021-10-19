@@ -7,8 +7,7 @@ use Palaso\Utilities\CodeGuard;
 
 class DeepDiffDecoder
 {
-    public static function fromDeepDiff($diffs) {
-        // TODO: Pick a name and rename this
+    public static function prepareDeepDiff($diffs) {
         $result = [];
         foreach (static::reorderPushes($diffs) as $diff) {
             $diffInstance = DiffBase::fromDeepDiff($diff);
@@ -56,7 +55,7 @@ class DeepDiffDecoder
         CodeGuard::checkTypeAndThrow($deepDiff, 'array');
         // TODO: Do we need something like this next line from JsonDecoder, or something similar to it?
         // $propertiesToIgnore = $this->getPrivateAndReadOnlyProperties($model);
-        $diffs = static::fromDeepDiff($deepDiff);
+        $diffs = static::prepareDeepDiff($deepDiff);
         foreach ($diffs as $diff) {
             static::applySingleDiff($model, $diff);
         }
@@ -136,20 +135,5 @@ class DeepDiffDecoder
         } else {
             $target->$last[] = $value;
         }
-    }
-
-    /** Creates a Mongo update array to pass to findOneAndUpdate()
-     * @param array $deepDiff An array of diffs from the Javascript deep-diff library.
-     * @throws \Exception
-     */
-    public static function toMongoUpdate($deepDiff) {
-        CodeGuard::checkTypeAndThrow($deepDiff, 'array');
-        $diffs = static::fromDeepDiff($deepDiff);
-        $result = [];
-        foreach ($diffs as $diff) {
-            $update = $diff->toMongoUpdateEntry();
-            $result = array_merge_recursive($result, $update);
-        }
-        return $result;
     }
 }

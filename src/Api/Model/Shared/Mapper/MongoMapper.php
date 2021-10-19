@@ -374,19 +374,6 @@ class MongoMapper
     }
 
     /**
-     * @param string|ObjectID $id
-     * @param object $diff
-     * @return null
-     * @throws \Exception
-     */
-    public function writeDiff($id, $diff)
-    {
-        if (is_string($id)) $id = self::mongoID($id);
-        $filter = array('_id' => $id);
-        $this->_collection->updateOne($filter, $diff);
-    }
-
-    /**
      * Since MongoEncoder::encode returns new \stdClass() instead of an empty array, but empty(new \stdClass()) returns false, we need a different way to detect if an encoded object is empty.
      * See https://stackoverflow.com/questions/9412126/how-to-check-that-an-object-is-empty-in-php
      */

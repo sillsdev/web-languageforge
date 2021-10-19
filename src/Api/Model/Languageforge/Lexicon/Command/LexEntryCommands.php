@@ -130,9 +130,7 @@ class LexEntryCommands
             if (SendReceiveCommands::isInProgress($projectId)) return false;
         }
 
-        $isDeltaUpdate = false;
         if (array_key_exists('_update_deep_diff', $params)) {
-            $isDeltaUpdate = true;
             $deepDiff = $params['_update_deep_diff'];
             DeepDiffDecoder::applyDeepDiff($entry, $deepDiff);
         } else {
@@ -146,12 +144,7 @@ class LexEntryCommands
             $differences = null; // TODO: Do we want differences even on a brand-new, added, entry?
         }
 
-        if ($isDeltaUpdate) {
-            $update = DeepDiffDecoder::toMongoUpdate($deepDiff);
-            $entry->writeDiff($update, $userId, $now);
-        } else {
-            $entry->write();
-        }
+        $entry->write();
         $project->write();
         ActivityCommands::writeEntry($project, $userId, $entry, $action, $differences);
 
