@@ -1652,25 +1652,36 @@ class LexEntryCommandsTest extends TestCase
     }
 
     public function exampleUpdate($senseNum, $exampleNum, $field, $ws, $newValue) {
-        $path = [ 'senses', $senseNum, 'examples', $exampleNum, $field, $ws, 'value' ];
+        if (isset($ws)) {
+            // This is a LexMultiText
+            $path = [ 'senses', $senseNum, 'examples', $exampleNum, $field, $ws, 'value' ];
+        } else {
+            // Non-ws field like GUID, so don't take on 'value' either
+            $path = [ 'senses', $senseNum, 'examples', $exampleNum, $field ];
+        }
         return $this->fieldUpdate($path, $newValue);
     }
 
     public function senseUpdate($senseNum, $field, $ws, $newValue) {
-        $path = [ 'senses', $senseNum, $field, $ws, 'value' ];
+        if (isset($ws)) {
+            // This is a LexMultiText
+            $path = [ 'senses', $senseNum, $field, $ws, 'value' ];
+        } else {
+            // Non-ws field like GUID, so don't take on 'value' either
+            $path = [ 'senses', $senseNum, $field ];
+        }
         return $this->fieldUpdate($path, $newValue);
     }
 
     public function entryUpdate($field, $ws, $newValue) {
-        $path = [ $field, $ws, 'value' ];
+        if (isset($ws)) {
+            // This is a LexMultiText
+            $path = [ $field, $ws, 'value' ];
+        } else {
+            // Non-ws field like GUID, so don't take on 'value' either
+            $path = [ $field ];
+        }
         return $this->fieldUpdate($path, $newValue);
-    }
-
-    public function deepDiffUpdate($idStr, $updates) {
-        return [
-            'id' => $idStr,
-            '_update_deep_diff' => $updates,
-        ];
     }
 
     public function setupDeltaUpdateTests() {
@@ -1707,6 +1718,45 @@ class LexEntryCommandsTest extends TestCase
         ];
     }
 
+    public function replaceGuidsInStr($data, $str) {
+        // Replace "sense0guid" and so on with actual GUIDs
+        $search = ['sense0guid', 'sense1guid', 'example0guid', 'example1guid'];
+        $replacements = [$data['sense0guid'], $data['sense1guid'], $data['example0guid'], $data['example1guid']];
+        return str_replace($search, $replacements, $str);
+    }
+
+    public function replaceGuidsInArray($data, $array) {
+        // Replace "sense0guid" and so on with actual GUIDs
+        $normalized = [];
+        $search = ['sense0guid', 'sense1guid', 'example0guid', 'example1guid'];
+        $replacements = [$data['sense0guid'], $data['sense1guid'], $data['example0guid'], $data['example1guid']];
+        foreach ($array as $key => $value) {
+            $normalizedKey = str_replace($search, $replacements, $key);
+            $normalizedValue = str_replace($search, $replacements, $value);
+            $normalized[$normalizedKey] = $normalizedValue;
+        }
+        return $normalized;
+    }
+
+    public function replaceGuidsInUpdates($data, $updates) {
+        // Replace "sense0guid" and so on with actual GUIDs
+        $normalizedUpdates = [];
+        foreach ($updates as $update) {
+            $normalized = $update;
+            if (array_key_exists('rhs', $update))
+            $normalized['rhs'] = $this->replaceGuidsInStr($data, $update['rhs']);
+            $normalizedUpdates[] = $normalized;
+        }
+        return $normalizedUpdates;
+    }
+
+    public function deepDiffUpdate($data, $updates) {
+        return [
+            'id' => $data['entry'],
+            '_update_deep_diff' => $this->replaceGuidsInUpdates($data, $updates),
+        ];
+    }
+
     public function runDeepDiffTest($updates, $expectedDifferences)
     {
         $data = $this->setupDeltaUpdateTests();
@@ -1714,24 +1764,14 @@ class LexEntryCommandsTest extends TestCase
         $project = $data['project'];
         $userId = $data['user'];
         $entryId = $data['entry'];
-        $deepDiff = $this->deepDiffUpdate($entryId, $updates);
+        $deepDiff = $this->deepDiffUpdate($data, $updates);
 
         $oldEntry = new LexEntryModel($project, $entryId);
         $result = LexEntryCommands::updateEntry($projectId, $deepDiff, $userId);
         $newEntry = new LexEntryModel($project, $entryId);
         $differences = $oldEntry->calculateDifferences($newEntry);
 
-        // Replace "sense0guid" and so on with actual GUIDs
-        $normalizedDifferences = [];
-        foreach ($expectedDifferences as $key => $expected) {
-            $normalizedKey = str_replace(
-                ['sense0guid', 'sense1guid', 'example0guid', 'example1guid'],
-                [$data['sense0guid'], $data['sense1guid'], $data['example0guid'], $data['example1guid']],
-                $key
-            );
-            $normalizedDifferences[$normalizedKey] = $expected;
-        }
-
+        $normalizedDifferences = $this->replaceGuidsInArray($data, $expectedDifferences);
         $this->assertEquals($normalizedDifferences, $differences);
     }
 
@@ -1752,6 +1792,36 @@ class LexEntryCommandsTest extends TestCase
         ], [
             'oldValue.senses@0#sense0guid.definition.fr' => '',
             'newValue.senses@0#sense0guid.definition.fr' => 'une pomme',
+        ]);
+    }
+
+    public function testDeepDiff_swappedSenses() {
+        // The deep-diff library we're using will produce a bunch of updates when array items are swapped.
+        // We want to ensure that this is captured as an actual order move in the differences.
+        $this->runDeepDiffTest([
+            $this->senseUpdate(0, 'guid', null, 'sense1guid'),
+            $this->senseUpdate(1, 'guid', null, 'sense0guid'),
+            $this->senseUpdate(0, 'definition', 'en', ''),
+            $this->senseUpdate(0, 'definition', 'fr', 'pomme'),
+            $this->senseUpdate(1, 'definition', 'en', 'apple'),
+            $this->senseUpdate(1, 'definition', 'fr', ''),
+        ], [
+            'moved.senses@0#sense0guid' => '1',
+            'moved.senses@1#sense1guid' => '0',
+            // Unfortunately the differences calculation doesn't figure out that the example sentences moved
+            // with their parents, so we end up with a bunch of extra difference baggage here
+            'deleted.senses@0#sense0guid.examples@0#example0guid' => 'eat an apple',
+            'oldValue.senses@0#sense0guid.examples@0#example0guid.sentence.en' => 'eat an apple',
+            'newValue.senses@0#sense0guid.examples@0#example0guid.sentence.en' => '',
+            'added.senses@1#sense0guid.examples@0#example1guid' => 'manger une pomme',
+            'oldValue.senses@0#sense0guid.examples@0#example1guid.sentence.fr' => '',
+            'newValue.senses@0#sense0guid.examples@0#example1guid.sentence.fr' => 'manger une pomme',
+            'deleted.senses@1#sense1guid.examples@0#example1guid' => 'manger une pomme',
+            'oldValue.senses@1#sense1guid.examples@0#example1guid.sentence.fr' => 'manger une pomme',
+            'newValue.senses@1#sense1guid.examples@0#example1guid.sentence.fr' => '',
+            'added.senses@0#sense1guid.examples@0#example0guid' => 'eat an apple',
+            'oldValue.senses@1#sense1guid.examples@0#example0guid.sentence.en' => '',
+            'newValue.senses@1#sense1guid.examples@0#example0guid.sentence.en' => 'eat an apple',
         ]);
     }
 }

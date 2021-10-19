@@ -84,7 +84,7 @@ class DeepDiffDecoder
         }
         if ($diff instanceof ArrayDiff) {
             if ($diff->item['kind'] == 'N') {
-                static::setValue($target, $last, $diff->getValue());
+                static::pushValue($target, $last, $diff->getValue());
             } elseif ($diff->item['kind'] == 'D') {
                 if ($target instanceof \ArrayObject) {
                     array_pop($target[$last]);
@@ -124,6 +124,14 @@ class DeepDiffDecoder
         if ($target instanceof \Api\Model\Languageforge\Lexicon\LexMultiText) {
             $target->form($last, $value);
         } else if ($target instanceof \ArrayObject) {
+            $target[$last] = $value;
+        } else {
+            $target->$last = $value;
+        }
+    }
+
+    private static function pushValue(&$target, $last, $value) {
+        if ($target instanceof \ArrayObject) {
             $target[$last][] = $value;
         } else {
             $target->$last[] = $value;
