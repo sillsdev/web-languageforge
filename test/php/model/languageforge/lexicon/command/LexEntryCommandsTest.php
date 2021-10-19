@@ -1777,7 +1777,7 @@ class LexEntryCommandsTest extends TestCase
 
     // ----- Delta-updates tests -----
 
-    public function testDeepDiffBasics() {
+    public function testDeepDiff_oneEntryFieldChanged() {
         $this->runDeepDiffTest([
             $this->entryUpdate('lexeme', 'fr', 'une pomme')
         ], [
@@ -1786,7 +1786,7 @@ class LexEntryCommandsTest extends TestCase
         ]);
     }
 
-    public function testDeepDiffSenseBasics() {
+    public function testDeepDiff_oneSenseFieldChanged() {
         $this->runDeepDiffTest([
             $this->senseUpdate(0, 'definition', 'fr', 'une pomme')
         ], [
