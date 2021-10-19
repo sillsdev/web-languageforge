@@ -1639,4 +1639,119 @@ class LexEntryCommandsTest extends TestCase
         $this->assertTrue(!array_key_exists('definition', $result->entries[0]['senses'][0]));
         $this->assertEquals('apple', $result->entries[3]['senses'][0]['definition']['en']['value']);
     }
+
+    // ----- Delta-updates test helpers -----
+
+    public function fieldUpdate($path, $newValue) {
+        return [
+            'kind' => 'E',
+            'path' => $path,
+            'lhs' => '', // unused
+            'rhs' => $newValue,
+        ];
+    }
+
+    public function exampleUpdate($senseNum, $exampleNum, $field, $ws, $newValue) {
+        $path = [ 'senses', $senseNum, 'examples', $exampleNum, $field, $ws, 'value' ];
+        return $this->fieldUpdate($path, $newValue);
+    }
+
+    public function senseUpdate($senseNum, $field, $ws, $newValue) {
+        $path = [ 'senses', $senseNum, $field, $ws, 'value' ];
+        return $this->fieldUpdate($path, $newValue);
+    }
+
+    public function entryUpdate($field, $ws, $newValue) {
+        $path = [ $field, $ws, 'value' ];
+        return $this->fieldUpdate($path, $newValue);
+    }
+
+    public function deepDiffUpdate($idStr, $updates) {
+        return [
+            'id' => $idStr,
+            '_update_deep_diff' => $updates,
+        ];
+    }
+
+    public function setupDeltaUpdateTests() {
+        $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $projectId = $project->id->asString();
+
+        $userId = self::$environ->getProjectMember($projectId, 'user');
+
+        $entry = new LexEntryModel($project);
+        $entry->lexeme->form('th', 'apple');
+        $sense0 = new LexSense();
+        $sense0->definition->form('en', 'apple');
+        $entry->senses[] = $sense0;
+        $sense1 = new LexSense();
+        $sense1->definition->form('fr', 'pomme');
+        $entry->senses[] = $sense1;
+        $example0 = new LexExample();
+        $example0->sentence->form('en', 'eat an apple');
+        $sense0->examples[] = $example0;
+        $example1 = new LexExample();
+        $example1->sentence->form('fr', 'manger une pomme');
+        $sense1->examples[] = $example1;
+        $entryId = $entry->write();
+
+        return [
+            'project' => $project,
+            'projectId' => $projectId,
+            'user' => $userId,
+            'entry' => $entryId,
+            'sense0guid' => $sense0->guid,
+            'sense1guid' => $sense1->guid,
+            'example0guid' => $example0->guid,
+            'example1guid' => $example1->guid,
+        ];
+    }
+
+    public function runDeepDiffTest($updates, $expectedDifferences)
+    {
+        $data = $this->setupDeltaUpdateTests();
+        $projectId = $data['projectId'];
+        $project = $data['project'];
+        $userId = $data['user'];
+        $entryId = $data['entry'];
+        $deepDiff = $this->deepDiffUpdate($entryId, $updates);
+
+        $oldEntry = new LexEntryModel($project, $entryId);
+        $result = LexEntryCommands::updateEntry($projectId, $deepDiff, $userId);
+        $newEntry = new LexEntryModel($project, $entryId);
+        $differences = $oldEntry->calculateDifferences($newEntry);
+
+        // Replace "sense0guid" and so on with actual GUIDs
+        $normalizedDifferences = [];
+        foreach ($expectedDifferences as $key => $expected) {
+            $normalizedKey = str_replace(
+                ['sense0guid', 'sense1guid', 'example0guid', 'example1guid'],
+                [$data['sense0guid'], $data['sense1guid'], $data['example0guid'], $data['example1guid']],
+                $key
+            );
+            $normalizedDifferences[$normalizedKey] = $expected;
+        }
+
+        $this->assertEquals($normalizedDifferences, $differences);
+    }
+
+    // ----- Delta-updates tests -----
+
+    public function testDeepDiffBasics() {
+        $this->runDeepDiffTest([
+            $this->entryUpdate('lexeme', 'fr', 'une pomme')
+        ], [
+            'oldValue.lexeme.fr' => '',
+            'newValue.lexeme.fr' => 'une pomme',
+        ]);
+    }
+
+    public function testDeepDiffSenseBasics() {
+        $this->runDeepDiffTest([
+            $this->senseUpdate(0, 'definition', 'fr', 'une pomme')
+        ], [
+            'oldValue.senses@0#sense0guid.definition.fr' => '',
+            'newValue.senses@0#sense0guid.definition.fr' => 'une pomme',
+        ]);
+    }
 }
