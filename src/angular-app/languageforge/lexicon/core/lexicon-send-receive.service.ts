@@ -74,7 +74,7 @@ export class LexiconSendReceiveService {
   }
 
   // Called after a lexicon project page is done loading
-  checkInitialState = (): void => {
+  checkInitialState = (pollUpdateIntervalMs?: number): void => {
     this.isSendReceiveProject().then((isSR: boolean) => {
       if (isSR) {
         if (!this.status || this.status == null) {
@@ -88,10 +88,10 @@ export class LexiconSendReceiveService {
             this.clearState();
           }
 
-          this.startPollUpdateTimer();
+          this.startPollUpdateTimer(pollUpdateIntervalMs);
         }
       } else {
-        this.startPollUpdateTimer();
+        this.startPollUpdateTimer(pollUpdateIntervalMs);
       }
     });
   }
@@ -324,15 +324,24 @@ export class LexiconSendReceiveService {
   startPollUpdateTimer(newUpdateInterval?: number): void {
     this.cancelSyncStatusTimer();
     this.cancelCloneStatusTimer();
+
+    let interval = newUpdateInterval > 0 ? newUpdateInterval : this.pollUpdateInterval;
+
+    if (this.pollUpdateInterval !== interval) {
+      // New interval, so cancel and restart
+      this.pollUpdateInterval = interval;
+      this.cancelPollUpdateTimer();
+      this.pollUpdateTimer = this.$interval(this.getPollUpdate, interval);
+      return;
+    }
+
+    // Same interval, or interval not specified? Then only start if not already started
     if (this.pollUpdateTimer != null) {
       return;
     }
 
-    if (newUpdateInterval != null) {
-      this.pollUpdateInterval = newUpdateInterval;
-    }
-    const interval = this.pollUpdateInterval > 0 ? this.pollUpdateInterval : this.POLL_UPDATE_INTERVAL;
-    this.pollUpdateTimer = this.$interval(this.getPollUpdate, interval);
+    this.pollUpdateInterval = interval ? interval : this.POLL_UPDATE_INTERVAL;
+    this.pollUpdateTimer = this.$interval(this.getPollUpdate, this.pollUpdateInterval);
   }
 
   cancelPollUpdateTimer(): void {

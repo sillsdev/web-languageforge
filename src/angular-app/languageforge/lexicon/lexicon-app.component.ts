@@ -137,7 +137,7 @@ export class LexiconAppController implements angular.IController {
   private postLoad() {
     this.editorService.loadEditorData().then(() => {
       this.finishedLoading = true;
-      this.sendReceive.checkInitialState();
+      this.sendReceive.checkInitialState(this.config.pollUpdateIntervalMs);
     });
   }
 
