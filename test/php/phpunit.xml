@@ -29,6 +29,9 @@
             <directory>./</directory>
             <exclude>./library/shared/LanguageDataTest.php</exclude>
         </testsuite>
+        <testsuite name="lexEntryCommands">
+            <file>./model/languageforge/lexicon/command/LexEntryCommandsTest.php</file>
+        </testsuite>
     </testsuites>
     <groups>
         <exclude>
