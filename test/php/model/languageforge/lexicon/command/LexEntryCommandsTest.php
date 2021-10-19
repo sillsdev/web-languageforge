@@ -1816,4 +1816,28 @@ class LexEntryCommandsTest extends TestCase
             'moved.senses@1#sense1guid' => '0',
         ]);
     }
+
+    public function testDeepDiff_swappedSensesAndOneSenseFieldChanged() {
+        $this->runDeepDiffTest([
+            $this->senseUpdate(0, 'guid', null, 'sense1guid'),
+            $this->senseUpdate(1, 'guid', null, 'sense0guid'),
+            $this->senseUpdate(0, 'definition', 'en', ''),
+            $this->senseUpdate(0, 'definition', 'fr', 'pomme'),
+            $this->senseUpdate(1, 'definition', 'en', 'apple'),
+            $this->senseUpdate(1, 'definition', 'fr', ''),
+            $this->exampleUpdate(0, 0, 'guid', null, 'example1guid'),
+            $this->exampleUpdate(0, 0, 'sentence', 'en', ''),
+            $this->exampleUpdate(0, 0, 'sentence', 'fr', 'manger une pomme'),
+            $this->exampleUpdate(1, 0, 'guid', null, 'example0guid'),
+            $this->exampleUpdate(1, 0, 'sentence', 'en', 'eat an apple'),
+            $this->exampleUpdate(1, 0, 'sentence', 'fr', ''),
+            // Up to this point that was all the same as the testDeepDiff_swappedSenses test
+            $this->exampleUpdate(1, 0, 'translation', 'en', 'translation'),  // Only new thing added
+        ], [
+            'moved.senses@0#sense0guid' => '1',
+            'moved.senses@1#sense1guid' => '0',
+            'oldValue.senses@0#sense0guid.examples@0#example0guid.translation.en' => '',
+            'newValue.senses@0#sense0guid.examples@0#example0guid.translation.en' => 'translation',
+        ]);
+    }
 }
