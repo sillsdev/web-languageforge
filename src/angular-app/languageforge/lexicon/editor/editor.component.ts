@@ -350,7 +350,6 @@ export class LexiconEditorController implements angular.IController {
         isNewEntry = true;
         newEntryTempId = entryToSave.id;
         entryToSave.id = ''; // send empty id to indicate "create new"
-      } else {
       }
       const entryForUpdate = this.prepEntryForUpdate(entryToSave);
       const entryForDiffing = this.removeCustomFieldsForDeltaUpdate(angular.copy(entryForUpdate));
