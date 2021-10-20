@@ -9,6 +9,7 @@ import {TabSetModule} from '../../../../bellows/shared/tabset.module';
 import {TypeAheadModule} from '../../../../bellows/shared/type-ahead.module';
 import {LexiconCoreModule} from '../../core/lexicon-core.module';
 import {ModelTransformModule} from '../../shared/model-transform.directive';
+import {AdvancedOptionsConfigurationComponent} from './configuration-advanced-options.component';
 import {FieldsConfigurationComponent} from './configuration-fields.component';
 import {InputSystemsConfigurationComponent} from './configuration-input-systems.component';
 import {OptionListConfigurationComponent} from './configuration-option-lists.component';
@@ -26,6 +27,7 @@ export const LexiconConfigurationModule = angular
     ModelTransformModule,
     LexiconCoreModule
   ])
+  .component('lscAdvancedOptions', AdvancedOptionsConfigurationComponent)
   .component('lscFields', FieldsConfigurationComponent)
   .component('lscInputSystems', InputSystemsConfigurationComponent)
   .component('lscOptionLists', OptionListConfigurationComponent)

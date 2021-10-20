@@ -131,6 +131,7 @@ export class LexiconConfigurationController implements angular.IController {
   // noinspection JSUnusedGlobalSymbols
   onUpdate = (
     $event: {
+      pollUpdateTimerSecondsDirty?: number,
       configDirty?: LexiconConfig,
       inputSystemViewModels?: { [inputSystemId: string]: ConfigurationInputSystemsViewModel },
       inputSystemsList?: ConfigurationInputSystemsViewModel[],
@@ -140,6 +141,9 @@ export class LexiconConfigurationController implements angular.IController {
       addInputSystem?: boolean
     }
   ): void => {
+    if ($event.pollUpdateTimerSecondsDirty > 0) {  // Will be false if number is undefined
+      this.configDirty.pollUpdateIntervalMs = $event.pollUpdateTimerSecondsDirty * 1000;
+    }
     if ($event.configDirty) {
       this.configDirty = $event.configDirty;
       this.$scope.configForm.$setDirty();

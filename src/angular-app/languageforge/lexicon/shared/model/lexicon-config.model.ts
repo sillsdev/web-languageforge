@@ -75,4 +75,5 @@ export class LexiconConfig {
   roleViews: { [role: string]: LexRoleViewConfig };
   tasks: { [taskType: string]: LexTask };
   userViews: { [userId: string]: LexUserViewConfig };
+  pollUpdateIntervalMs?: number;
 }

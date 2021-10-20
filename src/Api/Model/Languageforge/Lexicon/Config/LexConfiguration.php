@@ -26,8 +26,13 @@ class LexConfiguration
      */
     public $userViews;
 
+    /** @var integer */
+    public $pollUpdateIntervalMs;
+
     public function __construct()
     {
+        $this->pollUpdateIntervalMs = 0;
+
         $this->tasks = new MapOf(
             function ($data) {
                 switch ($data['type'] ?? "") {
