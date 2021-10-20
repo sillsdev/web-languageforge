@@ -447,24 +447,25 @@ export class EditorDataService {
 
     if (this.entryListModifiers.filterText() !== '') {
       const query = this.entryListModifiers.filterText().toUpperCase();
-
+      const queryRegex = new RegExp(query);
       let matchesSearch = false;
       
       this.walkEntry(config.entry, entry, (val, isSemanticDomain) => {
         val = val.toUpperCase();
       
         if (isSemanticDomain) {
+          // TODO: still need to understand this more and decide if regex is needed inside this.semanticDomainsMatch as well.
           if (this.semanticDomainsMatch(val, query)) {
             matchesSearch = true;
           }
-        } else if (val.indexOf(query) !== -1) {
+        } else if (queryRegex.test(val)) {
           matchesSearch = true;
         }
       });
       
       if (!matchesSearch) return false;
     }
-    
+
     if (!this.entryListModifiers.filterBy.option) return true;
 
     const mustNotBeEmpty = this.entryListModifiers.filterType === 'isNotEmpty';
