@@ -25,7 +25,7 @@ export class LexiconSendReceiveService {
   cloneProjectStatusFailedCallback: SRFailedCallback = () => {};
   syncStatusTimer: angular.IPromise<void>;
   pollUpdateTimer: angular.IPromise<void>;
-  pollUpdateInterval: number = 0; // ms, defaults to POLL_UPDATE_INTERVAL if <= 0
+  pollUpdateInterval: number = this.POLL_UPDATE_INTERVAL; // ms
   cloneStatusTimer: angular.IPromise<void>;
   pendingMessageId: string;
   projectSettings: LexiconProjectSettings;
@@ -324,25 +324,10 @@ export class LexiconSendReceiveService {
   startPollUpdateTimer(newUpdateInterval?: number): void {
     this.cancelSyncStatusTimer();
     this.cancelCloneStatusTimer();
-
-    let interval = newUpdateInterval > 0 ? newUpdateInterval : this.pollUpdateInterval;
-    if (interval < 5000) interval = 5000;
-
-    if (this.pollUpdateInterval !== interval) {
-      // New interval, so cancel and restart
-      this.pollUpdateInterval = interval;
-      this.cancelPollUpdateTimer();
-      this.pollUpdateTimer = this.$interval(this.getPollUpdate, interval);
-      return;
+    this.setPollUpdateInterval(newUpdateInterval || this.pollUpdateInterval);
+    if (this.pollUpdateTimer == null) {
+      this.pollUpdateTimer = this.$interval(this.getPollUpdate, this.pollUpdateInterval);
     }
-
-    // Same interval, or interval not specified? Then only start if not already started
-    if (this.pollUpdateTimer != null) {
-      return;
-    }
-
-    this.pollUpdateInterval = interval ? interval : this.POLL_UPDATE_INTERVAL;
-    this.pollUpdateTimer = this.$interval(this.getPollUpdate, this.pollUpdateInterval);
   }
 
   cancelPollUpdateTimer(): void {
@@ -353,15 +338,22 @@ export class LexiconSendReceiveService {
   }
 
   setPollUpdateInterval(newUpdateInterval: number): void {
-    if (this.pollUpdateInterval === newUpdateInterval) {
-      // Don't restart the timer if the interval didn't change
-      return;
-    }
-    this.pollUpdateInterval = newUpdateInterval;
+    let interval = newUpdateInterval > 0 ? newUpdateInterval : this.POLL_UPDATE_INTERVAL;
+    if (interval < 5000) interval = 5000;
+
     if (this.pollUpdateTimer) {
-      this.$interval.cancel(this.pollUpdateTimer);
-      this.pollUpdateTimer = this.$interval(this.getPollUpdate, newUpdateInterval);
+      if (this.pollUpdateInterval === interval) {
+        // Nothing to do
+        return;
+      }
+      // New interval, so cancel and restart
+      this.cancelPollUpdateTimer();
     }
+
+    // Not running, so start it
+    this.pollUpdateInterval = interval;
+    // Don't call startPollUpdateTimer here so it can't become an infinite loop
+    this.pollUpdateTimer = this.$interval(this.getPollUpdate, interval);
   }
 
   setCloneProjectStatusSuccessCallback(callback: SRTimerCallback): void {
