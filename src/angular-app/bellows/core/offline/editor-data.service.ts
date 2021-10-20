@@ -447,15 +447,24 @@ export class EditorDataService {
 
     if (this.entryListModifiers.filterText() !== '') {
       const query = this.entryListModifiers.filterText().toUpperCase();
+
       let matchesSearch = false;
+      
       this.walkEntry(config.entry, entry, (val, isSemanticDomain) => {
         val = val.toUpperCase();
+      
         if (isSemanticDomain) {
-          if (this.semanticDomainsMatch(val, query)) matchesSearch = true;
-        } else if (val.indexOf(query) !== -1) matchesSearch = true;
+          if (this.semanticDomainsMatch(val, query)) {
+            matchesSearch = true;
+          }
+        } else if (val.indexOf(query) !== -1) {
+          matchesSearch = true;
+        }
       });
+      
       if (!matchesSearch) return false;
     }
+    
     if (!this.entryListModifiers.filterBy.option) return true;
 
     const mustNotBeEmpty = this.entryListModifiers.filterType === 'isNotEmpty';
