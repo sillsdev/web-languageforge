@@ -448,21 +448,17 @@ export class EditorDataService {
     if (this.entryListModifiers.filterText() !== '') {
       const query = this.entryListModifiers.filterText().toUpperCase();
       const queryRegex = new RegExp(query);
-      let matchesSearch = false;
+      let found = false;
       
       this.walkEntry(config.entry, entry, (val, isSemanticDomain) => {
         val = val.toUpperCase();
       
         if (isSemanticDomain) {
-          if (this.semanticDomainsMatch(val, query)) {
-            matchesSearch = true;
-          }
-        } else if (queryRegex.test(val)) {
-          matchesSearch = true;
-        }
+          if (this.semanticDomainsMatch(val, query)) found = true
+        } else if (queryRegex.test(val)) found = true
       });
       
-      if (!matchesSearch) return false;
+      if (!found) return false;
     }
 
     if (!this.entryListModifiers.filterBy.option) return true;
