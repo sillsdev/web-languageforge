@@ -454,7 +454,6 @@ export class EditorDataService {
         val = val.toUpperCase();
       
         if (isSemanticDomain) {
-          // TODO: still need to understand this more and decide if regex is needed inside this.semanticDomainsMatch as well.
           if (this.semanticDomainsMatch(val, query)) {
             matchesSearch = true;
           }
