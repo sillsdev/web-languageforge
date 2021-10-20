@@ -326,6 +326,7 @@ export class LexiconSendReceiveService {
     this.cancelCloneStatusTimer();
 
     let interval = newUpdateInterval > 0 ? newUpdateInterval : this.pollUpdateInterval;
+    if (interval < 5000) interval = 5000;
 
     if (this.pollUpdateInterval !== interval) {
       // New interval, so cancel and restart
