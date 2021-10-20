@@ -69,16 +69,6 @@ describe('Lexicon E2E Page Traversal', () => {
       await configurationPage.unifiedPane.example.fieldSpecificInputSystemCheckbox('Translation', 0).click();
       await configurationPage.unifiedPane.fieldSpecificButton('Translation').click();
     });
-
-    it('Input Systems tab', async () => {
-      await configurationPage.tabs.inputSystems.click();
-      await configurationPage.inputSystemsPane.moreButton.click();
-    });
-
-    it('Option List tab', async () => {
-      await configurationPage.tabs.optionlists.click();
-      // There is no model of option list tab - Mark W 2018-01-14
-    });
   });
 
   describe('Explore editor page', () => {
