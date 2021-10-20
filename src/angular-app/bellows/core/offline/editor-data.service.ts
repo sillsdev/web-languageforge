@@ -453,9 +453,10 @@ export class EditorDataService {
       this.walkEntry(config.entry, entry, (val, isSemanticDomain) => {
         val = val.toUpperCase();
       
-        if (isSemanticDomain) {
+        if (queryRegex.test(val)) found = true
+        else if (isSemanticDomain) {
           if (this.semanticDomainsMatch(val, query)) found = true
-        } else if (queryRegex.test(val)) found = true
+        }
       });
       
       if (!found) return false;
