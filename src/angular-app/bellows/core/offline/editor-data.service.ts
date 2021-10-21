@@ -44,6 +44,7 @@ class EntryListModifiers {
   };
   sortOptions: SortOption[] = [];
   sortReverse = false;
+  wholeWord = false;
   filterBy: {
     text: string;
     option: FilterOption;
@@ -447,7 +448,7 @@ export class EditorDataService {
 
     if (this.entryListModifiers.filterText() !== '') {
       const query = this.entryListModifiers.filterText().toUpperCase();
-      const queryRegex = new RegExp(query);
+      const queryRegex = new RegExp(this.entryListModifiers.wholeWord ? `\\b${query}\\b` : query);
       let found = false;
       
       this.walkEntry(config.entry, entry, (val, isSemanticDomain) => {
