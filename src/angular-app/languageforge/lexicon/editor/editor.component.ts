@@ -312,7 +312,7 @@ export class LexiconEditorController implements angular.IController {
 
   shouldShowFilterReset() {
     const modifiers = this.entryListModifiers;
-    return modifiers.filterActive() || modifiers.sortBy.value !== 'default' || modifiers.sortReverse //TODO: is wholeWord needed here?
+    return modifiers.filterActive() || modifiers.sortBy.value !== 'default' || modifiers.sortReverse
   }
 
   resetEntryListFilter(): void {
