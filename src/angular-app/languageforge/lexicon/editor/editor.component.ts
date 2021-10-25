@@ -305,9 +305,9 @@ export class LexiconEditorController implements angular.IController {
     this.editorService.filterAndSortEntries.apply(this, arguments);
   }
 
-  filterSortOptionsActive() {
+  filterOptionsActive() {
     const mod = this.entryListModifiers;
-    return mod.filterBy && mod.filterBy.option || mod.sortBy.value !== 'default' || mod.sortReverse //TODO: is wholeWord needed here?
+    return (mod.filterBy && mod.filterBy.option) || mod.sortBy.value !== 'default' || mod.sortReverse || mod.wholeWord
   }
 
   shouldShowFilterReset() {
@@ -318,7 +318,7 @@ export class LexiconEditorController implements angular.IController {
   resetEntryListFilter(): void {
     this.entryListModifiers.filterBy = null;
     this.entryListModifiers.wholeWord = false;
-    
+
     this.filterAndSortEntries();
   }
 
