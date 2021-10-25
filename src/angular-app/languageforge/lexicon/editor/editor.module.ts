@@ -43,7 +43,7 @@ export const LexiconEditorModule = angular
                             lec-rights="$ctrl.rights"></lexicon-editor>`
       })
       .state('editor.list', {
-        url: '/list?sortBy&filterText&sortReverse&filterType&filterBy',
+        url: '/list?sortBy&filterText&sortReverse&wholeWord&filterType&filterBy',
         templateUrl: '/angular-app/languageforge/lexicon/editor/editor-list.view.html',
         controller: 'EditorListCtrl'
       })

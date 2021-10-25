@@ -231,6 +231,7 @@ export class LexiconEditorController implements angular.IController {
       sortBy: this.$state.params.sortBy,
       filterText: this.$state.params.filterText,
       sortReverse: this.$state.params.sortReverse,
+      //TODO: wholeWord: this.$state.params.wholeWord,
       filterType: this.$state.params.filterType,
       filterBy: this.$state.params.filterBy
     }, { notify: true });
@@ -268,6 +269,7 @@ export class LexiconEditorController implements angular.IController {
         }
       }
       this.entryListModifiers.sortReverse = this.$state.params.sortReverse === 'true';
+      this.entryListModifiers.wholeWord = this.$state.params.wholeWord === 'true';
 
       if (this.$state.params.filterType) {
         this.entryListModifiers.filterType = this.$state.params.filterType;
@@ -296,6 +298,7 @@ export class LexiconEditorController implements angular.IController {
       sortBy: this.entryListModifiers.sortBy.label,
       filterText: this.entryListModifiers.filterText(),
       sortReverse: this.entryListModifiers.sortReverse,
+      wholeWord: this.entryListModifiers.wholeWord,
       filterType: this.entryListModifiers.filterType,
       filterBy: this.entryListModifiers.filterByLabel()
     }, { notify: false });
@@ -304,16 +307,17 @@ export class LexiconEditorController implements angular.IController {
 
   filterSortOptionsActive() {
     const mod = this.entryListModifiers;
-    return mod.filterBy && mod.filterBy.option || mod.sortBy.value !== 'default' || mod.sortReverse;
+    return mod.filterBy && mod.filterBy.option || mod.sortBy.value !== 'default' || mod.sortReverse //TODO: is wholeWord needed here?
   }
 
   shouldShowFilterReset() {
     const modifiers = this.entryListModifiers;
-    return modifiers.filterActive() || modifiers.sortBy.value !== 'default' || modifiers.sortReverse;
+    return modifiers.filterActive() || modifiers.sortBy.value !== 'default' || modifiers.sortReverse //TODO: is wholeWord needed here?
   }
 
   resetEntryListFilter(): void {
     this.entryListModifiers.filterBy = null;
+    //TODO: need to ensure the wholeWord is false here as well...it's not currently being reset
     this.filterAndSortEntries();
   }
 
@@ -419,6 +423,7 @@ export class LexiconEditorController implements angular.IController {
                 sortBy: this.entryListModifiers.sortBy.label,
                 filterText: this.entryListModifiers.filterText(),
                 sortReverse: this.entryListModifiers.sortReverse,
+                //TODO: wholeWord: this.entryListModifiers.wholeWord,
                 filterType: this.entryListModifiers.filterType,
                 filterBy: this.entryListModifiers.filterByLabel()
               }, { notify: false });
@@ -503,6 +508,7 @@ export class LexiconEditorController implements angular.IController {
           sortBy: this.entryListModifiers.sortBy.label,
           filterText: this.entryListModifiers.filterText(),
           sortReverse: this.entryListModifiers.sortReverse,
+          //TODO: wholeWord: this.entryListModifiers.wholeWord,
           filterType: this.entryListModifiers.filterType,
           filterBy: this.entryListModifiers.filterByLabel()
         }, { notify: false });
@@ -927,6 +933,7 @@ export class LexiconEditorController implements angular.IController {
         sortBy: this.entryListModifiers.sortBy.label,
         filterText: this.entryListModifiers.filterText(),
         sortReverse: this.entryListModifiers.sortReverse,
+        //TODO: wholeWord: this.entryListModifiers.wholeWord,
         filterType: this.entryListModifiers.filterType,
         filterBy: this.entryListModifiers.filterByLabel()
       }, { notify: false });
@@ -936,6 +943,7 @@ export class LexiconEditorController implements angular.IController {
         sortBy: this.$state.params.sortBy,
         filterText: this.$state.params.filterText,
         sortReverse: this.$state.params.sortReverse,
+        //TODO: wholeWord: this.$state.params.wholeWord,
         filterType: this.$state.params.filterType,
         filterBy: this.$state.params.filterBy
       });
