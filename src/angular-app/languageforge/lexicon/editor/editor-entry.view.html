@@ -60,15 +60,28 @@
                                 </div>
                                 <div class="form-group sortfilter-form">
                                     <label class="font-weight-bold" for="sortEntriesBy">Sort Entries By</label>
-                                    <label class="reverse-label">
-                                        <input type="checkbox" data-ng-change="$ctrl.filterAndSortEntries()" data-ng-model="$ctrl.entryListModifiers.sortReverse"> Reverse
-                                    </label>
+
                                     <div class="form-inline">
                                         <select id="sortEntriesBy" class="custom-select sortfilter-control"
                                                 data-ng-change="$ctrl.filterAndSortEntries()" data-ng-model="$ctrl.entryListModifiers.sortBy"
                                                 data-ng-options="item as $ctrl.entryListModifiers.sortOptionLabel(item.label) for item in $ctrl.entryListModifiers.sortOptions track by item.value">
                                         </select>
                                     </div>
+                                </div>
+                                <div class="form-group sortfilter-form">
+                                    <label class="font-weight-bold" for="sortEntriesBy">Advanced</label>
+
+                                    <section class="d-flex justify-content-around">
+                                        <label>
+                                            <input type="checkbox" data-ng-change="$ctrl.filterAndSortEntries()" data-ng-model="$ctrl.entryListModifiers.sortReverse" class="align-middle">
+                                            <span class="align-middle pl-1">Reverse</span>
+                                        </label>
+    
+                                        <label>
+                                            <input type="checkbox" data-ng-change="$ctrl.filterAndSortEntries()" data-ng-model="$ctrl.entryListModifiers.wholeWord" class="align-middle">
+                                            <span class="align-middle pl-1">Whole word</span>
+                                        </label>
+                                    </section>
                                 </div>
                             </div>
                         </div>
