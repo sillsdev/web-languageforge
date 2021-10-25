@@ -48,7 +48,7 @@ export const LexiconEditorModule = angular
         controller: 'EditorListCtrl'
       })
       .state('editor.entry', {
-        url: '/entry/{entryId:[0-9a-z_]{6,24}}?sortBy&filterText&sortReverse&filterType&filterBy',
+        url: '/entry/{entryId:[0-9a-z_]{6,24}}?sortBy&filterText&sortReverse&wholeWord&filterType&filterBy',
         templateUrl: '/angular-app/languageforge/lexicon/editor/editor-entry.view.html',
         controller: 'EditorEntryCtrl'
       })

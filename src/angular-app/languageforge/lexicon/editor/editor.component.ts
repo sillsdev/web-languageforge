@@ -231,7 +231,7 @@ export class LexiconEditorController implements angular.IController {
       sortBy: this.$state.params.sortBy,
       filterText: this.$state.params.filterText,
       sortReverse: this.$state.params.sortReverse,
-      //TODO: wholeWord: this.$state.params.wholeWord,
+      wholeWord: this.$state.params.wholeWord,
       filterType: this.$state.params.filterType,
       filterBy: this.$state.params.filterBy
     }, { notify: true });
@@ -934,7 +934,7 @@ export class LexiconEditorController implements angular.IController {
         sortBy: this.entryListModifiers.sortBy.label,
         filterText: this.entryListModifiers.filterText(),
         sortReverse: this.entryListModifiers.sortReverse,
-        //TODO: wholeWord: this.entryListModifiers.wholeWord,
+        wholeWord: this.entryListModifiers.wholeWord,
         filterType: this.entryListModifiers.filterType,
         filterBy: this.entryListModifiers.filterByLabel()
       }, { notify: false });
@@ -944,7 +944,7 @@ export class LexiconEditorController implements angular.IController {
         sortBy: this.$state.params.sortBy,
         filterText: this.$state.params.filterText,
         sortReverse: this.$state.params.sortReverse,
-        //TODO: wholeWord: this.$state.params.wholeWord,
+        wholeWord: this.$state.params.wholeWord,
         filterType: this.$state.params.filterType,
         filterBy: this.$state.params.filterBy
       });
