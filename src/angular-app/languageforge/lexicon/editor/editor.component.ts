@@ -316,6 +316,12 @@ export class LexiconEditorController implements angular.IController {
     return (mod.filterBy && mod.filterBy.option) || mod.sortBy.value !== 'default' || mod.sortReverse || mod.wholeWord || mod.matchDiacritic
   }
 
+  filterSortIsOn() {
+    const mod = this.entryListModifiers;
+    let on = mod.filterBy != null && mod.filterBy.option !=null || mod.sortBy.value !== 'default' || mod.sortReverse;
+    return on;
+  }
+
   shouldShowFilterReset() {
     const modifiers = this.entryListModifiers;
     return modifiers.filterActive() || modifiers.sortBy.value !== 'default' || modifiers.sortReverse
