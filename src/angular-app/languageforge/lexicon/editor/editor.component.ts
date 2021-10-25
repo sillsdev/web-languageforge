@@ -317,7 +317,8 @@ export class LexiconEditorController implements angular.IController {
 
   resetEntryListFilter(): void {
     this.entryListModifiers.filterBy = null;
-    //TODO: need to ensure the wholeWord is false here as well...it's not currently being reset
+    this.entryListModifiers.wholeWord = false;
+    
     this.filterAndSortEntries();
   }
 
