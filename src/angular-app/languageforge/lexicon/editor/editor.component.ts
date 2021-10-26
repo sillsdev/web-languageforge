@@ -481,7 +481,6 @@ export class LexiconEditorController implements angular.IController {
       const newEntry = new LexEntry();
       newEntry.id = uniqueId;
       this.setCurrentEntry(newEntry);
-      // noinspection JSIgnoredPromiseFromCall - comments will load in the background
       this.commentService.loadEntryComments(newEntry.id);
       this.editorService.addEntryToEntryList(newEntry);
       this.editorService.showInitialEntries().then(() => {
