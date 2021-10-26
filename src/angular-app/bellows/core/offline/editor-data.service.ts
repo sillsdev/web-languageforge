@@ -445,7 +445,6 @@ export class EditorDataService {
   }
 
   private entryMeetsFilterCriteria(config: any, entry: LexEntry): boolean {
-
     if (this.entryListModifiers.filterText() !== '') {
       const query = this.entryListModifiers.filterText().toUpperCase();
       const queryRegex = new RegExp(this.entryListModifiers.wholeWord ? `\\b${query}\\b` : query);
@@ -454,9 +453,8 @@ export class EditorDataService {
       this.walkEntry(config.entry, entry, (val, isSemanticDomain) => {
         val = val.toUpperCase();
       
-        if (queryRegex.test(val)) found = true
-        else if (isSemanticDomain) {
-          if (this.semanticDomainsMatch(val, query)) found = true
+        if (queryRegex.test(val) || (isSemanticDomain && this.semanticDomainsMatch(val, query))) {
+          found = true
         }
       });
       
