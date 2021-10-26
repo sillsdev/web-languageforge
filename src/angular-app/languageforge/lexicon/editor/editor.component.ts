@@ -1245,34 +1245,13 @@ export class LexiconEditorController implements angular.IController {
   }
 
   private static scrollDivToId(containerId: string, divId: string, posOffset: number = 0): void {
-    const $containerDiv: any = $(containerId);
-    let $div: any = $(divId);
-    let foundDiv: boolean = false;
-    let offsetTop: number = 0;
+    const $containerDiv: any = $(containerId)
+    const $div: any = $(divId)[0];
+    
+    if ($div && $containerDiv.scrollTop) {
+      let offsetTop: number = $div.offsetTop - posOffset;
 
-    // todo: refactor this spaghetti logic
-    if ($div && $containerDiv) {
-      if ($div.offsetTop == null) {
-        if ($div[0] != null) {
-          $div = $div[0];
-          foundDiv = true;
-        } else {
-          console.log('Error: unable to scroll to div with div id ' + divId);
-        }
-      }
-
-      if (foundDiv) {
-        if ($div.offsetTop == null) {
-          offsetTop = $div.offset().top - posOffset;
-        } else {
-          offsetTop = $div.offsetTop - posOffset;
-        }
-
-        if (offsetTop < 0) {
-          offsetTop = 0;
-        }
-        $containerDiv.scrollTop(offsetTop);
-      }
+      $containerDiv.scrollTop(offsetTop > -1 ? offsetTop : 0);
     }
   }
 
