@@ -49,6 +49,11 @@ export class LexiconEditorController implements angular.IController {
 
   lastSavedDate = new Date();
   currentEntry: LexEntry = new LexEntry();
+
+  currentIndex = {
+    index: -1
+  }
+
   commentContext = {
     contextGuid: ''
   };
@@ -316,9 +321,9 @@ export class LexiconEditorController implements angular.IController {
     return (mod.filterBy && mod.filterBy.option) || mod.sortBy.value !== 'default' || mod.sortReverse || mod.wholeWord || mod.matchDiacritic
   }
 
-  filterSortIsOn() {
+  filterIsOn() {
     const mod = this.entryListModifiers;
-    let on = mod.filterBy != null && mod.filterBy.option !=null || mod.sortBy.value !== 'default' || mod.sortReverse;
+    let on = mod.filterBy != null && mod.filterBy.option !=null;
     return on;
   }
 
@@ -479,15 +484,14 @@ export class LexiconEditorController implements angular.IController {
     if (isValid) {
       let id = this.editorService.getIdInFilteredList(Number(index));
       this.editEntryAndScroll(id);
-      let gotoElement = (<HTMLInputElement>document.getElementById('goto'));
-      gotoElement.value = '';
     }
   }
 
   entryIndex(): number {
     let id = this.currentEntry.id;
     let index = this.editorService.getIndexInList(id, this.entries)
-    return index + 1;
+    this.currentIndex.index = index + 1;
+    return this.currentIndex.index;
   }
 
   canSkipToEntry(distance: number): boolean {
