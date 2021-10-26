@@ -504,15 +504,6 @@ export class LexiconEditorController implements angular.IController {
           iShowList--;
         }
         this.setCurrentEntry(this.visibleEntries[iShowList]);
-        this.$state.go('.', {
-          entryId: this.visibleEntries[iShowList].id,
-          sortBy: this.entryListModifiers.sortBy.label,
-          filterText: this.entryListModifiers.filterText(),
-          sortReverse: this.entryListModifiers.sortReverse,
-          //TODO: wholeWord: this.entryListModifiers.wholeWord,
-          filterType: this.entryListModifiers.filterType,
-          filterBy: this.entryListModifiers.filterByLabel()
-        }, { notify: false });
       } else {
         this.returnToList();
       }
