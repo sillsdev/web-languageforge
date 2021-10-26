@@ -1210,14 +1210,14 @@ export class LexiconEditorController implements angular.IController {
     const posOffset = (position === 'top') ? 274 : 487;
     const entryDivId = '#entryId_' + id;
     const listDivId = '#compactEntryListContainer';
-    let index;
+    let index = this.editorService.getIndexInList(id, this.filteredEntries);
 
     // make sure the item is visible in the list
     // todo implement lazy "up" scrolling to make this more efficient
 
     // only expand the "show window" if we know that the entry is actually in
     // the entry list - a safe guard
-    if (this.editorService.getIndexInList(id, this.filteredEntries) != null) {
+    if (index != null) {
       while (this.visibleEntries.length < this.filteredEntries.length) {
         index = this.editorService.getIndexInList(id, this.visibleEntries);
         if (index != null) {
@@ -1226,8 +1226,6 @@ export class LexiconEditorController implements angular.IController {
 
         this.editorService.showMoreEntries();
       }
-    } else {
-      console.warn('Error: tried to scroll to an entry that is not in the entry list!');
     }
 
     // note: ':visible' is a JQuery invention that means 'it takes up space on
