@@ -418,16 +418,12 @@ export class LexiconEditorController implements angular.IController {
           if (entry && isNewEntry) {
             this.setCurrentEntry(this.entries[this.editorService.getIndexInList(entry.id, this.entries)]);
             this.editorService.removeEntryFromLists(newEntryTempId);
+
             if (doSetEntry) {
               this.$state.go('.', {
                 entryId: entry.id,
-                sortBy: this.entryListModifiers.sortBy.label,
-                filterText: this.entryListModifiers.filterText(),
-                sortReverse: this.entryListModifiers.sortReverse,
-                //TODO: wholeWord: this.entryListModifiers.wholeWord,
-                filterType: this.entryListModifiers.filterType,
-                filterBy: this.entryListModifiers.filterByLabel()
               }, { notify: false });
+
               this.scrollListToEntry(entry.id, 'top');
             }
           }
