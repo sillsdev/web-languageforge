@@ -446,13 +446,11 @@ export class EditorDataService {
 
   private entryMeetsFilterCriteria(config: any, entry: LexEntry): boolean {
     if (this.entryListModifiers.filterText() !== '') {
-      const query = this.entryListModifiers.filterText().toUpperCase();
-      const queryRegex = new RegExp(this.entryListModifiers.wholeWord ? `\\b${query}\\b` : query);
+      const query = this.entryListModifiers.filterText();
+      const queryRegex = new RegExp(this.entryListModifiers.wholeWord ? `\\b${query}\\b` : query, 'i');
       let found = false;
       
       this.walkEntry(config.entry, entry, (val, isSemanticDomain) => {
-        val = val.toUpperCase();
-      
         if (queryRegex.test(val) || (isSemanticDomain && this.semanticDomainsMatch(val, query))) {
           found = true
         }
