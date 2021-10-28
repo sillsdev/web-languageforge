@@ -456,7 +456,7 @@ export class EditorDataService {
       const queryRegex = new RegExp(this.entryListModifiers.wholeWord ? `\\b${query}\\b` : query, 'i');
       let found = false;
       
-      this.walkEntry(config.entry, entry, (val, isSemanticDomain) => {      
+      this.walkEntry(config.entry, entry, (val, isSemanticDomain) => {
         if (queryRegex.test(val) || (isSemanticDomain && this.semanticDomainsMatch(val, query))) {
           found = true
         }
