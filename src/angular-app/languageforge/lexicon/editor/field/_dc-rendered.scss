@@ -25,6 +25,16 @@
     font-style: normal;
   }
 }
+@include media-breakpoint-down(sm) {
+  .dc-rendered-on-desktop {
+    display: none;
+  }
+}
+@include media-breakpoint-up(md) {
+  .dc-rendered-on-mobile {
+    display: none;
+  }
+}
 .dc-rendered-overflow{
   display: -webkit-box;
   -webkit-line-clamp: 2;

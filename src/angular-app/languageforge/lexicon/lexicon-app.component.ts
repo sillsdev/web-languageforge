@@ -110,6 +110,7 @@ export class LexiconAppController implements angular.IController {
 
     if ($event.config) {
       this.config = $event.config;
+      this.sendReceive.setPollUpdateInterval(this.config.pollUpdateIntervalMs);
     }
 
     if ($event.optionLists) {
@@ -136,7 +137,7 @@ export class LexiconAppController implements angular.IController {
   private postLoad() {
     this.editorService.loadEditorData().then(() => {
       this.finishedLoading = true;
-      this.sendReceive.checkInitialState();
+      this.sendReceive.checkInitialState(this.config.pollUpdateIntervalMs);
     });
   }
 

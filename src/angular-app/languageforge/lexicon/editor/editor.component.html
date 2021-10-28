@@ -41,9 +41,9 @@
                 </div>
             </div>
         </div>
-        <div class="row" data-ng-show="$ctrl.isAtEditorEntry()">
+        <div class="row dc-rendered-on-desktop" data-ng-if="$ctrl.isAtEditorEntry()">
             <div class="col">
-                <div id="editor-title-text" class="word-definition-title">
+                <div class="word-definition-title">
                     <dc-rendered config="$ctrl.lecConfig.entry" global-config="$ctrl.lecConfig"
                                  model="$ctrl.currentEntry" option-lists="$ctrl.lecOptionLists"></dc-rendered>
                 </div>

@@ -20,7 +20,9 @@ export class FieldControl {
   hideRightPanel: () => void;
   makeValidModelRecursive: (config: LexConfig, data?: any, stopAtNodes?: string | string[]) => any;
   project: LexiconProject;
-  saveCurrentEntry: () => void;
+  saveCurrentEntry: (doSetEntry?: boolean,
+                     successCallback?: () => void,
+                     failCallback?: (reason?: any) => void) => void;
   selectFieldForComment?: (fieldName: string, model: LexField, inputSystemTag: string, multioptionValue: string,
                            pictureFilePath: string, contextGuid: string) => void;
   setCommentContext: (contextGuid: string) => void;

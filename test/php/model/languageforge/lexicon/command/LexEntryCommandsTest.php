@@ -1639,4 +1639,289 @@ class LexEntryCommandsTest extends TestCase
         $this->assertTrue(!array_key_exists('definition', $result->entries[0]['senses'][0]));
         $this->assertEquals('apple', $result->entries[3]['senses'][0]['definition']['en']['value']);
     }
+
+    // ----- Delta-updates test helpers -----
+
+    public function fieldUpdate($path, $newValue) {
+        return [
+            'kind' => 'E',
+            'path' => $path,
+            'lhs' => '', // unused
+            'rhs' => $newValue,
+        ];
+    }
+
+    public function exampleUpdate($senseNum, $exampleNum, $field, $ws, $newValue) {
+        if (isset($ws)) {
+            // This is a LexMultiText
+            $path = [ 'senses', $senseNum, 'examples', $exampleNum, $field, $ws, 'value' ];
+        } else {
+            // Non-ws field like GUID, so don't take on 'value' either
+            $path = [ 'senses', $senseNum, 'examples', $exampleNum, $field ];
+        }
+        return $this->fieldUpdate($path, $newValue);
+    }
+
+    public function senseUpdate($senseNum, $field, $ws, $newValue) {
+        if (isset($ws)) {
+            // This is a LexMultiText
+            $path = [ 'senses', $senseNum, $field, $ws, 'value' ];
+        } else {
+            // Non-ws field like GUID, so don't take on 'value' either
+            $path = [ 'senses', $senseNum, $field ];
+        }
+        return $this->fieldUpdate($path, $newValue);
+    }
+
+    public function entryUpdate($field, $ws, $newValue) {
+        if (isset($ws)) {
+            // This is a LexMultiText
+            $path = [ $field, $ws, 'value' ];
+        } else {
+            // Non-ws field like GUID, so don't take on 'value' either
+            $path = [ $field ];
+        }
+        return $this->fieldUpdate($path, $newValue);
+    }
+
+    public function setupDeltaUpdateTests() {
+        $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $projectId = $project->id->asString();
+
+        $userId = self::$environ->getProjectMember($projectId, 'user');
+
+        $entry = new LexEntryModel($project);
+        $entry->lexeme->form('th', 'apple');
+        $sense0 = new LexSense();
+        $sense0->definition->form('en', 'apple');
+        $entry->senses[] = $sense0;
+        $sense1 = new LexSense();
+        $sense1->definition->form('fr', 'pomme');
+        $entry->senses[] = $sense1;
+        $example0 = new LexExample();
+        $example0->sentence->form('en', 'eat an apple');
+        $sense0->examples[] = $example0;
+        $example1 = new LexExample();
+        $example1->sentence->form('fr', 'manger une pomme');
+        $sense1->examples[] = $example1;
+        $entryId = $entry->write();
+
+        return [
+            'project' => $project,
+            'projectId' => $projectId,
+            'user' => $userId,
+            'entry' => $entryId,
+            'sense0guid' => $sense0->guid,
+            'sense1guid' => $sense1->guid,
+            'example0guid' => $example0->guid,
+            'example1guid' => $example1->guid,
+        ];
+    }
+
+    public function replaceGuidsInStr($data, $str) {
+        // Replace "sense0guid" and so on with actual GUIDs
+        $search = ['sense0guid', 'sense1guid', 'example0guid', 'example1guid'];
+        $replacements = [$data['sense0guid'], $data['sense1guid'], $data['example0guid'], $data['example1guid']];
+        return str_replace($search, $replacements, $str);
+    }
+
+    public function replaceGuidsInArray($data, $array) {
+        // Replace "sense0guid" and so on with actual GUIDs
+        $normalized = [];
+        $search = ['sense0guid', 'sense1guid', 'example0guid', 'example1guid'];
+        $replacements = [$data['sense0guid'], $data['sense1guid'], $data['example0guid'], $data['example1guid']];
+        foreach ($array as $key => $value) {
+            $normalizedKey = str_replace($search, $replacements, $key);
+            $normalizedValue = str_replace($search, $replacements, $value);
+            $normalized[$normalizedKey] = $normalizedValue;
+        }
+        return $normalized;
+    }
+
+    public function replaceGuidsInUpdates($data, $updates) {
+        // Replace "sense0guid" and so on with actual GUIDs
+        $normalizedUpdates = [];
+        foreach ($updates as $update) {
+            $normalized = $update;
+            if (array_key_exists('rhs', $update))
+            $normalized['rhs'] = $this->replaceGuidsInStr($data, $update['rhs']);
+            $normalizedUpdates[] = $normalized;
+        }
+        return $normalizedUpdates;
+    }
+
+    public function deepDiffUpdate($data, $updates) {
+        return [
+            'id' => $data['entry'],
+            '_update_deep_diff' => $this->replaceGuidsInUpdates($data, $updates),
+        ];
+    }
+
+    public function runDeepDiffTest($updates, $expectedDifferences)
+    {
+        $data = $this->setupDeltaUpdateTests();
+        $projectId = $data['projectId'];
+        $project = $data['project'];
+        $userId = $data['user'];
+        $entryId = $data['entry'];
+        $deepDiff = $this->deepDiffUpdate($data, $updates);
+
+        $oldEntry = new LexEntryModel($project, $entryId);
+        $result = LexEntryCommands::updateEntry($projectId, $deepDiff, $userId);
+        $newEntry = new LexEntryModel($project, $entryId);
+        $differences = $oldEntry->calculateDifferences($newEntry);
+
+        $normalizedDifferences = $this->replaceGuidsInArray($data, $expectedDifferences);
+        $this->assertEquals($normalizedDifferences, $differences);
+    }
+
+    // ----- Delta-updates tests -----
+
+    public function testDeepDiff_oneEntryFieldChanged() {
+        $this->runDeepDiffTest([
+            $this->entryUpdate('lexeme', 'th', 'new lexeme')
+        ], [
+            'oldValue.lexeme.th' => 'apple',
+            'newValue.lexeme.th' => 'new lexeme',
+        ]);
+    }
+
+    public function testDeepDiff_oneEntryWsAdded() {
+        $this->runDeepDiffTest([
+            $this->entryUpdate('lexeme', 'fr', 'une pomme')
+        ], [
+            'oldValue.lexeme.fr' => '',
+            'newValue.lexeme.fr' => 'une pomme',
+        ]);
+    }
+
+    public function testDeepDiff_oneEntryFieldAdded() {
+        $this->runDeepDiffTest([
+            $this->entryUpdate('etymology', 'en', 'English etymology goes here')
+        ], [
+            'oldValue.etymology.en' => '',
+            'newValue.etymology.en' => 'English etymology goes here',
+        ]);
+    }
+
+    public function testDeepDiff_oneEntryFieldAddedAndOneEntryFieldChanged() {
+        $this->runDeepDiffTest([
+            $this->entryUpdate('lexeme', 'fr', 'une pomme'),
+            $this->entryUpdate('etymology', 'en', 'English etymology goes here')
+        ], [
+            'oldValue.lexeme.fr' => '',
+            'newValue.lexeme.fr' => 'une pomme',
+            'oldValue.etymology.en' => '',
+            'newValue.etymology.en' => 'English etymology goes here',
+        ]);
+    }
+
+    public function testDeepDiff_oneSenseFieldAdded() {
+        $this->runDeepDiffTest([
+            $this->senseUpdate(0, 'definition', 'fr', 'une pomme')
+        ], [
+            'oldValue.senses@0#sense0guid.definition.fr' => '',
+            'newValue.senses@0#sense0guid.definition.fr' => 'une pomme',
+        ]);
+    }
+
+    public function testDeepDiff_oneSenseFieldChanged() {
+        $this->runDeepDiffTest([
+            $this->senseUpdate(0, 'definition', 'en', 'apple tart')
+        ], [
+            'oldValue.senses@0#sense0guid.definition.en' => 'apple',
+            'newValue.senses@0#sense0guid.definition.en' => 'apple tart',
+        ]);
+    }
+
+    public function testDeepDiff_oneExampleFieldChanged() {
+        $this->runDeepDiffTest([
+            $this->exampleUpdate(0, 0, 'sentence', 'en', 'modified')
+        ], [
+            'oldValue.senses@0#sense0guid.examples@0#example0guid.sentence.en' => 'eat an apple',
+            'newValue.senses@0#sense0guid.examples@0#example0guid.sentence.en' => 'modified',
+        ]);
+    }
+
+    public function testDeepDiff_twoExampleFieldsChanged() {
+        $this->runDeepDiffTest([
+            $this->exampleUpdate(0, 0, 'sentence', 'en', 'modified'),
+            $this->exampleUpdate(1, 0, 'sentence', 'fr', 'nouvelle phrase')
+        ], [
+            'oldValue.senses@0#sense0guid.examples@0#example0guid.sentence.en' => 'eat an apple',
+            'newValue.senses@0#sense0guid.examples@0#example0guid.sentence.en' => 'modified',
+            'oldValue.senses@1#sense1guid.examples@0#example1guid.sentence.fr' => 'manger une pomme',
+            'newValue.senses@1#sense1guid.examples@0#example1guid.sentence.fr' => 'nouvelle phrase',
+        ]);
+    }
+
+    public function testDeepDiff_fieldsChangedAtEveryLevel() {
+        $this->runDeepDiffTest([
+            $this->entryUpdate('lexeme', 'th', 'new lexeme'),
+            $this->entryUpdate('etymology', 'en', 'English etymology goes here'),
+            $this->senseUpdate(0, 'definition', 'en', 'apple tart'),
+            $this->senseUpdate(0, 'definition', 'fr', 'une pomme'),
+            $this->exampleUpdate(0, 0, 'sentence', 'en', 'modified'),
+            $this->exampleUpdate(1, 0, 'sentence', 'fr', 'nouvelle phrase')
+        ], [
+            'oldValue.lexeme.th' => 'apple',
+            'newValue.lexeme.th' => 'new lexeme',
+            'oldValue.etymology.en' => '',
+            'newValue.etymology.en' => 'English etymology goes here',
+            'oldValue.senses@0#sense0guid.definition.en' => 'apple',
+            'newValue.senses@0#sense0guid.definition.en' => 'apple tart',
+            'oldValue.senses@0#sense0guid.definition.fr' => '',
+            'newValue.senses@0#sense0guid.definition.fr' => 'une pomme',
+            'oldValue.senses@0#sense0guid.examples@0#example0guid.sentence.en' => 'eat an apple',
+            'newValue.senses@0#sense0guid.examples@0#example0guid.sentence.en' => 'modified',
+            'oldValue.senses@1#sense1guid.examples@0#example1guid.sentence.fr' => 'manger une pomme',
+            'newValue.senses@1#sense1guid.examples@0#example1guid.sentence.fr' => 'nouvelle phrase',
+        ]);
+    }
+
+    public function testDeepDiff_swappedSenses() {
+        // The deep-diff library we're using will produce a bunch of updates when array items are swapped.
+        // We want to ensure that this is captured as an actual order move in the differences.
+        $this->runDeepDiffTest([
+            $this->senseUpdate(0, 'guid', null, 'sense1guid'),
+            $this->senseUpdate(1, 'guid', null, 'sense0guid'),
+            $this->senseUpdate(0, 'definition', 'en', ''),
+            $this->senseUpdate(0, 'definition', 'fr', 'pomme'),
+            $this->senseUpdate(1, 'definition', 'en', 'apple'),
+            $this->senseUpdate(1, 'definition', 'fr', ''),
+            $this->exampleUpdate(0, 0, 'guid', null, 'example1guid'),
+            $this->exampleUpdate(0, 0, 'sentence', 'en', ''),
+            $this->exampleUpdate(0, 0, 'sentence', 'fr', 'manger une pomme'),
+            $this->exampleUpdate(1, 0, 'guid', null, 'example0guid'),
+            $this->exampleUpdate(1, 0, 'sentence', 'en', 'eat an apple'),
+            $this->exampleUpdate(1, 0, 'sentence', 'fr', ''),
+        ], [
+            'moved.senses@0#sense0guid' => '1',
+            'moved.senses@1#sense1guid' => '0',
+        ]);
+    }
+
+    public function testDeepDiff_swappedSensesAndOneSenseFieldChanged() {
+        $this->runDeepDiffTest([
+            $this->senseUpdate(0, 'guid', null, 'sense1guid'),
+            $this->senseUpdate(1, 'guid', null, 'sense0guid'),
+            $this->senseUpdate(0, 'definition', 'en', ''),
+            $this->senseUpdate(0, 'definition', 'fr', 'pomme'),
+            $this->senseUpdate(1, 'definition', 'en', 'apple'),
+            $this->senseUpdate(1, 'definition', 'fr', ''),
+            $this->exampleUpdate(0, 0, 'guid', null, 'example1guid'),
+            $this->exampleUpdate(0, 0, 'sentence', 'en', ''),
+            $this->exampleUpdate(0, 0, 'sentence', 'fr', 'manger une pomme'),
+            $this->exampleUpdate(1, 0, 'guid', null, 'example0guid'),
+            $this->exampleUpdate(1, 0, 'sentence', 'en', 'eat an apple'),
+            $this->exampleUpdate(1, 0, 'sentence', 'fr', ''),
+            // Up to this point that was all the same as the testDeepDiff_swappedSenses test
+            $this->exampleUpdate(1, 0, 'translation', 'en', 'translation'),  // Only new thing added
+        ], [
+            'moved.senses@0#sense0guid' => '1',
+            'moved.senses@1#sense1guid' => '0',
+            'oldValue.senses@0#sense0guid.examples@0#example0guid.translation.en' => '',
+            'newValue.senses@0#sense0guid.examples@0#example0guid.translation.en' => 'translation',
+        ]);
+    }
 }
