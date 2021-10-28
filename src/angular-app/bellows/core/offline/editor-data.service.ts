@@ -44,6 +44,7 @@ class EntryListModifiers {
   };
   sortOptions: SortOption[] = [];
   sortReverse = false;
+  wholeWord = false;
   filterBy: {
     text: string;
     option: FilterOption;
@@ -443,19 +444,27 @@ export class EditorDataService {
         text.indexOf(query) === 0 && !UtilityService.isDigitsOnly(text.slice(query.length - 1, query.length + 1));
   }
 
-  private entryMeetsFilterCriteria(config: any, entry: LexEntry): boolean {
+  // this ensures regex tokens are not interpreted as regex, e.g., a user searching for '[a-zA-Z]' should _probably_ result in no matches.
+  private escapeRegex(input: string) {
+    // taken from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions#escaping
+    return input.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matche
+  }
 
+  private entryMeetsFilterCriteria(config: any, entry: LexEntry): boolean {
     if (this.entryListModifiers.filterText() !== '') {
-      const query = this.entryListModifiers.filterText().toUpperCase();
-      let matchesSearch = false;
+      const query = this.escapeRegex(this.entryListModifiers.filterText());
+      const queryRegex = new RegExp(this.entryListModifiers.wholeWord ? `\\b${query}\\b` : query, 'i');
+      let found = false;
+      
       this.walkEntry(config.entry, entry, (val, isSemanticDomain) => {
-        val = val.toUpperCase();
-        if (isSemanticDomain) {
-          if (this.semanticDomainsMatch(val, query)) matchesSearch = true;
-        } else if (val.indexOf(query) !== -1) matchesSearch = true;
+        if (queryRegex.test(val) || (isSemanticDomain && this.semanticDomainsMatch(val, query))) {
+          found = true
+        }
       });
-      if (!matchesSearch) return false;
+      
+      if (!found) return false;
     }
+
     if (!this.entryListModifiers.filterBy.option) return true;
 
     const mustNotBeEmpty = this.entryListModifiers.filterType === 'isNotEmpty';

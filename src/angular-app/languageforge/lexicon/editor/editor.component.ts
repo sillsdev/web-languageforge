@@ -231,6 +231,7 @@ export class LexiconEditorController implements angular.IController {
       sortBy: this.$state.params.sortBy,
       filterText: this.$state.params.filterText,
       sortReverse: this.$state.params.sortReverse,
+      wholeWord: this.$state.params.wholeWord,
       filterType: this.$state.params.filterType,
       filterBy: this.$state.params.filterBy
     }, { notify: true });
@@ -268,6 +269,7 @@ export class LexiconEditorController implements angular.IController {
         }
       }
       this.entryListModifiers.sortReverse = this.$state.params.sortReverse === 'true';
+      this.entryListModifiers.wholeWord = this.$state.params.wholeWord === 'true';
 
       if (this.$state.params.filterType) {
         this.entryListModifiers.filterType = this.$state.params.filterType;
@@ -296,24 +298,27 @@ export class LexiconEditorController implements angular.IController {
       sortBy: this.entryListModifiers.sortBy.label,
       filterText: this.entryListModifiers.filterText(),
       sortReverse: this.entryListModifiers.sortReverse,
+      wholeWord: this.entryListModifiers.wholeWord,
       filterType: this.entryListModifiers.filterType,
       filterBy: this.entryListModifiers.filterByLabel()
     }, { notify: false });
     this.editorService.filterAndSortEntries.apply(this, arguments);
   }
 
-  filterSortOptionsActive() {
+  filterOptionsActive() {
     const mod = this.entryListModifiers;
-    return mod.filterBy && mod.filterBy.option || mod.sortBy.value !== 'default' || mod.sortReverse;
+    return (mod.filterBy && mod.filterBy.option) || mod.sortBy.value !== 'default' || mod.sortReverse || mod.wholeWord
   }
 
   shouldShowFilterReset() {
     const modifiers = this.entryListModifiers;
-    return modifiers.filterActive() || modifiers.sortBy.value !== 'default' || modifiers.sortReverse;
+    return modifiers.filterActive() || modifiers.sortBy.value !== 'default' || modifiers.sortReverse
   }
 
   resetEntryListFilter(): void {
     this.entryListModifiers.filterBy = null;
+    this.entryListModifiers.wholeWord = false;
+
     this.filterAndSortEntries();
   }
 
@@ -413,15 +418,12 @@ export class LexiconEditorController implements angular.IController {
           if (entry && isNewEntry) {
             this.setCurrentEntry(this.entries[this.editorService.getIndexInList(entry.id, this.entries)]);
             this.editorService.removeEntryFromLists(newEntryTempId);
+
             if (doSetEntry) {
               this.$state.go('.', {
                 entryId: entry.id,
-                sortBy: this.entryListModifiers.sortBy.label,
-                filterText: this.entryListModifiers.filterText(),
-                sortReverse: this.entryListModifiers.sortReverse,
-                filterType: this.entryListModifiers.filterType,
-                filterBy: this.entryListModifiers.filterByLabel()
               }, { notify: false });
+
               this.scrollListToEntry(entry.id, 'top');
             }
           }
@@ -475,7 +477,6 @@ export class LexiconEditorController implements angular.IController {
       const newEntry = new LexEntry();
       newEntry.id = uniqueId;
       this.setCurrentEntry(newEntry);
-      // noinspection JSIgnoredPromiseFromCall - comments will load in the background
       this.commentService.loadEntryComments(newEntry.id);
       this.editorService.addEntryToEntryList(newEntry);
       this.editorService.showInitialEntries().then(() => {
@@ -498,14 +499,6 @@ export class LexiconEditorController implements angular.IController {
           iShowList--;
         }
         this.setCurrentEntry(this.visibleEntries[iShowList]);
-        this.$state.go('.', {
-          entryId: this.visibleEntries[iShowList].id,
-          sortBy: this.entryListModifiers.sortBy.label,
-          filterText: this.entryListModifiers.filterText(),
-          sortReverse: this.entryListModifiers.sortReverse,
-          filterType: this.entryListModifiers.filterType,
-          filterBy: this.entryListModifiers.filterByLabel()
-        }, { notify: false });
       } else {
         this.returnToList();
       }
@@ -927,6 +920,7 @@ export class LexiconEditorController implements angular.IController {
         sortBy: this.entryListModifiers.sortBy.label,
         filterText: this.entryListModifiers.filterText(),
         sortReverse: this.entryListModifiers.sortReverse,
+        wholeWord: this.entryListModifiers.wholeWord,
         filterType: this.entryListModifiers.filterType,
         filterBy: this.entryListModifiers.filterByLabel()
       }, { notify: false });
@@ -936,6 +930,7 @@ export class LexiconEditorController implements angular.IController {
         sortBy: this.$state.params.sortBy,
         filterText: this.$state.params.filterText,
         sortReverse: this.$state.params.sortReverse,
+        wholeWord: this.$state.params.wholeWord,
         filterType: this.$state.params.filterType,
         filterBy: this.$state.params.filterBy
       });
@@ -1215,14 +1210,14 @@ export class LexiconEditorController implements angular.IController {
     const posOffset = (position === 'top') ? 274 : 487;
     const entryDivId = '#entryId_' + id;
     const listDivId = '#compactEntryListContainer';
-    let index;
+    let index = this.editorService.getIndexInList(id, this.filteredEntries);
 
     // make sure the item is visible in the list
     // todo implement lazy "up" scrolling to make this more efficient
 
     // only expand the "show window" if we know that the entry is actually in
     // the entry list - a safe guard
-    if (this.editorService.getIndexInList(id, this.filteredEntries) != null) {
+    if (index != null) {
       while (this.visibleEntries.length < this.filteredEntries.length) {
         index = this.editorService.getIndexInList(id, this.visibleEntries);
         if (index != null) {
@@ -1231,8 +1226,6 @@ export class LexiconEditorController implements angular.IController {
 
         this.editorService.showMoreEntries();
       }
-    } else {
-      console.warn('Error: tried to scroll to an entry that is not in the entry list!');
     }
 
     // note: ':visible' is a JQuery invention that means 'it takes up space on
@@ -1250,34 +1243,13 @@ export class LexiconEditorController implements angular.IController {
   }
 
   private static scrollDivToId(containerId: string, divId: string, posOffset: number = 0): void {
-    const $containerDiv: any = $(containerId);
-    let $div: any = $(divId);
-    let foundDiv: boolean = false;
-    let offsetTop: number = 0;
+    const $containerDiv: any = $(containerId)
+    const $div: any = $(divId)[0];
+    
+    if ($div && $containerDiv.scrollTop) {
+      let offsetTop: number = $div.offsetTop - posOffset;
 
-    // todo: refactor this spaghetti logic
-    if ($div && $containerDiv) {
-      if ($div.offsetTop == null) {
-        if ($div[0] != null) {
-          $div = $div[0];
-          foundDiv = true;
-        } else {
-          console.log('Error: unable to scroll to div with div id ' + divId);
-        }
-      }
-
-      if (foundDiv) {
-        if ($div.offsetTop == null) {
-          offsetTop = $div.offset().top - posOffset;
-        } else {
-          offsetTop = $div.offsetTop - posOffset;
-        }
-
-        if (offsetTop < 0) {
-          offsetTop = 0;
-        }
-        $containerDiv.scrollTop(offsetTop);
-      }
+      $containerDiv.scrollTop(offsetTop > -1 ? offsetTop : 0);
     }
   }
 

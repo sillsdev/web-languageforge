@@ -31,42 +31,57 @@
                                 <span class="fa fa-times clear-search-button" data-ng-show="$ctrl.entryListModifiers.filterBy.text" data-ng-click="$ctrl.clearSearchText()"></span>
                             </div>
                             <button class="btn btn-sm" type="button" data-ng-click="$ctrl.toggleFilterOptions()">
-                                <span class="options-active-icon fa fa-circle" data-ng-class="{'icon-active': $ctrl.filterSortOptionsActive()}"></span> Options
+                                <span class="options-active-icon fa fa-circle" data-ng-class="{'icon-active': $ctrl.filterOptionsActive()}"></span> Options
                                 <i class="fa" data-ng-class="$ctrl.show.entryListModifiers ? 'fa-angle-up': 'fa-angle-down'"></i>
                             </button>
                         </div>
                     </div>
                 </div>
-                <div class="row" data-ng-show="$ctrl.show.entryListModifiers">
-                    <div class="col">
-                        <div class="word-form-filters">
-                            <div class="form-group sortfilter-form">
+                <div class="row no-gutters" data-ng-show="$ctrl.show.entryListModifiers">
+                    <div class="col-12 col-lg-5">
+                        <div class="word-form-filters h-100">
+                            <div class="sortfilter-form">
                                 <label class="font-weight-bold" for="filterEntriesFor">Filter Entries By</label>
-                                <div class="form-inline">
-                                    <!--suppress HtmlFormInputWithoutLabel -->
-                                    <select class="custom-select sortfilter-control" data-ng-show="$ctrl.entryListModifiers.filterBy.option"
-                                            data-ng-change="$ctrl.filterAndSortEntries()" data-ng-model="$ctrl.entryListModifiers.filterType">
-                                        <option value="isEmpty">Doesn't have</option>
-                                        <option value="isNotEmpty">Has</option>
-                                    </select>
-                                    <select class="custom-select sortfilter-control" id="filterEntriesFor"
-                                            data-ng-change="$ctrl.filterAndSortEntries()" data-ng-model="$ctrl.entryListModifiers.filterBy.option"
-                                            data-ng-options="item as item.label for item in $ctrl.entryListModifiers.filterOptions track by item.key">
-                                        <option value="">Show All</option>
-                                    </select>
-                                </div>
+                                <select class="custom-select sortfilter-control ml-1" data-ng-show="$ctrl.entryListModifiers.filterBy.option"
+                                        data-ng-change="$ctrl.filterAndSortEntries()" data-ng-model="$ctrl.entryListModifiers.filterType">
+                                    <option value="isEmpty">Doesn't have</option>
+                                    <option value="isNotEmpty">Has</option>
+                                </select>
+                                <select class="custom-select sortfilter-control ml-1" id="filterEntriesFor"
+                                        data-ng-change="$ctrl.filterAndSortEntries()" data-ng-model="$ctrl.entryListModifiers.filterBy.option"
+                                        data-ng-options="item as item.label for item in $ctrl.entryListModifiers.filterOptions track by item.key">
+                                    <option value="">Show All</option>
+                                </select>
                             </div>
-                            <div class="form-group sortfilter-form">
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-8 col-lg-4">
+                        <div class="word-form-filters h-100">
+                            <div class="sortfilter-form">
                                 <label class="font-weight-bold" for="sortEntriesBy">Sort Entries By</label>
-                                <label class="reverse-label">
-                                    <input type="checkbox" data-ng-change="$ctrl.filterAndSortEntries()" data-ng-model="$ctrl.entryListModifiers.sortReverse"> Reverse
-                                </label>
-                                <div class="form-inline">
-                                    <select id="sortEntriesBy" class="custom-select sortfilter-control"
-                                            data-ng-change="$ctrl.filterAndSortEntries()" data-ng-model="$ctrl.entryListModifiers.sortBy"
-                                            data-ng-options="item as $ctrl.entryListModifiers.sortOptionLabel(item.label) for item in $ctrl.entryListModifiers.sortOptions track by item.value">
-                                    </select>
-                                </div>
+                                <select id="sortEntriesBy" class="custom-select sortfilter-control ml-1"
+                                    data-ng-change="$ctrl.filterAndSortEntries()" data-ng-model="$ctrl.entryListModifiers.sortBy"
+                                    data-ng-options="item as $ctrl.entryListModifiers.sortOptionLabel(item.label) for item in $ctrl.entryListModifiers.sortOptions track by item.value">
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4 col-lg-3">
+                        <div class="word-form-filters h-100">
+                            <div class="sortfilter-form h-100">
+                                <label class="font-weight-bold">Advanced</label>
+
+                                <section class="d-flex justify-content-around">
+                                    <label>
+                                        <input type="checkbox" data-ng-change="$ctrl.filterAndSortEntries()" data-ng-model="$ctrl.entryListModifiers.sortReverse" class="align-middle">
+                                        <span class="align-middle pl-1">Reverse</span>
+                                    </label>
+
+                                    <label>
+                                        <input type="checkbox" data-ng-change="$ctrl.filterAndSortEntries()" data-ng-model="$ctrl.entryListModifiers.wholeWord" class="align-middle">
+                                        <span class="align-middle pl-1">Whole word</span>
+                                    </label>
+                                </section>
                             </div>
                         </div>
                     </div>
