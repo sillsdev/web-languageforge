@@ -219,4 +219,63 @@ class LexProjectCommandsTest extends TestCase
         $customField1 = $project2->config->roleViews[LexRoles::MANAGER]->fields[$customFieldName];
         $this->assertTrue(is_a($customField1, 'Api\Model\Languageforge\Lexicon\Config\LexViewFieldConfig'));
     }
+
+    private function runCustomFieldRenameTest($newName) {
+        $environ = new LexiconMongoTestEnvironment();
+        $environ->clean();
+
+        // setup: 1 example custom field (existing), 1 in senses (to delete), 1 in entry (to create)
+        $project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $customFieldNameExisting = 'customField_examples_testOptionList';
+        $viewFieldConfig = new LexViewFieldConfig();
+        $viewFieldConfig->type = 'MultiUnicode';
+        $viewFieldConfig->show = false;
+        $project->config->roleViews[LexRoles::MANAGER]->fields[$customFieldNameExisting] = $viewFieldConfig;
+        $customFieldNameToCreate = 'customField_entry_testMultiText';
+        $customFieldSpecs = [
+            [
+                'fieldName' => $customFieldNameExisting,
+                'fieldType' => 'MultiUnicode'
+            ]
+        ];
+        $mangerRoleViewFieldCount = $project->config->roleViews[LexRoles::MANAGER]->fields->count();
+        $projectId = $project->write();
+        $this->assertFalse($project->config->roleViews[LexRoles::MANAGER]->fields[$customFieldNameExisting]->show);
+
+        $result1 = LexProjectCommands::updateCustomFieldViews($project->projectCode, $customFieldSpecs);
+        $project1 = new LexProjectModel($projectId);
+        $customFieldExisting = $project1->config->roleViews[LexRoles::MANAGER]->fields[$customFieldNameExisting];
+        $this->assertEquals('MultiUnicode', $customFieldExisting->type);
+
+        $customFieldNameRenamed = $newName;
+        $customFieldSpecs = [
+            [
+                'fieldName' => $customFieldNameRenamed,
+                'fieldType' => 'MultiUnicode'
+            ]
+        ];
+
+        // execute
+        $result = LexProjectCommands::updateCustomFieldViews($project->projectCode, $customFieldSpecs);
+
+        // verify
+        $this->assertEquals($projectId, $result);
+        $project2 = new LexProjectModel($projectId);
+        $this->assertEquals($mangerRoleViewFieldCount,
+            $project2->config->roleViews[LexRoles::MANAGER]->fields->count());
+        $this->assertArrayNotHasKey($customFieldNameExisting, $project2->config->roleViews[LexRoles::MANAGER]->fields);
+        $customFieldRenamed = $project2->config->roleViews[LexRoles::MANAGER]->fields[$customFieldNameRenamed];
+        $this->assertEquals('multitext', $customFieldRenamed->type);
+        $this->assertTrue($customFieldRenamed->show); // Managers see all custom fields
+    }
+
+    public function testCreateCustomFieldsViews_RenameCustomFieldView_RenamesInRoleViewAndUserView()
+    {
+        $this->runCustomFieldRenameTest('customField_entry_testMultiText_renamed');
+    }
+
+    public function testCreateCustomFieldsViews_RenameCustomFieldViewWithUnicodeCharacters_RenamesInRoleViewAndUserView()
+    {
+        $this->runCustomFieldRenameTest('customField_entry_🍿popcorn');  // Astral-plane character to try to break things
+    }
 }
