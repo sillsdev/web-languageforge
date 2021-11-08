@@ -16,7 +16,7 @@
                                 <span class="fa fa-arrow-left"></span> <span class="d-none d-lg-inline-block">Previous</span>
                             </button>
                             <input type="number" id="goto" name="goto" class="gotoEntry" title="Enter a number and press Enter to go to that entry"
-                                data-ng-model="item.value" data-ng-value="$ctrl.currentIndex.index" data-ng-disabled="$ctrl.filterIsOn()" data-on-enter="$ctrl.gotoToEntry(item.value, validateGoto.goto.$valid)"></input>
+                            data-ng-min="1" data-ng-max="$ctrl.filteredEntries.length === 0 ? 1 : $ctrl.filteredEntries.length" data-ng-model="item.value" data-ng-value="$ctrl.currentIndex.index" data-ng-disabled="$ctrl.filterIsOn()" data-on-enter="$ctrl.gotoToEntry(item.value, validateGoto.goto.$valid)"></input>
                             <button class="btn btn-std" data-ng-click="$ctrl.skipToEntry(1)" ng-disabled="!$ctrl.canSkipToEntry(1) || $ctrl.filterIsOn()">
                                 <span class="d-none d-lg-inline-block">Next</span> <span class="fa fa-arrow-right"></span>
                             </button>
