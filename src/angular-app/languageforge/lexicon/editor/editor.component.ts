@@ -232,6 +232,7 @@ export class LexiconEditorController implements angular.IController {
       filterText: this.$state.params.filterText,
       sortReverse: this.$state.params.sortReverse,
       wholeWord: this.$state.params.wholeWord,
+      matchDiacritic: this.$state.params.matchDiacritic,
       filterType: this.$state.params.filterType,
       filterBy: this.$state.params.filterBy
     }, { notify: true });
@@ -270,6 +271,7 @@ export class LexiconEditorController implements angular.IController {
       }
       this.entryListModifiers.sortReverse = this.$state.params.sortReverse === 'true';
       this.entryListModifiers.wholeWord = this.$state.params.wholeWord === 'true';
+      this.entryListModifiers.matchDiacritic = this.$state.params.matchDiacritic === 'true';
 
       if (this.$state.params.filterType) {
         this.entryListModifiers.filterType = this.$state.params.filterType;
@@ -299,6 +301,7 @@ export class LexiconEditorController implements angular.IController {
       filterText: this.entryListModifiers.filterText(),
       sortReverse: this.entryListModifiers.sortReverse,
       wholeWord: this.entryListModifiers.wholeWord,
+      matchDiacritic: this.entryListModifiers.matchDiacritic,
       filterType: this.entryListModifiers.filterType,
       filterBy: this.entryListModifiers.filterByLabel()
     }, { notify: false });
@@ -307,7 +310,7 @@ export class LexiconEditorController implements angular.IController {
 
   filterOptionsActive() {
     const mod = this.entryListModifiers;
-    return (mod.filterBy && mod.filterBy.option) || mod.sortBy.value !== 'default' || mod.sortReverse || mod.wholeWord
+    return (mod.filterBy && mod.filterBy.option) || mod.sortBy.value !== 'default' || mod.sortReverse || mod.wholeWord || mod.matchDiacritic
   }
 
   shouldShowFilterReset() {
@@ -318,6 +321,7 @@ export class LexiconEditorController implements angular.IController {
   resetEntryListFilter(): void {
     this.entryListModifiers.filterBy = null;
     this.entryListModifiers.wholeWord = false;
+    this.entryListModifiers.matchDiacritic = false;
 
     this.filterAndSortEntries();
   }
@@ -921,6 +925,7 @@ export class LexiconEditorController implements angular.IController {
         filterText: this.entryListModifiers.filterText(),
         sortReverse: this.entryListModifiers.sortReverse,
         wholeWord: this.entryListModifiers.wholeWord,
+        matchDiacritic: this.entryListModifiers.matchDiacritic,
         filterType: this.entryListModifiers.filterType,
         filterBy: this.entryListModifiers.filterByLabel()
       }, { notify: false });
@@ -931,6 +936,7 @@ export class LexiconEditorController implements angular.IController {
         filterText: this.$state.params.filterText,
         sortReverse: this.$state.params.sortReverse,
         wholeWord: this.$state.params.wholeWord,
+        matchDiacritic: this.$state.params.matchDiacritic,
         filterType: this.$state.params.filterType,
         filterBy: this.$state.params.filterBy
       });
@@ -1245,7 +1251,7 @@ export class LexiconEditorController implements angular.IController {
   private static scrollDivToId(containerId: string, divId: string, posOffset: number = 0): void {
     const $containerDiv: any = $(containerId)
     const $div: any = $(divId)[0];
-    
+
     if ($div && $containerDiv.scrollTop) {
       let offsetTop: number = $div.offsetTop - posOffset;
 

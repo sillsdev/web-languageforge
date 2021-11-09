@@ -45,6 +45,7 @@ class EntryListModifiers {
   sortOptions: SortOption[] = [];
   sortReverse = false;
   wholeWord = false;
+  matchDiacritic = false;
   filterBy: {
     text: string;
     option: FilterOption;
