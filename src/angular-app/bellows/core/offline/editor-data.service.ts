@@ -451,18 +451,38 @@ export class EditorDataService {
     return input.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matche
   }
 
+  private normalizeDiacritics(input: string) {
+    // refs:
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/normalize
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions/Unicode_Property_Escapes
+    // https://unicode.org/reports/tr44/#Diacritic
+
+    // https://stackoverflow.com/a/37511463/10818013
+
+
+    return input.normalize('NFD').replace(/\p{Diacritic}/gu, '')
+  }
+
   private entryMeetsFilterCriteria(config: any, entry: LexEntry): boolean {
     if (this.entryListModifiers.filterText() !== '') {
-      const query = this.escapeRegex(this.entryListModifiers.filterText());
-      const queryRegex = new RegExp(this.entryListModifiers.wholeWord ? `\\b${query}\\b` : query, 'i');
+      const rawQuery = this.entryListModifiers.filterText()
+      const normalizedQuery = this.entryListModifiers.matchDiacritic ? rawQuery : this.normalizeDiacritics(rawQuery);
+      const regexSafeQuery = this.escapeRegex(normalizedQuery);
+      const queryRegex = new RegExp(this.entryListModifiers.wholeWord ? `\\b${regexSafeQuery}\\b` : regexSafeQuery, 'i');
       let found = false;
-      
+
       this.walkEntry(config.entry, entry, (val, isSemanticDomain) => {
-        if (queryRegex.test(val) || (isSemanticDomain && this.semanticDomainsMatch(val, query))) {
-          found = true
+        if (isSemanticDomain && this.semanticDomainsMatch(val, rawQuery)) {
+          found = true;
+        } else {
+          const normalizedValue = this.entryListModifiers.matchDiacritic ? val : this.normalizeDiacritics(val)
+
+          if (queryRegex.test(normalizedValue)) {
+            found = true;
+          }
         }
       });
-      
+
       if (!found) return false;
     }
 
