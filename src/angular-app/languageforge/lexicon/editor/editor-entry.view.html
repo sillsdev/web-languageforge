@@ -70,15 +70,20 @@
                                 <div class="form-group sortfilter-form">
                                     <label class="font-weight-bold" for="sortEntriesBy">Advanced</label>
 
-                                    <section class="d-flex justify-content-around">
-                                        <label>
+                                    <section class="d-flex flex-wrap">
+                                        <label class="mr-3">
                                             <input type="checkbox" data-ng-change="$ctrl.filterAndSortEntries()" data-ng-model="$ctrl.entryListModifiers.sortReverse" class="align-middle">
                                             <span class="align-middle pl-1">Reverse</span>
                                         </label>
-    
-                                        <label>
+
+                                        <label class="mr-3">
                                             <input type="checkbox" data-ng-change="$ctrl.filterAndSortEntries()" data-ng-model="$ctrl.entryListModifiers.wholeWord" class="align-middle">
                                             <span class="align-middle pl-1">Whole word</span>
+                                        </label>
+
+                                        <label class="mr-3">
+                                            <input type="checkbox" data-ng-change="$ctrl.filterAndSortEntries()" data-ng-model="$ctrl.entryListModifiers.matchDiacritic" class="align-middle">
+                                            <span class="align-middle pl-1">Match diacritics</span>
                                         </label>
                                     </section>
                                 </div>
