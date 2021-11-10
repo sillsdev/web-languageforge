@@ -475,7 +475,7 @@ export class EditorDataService {
         if (isSemanticDomain && this.semanticDomainsMatch(val, rawQuery)) {
           found = true;
         } else {
-          const normalizedValue = this.entryListModifiers.matchDiacritic ? val : this.normalizeDiacritics(val)
+          const normalizedValue = this.entryListModifiers.matchDiacritic ? val : this.removeDiacritics(val)
 
           if (queryRegex.test(normalizedValue)) {
             found = true;
