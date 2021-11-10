@@ -456,9 +456,7 @@ export class EditorDataService {
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/normalize
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions/Unicode_Property_Escapes
     // https://unicode.org/reports/tr44/#Diacritic
-
     // https://stackoverflow.com/a/37511463/10818013
-
 
     return input.normalize('NFD').replace(/\p{Diacritic}/gu, '')
   }
