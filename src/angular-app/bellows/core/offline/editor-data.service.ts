@@ -466,7 +466,7 @@ export class EditorDataService {
   private entryMeetsFilterCriteria(config: any, entry: LexEntry): boolean {
     if (this.entryListModifiers.filterText() !== '') {
       const rawQuery = this.entryListModifiers.filterText()
-      const normalizedQuery = this.entryListModifiers.matchDiacritic ? rawQuery : this.normalizeDiacritics(rawQuery);
+      const normalizedQuery = this.entryListModifiers.matchDiacritic ? rawQuery : this.removeDiacritics(rawQuery);
       const regexSafeQuery = this.escapeRegex(normalizedQuery);
       const queryRegex = new RegExp(this.entryListModifiers.wholeWord ? `\\b${regexSafeQuery}\\b` : regexSafeQuery, 'i');
       let found = false;
