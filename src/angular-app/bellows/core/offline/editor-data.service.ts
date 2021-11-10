@@ -451,7 +451,7 @@ export class EditorDataService {
     return input.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matche
   }
 
-  private normalizeDiacritics(input: string) {
+  private removeDiacritics(input: string) {
     // refs:
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/normalize
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions/Unicode_Property_Escapes
