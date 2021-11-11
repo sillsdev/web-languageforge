@@ -5,7 +5,6 @@
   "private": true,
   "scripts": {
     "build:dev": "npm-run-all -p -l sass webpack:dev",
-    "build:watch": "npm-run-all -p -l sass:watch webpack:watch",
     "build:dev:watch": "npm-run-all -p -l sass:watch webpack:dev:watch",
     "build:prd": "npm-run-all -p -l sass webpack:prd",
     "sass": "sass -q src/sass:src/dist/css",
