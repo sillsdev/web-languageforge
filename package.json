@@ -4,7 +4,6 @@
   "description": "Language Forge",
   "private": true,
   "scripts": {
-    "build": "npm-run-all -p -l sass webpack",
     "build:dev": "npm-run-all -p -l sass webpack:dev",
     "build:watch": "npm-run-all -p -l sass:watch webpack:watch",
     "build:dev:watch": "npm-run-all -p -l sass:watch webpack:dev:watch",
