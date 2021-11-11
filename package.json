@@ -1,7 +1,7 @@
 {
-  "name": "x-forge",
+  "name": "web-languageforge",
   "version": "1.0.0",
-  "description": "xForge - Language Forge and Scripture Forge",
+  "description": "Language Forge",
   "private": true,
   "scripts": {
     "build:dev": "npm-run-all -p -l sass webpack:dev",
