@@ -118,7 +118,6 @@ module.exports = {
             importScripts: [
               '/service-worker/languageforge/service-worker.js'
             ],
-            include: [] // To be changed once ready to start caching the whole app
           }),
           new LiveReloadPlugin()
     ],
