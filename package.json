@@ -1,7 +1,7 @@
 {
-  "name": "x-forge",
+  "name": "web-languageforge",
   "version": "1.0.0",
-  "description": "xForge - Language Forge and Scripture Forge",
+  "description": "Language Forge",
   "private": true,
   "scripts": {
     "build:dev": "npm-run-all -p -l sass webpack:dev",
@@ -9,18 +9,14 @@
     "build:prd": "npm-run-all -p -l sass webpack:prd",
     "sass": "sass -q src/sass:src/dist/css",
     "sass:watch": "sass -q --watch src/sass:src/dist/css src/Site/views/languageforge/theme/default/sass:src/dist/css src/angular-app:src/dist/css",
+    "webpack": "webpack",
+    "webpack:watch": "webpack -w",
     "webpack:dev": "webpack --config webpack-dev.config.js",
     "webpack:dev:watch": "webpack -w --config webpack-dev.config.js",
     "webpack:prd": "webpack --config webpack-prd.config.js",
-    "build": "npm-run-all -p -l sass webpack",
-    "build:watch": "npm-run-all -p -l sass:watch webpack:watch",
-    "webpack": "webpack",
-    "webpack:watch": "webpack -w",
-    "webpack:production": "webpack -p",
     "compile-test-e2e": "tsc -p test/app",
     "test-e2e": "protractor test/app/protractorConf.js"
   },
-  "author": "",
   "license": "MIT",
   "repository": {
     "type": "git",
