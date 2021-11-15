@@ -2,7 +2,6 @@ const path = require('path');
 const ROOT = path.resolve(__dirname, './src/angular-app');
 const DESTINATION = path.resolve(__dirname, 'src', 'dist');
 const workboxPlugin = require('workbox-webpack-plugin');
-const LiveReloadPlugin = require('webpack-livereload-plugin');
 const LoaderOptionsPlugin = require('webpack/lib/LoaderOptionsPlugin');
 
 /**
@@ -119,7 +118,6 @@ module.exports = {
               '/service-worker/languageforge/service-worker.js'
             ],
           }),
-          new LiveReloadPlugin()
     ],
 
     entry: './main.ts'
