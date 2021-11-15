@@ -10,7 +10,6 @@ const LoaderOptionsPlugin = require('webpack/lib/LoaderOptionsPlugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyPlugin = require("copy-webpack-plugin");
 const webpack = require('webpack')
-//UglifyJsPlugin has been depreciated using TerserPlugin
 const TerserPlugin = require("terser-webpack-plugin");
 
 module.exports = {
