@@ -1,3 +1,0 @@
-workbox.setConfig({
-  debug: true
-});
