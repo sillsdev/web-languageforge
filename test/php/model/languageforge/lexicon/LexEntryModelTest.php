@@ -40,6 +40,7 @@ class LexEntryModelTest extends TestCase
         $this->assertInstanceOf(LexMultiText::class, $entry->tone);
         $this->assertInstanceOf(LexMultiValue::class, $entry->environments);
         $this->assertInstanceOf(LexValue::class, $entry->location);
+        $this->assertInstanceOf(LexMultiValue::class, $entry->tags);
     }
 
     public function createEntry(LexProjectModel $projectModel, array $params)

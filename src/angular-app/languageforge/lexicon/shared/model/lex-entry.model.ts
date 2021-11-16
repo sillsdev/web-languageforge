@@ -31,4 +31,5 @@ export class LexEntry {
   cvPattern?: LexMultiText;
   tone?: LexMultiText;
   summaryDefinition?: LexMultiText;
+  tags?: LexMultiValue;
 }

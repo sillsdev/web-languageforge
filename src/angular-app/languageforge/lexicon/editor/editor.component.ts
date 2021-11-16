@@ -337,6 +337,24 @@ export class LexiconEditorController implements angular.IController {
     return this.currentEntry.id != null;
   }
 
+  isStar(entry: LexEntry): boolean {
+    return entry?.tags?.values?.includes('star');
+  }
+
+  toggleStar(): void {
+    let tags = this.currentEntry?.tags?.values;
+    if (!tags) {
+      this.currentEntry.tags = { values: [] };
+      tags = this.currentEntry?.tags?.values;
+    }
+    const idx = tags.indexOf('star');
+    if (idx < 0) {
+      tags.push('star');
+    } else {
+      tags.splice(idx, 1);
+    }
+  }
+
   hasArrayChange(diffs: any[]): boolean {
     return diffs && diffs.length && diffs.some((diff) => diff.kind === 'A');
   }

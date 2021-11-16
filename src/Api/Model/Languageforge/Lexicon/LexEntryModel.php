@@ -77,6 +77,7 @@ class LexEntryModel extends MapperModel
             'pronunciation',
             'cvPattern',
             'tone',
+            'tags',
             'summaryDefinition'
         ], false);
 
@@ -172,6 +173,9 @@ class LexEntryModel extends MapperModel
     /** @var LexMultiText */
     public $summaryDefinition;
 
+    /** @var LexMultiValue */
+    public $tags;
+
     public static function mapper($databaseName)
     {
         /** @var LexEntryMongoMapper $instance */
@@ -209,6 +213,7 @@ class LexEntryModel extends MapperModel
             case 'summaryDefinition':
                 return 'LexMultiText';
             case 'environments':
+            case 'tags':
                 return 'LexMultiValue';
             case 'location':
                 return 'LexValue';
@@ -431,7 +436,8 @@ class LexEntryModel extends MapperModel
             'pronunciation',
             'cvPattern',
             'tone',
-            'summaryDefinition'
+            'summaryDefinition',
+            'tags',
         ];
         $result = [];
         foreach ($properties as $property)

@@ -11,6 +11,9 @@
                             <span class="d-none d-md-inline-block">List</span></a>
                     </div>
                     <div class="float-right" data-ng-show="$ctrl.isAtEditorEntry()">
+                        <span data-ng-click="$ctrl.toggleStar()">
+                            <i class="fa fa-lg" data-ng-class="$ctrl.isStar($ctrl.currentEntry) ? 'fa-star yellow' : 'fa-star-o'"></i>
+                        </span>
                         <div class="btn-group">
                             <button class="btn btn-std" data-ng-click="$ctrl.skipToEntry(-1)" ng-disabled="!$ctrl.canSkipToEntry(-1)">
                                 <span class="fa fa-arrow-left"></span> <span class="d-none d-lg-inline-block">Previous</span>

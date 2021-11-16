@@ -102,6 +102,9 @@
                                              data-ng-style="{ 'font-family': $ctrl.getFontFamilyForPrimaryListItemForDisplay(entry) }"></div>
                                         <div dir="auto" class="listItemSecondary" data-ng-bind-html="$ctrl.getSecondaryListItemForDisplay(entry)"
                                              data-ng-style="{ 'font-family': $ctrl.getFontFamilyForSecondaryListItemForDisplay(entry) }"></div>
+                                        <div style="position: absolute; right: 0; top: 0" data-ng-if="$ctrl.isStar(entry)">
+                                            <i class="fa fa-star yellow"></i>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
