@@ -4,7 +4,7 @@ name: Publish image to Docker Hub (Adhoc)
 on:
   push:
     paths:
-      - 'build-and-publish-adhoc.yml'
+      - '**build-and-publish-adhoc.yml'
   # workflow_dispatch:
   #   inputs:
   #     tag:
