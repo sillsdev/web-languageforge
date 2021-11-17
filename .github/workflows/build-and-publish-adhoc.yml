@@ -6,8 +6,8 @@ on:
     paths:
       - '**build-and-publish-adhoc.yml'
 
-  env:
-    TAG: pr-1247
+env:
+  TAG: pr-1247
 
 jobs:
   build-n-publish:
