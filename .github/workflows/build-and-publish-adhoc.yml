@@ -19,7 +19,7 @@ jobs:
       - name: echo sha
         run: echo ${GITHUB_SHA}
       - name: echo sha-shortened?
-        run: echo ${GITHUB_SHA: -6}
+        run: echo ${GITHUB_SHA:-6}
       # - name: Build and tag app
       #   run: docker build -t ${{ env.IMAGE }} -f docker/app/Dockerfile .
 
