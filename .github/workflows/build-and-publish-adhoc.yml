@@ -11,20 +11,23 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      IMAGE: sillsdev/web-languageforge:pr-1247
+      IMAGE: sillsdev/web-languageforge:pr-1247-$(date +%s)
+      TS: $(date +%s)
 
     steps:
       - uses: actions/checkout@v2
 
-      - name: Build and tag app
-        run: docker build -t ${{ env.IMAGE }}-$(date +%s) -f docker/app/Dockerfile .
+      - name: echo timestamped env
+        run: echo "image=${{ env.IMAGE }} ts=image=${{ env.TS }}"
+      # - name: Build and tag app
+      #   run: docker build -t ${{ env.IMAGE }}-$(date +%s) -f docker/app/Dockerfile .
 
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+      # - name: Log in to Docker Hub
+      #   uses: docker/login-action@v1
+      #   with:
+      #     username: ${{ secrets.DOCKERHUB_USERNAME }}
+      #     password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
-      - name: Publish image
-        run: |
-          docker push ${{ env.IMAGE }}-$(date +%s)
+      # - name: Publish image
+      #   run: |
+      #     docker push ${{ env.IMAGE }}-$(date +%s)
