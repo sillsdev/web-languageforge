@@ -11,19 +11,15 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      IMAGE: sillsdev/web-languageforge:pr-1247-$(date +%s)
+      IMAGE: sillsdev/web-languageforge:pr-1247
 
     steps:
       - uses: actions/checkout@v2
 
-      - name: echo timestamped env
-        run: echo "image=${{ env.IMAGE }}"
-      - name: wait
-        run: sleep 10
-      - name: echo timestamped env
-        run: echo "image=${{ env.IMAGE }}"
+      - name: echo sha
+        run: echo $GITHUB_SHA
       # - name: Build and tag app
-      #   run: docker build -t ${{ env.IMAGE }}-$(date +%s) -f docker/app/Dockerfile .
+      #   run: docker build -t ${{ env.IMAGE }} -f docker/app/Dockerfile .
 
       # - name: Log in to Docker Hub
       #   uses: docker/login-action@v1
