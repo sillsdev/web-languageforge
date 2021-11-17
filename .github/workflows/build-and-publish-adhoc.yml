@@ -16,19 +16,15 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: echo sha
-        run: echo ${GITHUB_SHA}
-      - name: echo sha-shortened?
-        run: echo ${GITHUB_SHA:-6}
-      # - name: Build and tag app
-      #   run: docker build -t ${{ env.IMAGE }} -f docker/app/Dockerfile .
+      - name: Build and tag app
+        run: docker build -t ${{ env.IMAGE }}-${GITHUB_SHA} -f docker/app/Dockerfile .
 
-      # - name: Log in to Docker Hub
-      #   uses: docker/login-action@v1
-      #   with:
-      #     username: ${{ secrets.DOCKERHUB_USERNAME }}
-      #     password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
-      # - name: Publish image
-      #   run: |
-      #     docker push ${{ env.IMAGE }}-$(date +%s)
+      - name: Publish image
+        run: |
+          docker push ${{ env.IMAGE }}-${GITHUB_SHA}
