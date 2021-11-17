@@ -27,4 +27,4 @@ jobs:
 
       - name: Publish all tagged images to Docker Hub
         run: |
-          docker push -a sillsdev/web-languageforge:${{ env.TAG }}
+          docker push sillsdev/web-languageforge:${{ env.TAG }}
