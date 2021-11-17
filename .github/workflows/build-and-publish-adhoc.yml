@@ -5,25 +5,27 @@ on:
   push:
     paths:
       - '**build-and-publish-adhoc.yml'
-  # workflow_dispatch:
-  #   inputs:
-  #     tag:
-  #       description: 'Image tag'
-  #       required: true
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   build-n-publish:
     runs-on: ubuntu-latest
 
+    env:
+      TAG: pr-1247
+
     steps:
       - uses: actions/checkout@v2
 
-      - name: Build and tag app
-        run: docker build -t sillsdev/web-languageforge:pr-1247 -f docker/app/Dockerfile .
+      # - name: Build and tag app
+      #   run: docker build -t sillsdev/web-languageforge:${{ env.TAG }} -f docker/app/Dockerfile .
+      - name: test env step 1
+        run: echo 1:image:${{ env.TAG }}
 
-      - name: Reveal images
-        run: docker images
+      - name: test env step 2
+        run: echo 2:image:${{ env.TAG }}
+
+      # - name: Reveal images
+      #   run: docker images
 
       # - name: Log in to Docker Hub
       #   uses: docker/login-action@v1
