@@ -16,23 +16,15 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      # - name: Build and tag app
-      #   run: docker build -t sillsdev/web-languageforge:${{ env.TAG }} -f docker/app/Dockerfile .
-      - name: test env step 1
-        run: echo 1:image:${{ env.TAG }}
+      - name: Build and tag app
+        run: docker build -t sillsdev/web-languageforge:${{ env.TAG }} -f docker/app/Dockerfile .
 
-      - name: test env step 2
-        run: echo 2:image:${{ env.TAG }}
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
-      # - name: Reveal images
-      #   run: docker images
-
-      # - name: Log in to Docker Hub
-      #   uses: docker/login-action@v1
-      #   with:
-      #     username: ${{ secrets.DOCKERHUB_USERNAME }}
-      #     password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
-
-      # - name: Publish all tagged images to Docker Hub
-      #   run: |
-      #     docker push -a sillsdev/web-languageforge
+      - name: Publish all tagged images to Docker Hub
+        run: |
+          docker push -a sillsdev/web-languageforge:${{ env.TAG }}
