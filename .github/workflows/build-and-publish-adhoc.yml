@@ -1,10 +1,7 @@
-name: Deploy to Docker Hub
+name: Deploy to Docker Hub (Adhoc)
 
 # https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#on
-on:
-  push:
-    paths:
-      - 'build-and-publish-adhoc.yml'
+on: push
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
