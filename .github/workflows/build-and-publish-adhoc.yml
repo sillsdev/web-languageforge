@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      IMAGE: sillsdev/web-languageforge:pr-1247
+      IMAGE: sillsdev/web-languageforge:pr-1247-blue
 
     steps:
       - uses: actions/checkout@v2
