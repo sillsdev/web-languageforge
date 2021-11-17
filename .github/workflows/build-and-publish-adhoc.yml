@@ -6,30 +6,25 @@ on:
     paths:
       - '**build-and-publish-adhoc.yml'
 
-env:
-  TAG: pr-1247
-
 jobs:
   build-n-publish:
     runs-on: ubuntu-latest
 
     env:
-      IMAGE: sillsdev/web-languageforge:${{ env.TAG }}
+      IMAGE: sillsdev/web-languageforge:pr-1247
 
     steps:
       - uses: actions/checkout@v2
 
-      - name: combined env vars
-        run: echo "IMAGE=${{ env.IMAGE }}"
-      # - name: Build and tag app
-      #   run: docker build -t sillsdev/web-languageforge:${{ env.TAG }} -f docker/app/Dockerfile .
+      - name: Build and tag app
+        run: docker build -t ${{ env.IMAGE }} -f docker/app/Dockerfile .
 
-      # - name: Log in to Docker Hub
-      #   uses: docker/login-action@v1
-      #   with:
-      #     username: ${{ secrets.DOCKERHUB_USERNAME }}
-      #     password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
-      # - name: Publish image
-      #   run: |
-      #     docker push sillsdev/web-languageforge:${{ env.TAG }}
+      - name: Publish image
+        run: |
+          docker push ${{ env.IMAGE }}
