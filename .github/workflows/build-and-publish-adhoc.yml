@@ -12,13 +12,16 @@ jobs:
 
     env:
       IMAGE: sillsdev/web-languageforge:pr-1247-$(date +%s)
-      TS: $(date +%s)
 
     steps:
       - uses: actions/checkout@v2
 
       - name: echo timestamped env
-        run: echo "image=${{ env.IMAGE }} ts=image=${{ env.TS }}"
+        run: echo "image=${{ env.IMAGE }}"
+      - name: wait
+        run: sleep 10
+      - name: echo timestamped env
+        run: echo "image=${{ env.IMAGE }}"
       # - name: Build and tag app
       #   run: docker build -t ${{ env.IMAGE }}-$(date +%s) -f docker/app/Dockerfile .
 
