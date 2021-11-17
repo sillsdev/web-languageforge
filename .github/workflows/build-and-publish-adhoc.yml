@@ -3,9 +3,6 @@ name: Deploy to Docker Hub (Adhoc)
 # https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#on
 on: push
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   build-n-publish:
@@ -14,11 +11,14 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Build and tag app
-        run: docker build -t sillsdev/web-languageforge:pr-1247 -f docker/app/Dockerfile .
+      - name: testing
+        run: echo "Hello World"
 
-      - name: Reveal images
-        run: docker images
+      # - name: Build and tag app
+      #   run: docker build -t sillsdev/web-languageforge:pr-1247 -f docker/app/Dockerfile .
+
+      # - name: Reveal images
+      #   run: docker images
 
       # - name: Log in to Docker Hub
       #   uses: docker/login-action@v1
