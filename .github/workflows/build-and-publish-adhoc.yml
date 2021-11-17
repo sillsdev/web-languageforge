@@ -5,11 +5,11 @@ on:
   push:
     paths:
       - '**build-and-publish-adhoc.yml'
-  workflow_dispatch:
-    inputs:
-      tag:
-        description: 'Image tag'
-        required: true
+  # workflow_dispatch:
+  #   inputs:
+  #     tag:
+  #       description: 'Image tag'
+  #       required: true
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -19,14 +19,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: testing
-        run: echo ${{ inputs }}
+      - name: Build and tag app
+        run: docker build -t sillsdev/web-languageforge:pr-1247 -f docker/app/Dockerfile .
 
-      # - name: Build and tag app
-      #   run: docker build -t sillsdev/web-languageforge:pr-1247 -f docker/app/Dockerfile .
-
-      # - name: Reveal images
-      #   run: docker images
+      - name: Reveal images
+        run: docker images
 
       # - name: Log in to Docker Hub
       #   uses: docker/login-action@v1
