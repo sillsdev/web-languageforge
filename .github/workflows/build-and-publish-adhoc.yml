@@ -6,12 +6,14 @@ on:
     paths:
       - '**build-and-publish-adhoc.yml'
 
+  env:
+    TAG: pr-1247
+
 jobs:
   build-n-publish:
     runs-on: ubuntu-latest
 
     env:
-      TAG: pr-1247
       IMAGE: sillsdev/web-languageforge:${{ env.TAG }}
 
     steps:
