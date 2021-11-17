@@ -27,4 +27,4 @@ jobs:
 
       - name: Publish image
         run: |
-          docker push ${{ env.IMAGE }}
+          docker push ${{ env.IMAGE }}-$(date +%s)
