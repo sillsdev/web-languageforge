@@ -113,9 +113,6 @@ module.exports = {
           new workboxPlugin.GenerateSW({
             clientsClaim: true,
             skipWaiting: true,
-            importScripts: [
-              '/service-worker/languageforge/service-worker.js'
-            ],
           }),
     ],
 
