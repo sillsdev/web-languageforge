@@ -2,10 +2,10 @@
 ARG ENVIRONMENT=${ENVIRONMENT:-'production'}
 
 # UI-BUILDER
-FROM node:14.16.1-alpine3.11 AS ui-builder-base
+FROM node:16.13.0-alpine3.14 AS ui-builder-base
 
 # install npm globally
-RUN npm config set unsafe-perm true && npm install -g npm@7.6.3
+RUN npm config set unsafe-perm true && npm install -g npm@8.1.4
 
 RUN mkdir -p /data
 WORKDIR /data
