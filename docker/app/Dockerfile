@@ -10,6 +10,9 @@ RUN npm config set unsafe-perm true && npm install -g npm@7.6.3
 RUN mkdir -p /data
 WORKDIR /data
 
+# copy npm cache directory; as optimization for npm install
+COPY --from=megahirt/web-languageforge:npm-cache /root/.npm /root/.npm
+
 # unsafe-perm true is required to work around an npm bug since we are running as root, have a git+HTTPS repo source and it has a `prepare` script (perfect storm).
 # see https://github.com/npm/npm/issues/17346
 COPY package.json package-lock.json ./
@@ -20,12 +23,11 @@ COPY typings ./typings/
 COPY webpack.config.js webpack-dev.config.js webpack-prd.config.js tsconfig.json tslint.json ./
 
 # copy in src local files
+# Note: *.html files in src/angular-app aren't necessary for webpack compilation, however changes to HTML files will invalidate this layer
 COPY src/angular-app ./src/angular-app
-COPY src/appManifest ./src/appManifest
-COPY src/js ./src/js
-COPY src/json ./src/json
 COPY src/sass ./src/sass
-COPY src/Site/views ./src/Site/views
+COPY src/Site/views/languageforge/theme/default/sass/ ./src/Site/views/languageforge/theme/default/sass
+COPY src/Site/views/shared/*.scss ./src/Site/views/shared/
 
 FROM ui-builder-base AS production-ui-builder
 ENV NPM_BUILD_SUFFIX=prd
