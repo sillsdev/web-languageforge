@@ -11,7 +11,7 @@ RUN mkdir -p /data
 WORKDIR /data
 
 # copy npm cache directory; as optimization for npm install
-COPY --from=megahirt/web-languageforge:npm-cache /root/.npm /root/.npm
+COPY --from=sillsdev/web-languageforge:npm-cache /root/.npm /root/.npm
 
 # unsafe-perm true is required to work around an npm bug since we are running as root, have a git+HTTPS repo source and it has a `prepare` script (perfect storm).
 # see https://github.com/npm/npm/issues/17346
