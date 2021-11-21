@@ -57,3 +57,4 @@ clean-volumes:
 .PHONY: clean-powerwash
 clean-powerwash: clean-volumes
 	docker-compose down --rmi all
+	docker rmi -f lf-npm-cache:npm-cache
