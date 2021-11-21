@@ -13,14 +13,13 @@ WORKDIR /data
 # copy npm cache directory; as optimization for npm install
 COPY --from=sillsdev/web-languageforge:npm-cache /root/.npm /root/.npm
 
-# unsafe-perm true is required to work around an npm bug since we are running as root, have a git+HTTPS repo source and it has a `prepare` script (perfect storm).
-# see https://github.com/npm/npm/issues/17346
-COPY package.json package-lock.json ./
-RUN npm config set unsafe-perm true && npm install --legacy-peer-deps
-
 # Copy in files needed for compilation, located in the repo root
 COPY typings ./typings/
-COPY webpack.config.js webpack-dev.config.js webpack-prd.config.js tsconfig.json tslint.json ./
+COPY package.json package-lock.json webpack.config.js webpack-dev.config.js webpack-prd.config.js tsconfig.json tslint.json ./
+
+# unsafe-perm true is required to work around an npm bug since we are running as root, have a git+HTTPS repo source and it has a `prepare` script (perfect storm).
+# see https://github.com/npm/npm/issues/17346
+RUN npm config set unsafe-perm true && npm install --legacy-peer-deps
 
 # copy in src local files
 # Note: *.html files in src/angular-app aren't necessary for webpack compilation, however changes to HTML files will invalidate this layer
