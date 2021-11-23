@@ -1213,7 +1213,8 @@ export class LexiconEditorController implements angular.IController {
   }
 
   private scrollListToEntry(id: string, position: string): void {
-    const posOffset = (position === 'top') ? 274 : 487;
+    // const posOffset = (position === 'top') ? 274 : 487;
+
     const entryDivId = '#entryId_' + id;
     const listDivId = '#compactEntryListContainer';
     let index = this.editorService.getIndexInList(id, this.filteredEntries);
@@ -1239,25 +1240,37 @@ export class LexiconEditorController implements angular.IController {
     // It may actually not be visible at the moment because it may down inside a
     // scrolling div or scrolled off the view of the page
     if ($(listDivId).is(':visible') && $(entryDivId).is(':visible')) {
-      LexiconEditorController.scrollDivToId(listDivId, entryDivId, posOffset);
+      // LexiconEditorController.scrollDivToId(listDivId, entryDivId, posOffset);
+      LexiconEditorController.syncListEntryWithCurrentEntry(entryDivId)
     } else {
       // wait then try to scroll
       this.$interval(() => {
-        LexiconEditorController.scrollDivToId(listDivId, entryDivId, posOffset);
+        // LexiconEditorController.scrollDivToId(listDivId, entryDivId, posOffset);
+        LexiconEditorController.syncListEntryWithCurrentEntry(entryDivId)
       }, 200, 1);
     }
   }
 
-  private static scrollDivToId(containerId: string, divId: string, posOffset: number = 0): void {
-    const $containerDiv: any = $(containerId)
-    const $div: any = $(divId)[0];
+  private static syncListEntryWithCurrentEntry(elementId: string): void {
+    const element = $(elementId)[0];
 
-    if ($div && $containerDiv.scrollTop) {
-      let offsetTop: number = $div.offsetTop - posOffset;
-
-      $containerDiv.scrollTop(offsetTop > -1 ? offsetTop : 0);
-    }
+    // https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView
+    element.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center',
+    });
   }
+
+  // private static scrollDivToId(containerId: string, divId: string, posOffset: number = 0): void {
+  //   const $containerDiv: any = $(containerId)
+  //   const $div: any = $(divId)[0];
+
+  //   if ($div && $containerDiv.scrollTop) {
+  //     let offsetTop: number = $div.offsetTop - posOffset;
+
+  //     $containerDiv.scrollTop(offsetTop > -1 ? offsetTop : 0);
+  //   }
+  // }
 
   private static entryIsNew(entry: LexEntry): boolean {
     return (entry.id && entry.id.includes('_new_'));
