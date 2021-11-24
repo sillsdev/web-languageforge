@@ -321,12 +321,14 @@ export class LexiconEditorController implements angular.IController {
     return modifiers.filterActive() || modifiers.sortBy.value !== 'default' || modifiers.sortReverse
   }
 
-  resetEntryListFilter(): void {
+  async resetEntryListFilter(): Promise<void> {
     this.entryListModifiers.filterBy = null;
     this.entryListModifiers.wholeWord = false;
     this.entryListModifiers.matchDiacritic = false;
 
-    this.filterAndSortEntries();
+    await this.filterAndSortEntries();
+
+    this.$state.reload();
   }
 
   hasUnsavedChanges(): boolean {
