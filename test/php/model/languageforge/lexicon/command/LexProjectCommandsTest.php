@@ -144,7 +144,7 @@ class LexProjectCommandsTest extends TestCase
                 'fieldType' => $viewFieldConfig->type
             ]
         ];
-        $mangerRoleViewFieldCount = $project->config->roleViews[LexRoles::MANAGER]->fields->count();
+        $managerRoleViewFieldCount = $project->config->roleViews[LexRoles::MANAGER]->fields->count();
         $customFieldNameToDelete = 'customField_senses_testOptionList';
         $viewFieldConfig = new LexViewFieldConfig();
         $viewFieldConfig->type = 'ReferenceAtom';
@@ -158,7 +158,7 @@ class LexProjectCommandsTest extends TestCase
         // verify
         $this->assertEquals($projectId, $result);
         $project2 = new LexProjectModel($projectId);
-        $this->assertEquals($mangerRoleViewFieldCount + 1,
+        $this->assertEquals($managerRoleViewFieldCount + 1,
             $project2->config->roleViews[LexRoles::MANAGER]->fields->count());
         $this->assertArrayNotHasKey($customFieldNameToDelete, $project2->config->roleViews[LexRoles::MANAGER]->fields);
         $customFieldCreated = $project2->config->roleViews[LexRoles::MANAGER]->fields[$customFieldNameToCreate];
@@ -238,7 +238,7 @@ class LexProjectCommandsTest extends TestCase
                 'fieldType' => 'MultiUnicode'
             ]
         ];
-        $mangerRoleViewFieldCount = $project->config->roleViews[LexRoles::MANAGER]->fields->count();
+        $managerRoleViewFieldCount = $project->config->roleViews[LexRoles::MANAGER]->fields->count();
         $projectId = $project->write();
         $this->assertFalse($project->config->roleViews[LexRoles::MANAGER]->fields[$customFieldNameExisting]->show);
 
@@ -261,7 +261,7 @@ class LexProjectCommandsTest extends TestCase
         // verify
         $this->assertEquals($projectId, $result);
         $project2 = new LexProjectModel($projectId);
-        $this->assertEquals($mangerRoleViewFieldCount,
+        $this->assertEquals($managerRoleViewFieldCount,
             $project2->config->roleViews[LexRoles::MANAGER]->fields->count());
         $this->assertArrayNotHasKey($customFieldNameExisting, $project2->config->roleViews[LexRoles::MANAGER]->fields);
         $customFieldRenamed = $project2->config->roleViews[LexRoles::MANAGER]->fields[$customFieldNameRenamed];
