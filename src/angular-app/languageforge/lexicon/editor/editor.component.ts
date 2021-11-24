@@ -477,6 +477,7 @@ export class LexiconEditorController implements angular.IController {
   skipToEntry(distance: number): void {
     const i = this.editorService.getIndexInList(this.currentEntry.id, this.visibleEntries) + distance;
     this.editEntry(this.visibleEntries[i].id);
+    this.scrollListToEntry(this.visibleEntries[i].id, 'middle');
   }
 
   newEntry(): void {
