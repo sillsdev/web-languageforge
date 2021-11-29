@@ -451,7 +451,7 @@ export class LexiconEditorController implements angular.IController {
 
   editEntryAndScroll(id: string): void {
     this.editEntry(id);
-    this.scrollListToEntry(id, 'middle');
+    this.scrollListToEntry(id);
   }
 
   editEntry(id: string): void {
@@ -477,7 +477,7 @@ export class LexiconEditorController implements angular.IController {
   skipToEntry(distance: number): void {
     const i = this.editorService.getIndexInList(this.currentEntry.id, this.visibleEntries) + distance;
     this.editEntry(this.visibleEntries[i].id);
-    this.scrollListToEntry(this.visibleEntries[i].id, 'middle');
+    this.scrollListToEntry(this.visibleEntries[i].id);
   }
 
   newEntry(): void {
@@ -1218,9 +1218,7 @@ export class LexiconEditorController implements angular.IController {
     });
   }
 
-  private scrollListToEntry(id: string, position: string): void {
-    // const posOffset = (position === 'top') ? 274 : 487;
-
+  private scrollListToEntry(id: string, alignment: string = 'center'): void {
     const entryDivId = '#entryId_' + id;
     const listDivId = '#compactEntryListContainer';
     let index = this.editorService.getIndexInList(id, this.filteredEntries);
@@ -1246,37 +1244,25 @@ export class LexiconEditorController implements angular.IController {
     // It may actually not be visible at the moment because it may down inside a
     // scrolling div or scrolled off the view of the page
     if ($(listDivId).is(':visible') && $(entryDivId).is(':visible')) {
-      // LexiconEditorController.scrollDivToId(listDivId, entryDivId, posOffset);
-      LexiconEditorController.syncListEntryWithCurrentEntry(entryDivId)
+      LexiconEditorController.syncListEntryWithCurrentEntry(entryDivId, alignment)
     } else {
       // wait then try to scroll
       this.$interval(() => {
-        // LexiconEditorController.scrollDivToId(listDivId, entryDivId, posOffset);
-        LexiconEditorController.syncListEntryWithCurrentEntry(entryDivId)
+        LexiconEditorController.syncListEntryWithCurrentEntry(entryDivId, alignment)
       }, 200, 1);
     }
   }
 
-  private static syncListEntryWithCurrentEntry(elementId: string): void {
+  private static syncListEntryWithCurrentEntry(elementId: string, alignment: string = 'center'): void {
     const element = $(elementId)[0];
+    const block = alignment !== 'top' ? 'center' : 'start';
 
     // https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView
     element.scrollIntoView({
       behavior: 'smooth',
-      block: 'center',
+      block,
     });
   }
-
-  // private static scrollDivToId(containerId: string, divId: string, posOffset: number = 0): void {
-  //   const $containerDiv: any = $(containerId)
-  //   const $div: any = $(divId)[0];
-
-  //   if ($div && $containerDiv.scrollTop) {
-  //     let offsetTop: number = $div.offsetTop - posOffset;
-
-  //     $containerDiv.scrollTop(offsetTop > -1 ? offsetTop : 0);
-  //   }
-  // }
 
   private static entryIsNew(entry: LexEntry): boolean {
     return (entry.id && entry.id.includes('_new_'));
