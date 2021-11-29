@@ -32,6 +32,7 @@ import {
 import { LexiconProject } from '../shared/model/lexicon-project.model';
 import { LexOptionList } from '../shared/model/option-list.model';
 import { FieldControl } from './field/field-control.model';
+import {OfflineCacheUtilsService} from '../../../bellows/core/offline/offline-cache-utils.service';
 
 class Show {
   more: () => void;
@@ -90,6 +91,7 @@ export class LexiconEditorController implements angular.IController {
     'lexProjectService',
     'lexRightsService',
     'lexSendReceive',
+    'offlineCacheUtils',
   ];
 
   constructor(private readonly $filter: angular.IFilterService,
@@ -110,10 +112,10 @@ export class LexiconEditorController implements angular.IController {
     private readonly lexProjectService: LexiconProjectService,
     private readonly rightsService: LexiconRightsService,
     private readonly sendReceive: LexiconSendReceiveService,
+    private readonly offlineCacheUtils: OfflineCacheUtilsService,
   ) { }
 
   $onInit(): void {
-
     // add PgUp and PgDn global window handlers to facilitate paging through entries
     angular.element(window).bind('keydown', (e: Event) => {
       var key = (e as KeyboardEvent).key;
@@ -159,6 +161,9 @@ export class LexiconEditorController implements angular.IController {
 
     this.show.entryListModifiers = !(this.$window.localStorage.getItem('viewFilter') == null ||
       this.$window.localStorage.getItem('viewFilter') === 'false');
+
+    // this method will evaluate the last used entryid, if found move to the cached entry, if none, move to first entry in list
+    this.evaluateCachedMruEntryState();
   }
 
   $onChanges(changes: any): void {
@@ -470,7 +475,7 @@ export class LexiconEditorController implements angular.IController {
         this.setCommentContext('');
       }
     }
-
+    this.updateCachedMruEntry();
     this.goToEntry(id);
   }
 
@@ -492,6 +497,21 @@ export class LexiconEditorController implements angular.IController {
     const i = this.editorService.getIndexInList(this.currentEntry.id, this.visibleEntries) + distance;
     return i >= 0 && i < this.visibleEntries.length;
   }
+  
+  updateCachedMruEntry = () => {
+      this.offlineCacheUtils.updateProjectMruEnrtyData(this.currentEntry.id).then(data => { });
+  }
+
+  getCachedMruEntry = (): string => {
+    let currentId: string = '';
+    this.offlineCacheUtils.getProjectMruEnrtyData().then(data => {
+      if(data!=null){
+        currentId = data.mruEntryId;
+      }
+      currentId = data.mruEntryId;
+    });
+    return currentId;
+  }
 
   skipToEntry(distance: number): void {
     const i = this.editorService.getIndexInList(this.currentEntry.id, this.visibleEntries) + distance;
@@ -511,7 +531,7 @@ export class LexiconEditorController implements angular.IController {
       this.editorService.showInitialEntries().then(() => {
         this.scrollListToEntry(newEntry.id, 'top');
       });
-
+      this.updateCachedMruEntry();
       this.goToEntry(newEntry.id);
       this.hideRightPanel();
     });
@@ -982,6 +1002,35 @@ export class LexiconEditorController implements angular.IController {
       if (this.$state.is('editor.entry')) {
         this.editEntryAndScroll(entryId);
       }
+    });
+  }
+
+  private evaluateCachedMruEntryState(): void {
+    this.editorService.loadEditorData().then(() => {
+      let entryId: string = '';
+      let mruCachedEntryId: string = '';
+      this.offlineCacheUtils.getProjectMruEnrtyData().then(data => {
+        if(data != null){
+          mruCachedEntryId = data.mruEntryId;
+        }
+        // if cached entry not found go to first visible entry
+        if (mruCachedEntryId == '') {
+          entryId = this.$state.params.entryId;
+        } else {
+          entryId = mruCachedEntryId;
+        }
+
+        if (this.editorService.getIndexInList(entryId, this.entries) == null) {
+          entryId = '';
+          if (this.visibleEntries[0] != null) {
+            entryId = this.visibleEntries[0].id;
+          }
+        }
+
+        if (this.$state.is('editor.entry')) {
+          this.editEntryAndScroll(entryId);
+        }
+      });
     });
   }
 

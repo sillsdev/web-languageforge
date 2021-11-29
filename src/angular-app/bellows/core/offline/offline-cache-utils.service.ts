@@ -29,6 +29,18 @@ export class OfflineCacheUtilsService {
     return this.offlineCache.setObjectsInStore('projects', this.sessionService.projectId(), [obj]);
   }
 
+  getProjectMruEnrtyData(): angular.IPromise<any> {
+    return this.offlineCache.getOneFromStore('projectsmru', this.sessionService.projectId());
+  }
+
+  updateProjectMruEnrtyData(mruEntryId: string): angular.IPromise<any> {
+    const obj = {
+      id: this.sessionService.projectId(),
+      mruEntryId: mruEntryId
+    };
+    return this.offlineCache.setObjectsInStore('projectsmru', this.sessionService.projectId(), [obj]);
+  }
+
   getInterfaceLanguageCode(): angular.IPromise<any> {
     return this.$q.when(this.interfaceStore.getItem<string>(this.INTERFACE_KEY_LANGUAGE_CODE));
   }
