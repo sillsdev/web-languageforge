@@ -288,15 +288,17 @@ export class LexiconEditorController implements angular.IController {
     });
   }
 
-  clearSearchText = () => {
+  clearSearchText = async () => {
     if (this.entryListModifiers.filterBy) {
       this.entryListModifiers.filterBy.text = '';
-      this.filterAndSortEntries();
+      await this.filterAndSortEntries();
+
+      this.$state.reload()
     }
   }
 
-  filterAndSortEntries(): void {
-    this.$state.go('.', {
+  async filterAndSortEntries(): Promise<void> {
+    await this.$state.go('.', {
       sortBy: this.entryListModifiers.sortBy.label,
       filterText: this.entryListModifiers.filterText(),
       sortReverse: this.entryListModifiers.sortReverse,
@@ -305,7 +307,8 @@ export class LexiconEditorController implements angular.IController {
       filterType: this.entryListModifiers.filterType,
       filterBy: this.entryListModifiers.filterByLabel()
     }, { notify: false });
-    this.editorService.filterAndSortEntries.apply(this, arguments);
+
+    return this.editorService.filterAndSortEntries(true);
   }
 
   filterOptionsActive() {
