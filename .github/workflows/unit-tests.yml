@@ -1,0 +1,17 @@
+name: Publish ad-hoc image to Docker Hub
+
+# https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#on
+on:
+  push:
+    paths:
+      - '**unit-tests.yml'
+
+jobs:
+  build-n-publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Run unit tests
+        run: make unit-tests
