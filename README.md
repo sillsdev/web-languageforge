@@ -12,8 +12,7 @@ To report an issue using the **Language Forge** service, email "languageforgeiss
 
 ## Special Thanks To ##
 - ![BrowserStack Logo](readme_images/browserstack-logo.png "BrowserStack") for mobile device testing.
--
-[![Bugsnag logo](readme_images/bugsnag-logo.png "Bugsnag")](https://bugsnag.com/blog/bugsnag-loves-open-source) for error reporting.
+- ![[Bugsnag logo](readme_images/bugsnag-logo.png "Bugsnag")](https://bugsnag.com/blog/bugsnag-loves-open-source) for error reporting.
 
 ## Developers ##
 
