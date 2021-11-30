@@ -1,0 +1,19 @@
+name: Run unit tests
+
+# https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#on
+on:
+  push:
+  # TODO: in branches and on `develop`
+    paths:
+      - '**unit-tests.yml'
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Run unit tests
+        working-directory: ./docker/
+        run: make unit-tests
