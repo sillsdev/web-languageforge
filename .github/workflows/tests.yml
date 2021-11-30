@@ -1,4 +1,4 @@
-name: Publish ad-hoc image to Docker Hub
+name: Run tests
 
 # https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#on
 on:
@@ -14,10 +14,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Run unit tests
-        run: make unit-tests
-        working-directory: ./docker/
+      # - name: Run unit tests
+      #   working-directory: ./docker/
+      #   run: make unit-tests
 
       - name: Run e2e tests
+        # working-directory: ./docker/
+        run: cd docker
         run: make e2e-tests
-        working-directory: ./docker/
