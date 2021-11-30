@@ -5,7 +5,7 @@ on:
   push:
   # TODO: in branches and on `develop`
     paths:
-      - '**unit-tests.yml'
+      - '**tests.yml'
 
 jobs:
   tests:
