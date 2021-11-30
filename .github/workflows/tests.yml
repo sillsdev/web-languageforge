@@ -3,11 +3,12 @@ name: Publish ad-hoc image to Docker Hub
 # https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#on
 on:
   push:
+  # TODO: in branches and on `develop`
     paths:
       - '**unit-tests.yml'
 
 jobs:
-  unit-tests:
+  tests:
     runs-on: ubuntu-latest
 
     steps:
@@ -15,4 +16,8 @@ jobs:
 
       - name: Run unit tests
         run: make unit-tests
+        working-directory: ./docker/
+
+      - name: Run e2e tests
+        run: make e2e-tests
         working-directory: ./docker/
