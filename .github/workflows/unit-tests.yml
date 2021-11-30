@@ -2,10 +2,11 @@ name: Run unit tests
 
 # https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#on
 on:
+  pull_request:
+
   push:
     branches:
       - develop
-  pull_request:
 
 jobs:
   unit-tests:
