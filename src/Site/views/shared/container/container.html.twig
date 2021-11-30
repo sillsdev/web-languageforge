@@ -9,7 +9,7 @@
 
     <title>{{ app.website.name }}</title>
 
-    <link rel=stylesheet href="/dist/css/languageforge.css" />
+    <link rel=stylesheet href="/dist/css/languageforge.css?v={{ version }}" />
 
     {% for cssFile in vendorFilesCss %}
         <link rel=stylesheet href="/{{ cssFile }}?v={{ version }}" />
@@ -17,9 +17,7 @@
 
     <link rel="icon" href="{{ faviconPath }}" type="image/x-icon" />
 
-    {% if manifestFilename %}
-    <link rel="manifest" href="/appManifest/{{ manifestFilename }}">
-    {% endif %}
+    <link rel="manifest" href="/appManifest/languageforge.webmanifest">
 
     {# jquery must be the first js to be loaded #}
     {%  if useMinifiedJs %}

@@ -2,7 +2,6 @@ const path = require('path');
 const ROOT = path.resolve(__dirname, './src/angular-app');
 const DESTINATION = path.resolve(__dirname, 'src', 'dist');
 const workboxPlugin = require('workbox-webpack-plugin');
-const LiveReloadPlugin = require('webpack-livereload-plugin');
 const LoaderOptionsPlugin = require('webpack/lib/LoaderOptionsPlugin');
 
 /**
@@ -11,7 +10,6 @@ const LoaderOptionsPlugin = require('webpack/lib/LoaderOptionsPlugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyPlugin = require("copy-webpack-plugin");
 const webpack = require('webpack')
-//UglifyJsPlugin has been depreciated using TerserPlugin
 const TerserPlugin = require("terser-webpack-plugin");
 
 module.exports = {
@@ -115,12 +113,7 @@ module.exports = {
           new workboxPlugin.GenerateSW({
             clientsClaim: true,
             skipWaiting: true,
-            importScripts: [
-              '/service-worker/languageforge/service-worker.js'
-            ],
-            include: [] // To be changed once ready to start caching the whole app
           }),
-          new LiveReloadPlugin()
     ],
 
     entry: './main.ts'

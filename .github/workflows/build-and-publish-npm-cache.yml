@@ -1,0 +1,29 @@
+name: Build and publish an NPM cache image
+
+# https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#on
+on:
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  build-n-publish:
+    runs-on: ubuntu-latest
+
+    env:
+      IMAGE: sillsdev/web-languageforge:npm-cache
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build and tag cache image
+        run: docker build -t ${{ env.IMAGE }} -f docker/npm-cache/Dockerfile .
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+
+      - name: Publish image
+        run: |
+          docker push ${{ env.IMAGE }}

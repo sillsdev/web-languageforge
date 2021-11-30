@@ -43,12 +43,12 @@ export const LexiconEditorModule = angular
                             lec-rights="$ctrl.rights"></lexicon-editor>`
       })
       .state('editor.list', {
-        url: '/list?sortBy&filterText&sortReverse&filterType&filterBy',
+        url: '/list?sortBy&filterText&sortReverse&wholeWord&matchDiacritic&filterType&filterBy',
         templateUrl: '/angular-app/languageforge/lexicon/editor/editor-list.view.html',
         controller: 'EditorListCtrl'
       })
       .state('editor.entry', {
-        url: '/entry/{entryId:[0-9a-z_]{6,24}}?sortBy&filterText&sortReverse&filterType&filterBy',
+        url: '/entry/{entryId:[0-9a-z_]{6,24}}?sortBy&filterText&sortReverse&wholeWord&matchDiacritic&filterType&filterBy',
         templateUrl: '/angular-app/languageforge/lexicon/editor/editor-entry.view.html',
         controller: 'EditorEntryCtrl'
       })

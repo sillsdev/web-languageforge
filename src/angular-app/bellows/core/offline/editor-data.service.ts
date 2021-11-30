@@ -44,6 +44,8 @@ class EntryListModifiers {
   };
   sortOptions: SortOption[] = [];
   sortReverse = false;
+  wholeWord = false;
+  matchDiacritic = false;
   filterBy: {
     text: string;
     option: FilterOption;
@@ -443,19 +445,45 @@ export class EditorDataService {
         text.indexOf(query) === 0 && !UtilityService.isDigitsOnly(text.slice(query.length - 1, query.length + 1));
   }
 
-  private entryMeetsFilterCriteria(config: any, entry: LexEntry): boolean {
+  // this ensures regex tokens are not interpreted as regex, e.g., a user searching for '[a-zA-Z]' should _probably_ result in no matches.
+  private escapeRegex(input: string) {
+    // taken from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions#escaping
+    return input.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matche
+  }
 
+  private removeDiacritics(input: string) {
+    // refs:
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/normalize
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions/Unicode_Property_Escapes
+    // https://unicode.org/reports/tr44/#Diacritic
+    // https://stackoverflow.com/a/37511463/10818013
+
+    return input.normalize('NFD').replace(/\p{Diacritic}/gu, '')
+  }
+
+  private entryMeetsFilterCriteria(config: any, entry: LexEntry): boolean {
     if (this.entryListModifiers.filterText() !== '') {
-      const query = this.entryListModifiers.filterText().toUpperCase();
-      let matchesSearch = false;
+      const rawQuery = this.entryListModifiers.filterText()
+      const normalizedQuery = this.entryListModifiers.matchDiacritic ? rawQuery : this.removeDiacritics(rawQuery);
+      const regexSafeQuery = this.escapeRegex(normalizedQuery);
+      const queryRegex = new RegExp(this.entryListModifiers.wholeWord ? `\\b${regexSafeQuery}\\b` : regexSafeQuery, 'i');
+      let found = false;
+
       this.walkEntry(config.entry, entry, (val, isSemanticDomain) => {
-        val = val.toUpperCase();
-        if (isSemanticDomain) {
-          if (this.semanticDomainsMatch(val, query)) matchesSearch = true;
-        } else if (val.indexOf(query) !== -1) matchesSearch = true;
+        if (isSemanticDomain && this.semanticDomainsMatch(val, rawQuery)) {
+          found = true;
+        } else {
+          const normalizedValue = this.entryListModifiers.matchDiacritic ? val : this.removeDiacritics(val)
+
+          if (queryRegex.test(normalizedValue)) {
+            found = true;
+          }
+        }
       });
-      if (!matchesSearch) return false;
+
+      if (!found) return false;
     }
+
     if (!this.entryListModifiers.filterBy.option) return true;
 
     const mustNotBeEmpty = this.entryListModifiers.filterType === 'isNotEmpty';
