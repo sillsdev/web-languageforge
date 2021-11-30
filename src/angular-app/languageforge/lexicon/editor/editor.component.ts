@@ -288,15 +288,17 @@ export class LexiconEditorController implements angular.IController {
     });
   }
 
-  clearSearchText = () => {
+  clearSearchText = async () => {
     if (this.entryListModifiers.filterBy) {
       this.entryListModifiers.filterBy.text = '';
-      this.filterAndSortEntries();
+      await this.filterAndSortEntries();
+
+      this.$state.reload()
     }
   }
 
-  filterAndSortEntries(): void {
-    this.$state.go('.', {
+  async filterAndSortEntries(): Promise<void> {
+    await this.$state.go('.', {
       sortBy: this.entryListModifiers.sortBy.label,
       filterText: this.entryListModifiers.filterText(),
       sortReverse: this.entryListModifiers.sortReverse,
@@ -305,7 +307,8 @@ export class LexiconEditorController implements angular.IController {
       filterType: this.entryListModifiers.filterType,
       filterBy: this.entryListModifiers.filterByLabel()
     }, { notify: false });
-    this.editorService.filterAndSortEntries.apply(this, arguments);
+
+    return this.editorService.filterAndSortEntries(true);
   }
 
   filterOptionsActive() {
@@ -318,12 +321,14 @@ export class LexiconEditorController implements angular.IController {
     return modifiers.filterActive() || modifiers.sortBy.value !== 'default' || modifiers.sortReverse
   }
 
-  resetEntryListFilter(): void {
+  async resetEntryListFilter(): Promise<void> {
     this.entryListModifiers.filterBy = null;
     this.entryListModifiers.wholeWord = false;
     this.entryListModifiers.matchDiacritic = false;
 
-    this.filterAndSortEntries();
+    await this.filterAndSortEntries();
+
+    this.$state.reload();
   }
 
   hasUnsavedChanges(): boolean {
@@ -446,7 +451,7 @@ export class LexiconEditorController implements angular.IController {
 
   editEntryAndScroll(id: string): void {
     this.editEntry(id);
-    this.scrollListToEntry(id, 'middle');
+    this.scrollListToEntry(id);
   }
 
   editEntry(id: string): void {
@@ -472,6 +477,7 @@ export class LexiconEditorController implements angular.IController {
   skipToEntry(distance: number): void {
     const i = this.editorService.getIndexInList(this.currentEntry.id, this.visibleEntries) + distance;
     this.editEntry(this.visibleEntries[i].id);
+    this.scrollListToEntry(this.visibleEntries[i].id);
   }
 
   newEntry(): void {
@@ -1212,8 +1218,7 @@ export class LexiconEditorController implements angular.IController {
     });
   }
 
-  private scrollListToEntry(id: string, position: string): void {
-    const posOffset = (position === 'top') ? 274 : 487;
+  private scrollListToEntry(id: string, alignment: string = 'center'): void {
     const entryDivId = '#entryId_' + id;
     const listDivId = '#compactEntryListContainer';
     let index = this.editorService.getIndexInList(id, this.filteredEntries);
@@ -1239,24 +1244,24 @@ export class LexiconEditorController implements angular.IController {
     // It may actually not be visible at the moment because it may down inside a
     // scrolling div or scrolled off the view of the page
     if ($(listDivId).is(':visible') && $(entryDivId).is(':visible')) {
-      LexiconEditorController.scrollDivToId(listDivId, entryDivId, posOffset);
+      LexiconEditorController.syncListEntryWithCurrentEntry(entryDivId, alignment)
     } else {
       // wait then try to scroll
       this.$interval(() => {
-        LexiconEditorController.scrollDivToId(listDivId, entryDivId, posOffset);
+        LexiconEditorController.syncListEntryWithCurrentEntry(entryDivId, alignment)
       }, 200, 1);
     }
   }
 
-  private static scrollDivToId(containerId: string, divId: string, posOffset: number = 0): void {
-    const $containerDiv: any = $(containerId)
-    const $div: any = $(divId)[0];
+  private static syncListEntryWithCurrentEntry(elementId: string, alignment: string = 'center'): void {
+    const element = $(elementId)[0];
+    const block = alignment !== 'top' ? 'center' : 'start';
 
-    if ($div && $containerDiv.scrollTop) {
-      let offsetTop: number = $div.offsetTop - posOffset;
-
-      $containerDiv.scrollTop(offsetTop > -1 ? offsetTop : 0);
-    }
+    // https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView
+    element.scrollIntoView({
+      behavior: 'smooth',
+      block,
+    });
   }
 
   private static entryIsNew(entry: LexEntry): boolean {
