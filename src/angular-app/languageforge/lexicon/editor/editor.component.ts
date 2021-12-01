@@ -1240,7 +1240,7 @@ export class LexiconEditorController implements angular.IController {
     const interval = this.$interval(() => {
       if ($(entryDivId)[0]) {
         LexiconEditorController.syncListEntryWithCurrentEntry(entryDivId, alignment)
-        console.log(this.$interval.cancel(interval))
+        this.$interval.cancel(interval)
       }
     }, 200, 30); // 200ms delay, 30 tries max
   }
