@@ -1219,13 +1219,7 @@ export class LexiconEditorController implements angular.IController {
   }
 
   private scrollListToEntry(id: string, alignment: string = 'center'): void {
-    const entryDivId = '#entryId_' + id;
-    const listDivId = '#compactEntryListContainer';
     let index = this.editorService.getIndexInList(id, this.filteredEntries);
-
-    // make sure the item is visible in the list
-    // todo implement lazy "up" scrolling to make this more efficient
-
     // only expand the "show window" if we know that the entry is actually in
     // the entry list - a safe guard
     if (index != null) {
@@ -1239,18 +1233,16 @@ export class LexiconEditorController implements angular.IController {
       }
     }
 
-    // note: ':visible' is a JQuery invention that means 'it takes up space on
-    // the page'.
-    // It may actually not be visible at the moment because it may down inside a
-    // scrolling div or scrolled off the view of the page
-    if ($(listDivId).is(':visible') && $(entryDivId).is(':visible')) {
-      LexiconEditorController.syncListEntryWithCurrentEntry(entryDivId, alignment)
-    } else {
-      // wait then try to scroll
-      this.$interval(() => {
+    // there's a fundamental problem in this code related to synchronization and the interval is a hack to deal with it until the correct solution is found.
+    // Ideally, we would only want to try and find this entry once the list is rendered, possibly on a lifecycle hook like mounted or something, or possibly
+    // asynchronously upon data retrieval...I'm not exactly sure what's needed here, but this is a poor-man's start.
+    const entryDivId = '#entryId_' + id;
+    const interval = this.$interval(() => {
+      if ($(entryDivId)[0]) {
         LexiconEditorController.syncListEntryWithCurrentEntry(entryDivId, alignment)
-      }, 200, 1);
-    }
+        console.log(this.$interval.cancel(interval))
+      }
+    }, 200, 30); // 200ms delay, 30 tries max
   }
 
   private static syncListEntryWithCurrentEntry(elementId: string, alignment: string = 'center'): void {
