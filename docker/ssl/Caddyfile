@@ -1,6 +1,7 @@
 # https://caddyserver.com/docs/caddyfile
 {
 	#debug
+	#auto_https disable_redirects
 }
 
 localhost {

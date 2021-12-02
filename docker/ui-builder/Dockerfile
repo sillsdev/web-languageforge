@@ -21,7 +21,6 @@ COPY src/appManifest ./src/appManifest
 COPY src/js ./src/js
 COPY src/json ./src/json
 COPY src/sass ./src/sass
-COPY src/service-worker ./src/service-worker
 COPY src/Site/views ./src/Site/views
 
 CMD npm run build:dev:watch
