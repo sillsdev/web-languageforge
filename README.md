@@ -12,8 +12,7 @@ To report an issue using the **Language Forge** service, email "languageforgeiss
 
 ## Special Thanks To ##
 - ![BrowserStack Logo](readme_images/browserstack-logo.png "BrowserStack") for mobile device testing.
--
-[![Bugsnag logo](readme_images/bugsnag-logo.png "Bugsnag")](https://bugsnag.com/blog/bugsnag-loves-open-source) for error reporting.
+- [![Bugsnag logo](readme_images/bugsnag-logo.png "Bugsnag")](https://bugsnag.com/blog/bugsnag-loves-open-source) for error reporting.
 
 ## Developers ##
 
@@ -22,14 +21,6 @@ We use [Gitflow](http://nvie.com/posts/a-successful-git-branching-model/) mostly
 | Master Branch | Staging Branch (for testing) | Production Branch |
 | ------------- | --------- | ----------- |
 | `master` | `staging` | `prod` |
-
-### CI Builds ###
-
-Status of builds from our continuous integration (CI) [server](https://build.palaso.org):
-
-| PHP Unit Tests | E2E Tests |
-| ----------- | ---------- |
-| [![Build Status](https://build.palaso.org/app/rest/builds/buildType:LanguageForgeDocker_PhpTests/statusIcon.svg)](https://build.palaso.org/buildConfiguration/LanguageForgeDocker_PhpTests) | [![Build Status](https://build.palaso.org/app/rest/builds/buildType:LanguageForgeDocker_E2eTests/statusIcon.svg)](https://build.palaso.org/buildConfiguration/LanguageForgeDocker_E2eTests) |
 
 ### Deployed Sites ###
 
@@ -85,13 +76,13 @@ Other useful resources:
 > Sometimes there may be a need to hit the locally running app from a device other than the machine the app is running on.  In order to do that, you'll need to do the following:
 > 1. Figure out your local ip address
 > 1. Access the app via http at that address
-> 
+>
 > On a Mac for example:
 > ```
 > ifconfig | grep broadcast
 > 	inet 192.168.161.99 netmask 0xfffffc00 broadcast 192.168.163.255
 > ```
-> 
+>
 > then hit `http://192.168.161.99` from your phone or other device on the same network.
 >
 > NOTE: disabling cache on your device may not be trivial, you'll either need to wipe the site settings on your device's browser or you'll need to do it via USB debugging.
@@ -188,7 +179,7 @@ To debug the Language Forge application locally, follow these steps:
 - In VS Code, set a breakpoint on a line of code that should be executed
 - Click on the `Run and Debug` area of VS Code, then click the green play icon next to `XDebug` in the configuration dropdown.
 
-![XDebug](readme_images/xdebug1.png "Debugging with XDebug")] 
+![XDebug](readme_images/xdebug1.png "Debugging with XDebug")]
 
 - The VSCode status bar will turn orange when XDebug is active
 - open the application in your web browser (`https://localhost`) and use the application such that you execute the code where you have a breakpoint set
@@ -207,7 +198,7 @@ To debug the PHP tests, follow these steps:
 - In VS Code, set a breakpoint on a line of code in one of the PHP tests (in the `test/php` folder)
 - Click on the `Run and Debug` area of VS Code, then click the green play icon next to `XDebug` in the configuration dropdown.
 
-![XDebug](readme_images/xdebug1.png "Debugging with XDebug")] 
+![XDebug](readme_images/xdebug1.png "Debugging with XDebug")]
 
 - The VSCode status bar will turn orange when XDebug is active
 - run `make unit-tests` in the terminal
