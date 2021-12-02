@@ -19,11 +19,4 @@ jobs:
       - name: Run unit tests
         working-directory: ./docker/
         run: make unit-tests
-        
-# https://github.com/EnricoMi/publish-unit-test-result-action
-      - name: Publish Test Results
-        uses: docker://ghcr.io/enricomi/publish-unit-test-result-action:v1
-        if: always()
-        with:
-          github_token: ${{ github.token }}
-          files: docker/PhpUnitTests.xml
+
