@@ -6,36 +6,10 @@ on:
     tags:
       - "v*"
     branches:
-      - staging
-
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+      - develop
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  environment:
-    # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: What version of Make is installed
-        run: make --version
-
-      - name: What version of Docker is installed
-        run: docker --version
-
-      - name: What version of Docker-Compose is installed
-        run: docker-compose --version
-
-      - name: CPU info
-        run: cat /proc/cpuinfo
-
-      - name: RAM info
-        run: free
-
-      - name: Disk info
-        run: df -h
-
   build-n-publish:
     runs-on: ubuntu-latest
 
@@ -43,10 +17,10 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Set BUILD_VERSION for Staging
-        if: github.ref == 'refs/heads/staging'
+        if: github.ref == 'refs/heads/develop'
         run: |-
-          echo "BUILD_VERSION=staging-$GITHUB_SHA" >> "$GITHUB_ENV"
-          echo "BUILD_VERSION_LATEST=staging" >> "$GITHUB_ENV"
+          echo "BUILD_VERSION=develop-$(date +%Y%m%d)-$GITHUB_SHA" >> "$GITHUB_ENV"
+          echo "BUILD_VERSION_LATEST=develop" >> "$GITHUB_ENV"
 
       - name: Set BUILD_VERSION for Production from git tag
         if: startsWith(github.ref, 'refs/tags/v')
