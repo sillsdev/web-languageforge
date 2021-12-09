@@ -16,16 +16,26 @@ To report an issue using the **Language Forge** service, email "languageforgeiss
 
 ## Developers ##
 
-We use [Gitflow](http://nvie.com/posts/a-successful-git-branching-model/) mostly, however we do not utilize a `develop` branch.  All work starts and returns to the `master` branch.  Deployment of software to a staging and/or a production environment occur through the use of the respective branches being fast-forwarded to the appropriate commit on `master` which will in turn kick off our automated deployment processes.
+We use a modified [Gitflow](http://nvie.com/posts/a-successful-git-branching-model/) process.
 
-| Master Branch | Staging Branch (for testing) | Production Branch |
-| ------------- | --------- | ----------- |
-| `master` | `staging` | `prod` |
+### Typical ###
+1.  Create a branch off of `develop`
+1.  Create a PR back into `develop`
+1.  Once approved and merged, test those changes in the staging environment
+1.  Once you are satisifed with the changes, open another PR back into `master`
+1.  Once approved and merged, coordinate with the team to deliver those changes to the production environment
+1.  Team leads will determine when the right time to cut a release, i.e., tag and deploy, typically this should be within a day or two
+
+### Exception ###
+1.  There may be times when it's necessary to create a branch off of `master`
+1.  A PR should be created to `master`
+1.  Once approved and merged, coordinate with the team to deliver those changes to the production environment
+1.  Team leads will determine when the right time to cut a release, i.e., tag and deploy, this would likely be right away under these exceptional circumstances
 
 ### Deployed Sites ###
 
 | Staging | Production |
-| -- | ---- |
+| - | - |
 | [qa.languageforge.org](https://qa.languageforge.org) | [languageforge.org](https://languageforge.org) |
 
 ## Style Guides ##
@@ -235,7 +245,7 @@ Language Forge is built to run in a containerized environment.  For now, Kuberne
 Staging deployments can be run with `VERSION=<some-docker-tag-or-semver> make deploy-staging`.
 
 Current workflow:
-1. merge commits into or make commits on `staging` branch
+1. merge commits into or make commits on `develop` branch
 1. this will kick off the GHA (`.github/workflows/build-and-deploy-images.yml`) to build and publish the necessary images to Docker Hub (https://hub.docker.com/r/sillsdev/web-languageforge/tags)
 1. then the deployment scripts can be run either manually or via the TeamCity deploy job
 
@@ -243,7 +253,7 @@ Current workflow:
 Production deployments can be run with `VERSION=<some-docker-tag-or-semver> make deploy-prod`.
 
 Current workflow:
-1. merge from `staging` into `master`
+1. merge from `develop` into `master`
 1. "Draft a new release" on https://github.com/sillsdev/web-languageforge/releases with a `v#.#.#` tag format
 1. "Publish" the new release
 1. this will kick off the GHA (`.github/workflows/build-and-deploy-images.yml`) to build and publish the necessary images to Docker Hub (https://hub.docker.com/r/sillsdev/web-languageforge/tags)
