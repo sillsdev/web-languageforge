@@ -16,7 +16,7 @@ To report an issue using the **Language Forge** service, email "languageforgeiss
 
 ## Developers ##
 
-We use a modified [Gitflow](http://nvie.com/posts/a-successful-git-branching-model/) process.
+We use a modified [Gitflow](http://nvie.com/posts/a-successful-git-branching-model/) process to manage changes.
 
 ### Typical ###
 1.  Create a branch off of `develop`
