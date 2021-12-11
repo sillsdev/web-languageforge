@@ -27,7 +27,7 @@ We use a modified [Gitflow](http://nvie.com/posts/a-successful-git-branching-mod
 1.  Team leads will determine when the right time to cut a release, i.e., tag and deploy, typically this should be within a day or two
 
 ### Exception ###
-1.  There may be times when it's necessary to create a branch off of `master`
+1.  There may be times when it's necessary to create a branch off of `master` (e.g. a hotfix for the production environment)
 1.  A PR should be created to `master`
 1.  Once approved and merged, coordinate with the team to deliver those changes to the production environment
 1.  Team leads will determine when the right time to cut a release, i.e., tag and deploy, this would likely be right away under these exceptional circumstances
