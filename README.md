@@ -21,7 +21,7 @@ We use a modified [Gitflow](http://nvie.com/posts/a-successful-git-branching-mod
 ### Typical ###
 1.  Create a branch off of `develop`
 1.  Create a PR back into `develop`
-1.  Once approved and merged, test those changes in the staging environment
+1.  Once approved and merged, test those changes on [qa.languageforge.org](https://qa.languageforge.org)
 1.  Once you are satisifed with the changes, open another PR back into `master`
 1.  Once approved and merged, coordinate with the team to deliver those changes to the production environment
 1.  Team leads will determine when the right time to cut a release, i.e., tag and deploy, typically this should be within a day or two
