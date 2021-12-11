@@ -2,22 +2,25 @@ name: Publish ad-hoc image to Docker Hub
 
 # https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#on
 on:
-  push:
-    paths:
-      - '**build-and-publish-adhoc.yml'
+  workflow_dispatch:
+    inputs:
+      # https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions#inputsinput_id
+      tag:
+        description: Docker tag to publish
+        required: true
 
 jobs:
   build-n-publish:
     runs-on: ubuntu-latest
 
     env:
-      IMAGE: sillsdev/web-languageforge:pr-1247-blue
+      IMAGE: sillsdev/web-languageforge
 
     steps:
       - uses: actions/checkout@v2
 
       - name: Build and tag app
-        run: docker build -t ${{ env.IMAGE }}-${GITHUB_SHA} -f docker/app/Dockerfile .
+        run: docker build -t ${{ env.IMAGE }}:${{ github.event.inputs.tag }} -f docker/app/Dockerfile .
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v1
@@ -27,4 +30,4 @@ jobs:
 
       - name: Publish image
         run: |
-          docker push ${{ env.IMAGE }}-${GITHUB_SHA}
+          docker push ${{ env.IMAGE }}:${{ github.event.inputs.tag }}
