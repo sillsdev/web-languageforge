@@ -25,10 +25,10 @@ jobs:
       #   name: Check e2e tests
       #   working-directory: ./docker/
       #   run: make e2e-tests
-      # -
-      #   name: Establish image name
-      #   id: image-name
-      #   run: echo ::set-output name=IMAGE::sillsdev/web-languageforge:develop-$(date +%Y%m%d)-${{ github.sha }}
+      -
+        name: Establish image name
+        id: image-name
+        run: echo ::set-output name=IMAGE::sillsdev/web-languageforge:develop-$(date +%Y%m%d)-${{ github.sha }}
       # -
       #   name: Tag images
       #   run: docker tag lf-app ${{ steps.image-name.outputs.IMAGE }}
@@ -44,4 +44,4 @@ jobs:
       -
         name: Deploy to staging
         working-directory: ./docker/deployment/
-        run: VERSION=$(${{ steps.image-name.outputs.IMAGE }} | cut -d ':' -f 2) env
+        run: VERSION=$(${{ steps.image-name.outputs.IMAGE }} | cut -d ':' -f 2) env | grep
