@@ -44,4 +44,6 @@ jobs:
       -
         name: Deploy to staging
         working-directory: ./docker/deployment/
-        run: VERSION=$(echo ${{ steps.image-name.outputs.IMAGE }} | cut -d ':' -f 2) env | grep VERSION
+        env:
+          VERSION: $(echo ${{ steps.image-name.outputs.IMAGE }} | cut -d ':' -f 2)
+        run: env | grep VERSION
