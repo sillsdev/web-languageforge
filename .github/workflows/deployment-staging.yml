@@ -69,4 +69,4 @@ jobs:
         run: echo ${{ needs.build.outputs.IMAGE }}
       -
         name: Deploy to staging
-        run: kubectl --context ${{ secrets.LTOPS_K8S_STAGING_CONTEXT }} set image deployment/app app=sillsdev/web-languageforge:develop-20211213-75416f7d2430579ba8cd11ab0e7417870a4f6a88
+        run: kubectl --context ${{ secrets.LTOPS_K8S_STAGING_CONTEXT }} set image deployment/app app=sillsdev/web-languageforge:develop-20211213-c03003d954ad44675d09fc1f2706a46602f0edf3
