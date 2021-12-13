@@ -69,4 +69,4 @@ jobs:
         run: echo ${{ needs.build.outputs.IMAGE }}
       -
         name: Current context
-        run: kubectl --context ${{ secrets.LTOPS_K8S_STAGING_CONTEXT }} config current-context
+        run: kubectl --context ${{ secrets.LTOPS_K8S_STAGING_CONTEXT }} get deployments
