@@ -6,7 +6,7 @@ on:
   #   branches:
   #     - develop
 
-  workfow_dispatch:
+  workflow_dispatch:
 
 jobs:
   full-ci-cd:
