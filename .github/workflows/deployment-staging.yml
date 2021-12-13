@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - chore/refactor-actions
+      # TODO: - develop
 
 jobs:
   full-ci-cd:
@@ -27,11 +28,13 @@ jobs:
       #   run: make e2e-tests
       -
         name: Establish image name
-        id: image-name
-        run: echo ::set-output name=IMAGE::sillsdev/web-languageforge:develop-$(date +%Y%m%d)-${{ github.sha }}
+        id: image
+        run: |
+          echo ::set-output name=NAMESPACE::sillsdev/web-languageforge
+          echo ::set-output name=TAG::develop-$(date +%Y%m%d)-${{ github.sha }}
       # -
       #   name: Tag images
-      #   run: docker tag lf-app ${{ steps.image-name.outputs.IMAGE }}
+      #   run: docker tag lf-app ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG }}
       # -
       #   name: Log in to Docker Hub
       #   uses: docker/login-action@v1
@@ -40,8 +43,11 @@ jobs:
       #     password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
       # -
       #   name: Publish image
-      #   run: docker push ${{ steps.image-name.outputs.IMAGE }}
+      #   run: docker push ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG }}
+      # -
+        # name: Deploy to staging
+        # working-directory: ./docker/deployment/
+        # # run: VERSION=$(echo ${{ steps.image-name.outputs.IMAGE }} | cut -d ':' -f 2) make deploy-staging
+        # run: VERSION=$(echo ${{ steps.image.outputs.TAG }} | cut -d ':' -f 2) make deploy-staging
       -
-        name: Deploy to staging
-        working-directory: ./docker/deployment/
-        run: VERSION=$(echo ${{ steps.image-name.outputs.IMAGE }} | cut -d ':' -f 2) make deploy-staging
+        run: echo ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG }}
