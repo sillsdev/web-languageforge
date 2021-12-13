@@ -14,40 +14,37 @@ jobs:
     steps:
       -
         uses: actions/checkout@v2
-      # -
-      #   name: Build app
-      #   working-directory: ./docker/
-      #   run: docker-compose build --build-arg ENVIRONMENT=production app
-      # -
-      #   name: Check unit tests
-      #   working-directory: ./docker/
-      #   run: make unit-tests
-      # -
-      #   name: Check e2e tests
-      #   working-directory: ./docker/
-      #   run: make e2e-tests
+      -
+        name: Build app
+        working-directory: ./docker/
+        run: docker-compose build --build-arg ENVIRONMENT=production app
+      -
+        name: Check unit tests
+        working-directory: ./docker/
+        run: make unit-tests
+      -
+        name: Check e2e tests
+        working-directory: ./docker/
+        run: make e2e-tests
+      -
+        name: Log in to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
       -
         name: Establish image name
         id: image
         run: |
           echo ::set-output name=NAMESPACE::sillsdev/web-languageforge
           echo ::set-output name=TAG::develop-$(date +%Y%m%d)-${{ github.sha }}
-      # -
-      #   name: Tag images
-      #   run: docker tag lf-app ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG }}
-      # -
-      #   name: Log in to Docker Hub
-      #   uses: docker/login-action@v1
-      #   with:
-      #     username: ${{ secrets.DOCKERHUB_USERNAME }}
-      #     password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
-      # -
-      #   name: Publish image
-      #   run: docker push ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG }}
-      # -
-        # name: Deploy to staging
-        # working-directory: ./docker/deployment/
-        # # run: VERSION=$(echo ${{ steps.image-name.outputs.IMAGE }} | cut -d ':' -f 2) make deploy-staging
-        # run: VERSION=$(echo ${{ steps.image.outputs.TAG }} | cut -d ':' -f 2) make deploy-staging
       -
-        run: echo ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG }}
+        name: Tag images
+        run: docker tag lf-app ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG }}
+      -
+        name: Publish image
+        run: docker push ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG }}
+      -
+        name: Deploy to staging
+        working-directory: ./docker/deployment/
+        run: VERSION=${{ steps.image.outputs.TAG }} make deploy-staging
