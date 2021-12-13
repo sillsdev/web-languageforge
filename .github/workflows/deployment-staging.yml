@@ -13,31 +13,35 @@ jobs:
     steps:
       -
         uses: actions/checkout@v2
-      -
-        name: Build app
-        working-directory: ./docker/
-        run: docker-compose build --build-arg ENVIRONMENT=production app
-      -
-        name: Check unit tests
-        working-directory: ./docker/
-        run: make unit-tests
+      # -
+      #   name: Build app
+      #   working-directory: ./docker/
+      #   run: docker-compose build --build-arg ENVIRONMENT=production app
+      # -
+      #   name: Check unit tests
+      #   working-directory: ./docker/
+      #   run: make unit-tests
       # -
       #   name: Check e2e tests
       #   working-directory: ./docker/
       #   run: make e2e-tests
+      # -
+      #   name: Establish image name
+      #   id: image-name
+      #   run: echo ::set-output name=IMAGE::sillsdev/web-languageforge:develop-$(date +%Y%m%d)-${{ github.sha }}
+      # -
+      #   name: Tag images
+      #   run: docker tag lf-app ${{ steps.image-name.outputs.IMAGE }}
+      # -
+      #   name: Log in to Docker Hub
+      #   uses: docker/login-action@v1
+      #   with:
+      #     username: ${{ secrets.DOCKERHUB_USERNAME }}
+      #     password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+      # -
+      #   name: Publish image
+      #   run: docker push ${{ steps.image-name.outputs.IMAGE }}
       -
-        name: Establish image name
-        id: image-name
-        run: echo ::set-output name=IMAGE::sillsdev/web-languageforge:develop-$(date +%Y%m%d)-${{ github.sha }}
-      -
-        name: Tag images
-        run: docker tag lf-app ${{ steps.image-name.outputs.IMAGE }}
-      -
-        name: Log in to Docker Hub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
-      -
-        name: Publish image
-        run: docker push ${{ steps.image-name.outputs.IMAGE }}
+        name: Deploy to staging
+        working-directory: ./docker/deployment/
+        run: VERSION=$(${{ steps.image-name.outputs.IMAGE }} | cut -d ':' -f 2) env | grep VERSION
