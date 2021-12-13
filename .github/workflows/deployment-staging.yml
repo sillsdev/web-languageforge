@@ -66,5 +66,7 @@ jobs:
           kubectl version
       -
         name: Deploy to staging
-
-        run: echo ${{ secrets.LTOPS_K8S_STAGING_CONTEXT }} ${{ needs.build.outputs.IMAGE }}
+        run: echo ${{ needs.build.outputs.IMAGE }}
+      -
+        name: Current context
+        run: kubectl --context ${{ secrets.LTOPS_K8S_STAGING_CONTEXT }} config current-context
