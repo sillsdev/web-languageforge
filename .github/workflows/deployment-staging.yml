@@ -2,11 +2,9 @@ name: Deploy to staging
 
 # https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#on
 on:
-  # push:
-  #   branches:
-  #     - develop
-
-  workflow_dispatch:
+  push:
+    branches:
+      - chore/refactor-actions
 
 jobs:
   full-ci-cd:
