@@ -25,10 +25,10 @@ jobs:
         name: Check unit tests
         working-directory: ./docker/
         run: make unit-tests
-      -
-        name: Check e2e tests
-        working-directory: ./docker/
-        run: make e2e-tests
+      # -
+      #   name: Check e2e tests
+      #   working-directory: ./docker/
+      #   run: make e2e-tests
       -
         name: Log in to Docker Hub
         uses: docker/login-action@v1
