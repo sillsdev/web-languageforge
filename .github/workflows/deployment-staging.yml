@@ -59,9 +59,12 @@ jobs:
 
     steps:
       -
+        name: Install kubectl
         run: |
           curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
           sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
           kubectl version
       -
-        run: echo ${{ needs.build.outputs.IMAGE }}
+        name: Deploy to staging
+
+        run: ${{ secrets.LTOPS_K8S_STAGING_CONTEXT }} echo ${{ needs.build.outputs.IMAGE }}
