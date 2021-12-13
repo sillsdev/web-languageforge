@@ -65,8 +65,8 @@ jobs:
           sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
           kubectl version
       -
-        name: Deploy to staging
+        name: IMAGE
         run: echo ${{ needs.build.outputs.IMAGE }}
       -
-        name: Current context
-        run: kubectl --context ${{ secrets.LTOPS_K8S_STAGING_CONTEXT }} get deployments
+        name: Deploy to staging
+        run: kubectl --context ${{ secrets.LTOPS_K8S_STAGING_CONTEXT }} set image deployment/app app=sillsdev/web-languageforge:develop-20211213-75416f7d2430579ba8cd11ab0e7417870a4f6a88
