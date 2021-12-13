@@ -53,10 +53,15 @@ jobs:
       #   run: VERSION=${{ steps.image.outputs.TAG }} make deploy-staging
 
   deploy:
-    runs-on: ubuntu-latest #[self-hosted, thecombine]
+    runs-on: [self-hosted, languageforge]
 
     needs: build
 
     steps:
+      -
+        run: |
+          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+          sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+          kubectl version
       -
         run: echo ${{ needs.build.outputs.IMAGE }}
