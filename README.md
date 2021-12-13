@@ -22,14 +22,12 @@ We use a modified [Gitflow](http://nvie.com/posts/a-successful-git-branching-mod
 1.  Create a branch off of `develop`
 1.  Create a PR back into `develop`
 1.  Once approved and merged, test those changes on [qa.languageforge.org](https://qa.languageforge.org)
-1.  Once you are satisifed with the changes, open another PR back into `master`
-1.  Once approved and merged, coordinate with the team to deliver those changes to the production environment
+1.  Once you are satisifed with the changes, coordinate with the team to deliver those changes to the production environment
 1.  Team leads will determine when the right time to cut a release, i.e., tag and deploy, typically this should be within a day or two
 
 ### Exception ###
 1.  There may be times when it's necessary to create a branch off of `master` (e.g. a hotfix for the production environment)
-1.  A PR should be created to `master`
-1.  Once approved and merged, coordinate with the team to deliver those changes to the production environment
+1.  Coordinate with the team to deliver those changes to the production environment
 1.  Team leads will determine when the right time to cut a release, i.e., tag and deploy, this would likely be right away under these exceptional circumstances
 
 ### Deployed Sites ###
