@@ -10,9 +10,6 @@ jobs:
   full-ci-cd:
     runs-on: ubuntu-latest
 
-    env:
-      IMAGE: sillsdev/web-languageforge
-
     steps:
       -
         uses: actions/checkout@v2
@@ -29,8 +26,12 @@ jobs:
       #   working-directory: ./docker/
       #   run: make e2e-tests
       -
+        name: Establish image name
+        id: image-name
+        run: echo ::set-output name=IMAGE::sillsdev/web-languageforge:develop-$(date +%Y%m%d)-${{ github.sha }}
+      -
         name: Tag images
-        run: docker tag lf-app ${{ env.IMAGE }}:develop-$(date +%Y%m%d)-${{ github.sha }}
+        run: docker tag lf-app ${{ steps.image-name.outputs.IMAGE }}
       -
         name: Log in to Docker Hub
         uses: docker/login-action@v1
@@ -39,4 +40,4 @@ jobs:
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
       -
         name: Publish image
-        run: docker push ${{ env.IMAGE }}
+        run: docker push ${{ steps.image-name.outputs.IMAGE }}
