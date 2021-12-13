@@ -223,6 +223,7 @@ services:
     environment:
       - WAIT_HOSTS=db:27017, mail:25
       - ENVIRONMENT=development
+      - WEBSITE=localhost.languageforge.org
       - DATABASE=scriptureforge_test
       - MONGODB_CONN=mongodb://db:27017
       - MAIL_HOST=mail
