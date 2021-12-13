@@ -27,7 +27,9 @@ init-secrets:
 create-new-deployment-mail:
 	kubectl create deployment mail --image=juanluisbaptiste/postfix:1.0.0 --dry-run=client -o yaml > mail-deployment-new.yaml
 
-deploy-staging: deploy-db deploy-mail-staging deploy-app-staging
+# deploy-staging: deploy-db deploy-mail-staging deploy-app-staging
+deploy-staging:
+	echo VERSION=$(VERSION)
 deploy-mail-staging:
 	sed -e s/{{SERVER_HOSTNAME}}/qa.languageforge.org/ mail-deployment.yaml | kubectl apply -f -
 deploy-app-staging:
