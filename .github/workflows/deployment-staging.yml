@@ -67,4 +67,4 @@ jobs:
       -
         name: Deploy to staging
 
-        run: ${{ secrets.LTOPS_K8S_STAGING_CONTEXT }} echo ${{ needs.build.outputs.IMAGE }}
+        run: echo ${{ secrets.LTOPS_K8S_STAGING_CONTEXT }} ${{ needs.build.outputs.IMAGE }}
