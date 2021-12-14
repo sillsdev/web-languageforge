@@ -168,7 +168,7 @@ After a minute or two, your source or test changes should be applied and you sho
 
 ### Building for deployment
 
-1. Refer to `/.github/workflows/build-and-deploy-images.yml` for build commands.
+1. Refer to `/.github/workflows/build-and-deploy-images.yml` for production build commands and `/.github/workflows/deployment-staging.yml` for staging build commands.
 
 ### Visual Studio Code ###
 
@@ -244,8 +244,7 @@ Staging deployments can be run with `VERSION=<some-docker-tag-or-semver> make de
 
 Current workflow:
 1. merge commits into or make commits on `develop` branch
-1. this will kick off the GHA (`.github/workflows/build-and-deploy-images.yml`) to build and publish the necessary images to Docker Hub (https://hub.docker.com/r/sillsdev/web-languageforge/tags)
-1. then the deployment scripts can be run either manually or via the TeamCity deploy job
+1. this will kick off the GHA (`.github/workflows/deployment-staging.yml`) to build, publish the necessary images to Docker Hub (https://hub.docker.com/r/sillsdev/web-languageforge/tags) and deploy to the staging environment.
 
 ### Production ###
 Production deployments can be run with `VERSION=<some-docker-tag-or-semver> make deploy-prod`.
