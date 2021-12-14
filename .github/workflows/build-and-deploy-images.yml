@@ -5,8 +5,6 @@ on:
   push:
     tags:
       - "v*"
-    branches:
-      - develop
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -16,14 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Set BUILD_VERSION for Staging
-        if: github.ref == 'refs/heads/develop'
-        run: |-
-          echo "BUILD_VERSION=develop-$(date +%Y%m%d)-$GITHUB_SHA" >> "$GITHUB_ENV"
-          echo "BUILD_VERSION_LATEST=develop" >> "$GITHUB_ENV"
-
       - name: Set BUILD_VERSION for Production from git tag
-        if: startsWith(github.ref, 'refs/tags/v')
         # define BUILD_VERSION as stripping off initial 11 characters, i.e. "refs/tags/v"
         run: |-
           echo "BUILD_VERSION=$(echo ${GITHUB_REF:11})" >> "$GITHUB_ENV"

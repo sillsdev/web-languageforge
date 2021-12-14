@@ -24,14 +24,7 @@ endif
 .PHONY: unit-tests
 unit-tests: build
 	docker-compose build test-php
-ifeq ("$(TEAMCITY_VERSION)",$())
-	# developer machine
 	docker-compose run test-php
-else
-	# teamcity CI
-	docker-compose run -e WEBSITE=languageforge.org --name unittests test-php
-	docker cp unittests:/var/www/PhpUnitTests.xml ..
-endif
 
 .PHONY: build
 build:
