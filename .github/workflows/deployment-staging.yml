@@ -4,8 +4,7 @@ name: Deploy to staging
 on:
   push:
     branches:
-      - chore/refactor-actions
-      # TODO: - develop
+      - develop
 
 jobs:
   build:
