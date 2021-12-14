@@ -47,10 +47,6 @@ jobs:
       -
         name: Publish image
         run: docker push ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG }}
-      -
-        name: Deploy to staging
-        working-directory: ./docker/deployment/
-        run: VERSION=${{ steps.image.outputs.TAG }} make deploy-staging
 
   deploy:
     runs-on: [self-hosted, languageforge]
