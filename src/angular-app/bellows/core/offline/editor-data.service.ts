@@ -458,12 +458,12 @@ export class EditorDataService {
     // https://unicode.org/reports/tr44/#Diacritic
     // https://stackoverflow.com/a/37511463/10818013
 
-    return input.normalize('NFD').replace(/\p{Diacritic}/gu, '')
+    return input.normalize('NFD').replace(/\p{Diacritic}/gu, '').normalize('NFC');
   }
 
   private entryMeetsFilterCriteria(config: any, entry: LexEntry): boolean {
     if (this.entryListModifiers.filterText() !== '') {
-      const rawQuery = this.entryListModifiers.filterText()
+      const rawQuery = this.entryListModifiers.filterText().normalize('NFC');
       const normalizedQuery = this.entryListModifiers.matchDiacritic ? rawQuery : this.removeDiacritics(rawQuery);
       const regexSafeQuery = this.escapeRegex(normalizedQuery);
       const queryRegex = new RegExp(this.entryListModifiers.wholeWord ? `\\b${regexSafeQuery}\\b` : regexSafeQuery, 'i');
