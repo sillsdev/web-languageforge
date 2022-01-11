@@ -457,7 +457,7 @@ export class EditorDataService {
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions/Unicode_Property_Escapes
     // https://unicode.org/reports/tr44/#Diacritic
     // https://stackoverflow.com/a/37511463/10818013
-
+// Convert to NFD in order to remove any code points with the property 'Diacritic', then convert back to NFC for comparison
     return input.normalize('NFD').replace(/\p{Diacritic}/gu, '').normalize('NFC');
   }
 
