@@ -17,6 +17,7 @@ export class LexiconEditorDataService {
   removeEntryFromLists = this.editorDataService.removeEntryFromLists;
   addEntryToEntryList = this.editorDataService.addEntryToEntryList;
   getIndexInList = this.editorDataService.getIndexInList;
+  getIdInFilteredList = this.editorDataService.getIdInFilteredList;
   showInitialEntries = this.editorDataService.showInitialEntries;
   showMoreEntries = this.editorDataService.showMoreEntries;
   sortEntries = this.editorDataService.sortEntries;

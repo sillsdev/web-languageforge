@@ -6,11 +6,11 @@ import {LexEntry} from '../../shared/model/lex-entry.model';
 import {LexSense} from '../../shared/model/lex-sense.model';
 import {LexConfigFieldList} from '../../shared/model/lexicon-config.model';
 import {FieldControl} from './field-control.model';
-
 export class FieldEntryController implements angular.IController {
   model: LexEntry;
   config: LexConfigFieldList;
   control: FieldControl;
+  entryIndex: number;
 
   contextGuid: string = '';
   fieldName: string = 'entry';
@@ -83,7 +83,8 @@ export const FieldEntryComponent: angular.IComponentOptions = {
   bindings: {
     model: '=',
     config: '<',
-    control: '<'
+    control: '<',
+    entryIndex: '<'
   },
   controller: FieldEntryController,
   templateUrl: '/angular-app/languageforge/lexicon/editor/field/dc-entry.component.html'

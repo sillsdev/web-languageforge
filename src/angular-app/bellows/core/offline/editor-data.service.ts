@@ -269,6 +269,17 @@ export class EditorDataService {
     return index;
   }
 
+  // find entry id from index number, used to goto and display  editor record 
+  getIdInFilteredList = (index: number): string => {
+    let list = this.filteredEntries;
+    let id: string;
+    if(index > 0 && index <= list.length){
+      let entry = list[index-1];
+      id = entry.id;
+    }
+    return id;
+  }
+
   sortEntries = (shouldResetVisibleEntriesList: boolean): angular.IPromise<any> => {
     const startTime = performance.now();
     return this.configService.getEditorConfig().then(config => {
