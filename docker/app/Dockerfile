@@ -38,43 +38,10 @@ FROM ${ENVIRONMENT}-ui-builder AS ui-builder
 # artifacts built to /data/src/dist
 RUN npm run build:${NPM_BUILD_SUFFIX}
 
-# APP-BASE
-FROM sillsdev/web-languageforge:base-php AS base-app
-
-# install and configure LFMerge
-# LFMerge required apt packages
-# python - required by Mercurial (written in Python), which is bundled in the LFMerge apt package
-# lfmerge - main package, from SIL sources
-# rsyslog - lfmerge logs to rsyslog and expects this to exist
-# logrotate - TODO: is this required?
-# iputils-ping - Chorus (part of LFMerge) requires the "ping" command to be available on the command line
-RUN curl -L http://linux.lsdev.sil.org/downloads/sil-testing.gpg | apt-key add - \
-&& echo "deb http://linux.lsdev.sil.org/ubuntu bionic main" > /etc/apt/sources.list.d/linux-lsdev-sil-org.list \
-&& apt-get update \
-&& apt-get install --yes --no-install-recommends python lfmerge rsyslog logrotate iputils-ping \
-&& rm -rf /var/lib/apt/lists/*
-COPY docker/app/lfmerge.conf /etc/languageforge/conf/sendreceive.conf
-COPY docker/app/lfmergeqm-background.sh /
-RUN adduser www-data fieldworks \
-&& chown -R www-data:www-data /var/lib/languageforge \
-&& chmod 0755 /var/lib/languageforge \
-&& mkdir -m 02775 -p /var/www/.local \
-&& chown www-data:www-data /var/www/.local
-
-# rsyslog customizations (imklog reads kernel messages, which isn't allowed or desired in Docker containers)
-RUN sed -i '/load="imklog"/s/^/#/' /etc/rsyslog.conf
-
-# php customizations
-COPY docker/app/customizations.php.ini $PHP_INI_DIR/conf.d/
-
-# apache2 customizations
-RUN a2enmod headers rewrite
-COPY docker/app/000-default.conf /etc/apache2/sites-enabled
-
 # COMPOSER-BUILDER
 # download composer app dependencies
 # git - needed for composer install
-FROM base-app AS composer-builder
+FROM sillsdev/web-languageforge:base-php AS composer-builder
 WORKDIR /composer
 COPY src/composer.json src/composer.lock /composer/
 ENV COMPOSER_ALLOW_SUPERUSER=1
@@ -82,13 +49,13 @@ RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/* \
     && install-php-extensions @composer && composer install
 
 # PRODUCTION IMAGE
-FROM base-app AS production-app
+FROM sillsdev/web-languageforge:base-php AS production-app
 RUN rm /usr/local/bin/install-php-extensions
 RUN apt-get remove -y gnupg2
 RUN mv $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini
 
 # DEVELOPMENT IMAGE
-FROM base-app AS development-app
+FROM sillsdev/web-languageforge:base-php AS development-app
 RUN install-php-extensions xdebug
 COPY docker/app/docker-php-ext-xdebug.ini /usr/local/etc/php/conf.d
 RUN mv $PHP_INI_DIR/php.ini-development $PHP_INI_DIR/php.ini
