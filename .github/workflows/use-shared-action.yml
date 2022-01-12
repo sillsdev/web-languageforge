@@ -11,6 +11,8 @@ jobs:
 
     steps:
       -
+        uses: actions/checkout@v2
+      -
         uses: sillsdev/common-github-actions/actions/kubectl@1.0.0
         with:
           args: --context ${{ secrets.LTOPS_K8S_STAGING_CONTEXT }} get pods #set image deployment/app app=${{ needs.build.outputs.IMAGE }}
