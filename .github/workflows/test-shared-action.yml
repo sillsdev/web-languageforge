@@ -1,0 +1,16 @@
+name: Testing the use of a shared action
+
+on:
+  push:
+    branches:
+      - 'chore/test-shared-action'
+
+jobs:
+  test-run:
+    runs-on: [self-hosted, languageforge]
+
+    steps:
+      -
+        uses: sillsdev/common-github-actions/install-kubectl@main
+      -
+        run: kubectl --context ${{ secrets.LTOPS_K8S_STAGING_CONTEXT }} get pods #set image deployment/app app=${{ needs.build.outputs.IMAGE }}
