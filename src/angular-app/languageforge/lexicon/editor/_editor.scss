@@ -827,3 +827,20 @@ dc-entry .card {
 form.submitted .ng-invalid {
     border: 1px solid #f00;
 }
+
+// remove up/down arrows for goto Entry
+.gotoEntry {
+  width: 60px;
+  &::-webkit-inner-spin-button{ display: none; }
+  -moz-appearance:textfield;
+}
+
+.gotoEntry.ng-invalid {
+  border: 3px solid #f00;
+}
+
+.gotoEntry:focus.ng-invalid {
+  background-color: #fff;
+  outline: none;
+  border: 3px solid #f00;
+}

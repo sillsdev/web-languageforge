@@ -49,6 +49,11 @@ export class LexiconEditorController implements angular.IController {
 
   lastSavedDate = new Date();
   currentEntry: LexEntry = new LexEntry();
+
+  currentIndex = {
+    index: -1
+  }
+
   commentContext = {
     contextGuid: ''
   };
@@ -467,6 +472,20 @@ export class LexiconEditorController implements angular.IController {
     }
 
     this.goToEntry(id);
+  }
+
+  gotoToEntry(index: number, isValid: boolean) {
+    if (isValid) {
+      let id = this.editorService.getIdInFilteredList(Number(index));
+      this.editEntryAndScroll(id);
+    }
+  }
+
+  entryIndex(): number {
+    let id = this.currentEntry.id;
+    let index = this.editorService.getIndexInList(id, this.entries)
+    this.currentIndex.index = index + 1;
+    return this.currentIndex.index;
   }
 
   canSkipToEntry(distance: number): boolean {
