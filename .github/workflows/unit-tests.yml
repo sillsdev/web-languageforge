@@ -18,8 +18,10 @@ jobs:
       - uses: satackey/action-docker-layer-caching@v0.0.11
 
       - name: Run Unit Tests
-        working-directory: ./docker/
-        run: make unit-tests
+        run: make unit-tests-ci
+
+      - name: echo working directory contents
+        run: ls -l
 
       - name: Publish Test Results
         uses: docker://ghcr.io/enricomi/publish-unit-test-result-action:v1
