@@ -22,7 +22,7 @@ else
 endif
 
 .PHONY: unit-tests
-unit-tests: build
+unit-tests:
 	docker-compose build test-php
 	docker-compose run test-php
 
