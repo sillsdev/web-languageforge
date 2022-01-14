@@ -28,42 +28,40 @@ exports.config = {
 
     browser.driver.manage().window().maximize();
 
+    var jasmineReporters = require('jasmine-reporters');
     if (process.env.GITHUB_ACTIONS) {
       // https://github.com/angular/protractor-cookbook/tree/master/jasmine-junit-reports
-      var jasmineReporters = require('jasmine-reporters');
       var junitReporter = new jasmineReporters.JUnitXmlReporter({
         savePath: 'e2e-output/',
         consolidateAll: true
 
-        // results written to file: output/junitresults.xml
+        // results written to file: e2e-output/junitresults.xml
 
       });
       jasmine.getEnv().addReporter(junitReporter);
-    } else {
-      var SpecReporter = require('jasmine-spec-reporter').SpecReporter;
-      jasmine.getEnv().addReporter(new SpecReporter({
-        spec: {
-          displayStacktrace: true
-        }
-      }));
-      /*
-      jasmine.getEnv().addReporter(new jasmineReporters.TerminalReporter({
-        verbosity: browser.params.verbosity, // [0 to 3, jasmine default 2]
-        color: true,
-        showStack: true
-      }));
-      */
-      var pauseOnFailure = {
-        specDone: function (spec) {
-          if (spec.status === 'failed') {
-            debugger;
-          }
-        }
-      };
-
-      // Uncomment to pause tests on first failure
-      // jasmine.getEnv().addReporter(pauseOnFailure);
     }
+    jasmine.getEnv().addReporter(new jasmineReporters.SpecReporter({
+      spec: {
+        displayStacktrace: true
+      }
+    }));
+    /*
+    jasmine.getEnv().addReporter(new jasmineReporters.TerminalReporter({
+      verbosity: browser.params.verbosity, // [0 to 3, jasmine default 2]
+      color: true,
+      showStack: true
+    }));
+    var pauseOnFailure = {
+      specDone: function (spec) {
+        if (spec.status === 'failed') {
+          debugger;
+        }
+      }
+    };
+
+    */
+    // Uncomment to pause tests on first failure
+    // jasmine.getEnv().addReporter(pauseOnFailure);
   },
   plugins: [failFast.init()],
   afterLaunch: function () {
