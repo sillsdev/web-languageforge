@@ -4,10 +4,6 @@ name: Run Unit Tests
 on:
   pull_request:
 
-  push:
-    branches:
-      - develop
-
 defaults:
   run:
     shell: bash
