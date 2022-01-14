@@ -40,7 +40,8 @@ exports.config = {
       });
       jasmine.getEnv().addReporter(junitReporter);
     }
-    jasmine.getEnv().addReporter(new jasmineReporters.SpecReporter({
+    var SpecReporter = require('jasmine-spec-reporter').SpecReporter;
+    jasmine.getEnv().addReporter(new SpecReporter({
       spec: {
         displayStacktrace: true
       }

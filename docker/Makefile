@@ -18,8 +18,9 @@ e2e-tests: build
 .PHONY: e2e-tests-ci
 e2e-tests-ci: build
 	docker-compose build app-for-e2e test-e2e
-	docker-compose run -e GITHUB_ACTIONS=1 --name e2etests test-e2e
-	docker cp e2etests:/var/www/test/app/e2e-output/junitresults.xml e2e-results.xml
+    # "-" means continue running commands even if they error (failed tests)
+	-docker-compose run -e GITHUB_ACTIONS=1 --name e2etests test-e2e
+	docker cp e2etests:/data/e2e-output/junitresults.xml e2e-results.xml
 	docker rm e2etests
 
 .PHONY: unit-tests
