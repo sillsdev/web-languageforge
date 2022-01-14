@@ -12,25 +12,25 @@ dev: start
 .PHONY: e2e-tests
 e2e-tests: build
 	docker-compose build app-for-e2e test-e2e
-ifeq ($(TEAMCITY_VERSION),$())
-	# developer machine
 	docker-compose restart app-for-e2e || docker-compose up -d app-for-e2e
 	docker-compose run -e TEST_SPECS=$(TEST_SPECS) test-e2e
-else
-	# teamcity CI
-	docker-compose run -e TEAMCITY_VERSION=TEAMCITY_VERSION test-e2e
-endif
+
+.PHONY: e2e-tests-ci
+e2e-tests-ci: build
+	docker-compose build app-for-e2e test-e2e
+	docker-compose run -e GITHUB_ACTIONS=1 --name e2etests test-e2e
+	docker cp e2etests:/var/www/test/app/e2e-output/junitresults.xml e2e-results.xml
+	docker rm e2etests
 
 .PHONY: unit-tests
 unit-tests:
-	docker-compose build test-php
 	docker-compose run test-php
 
 .PHONY: unit-tests-ci
 unit-tests-ci:
-	docker-compose build test-php
 	docker-compose run --name unittests test-php
 	docker cp unittests:/var/www/PhpUnitTests.xml .
+	docker rm unittests
 
 .PHONY: build
 build:
