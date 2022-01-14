@@ -1,4 +1,4 @@
-name: Run Unit Tests
+name: Tests
 
 # https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#on
 on:
@@ -8,6 +8,9 @@ defaults:
   run:
     shell: bash
     working-directory: docker
+
+env:
+  DOCKER_BUILDKIT: 1
 
 jobs:
   unit-tests:
@@ -29,3 +32,20 @@ jobs:
         with:
           github_token: ${{ github.token }}
           files: docker/PhpUnitTests.xml
+
+  e2e-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: satackey/action-docker-layer-caching@v0.0.11
+
+      - name: Run E2E Tests
+        run: make e2e-tests
+
+      - name: Publish Test Results
+        uses: docker://ghcr.io/enricomi/publish-unit-test-result-action:v1
+        if: always()
+        with:
+          github_token: ${{ github.token }}
+          files: docker/e2e-output/junitresults.xml
