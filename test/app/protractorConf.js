@@ -28,9 +28,17 @@ exports.config = {
 
     browser.driver.manage().window().maximize();
 
-    if (process.env.TEAMCITY_VERSION) {
+    if (process.env.GITHUB_ACTIONS) {
+      // https://github.com/angular/protractor-cookbook/tree/master/jasmine-junit-reports
       var jasmineReporters = require('jasmine-reporters');
-      jasmine.getEnv().addReporter(new jasmineReporters.TeamCityReporter());
+      var junitReporter = new jasmineReporters.JUnitXmlReporter({
+        savePath: 'e2e-output/',
+        consolidateAll: true
+
+        // results written to file: output/junitresults.xml
+
+      });
+      jasmine.getEnv().addReporter(junitReporter);
     } else {
       var SpecReporter = require('jasmine-spec-reporter').SpecReporter;
       jasmine.getEnv().addReporter(new SpecReporter({

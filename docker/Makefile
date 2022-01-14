@@ -27,7 +27,7 @@ unit-tests:
 	docker-compose run test-php
 
 .PHONY: unit-tests-ci
-unit-tests-ci: build
+unit-tests-ci:
 	docker-compose build test-php
 	docker-compose run --name unittests test-php
 	docker cp unittests:/var/www/PhpUnitTests.xml .
