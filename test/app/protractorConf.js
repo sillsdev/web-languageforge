@@ -1,3 +1,4 @@
+var failFast = require('protractor-fail-fast');
 var specString = '*';
 var specs = [
   "/data/test/app/allspecs/**/*.e2e-spec.js",
@@ -55,6 +56,10 @@ exports.config = {
       // Uncomment to pause tests on first failure
       // jasmine.getEnv().addReporter(pauseOnFailure);
     }
+  },
+  plugins: [failFast.init()],
+  afterLaunch: function () {
+    failFast.clean(); // Removes the fail file once all test runners have completed.
   }
 };
 

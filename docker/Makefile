@@ -26,6 +26,12 @@ unit-tests:
 	docker-compose build test-php
 	docker-compose run test-php
 
+.PHONY: unit-tests-ci
+unit-tests-ci: build
+	docker-compose build test-php
+	docker-compose run --name unittests test-php
+	docker cp unittests:/var/www/PhpUnitTests.xml .
+
 .PHONY: build
 build:
 	docker-compose build mail app ld-api
