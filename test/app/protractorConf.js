@@ -46,12 +46,9 @@ exports.config = {
         displayStacktrace: true
       }
     }));
+
+    // Uncomment to pause tests on first failure
     /*
-    jasmine.getEnv().addReporter(new jasmineReporters.TerminalReporter({
-      verbosity: browser.params.verbosity, // [0 to 3, jasmine default 2]
-      color: true,
-      showStack: true
-    }));
     var pauseOnFailure = {
       specDone: function (spec) {
         if (spec.status === 'failed') {
@@ -59,10 +56,8 @@ exports.config = {
         }
       }
     };
-
+    jasmine.getEnv().addReporter(pauseOnFailure);
     */
-    // Uncomment to pause tests on first failure
-    // jasmine.getEnv().addReporter(pauseOnFailure);
   },
   plugins: [failFast.init()],
   afterLaunch: function () {
