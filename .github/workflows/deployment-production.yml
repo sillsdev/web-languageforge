@@ -23,7 +23,7 @@ jobs:
         id: image
         run: |
           echo ::set-output name=NAMESPACE::sillsdev/web-languageforge
-          echo ::set-output name=TAG::${{ github.ref }}
+          echo ::set-output name=TAG::$(echo ${{ github.ref }} | sed 's/refs\/tags\///')
       -
         name: Build app
         working-directory: ./docker/
