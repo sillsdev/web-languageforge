@@ -8,9 +8,15 @@ on:
       # TODO: temp for development, remove when ready to deploy to production, should be triggering off of 'v*'.
       - 'billy*'
 
+# TODO: should set buildkit
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    env:
+      # https://docs.docker.com/develop/develop-images/build_enhancements/
+      DOCKER_BUILDKIT: 1
+
     defaults:
       run:
         working-directory: docker
@@ -36,14 +42,12 @@ jobs:
         run: docker-compose build --build-arg ENVIRONMENT=production --build-arg BUILD_VERSION=${{ steps.image.outputs.TAG }} app
       -
         run:  docker-compose run --rm app cat /var/www/html/build-version.txt /var/www/html/version.php
-      # -
-      #   name: Check unit tests
-      #   working-directory: ./docker/
-      #   run: make unit-tests
-      # -
-      #   name: Check e2e tests
-      #   working-directory: ./docker/
-      #   run: make e2e-tests
+      -
+        name: Check unit tests
+        run: make unit-tests-ci
+      -
+        name: Check e2e tests
+        run: make e2e-tests
       -
         name: Log in to Docker Hub
         uses: docker/login-action@v1
@@ -57,14 +61,14 @@ jobs:
         name: Publish image
         run: docker push ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG }}
 
-  # deploy:
-  #   runs-on: [self-hosted, languageforge]
+  deploy:
+    runs-on: [self-hosted, languageforge]
 
-  #   needs: build
+    needs: build
 
-  #   steps:
-  #     -
-  #       uses: sillsdev/common-github-actions/install-kubectl@v1
-  #     -
-  #       # TODO: this needs to be changed to LTOPS_K8S_PRODUCTION_CONTEXT (and possibly parameterized so there's only one deploy workflow...)
-  #       run: kubectl --context ${{ secrets.LTOPS_K8S_STAGING_CONTEXT }} set image deployment/app app=${{ needs.build.outputs.IMAGE }}
+    steps:
+      -
+        uses: sillsdev/common-github-actions/install-kubectl@v1
+      -
+        # TODO: this needs to be changed to LTOPS_K8S_PRODUCTION_CONTEXT (and possibly parameterized so there's only one deploy workflow...)
+        run: kubectl --context ${{ secrets.LTOPS_K8S_STAGING_CONTEXT }} set image deployment/app app=${{ needs.build.outputs.IMAGE }}
