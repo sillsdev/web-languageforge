@@ -27,12 +27,11 @@ jobs:
       -
         name: Build app
         working-directory: ./docker/
-        # TODO: send in the build arg for cache-busting
-        run: echo BUILD_VERSION=${{ steps.image.outputs.TAG }} # TODO: bring back in after testing: docker-compose build --build-arg BUILD_VERSION=TODO app
+        run: docker-compose build --build-arg ENVIRONMENT=production --build-arg BUILD_VERSION=${{ steps.image.outputs.TAG }} app
       -
         name: Check unit tests
         working-directory: ./docker/
-        run: echo run unit tests # TODO: bring back in after testing: make unit-tests
+        run: docker run --rm lf-app cat /var/www/html/build-version.txt # TODO: bring back in after testing: make unit-tests
       # -
       #   name: Check e2e tests
       #   working-directory: ./docker/
