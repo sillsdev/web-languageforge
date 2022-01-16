@@ -31,7 +31,7 @@ jobs:
       -
         name: Check unit tests
         working-directory: ./docker/
-        run: docker run --rm lf-app cat /var/www/html/build-version.txt # TODO: bring back in after testing: make unit-tests
+        run: make unit-tests
       # -
       #   name: Check e2e tests
       #   working-directory: ./docker/
@@ -44,10 +44,10 @@ jobs:
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
       -
         name: Tag images
-        run: echo ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG }} # TODO: bring back in after testing: docker tag lf-app ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG }}
+        run: docker tag lf-app ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG }}
       -
         name: Publish image
-        run: echo ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG }} # TODO: bring back in after testing: docker push ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG }}
+        run: docker push ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG }}
 
   deploy:
     runs-on: [self-hosted, languageforge]
@@ -55,8 +55,8 @@ jobs:
     needs: build
 
     steps:
-      # -
-        # TODO: bring back in after testing: uses: sillsdev/common-github-actions/install-kubectl@v1
       -
-        # TODO: this needs to be changed to production context (and possibly parameterized so there's only one deploy workflow...)
-        run: echo ${{ secrets.LTOPS_K8S_STAGING_CONTEXT }}:${{ needs.build.outputs.IMAGE }} # TODO: bring back in after testing: kubectl --context ${{ secrets.LTOPS_K8S_STAGING_CONTEXT }} set image deployment/app app=${{ needs.build.outputs.IMAGE }}
+        uses: sillsdev/common-github-actions/install-kubectl@v1
+      -
+        # TODO: this needs to be changed to LTOPS_K8S_PRODUCTION_CONTEXT (and possibly parameterized so there's only one deploy workflow...)
+        run: kubectl --context ${{ secrets.LTOPS_K8S_STAGING_CONTEXT }} set image deployment/app app=${{ needs.build.outputs.IMAGE }}
