@@ -56,7 +56,7 @@ jobs:
     needs: build
 
     steps:
-      -
+      # -
         # TODO: bring back in after testing: uses: sillsdev/common-github-actions/install-kubectl@v1
       -
         # TODO: this needs to be changed to production context (and possibly parameterized so there's only one deploy workflow...)
