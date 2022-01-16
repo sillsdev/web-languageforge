@@ -21,9 +21,6 @@ jobs:
       run:
         working-directory: docker
 
-    outputs:
-      IMAGE: ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG }}
-
     steps:
       -
         uses: actions/checkout@v2
@@ -60,6 +57,9 @@ jobs:
       -
         name: Publish image
         run: docker push ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG }}
+
+    outputs:
+      IMAGE: ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG }}
 
   deploy:
     runs-on: [self-hosted, languageforge]
