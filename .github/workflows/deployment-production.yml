@@ -13,7 +13,6 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        # shell: bash
         working-directory: docker
 
     outputs:
@@ -45,18 +44,18 @@ jobs:
       #   name: Check e2e tests
       #   working-directory: ./docker/
       #   run: make e2e-tests
-      # -
-      #   name: Log in to Docker Hub
-      #   uses: docker/login-action@v1
-      #   with:
-      #     username: ${{ secrets.DOCKERHUB_USERNAME }}
-      #     password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
-      # -
-      #   name: Tag images
-      #   run: docker tag lf-app ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG }}
-      # -
-      #   name: Publish image
-      #   run: docker push ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG }}
+      -
+        name: Log in to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+      -
+        name: Tag images
+        run: docker tag lf-app ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG }}
+      -
+        name: Publish image
+        run: docker push ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG }}
 
   # deploy:
   #   runs-on: [self-hosted, languageforge]
