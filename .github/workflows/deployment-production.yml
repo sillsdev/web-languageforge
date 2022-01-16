@@ -21,8 +21,8 @@ jobs:
       -
         name: Build app
         working-directory: ./docker/
-        # TODO: send in the build arg for cache-busting, remove ENVIRONMENT if the Dockerfile builds that way by default (just ensure it's development in the docker-compose file)
-        run: echo build # TODO: bring back in after testing: docker-compose build --build-arg ENVIRONMENT=production app
+        # TODO: send in the build arg for cache-busting
+        run: echo build # TODO: bring back in after testing: docker-compose build --build-arg BUILD_VERSION=TODO app
       -
         name: Check unit tests
         working-directory: ./docker/
