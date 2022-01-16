@@ -4,9 +4,9 @@ name: Deploy to production
 # https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#on
 on:
   push:
-    branches:
-      # TODO: temp for development, remove when ready to deploy to production, should be triggering off of a tag.
-      - 'chore/issue-1279-implement-cd-for-prod'
+    tags:
+      # TODO: temp for development, remove when ready to deploy to production, should be triggering off of 'v*'.
+      - 'billy*'
 
 jobs:
   build:
@@ -19,10 +19,16 @@ jobs:
       -
         uses: actions/checkout@v2
       -
+        name: Establish image name
+        id: image
+        run: |
+          echo ::set-output name=NAMESPACE::sillsdev/web-languageforge
+          echo ::set-output name=TAG::${{ github.ref }}
+      -
         name: Build app
         working-directory: ./docker/
         # TODO: send in the build arg for cache-busting
-        run: echo build # TODO: bring back in after testing: docker-compose build --build-arg BUILD_VERSION=TODO app
+        run: echo BUILD_VERSION=${{ steps.image.outputs.TAG }} # TODO: bring back in after testing: docker-compose build --build-arg BUILD_VERSION=TODO app
       -
         name: Check unit tests
         working-directory: ./docker/
@@ -37,13 +43,6 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
-      -
-        # TODO: this needs to move above build line since some of it is needed for the build, it also needs to be changed to use the tag.
-        name: Establish image name
-        id: image
-        run: |
-          echo ::set-output name=NAMESPACE::sillsdev/web-languageforge
-          echo ::set-output name=TAG::develop-$(date +%Y%m%d)-${{ github.sha }}
       -
         name: Tag images
         run: echo ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG }} # TODO: bring back in after testing: docker tag lf-app ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG }}
