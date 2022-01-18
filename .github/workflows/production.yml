@@ -4,19 +4,16 @@ name: Deploy to staging
 on:
   push:
     tags:
-      #TODO: revert after testing - v*
-      - billy*
+      - v*
 
 jobs:
   staging:
       # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#jobsjob_iduses
-      # TODO: update the branch appropriately
-      uses: sillsdev/web-languageforge/.github/workflows/integrate-and-deploy.yml@chore/issue-1279-implement-cd-for-prod
+      uses: sillsdev/web-languageforge/.github/workflows/integrate-and-deploy.yml@master
       with:
         image-tag: $(echo ${{ github.ref }} | sed 's/refs\/tags\///')
       # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idsecrets
       secrets:
-        # TODO: this needs to be changed to LTOPS_K8S_PRODUCTION_CONTEXT
-        kube-context: ${{ secrets.LTOPS_K8S_STAGING_CONTEXT }}
+        kube-context: ${{ secrets.LTOPS_K8S_PRODUCTION_CONTEXT }}
         image-repo-username: ${{ secrets.DOCKERHUB_USERNAME }}
         image-repo-password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
