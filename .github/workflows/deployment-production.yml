@@ -8,7 +8,6 @@ on:
       # TODO: temp for development, remove when ready to deploy to production, should be triggering off of 'v*'.
       - 'billy*'
 
-# TODO: should set buildkit
 jobs:
   build:
     runs-on: ubuntu-latest
