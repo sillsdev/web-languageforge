@@ -63,8 +63,7 @@ RUN mv $PHP_INI_DIR/php.ini-development $PHP_INI_DIR/php.ini
 COPY --from=sillsdev/web-languageforge:wait-latest /wait /wait
 
 FROM ${ENVIRONMENT}-app AS languageforge-app
-ARG BUILD_VERSION=9.9.9
-ENV BUILD_VERSION=${BUILD_VERSION}
+ARG BUILD_VERSION=${BUILD_VERSION:-'9.9.9'}
 
 # copy app into image
 COPY src /var/www/html/
