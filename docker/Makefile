@@ -10,13 +10,13 @@ dev: start
 	docker-compose up -d ui-builder
 
 .PHONY: e2e-tests
-e2e-tests: build
+e2e-tests:
 	docker-compose build app-for-e2e test-e2e
 	docker-compose restart app-for-e2e || docker-compose up -d app-for-e2e
 	docker-compose run -e TEST_SPECS=$(TEST_SPECS) test-e2e
 
 .PHONY: e2e-tests-ci
-e2e-tests-ci: build
+e2e-tests-ci:
 	docker-compose build app-for-e2e test-e2e
     # "-" means continue running commands even if they error (failed tests)
 	-docker-compose run -e GITHUB_ACTIONS=1 --name e2etests test-e2e
