@@ -1,4 +1,3 @@
-# delete the old prod job when done, might need to change this name if we paramterize the workflow
 name: Deploy to production
 
 # https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#on
