@@ -1,4 +1,4 @@
-name: Deploy to staging
+name: Deploy to production
 
 # https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#on
 on:
