@@ -53,11 +53,15 @@ jobs:
       -
         name: Tag images
         # TODO: change final tag to just "latest"
-        run: docker tag lf-app ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG }} ${{ steps.image.outputs.NAMESPACE }}:billyTestlatest
+        run: |
+          docker tag lf-app ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG }}
+          docker tag lf-app ${{ steps.image.outputs.NAMESPACE }}:billyTestlatest
       -
         # TODO: change final tag to just "latest"
         name: Publish image
-        run: docker push ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG }} ${{ steps.image.outputs.NAMESPACE }}:billyTestlatest
+        run: |
+          docker push ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG }}
+          docker push ${{ steps.image.outputs.NAMESPACE }}:billyTestlatest
 
     outputs:
       IMAGE: ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG }}
