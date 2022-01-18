@@ -65,15 +65,6 @@ jobs:
       -
         name: Publish image
         run: docker push ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG }}
-      # -
-      #   name: TODO: Tag "latest" conditionally
-      #   run: docker tag lf-app ${{ steps.image.outputs.NAMESPACE }}:billyTestlatest
-      # -
-      #   # TODO: change final tag to just "latest"
-      #   name: Publish image
-      #   run: |
-      #     docker push ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG }}
-      #     docker push ${{ steps.image.outputs.NAMESPACE }}:billyTestlatest
 
     outputs:
       IMAGE: ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG }}
@@ -87,5 +78,4 @@ jobs:
       -
         uses: sillsdev/common-github-actions/install-kubectl@v1
       -
-        # TODO: this needs to be changed to LTOPS_K8S_PRODUCTION_CONTEXT (and possibly parameterized so there's only one deploy workflow...)
         run: kubectl --context ${{ secrets.kube-context }} set image deployment/app app=${{ needs.integrate.outputs.IMAGE }}
