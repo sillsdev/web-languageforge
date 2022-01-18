@@ -53,6 +53,7 @@ FROM sillsdev/web-languageforge:base-php AS production-app
 RUN rm /usr/local/bin/install-php-extensions
 RUN apt-get remove -y gnupg2
 RUN mv $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini
+COPY --from=sillsdev/web-languageforge:wait-latest /wait /wait
 
 # DEVELOPMENT IMAGE
 FROM sillsdev/web-languageforge:base-php AS development-app
