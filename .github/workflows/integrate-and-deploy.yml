@@ -72,12 +72,12 @@ jobs:
     outputs:
       IMAGE: ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG }}
 
-  deploy:
-    runs-on: [self-hosted, languageforge]
+  # deploy:
+  #   runs-on: [self-hosted, languageforge]
 
-    needs: integrate
+  #   needs: integrate
 
-    steps:
+  #   steps:
       # -
       #   uses: sillsdev/common-github-actions/install-kubectl@v1
       # -
