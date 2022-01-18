@@ -23,9 +23,6 @@ jobs:
         name: Run Unit Tests
         run: make unit-tests-ci
       -
-        name: echo working directory contents
-        run: ls -l
-      -
         name: Publish Test Results
         uses: docker://ghcr.io/enricomi/publish-unit-test-result-action:v1
         if: always()
