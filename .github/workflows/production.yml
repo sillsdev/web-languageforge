@@ -3,7 +3,7 @@ name: Deploy to staging
 # https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#on
 on:
   push:
-    branches:
+    tags:
       #TODO: revert after testing - v*
       - billy*
 
