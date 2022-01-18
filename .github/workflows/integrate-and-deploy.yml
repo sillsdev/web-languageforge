@@ -8,7 +8,7 @@ on:
       image-tag:
         type: string
         required: true
-      environment:
+      kube-context:
         type: string
         required: true
 
@@ -32,36 +32,37 @@ jobs:
           docker --version
           docker-compose --version
       -
-        run: echo ${{ inputs.image-tag }} and ${{ inputs.environment }}
+        name: Establish image name
+        id: image
+        run: |
+          echo ::set-output name=NAMESPACE::sillsdev/web-languageforge
+          echo ::set-output name=TAG::${{ inputs.image-tag }}
+      -
+        name: Build app
+        run: docker-compose build --build-arg ENVIRONMENT=production --build-arg BUILD_VERSION=${{ steps.image.outputs.TAG }} app
+      -
+        run:  docker-compose run --rm app cat /var/www/html/build-version.txt /var/www/html/version.php
+      -
+        name: Check unit tests
+        run: make unit-tests-ci
+      -
+        name: Check e2e tests
+        run: make e2e-tests-ci
+      -
+        name: Log in to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+      -
+        name: Tag image
+        run: docker tag lf-app ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG }}
+      -
+        name: Publish image
+        run: docker push ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG }}
       # -
-      #   name: Establish image name
-      #   id: image
-      #   run: |
-      #     echo ::set-output name=NAMESPACE::sillsdev/web-languageforge
-      #     echo ::set-output name=TAG::$(echo ${{ github.ref }} | sed 's/refs\/tags\///')
-      # -
-      #   name: Build app
-      #   run: docker-compose build --build-arg ENVIRONMENT=production --build-arg BUILD_VERSION=${{ steps.image.outputs.TAG }} app
-      # -
-      #   run:  docker-compose run --rm app cat /var/www/html/build-version.txt /var/www/html/version.php
-      # -
-      #   name: Check unit tests
-      #   run: make unit-tests-ci
-      # -
-      #   name: Check e2e tests
-      #   run: make e2e-tests-ci
-      # -
-      #   name: Log in to Docker Hub
-      #   uses: docker/login-action@v1
-      #   with:
-      #     username: ${{ secrets.DOCKERHUB_USERNAME }}
-      #     password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
-      # -
-      #   name: Tag images
-      #   # TODO: change final tag to just "latest"
-      #   run: |
-      #     docker tag lf-app ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG }}
-      #     docker tag lf-app ${{ steps.image.outputs.NAMESPACE }}:billyTestlatest
+      #   name: TODO: Tag "latest" conditionally
+      #   run: docker tag lf-app ${{ steps.image.outputs.NAMESPACE }}:billyTestlatest
       # -
       #   # TODO: change final tag to just "latest"
       #   name: Publish image
@@ -72,14 +73,16 @@ jobs:
     outputs:
       IMAGE: ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG }}
 
-  # deploy:
-  #   runs-on: [self-hosted, languageforge]
+  deploy:
+    runs-on: [self-hosted, languageforge]
 
-  #   needs: integrate
+    needs: integrate
 
-  #   steps:
+    steps:
+      -
+        run:  echo ${{ inputs.kube-context }} and ${{ needs.integrate.outputs.IMAGE }}
       # -
       #   uses: sillsdev/common-github-actions/install-kubectl@v1
       # -
       #   # TODO: this needs to be changed to LTOPS_K8S_PRODUCTION_CONTEXT (and possibly parameterized so there's only one deploy workflow...)
-      #   run: kubectl --context ${{ secrets.LTOPS_K8S_STAGING_CONTEXT }} set image deployment/app app=${{ needs.build.outputs.IMAGE }}
+      #   run: kubectl --context ${{ secrets.LTOPS_K8S_STAGING_CONTEXT }} set image deployment/app app=${{ needs.integrate.outputs.IMAGE }}
