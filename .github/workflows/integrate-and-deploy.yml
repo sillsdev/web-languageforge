@@ -10,7 +10,6 @@ on:
         required: true
     secrets:
       kube-context:
-        type: string
         required: true
 
 jobs:
