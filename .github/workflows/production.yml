@@ -8,6 +8,9 @@ on:
 
 jobs:
   staging:
+    if: github.event.base_ref == 'refs/heads/master'
+
+    steps:
       # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#jobsjob_iduses
       uses: sillsdev/web-languageforge/.github/workflows/integrate-and-deploy.yml@master
       with:
