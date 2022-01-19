@@ -53,6 +53,7 @@ FROM sillsdev/web-languageforge:base-php AS production-app
 RUN rm /usr/local/bin/install-php-extensions
 RUN apt-get remove -y gnupg2
 RUN mv $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini
+# had to add /wait into prod image so the prod image could be run through E2E tests.
 COPY --from=sillsdev/web-languageforge:wait-latest /wait /wait
 
 # DEVELOPMENT IMAGE
