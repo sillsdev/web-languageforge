@@ -10,13 +10,12 @@ jobs:
   staging:
     if: github.event.base_ref == 'refs/heads/master'
 
-    steps:
-      # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#jobsjob_iduses
-      uses: sillsdev/web-languageforge/.github/workflows/integrate-and-deploy.yml@master
-      with:
-        image-tag: $(echo ${{ github.ref }} | sed 's/refs\/tags\///')
-      # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idsecrets
-      secrets:
-        kube-context: ${{ secrets.LTOPS_K8S_PRODUCTION_CONTEXT }}
-        image-repo-username: ${{ secrets.DOCKERHUB_USERNAME }}
-        image-repo-password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+    # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#jobsjob_iduses
+    uses: sillsdev/web-languageforge/.github/workflows/integrate-and-deploy.yml@master
+    with:
+      image-tag: $(echo ${{ github.ref }} | sed 's/refs\/tags\///')
+    # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idsecrets
+    secrets:
+      kube-context: ${{ secrets.LTOPS_K8S_PRODUCTION_CONTEXT }}
+      image-repo-username: ${{ secrets.DOCKERHUB_USERNAME }}
+      image-repo-password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
