@@ -166,10 +166,6 @@ After a minute or two, your source or test changes should be applied and you sho
 
 1. `make dev` will start the app in development mode, i.e. changes to source code will immediately be reflected in the locally running app.
 
-### Building for deployment
-
-1. Refer to `/.github/workflows/build-and-deploy-images.yml` for production build commands and `/.github/workflows/deployment-staging.yml` for staging build commands.
-
 ### Visual Studio Code ###
 
 Visual Studio Code is a simple, free, cross-platform code editor. You can download VS Code from [here](https://code.visualstudio.com/).
@@ -237,24 +233,26 @@ To debug the tests:
 - To debug in VSCode, select the "Node debugger" debug configuration and run it.
 
 ## Application deployment ##
-Language Forge is built to run in a containerized environment.  For now, Kubernetes is the chosen runtime platform.  Deployments are not currently automated and must be manually run with the appropriate credentials or from within our CD platform, TeamCity at this time.  Deployment scripts for k8s can be found in `docker/deployment`
+Language Forge is built to run in a containerized environment.  For now, Kubernetes is the chosen runtime platform.  Deployments are automated under the right circumstances using GitHub Actions.
 
 ### Staging (QA) ###
-Staging deployments can be run with `VERSION=<some-docker-tag-or-semver> make deploy-staging`.
+Staging deployments can be manually run with `VERSION=<some-docker-tag-or-semver> make deploy-staging`.
 
 Current workflow:
-1. merge commits into or make commits on `develop` branch
-1. this will kick off the GHA (`.github/workflows/deployment-staging.yml`) to build, publish the necessary images to Docker Hub (https://hub.docker.com/r/sillsdev/web-languageforge/tags) and deploy to the staging environment.
+1. merge PR into or make commits on `develop` branch
+1. this will kick off the GHA (`.github/workflows/staging.yml`) to build, test and publish the necessary images to Docker Hub (https://hub.docker.com/r/sillsdev/web-languageforge/tags) and deploy this code to the staging environment at https://qa.languageforge.org
 
 ### Production ###
-Production deployments can be run with `VERSION=<some-docker-tag-or-semver> make deploy-prod`.
+Production deployments can be manually run with `VERSION=<some-docker-tag-or-semver> make deploy-prod`.
 
 Current workflow:
 1. merge from `develop` into `master`
 1. "Draft a new release" on https://github.com/sillsdev/web-languageforge/releases with a `v#.#.#` tag format
 1. "Publish" the new release
-1. this will kick off the GHA (`.github/workflows/build-and-deploy-images.yml`) to build and publish the necessary images to Docker Hub (https://hub.docker.com/r/sillsdev/web-languageforge/tags)
-1. then the deployment scripts can be run either manually or via the TeamCity deploy job
+1. this will kick off the GHA (`.github/workflows/production.yml`) to build, test and publish the necessary images to Docker Hub (https://hub.docker.com/r/sillsdev/web-languageforge/tags) and deploy this code to the production environment at https://languageforge.org
+
+### Revert ###
+Various tagged images are maintained in Docker Hub.  If you need to revert to a previous version, you can do so by running the deployments scripts with the appropriate permissions or utilizing the Kubernetes UI to change the image of a deployment at any time.
 
 ### Backup/Restore ###
 Backups will be established automatically by LTOps and utilized by LF through the `storageClassName` property in a Persistent Volume Claim.  This storage class provided by LTOps establishes both a frequency and retention for a backup.  Any time a restoration is needed, the LF team will need to coordinate the effort with LTOps.  The process of restoring from a point in time will require the application be brought down for maintenance.  The process will roughly follow these steps:

@@ -1,0 +1,53 @@
+name: Tests
+
+# https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#on
+on:
+  pull_request:
+
+defaults:
+  run:
+    shell: bash
+    working-directory: docker
+
+env:
+  DOCKER_BUILDKIT: 1
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      -
+        uses: actions/checkout@v2
+      -
+        name: Run Unit Tests
+        run: make unit-tests-ci
+      -
+        name: Publish Test Results
+        uses: docker://ghcr.io/enricomi/publish-unit-test-result-action:v1
+        if: always()
+        with:
+          check_name: Unit Test Results
+          github_token: ${{ github.token }}
+          files: docker/PhpUnitTests.xml
+
+  e2e-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      -
+        uses: actions/checkout@v2
+      -
+        name: Build app
+        run: make build
+      -
+        name: Run E2E Tests
+        run: make e2e-tests-ci
+      -
+        name: Publish Test Results
+        uses: docker://ghcr.io/enricomi/publish-unit-test-result-action:v1
+        if: always()
+        with:
+          check_name: E2E Test Results
+          github_token: ${{ github.token }}
+          files: docker/e2e-results.xml

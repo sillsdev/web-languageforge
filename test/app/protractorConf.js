@@ -1,3 +1,4 @@
+var failFast = require('protractor-fail-fast');
 var specString = '*';
 var specs = [
   "/data/test/app/allspecs/**/*.e2e-spec.js",
@@ -27,34 +28,40 @@ exports.config = {
 
     browser.driver.manage().window().maximize();
 
-    if (process.env.TEAMCITY_VERSION) {
-      var jasmineReporters = require('jasmine-reporters');
-      jasmine.getEnv().addReporter(new jasmineReporters.TeamCityReporter());
-    } else {
-      var SpecReporter = require('jasmine-spec-reporter').SpecReporter;
-      jasmine.getEnv().addReporter(new SpecReporter({
-        spec: {
-          displayStacktrace: true
-        }
-      }));
-      /*
-      jasmine.getEnv().addReporter(new jasmineReporters.TerminalReporter({
-        verbosity: browser.params.verbosity, // [0 to 3, jasmine default 2]
-        color: true,
-        showStack: true
-      }));
-      */
-      var pauseOnFailure = {
-        specDone: function (spec) {
-          if (spec.status === 'failed') {
-            debugger;
-          }
-        }
-      };
+    var jasmineReporters = require('jasmine-reporters');
+    if (process.env.GITHUB_ACTIONS) {
+      // https://github.com/angular/protractor-cookbook/tree/master/jasmine-junit-reports
+      var junitReporter = new jasmineReporters.JUnitXmlReporter({
+        savePath: 'e2e-output/',
+        consolidateAll: true
 
-      // Uncomment to pause tests on first failure
-      // jasmine.getEnv().addReporter(pauseOnFailure);
+        // results written to file: e2e-output/junitresults.xml
+
+      });
+      jasmine.getEnv().addReporter(junitReporter);
     }
+    var SpecReporter = require('jasmine-spec-reporter').SpecReporter;
+    jasmine.getEnv().addReporter(new SpecReporter({
+      spec: {
+        displayStacktrace: true
+      }
+    }));
+
+    // Uncomment to pause tests on first failure
+    /*
+    var pauseOnFailure = {
+      specDone: function (spec) {
+        if (spec.status === 'failed') {
+          debugger;
+        }
+      }
+    };
+    jasmine.getEnv().addReporter(pauseOnFailure);
+    */
+  },
+  plugins: [failFast.init()],
+  afterLaunch: function () {
+    failFast.clean(); // Removes the fail file once all test runners have completed.
   }
 };
 
