@@ -53,6 +53,8 @@ FROM sillsdev/web-languageforge:base-php AS production-app
 RUN rm /usr/local/bin/install-php-extensions
 RUN apt-get remove -y gnupg2
 RUN mv $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini
+# had to add /wait into prod image so the prod image could be run through E2E tests.
+COPY --from=sillsdev/web-languageforge:wait-latest /wait /wait
 
 # DEVELOPMENT IMAGE
 FROM sillsdev/web-languageforge:base-php AS development-app
@@ -62,8 +64,7 @@ RUN mv $PHP_INI_DIR/php.ini-development $PHP_INI_DIR/php.ini
 COPY --from=sillsdev/web-languageforge:wait-latest /wait /wait
 
 FROM ${ENVIRONMENT}-app AS languageforge-app
-ARG BUILD_VERSION=9.9.9
-ENV BUILD_VERSION=${BUILD_VERSION}
+ARG BUILD_VERSION=${BUILD_VERSION:-'9.9.9'}
 
 # copy app into image
 COPY src /var/www/html/

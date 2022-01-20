@@ -17,16 +17,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: satackey/action-docker-layer-caching@v0.0.11
-
-      - name: Run Unit Tests
+      -
+        uses: actions/checkout@v2
+      -
+        name: Run Unit Tests
         run: make unit-tests-ci
-
-      - name: echo working directory contents
-        run: ls -l
-
-      - name: Publish Test Results
+      -
+        name: Publish Test Results
         uses: docker://ghcr.io/enricomi/publish-unit-test-result-action:v1
         if: always()
         with:
@@ -38,13 +35,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: satackey/action-docker-layer-caching@v0.0.11
-
-      - name: Run E2E Tests
+      -
+        uses: actions/checkout@v2
+      -
+        name: Build app
+        run: make build
+      -
+        name: Run E2E Tests
         run: make e2e-tests-ci
-
-      - name: Publish Test Results
+      -
+        name: Publish Test Results
         uses: docker://ghcr.io/enricomi/publish-unit-test-result-action:v1
         if: always()
         with:
