@@ -7,7 +7,7 @@ on:
       - v*
 
 jobs:
-  staging:
+  production:
     if: github.event.base_ref == 'refs/heads/master'
 
     # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#jobsjob_iduses
