@@ -161,9 +161,6 @@ export class LexiconEditorController implements angular.IController {
 
     this.show.entryListModifiers = !(this.$window.localStorage.getItem('viewFilter') == null ||
       this.$window.localStorage.getItem('viewFilter') === 'false');
-
-    // this method will evaluate the last used entryid, if found move to the cached entry, if none, move to first entry in list
-    this.evaluateCachedMruEntryState();
   }
 
   $onChanges(changes: any): void {
@@ -186,7 +183,7 @@ export class LexiconEditorController implements angular.IController {
         rightPanelVisible: this.rightPanelVisible,
         rights: this.lecRights
       } as FieldControl;
-      this.evaluateState();
+      this.evaluateStateFromURL();
     }
 
     const configChange = changes.lecConfig as angular.IChangesObject<LexiconConfig>;
@@ -475,7 +472,7 @@ export class LexiconEditorController implements angular.IController {
         this.setCommentContext('');
       }
     }
-    this.updateCachedMruEntry();
+    this.offlineCacheUtils.updateProjectMruEntryData(this.currentEntry.id);
     this.goToEntry(id);
   }
 
@@ -497,21 +494,6 @@ export class LexiconEditorController implements angular.IController {
     const i = this.editorService.getIndexInList(this.currentEntry.id, this.visibleEntries) + distance;
     return i >= 0 && i < this.visibleEntries.length;
   }
-  
-  updateCachedMruEntry = () => {
-      this.offlineCacheUtils.updateProjectMruEnrtyData(this.currentEntry.id).then(data => { });
-  }
-
-  getCachedMruEntry = (): string => {
-    let currentId: string = '';
-    this.offlineCacheUtils.getProjectMruEnrtyData().then(data => {
-      if(data!=null){
-        currentId = data.mruEntryId;
-      }
-      currentId = data.mruEntryId;
-    });
-    return currentId;
-  }
 
   skipToEntry(distance: number): void {
     const i = this.editorService.getIndexInList(this.currentEntry.id, this.visibleEntries) + distance;
@@ -531,7 +513,6 @@ export class LexiconEditorController implements angular.IController {
       this.editorService.showInitialEntries().then(() => {
         this.scrollListToEntry(newEntry.id, 'top');
       });
-      this.updateCachedMruEntry();
       this.goToEntry(newEntry.id);
       this.hideRightPanel();
     });
@@ -988,49 +969,36 @@ export class LexiconEditorController implements angular.IController {
     }
   }
 
-  private evaluateState(): void {
-    this.editorService.loadEditorData().then(() => {
-      // if entry not found go to first visible entry
-      let entryId = this.$state.params.entryId;
-      if (this.editorService.getIndexInList(entryId, this.entries) == null) {
-        entryId = '';
-        if (this.visibleEntries[0] != null) {
-          entryId = this.visibleEntries[0].id;
-        }
-      }
+  private evaluateStateFromURL(): void {
+    this.editorService.loadEditorData().then(async () => {
+      if (this.$state.is("editor.entry")) {
 
-      if (this.$state.is('editor.entry')) {
-        this.editEntryAndScroll(entryId);
-      }
-    });
-  }
+        if (this.entries.length > 0) {
+          let entryId = this.$state.params.entryId;
 
-  private evaluateCachedMruEntryState(): void {
-    this.editorService.loadEditorData().then(() => {
-      let entryId: string = '';
-      let mruCachedEntryId: string = '';
-      this.offlineCacheUtils.getProjectMruEnrtyData().then(data => {
-        if(data != null){
-          mruCachedEntryId = data.mruEntryId;
-        }
-        // if cached entry not found go to first visible entry
-        if (mruCachedEntryId == '') {
-          entryId = this.$state.params.entryId;
-        } else {
-          entryId = mruCachedEntryId;
-        }
+          // if entry not found
+          if (this.editorService.getIndexInList(entryId, this.entries) == null) {
+            entryId = '';
 
-        if (this.editorService.getIndexInList(entryId, this.entries) == null) {
-          entryId = '';
-          if (this.visibleEntries[0] != null) {
-            entryId = this.visibleEntries[0].id;
+            // see if there is a most-recently viewed entry in the cache
+            await this.offlineCacheUtils.getProjectMruEntryData().then(data => {
+              if(data && data.mruEntryId){
+                entryId = data.mruEntryId;
+              }
+
+              // if cached entry not found go to first visible entry
+              if (entryId == '' && this.visibleEntries[0] != null) {
+                entryId = this.visibleEntries[0].id;
+              }
+            });
           }
+          this.editEntryAndScroll(entryId);
+        } else {
+          // there are no entries, go to the list view
+          this.$state.go('editor.list');
         }
 
-        if (this.$state.is('editor.entry')) {
-          this.editEntryAndScroll(entryId);
-        }
-      });
+      }
     });
   }
 

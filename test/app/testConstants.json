@@ -4,7 +4,7 @@
   "siteType"           : "languageforge",
   "siteHostname"       : "e2e",
   "baseUrl"            : "http://e2e",
-  "conditionTimeout"   : 3000,
+  "conditionTimeout"   : 8000,
 
   "adminUsername"      : "test_runner_admin",
   "adminName"          : "Test Admin",

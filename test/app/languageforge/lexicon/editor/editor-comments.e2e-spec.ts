@@ -15,6 +15,7 @@ describe('Lexicon E2E Editor Comments', () => {
     await loginPage.loginAsManager();
     await projectsPage.get();
     await projectsPage.clickOnProject(constants.testProjectName);
+    await editorPage.edit.toListLink.click();
   });
 
   it('browse page has correct word count', async () => {

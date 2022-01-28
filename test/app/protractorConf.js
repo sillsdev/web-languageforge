@@ -64,8 +64,3 @@ exports.config = {
     failFast.clean(); // Removes the fail file once all test runners have completed.
   }
 };
-
-if (process.env.TEAMCITY_VERSION) {
-  exports.config.jasmineNodeOpts.showColors = false;
-  exports.config.jasmineNodeOpts.silent = true;
-}

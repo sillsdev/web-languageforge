@@ -19,16 +19,11 @@ describe('Lexicon E2E Editor List and Entry', () => {
 
   const lexemeLabel = 'Word';
 
-  it('setup: login, click on test project', async () => {
+  it('setup: login, click on test project, go to browse/list view', async () => {
     await loginPage.loginAsManager();
     await projectsPage.get();
     await projectsPage.clickOnProject(constants.testProjectName);
-  });
-
-  it('browse page has correct word count', async () => {
-    // flaky assertion
-    expect(await editorPage.browse.entriesList.count()).toEqual(await editorPage.browse.getEntryCount());
-    expect<any>(await editorPage.browse.getEntryCount()).toBe(3);
+    await editorPage.edit.toListLink.click();
   });
 
   it('search function works correctly', async () => {
@@ -81,7 +76,7 @@ describe('Lexicon E2E Editor List and Entry', () => {
     await util.setCheckbox(configPage.unifiedPane.hiddenIfEmptyCheckbox('Citation Form'), false);
     await configPage.applyButton.click();
     await Utils.clickBreadcrumb(constants.testProjectName);
-    await editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
+    await editorPage.edit.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
   });
 
   it('citation form field overrides lexeme form in dictionary citation view', async () => {
@@ -137,7 +132,7 @@ describe('Lexicon E2E Editor List and Entry', () => {
 
   it('caption is hidden when empty if "Hidden if empty" is set in config', async () => {
     await Utils.clickBreadcrumb(constants.testProjectName);
-    await editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
+    await editorPage.edit.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
     await editorPage.edit.hideHiddenFields();
     expect<any>(await editorPage.edit.pictures.captions.first().isDisplayed()).toBe(true);
     await editorPage.edit.selectElement.clear(editorPage.edit.pictures.captions.first());
@@ -155,7 +150,7 @@ describe('Lexicon E2E Editor List and Entry', () => {
 
   it('when caption is empty, it is visible if "Hidden if empty" is cleared in config', async () => {
     await Utils.clickBreadcrumb(constants.testProjectName);
-    await editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
+    await editorPage.edit.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
     expect<any>(await editorPage.edit.pictures.captions.first().isDisplayed()).toBe(true);
   });
 
@@ -178,7 +173,7 @@ describe('Lexicon E2E Editor List and Entry', () => {
 
   it('while Show Hidden Fields has not been clicked, Pictures field is hidden', async () => {
     await Utils.clickBreadcrumb(constants.testProjectName);
-    await editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
+    await editorPage.edit.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
     expect<any>(await editorPage.edit.getFields('Pictures').count()).toBe(0);
     await editorPage.edit.showHiddenFields();
     expect<any>(await editorPage.edit.pictures.list.isPresent()).toBe(true);
@@ -233,6 +228,7 @@ describe('Lexicon E2E Editor List and Entry', () => {
     await loginPage.loginAsMember();
     await projectsPage.get();
     await projectsPage.clickOnProject(constants.testProjectName);
+    await editorPage.edit.toListLink.click();
     await editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
   });
 
@@ -266,6 +262,7 @@ describe('Lexicon E2E Editor List and Entry', () => {
     await loginPage.loginAsObserver();
     await projectsPage.get();
     await projectsPage.clickOnProject(constants.testProjectName);
+    await editorPage.edit.toListLink.click();
     await editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
   });
 
@@ -297,6 +294,7 @@ describe('Lexicon E2E Editor List and Entry', () => {
     await loginPage.loginAsManager();
     await projectsPage.get();
     await projectsPage.clickOnProject(constants.testProjectName);
+    await editorPage.edit.toListLink.click();
     await editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
   });
 
@@ -379,7 +377,8 @@ describe('Lexicon E2E Editor List and Entry', () => {
   });
 
   it('setup: click on word with multiple definitions (found by lexeme)', async () => {
-    await editorPage.edit.findEntryByLexeme(constants.testMultipleMeaningEntry1.lexeme.th.value).click();
+    await editorPage.edit.toListLink.click();
+    await editorPage.browse.clickEntryByLexeme(constants.testMultipleMeaningEntry1.lexeme.th.value);
 
     // fix problem with protractor not scrolling to element before click
     await browser.driver.executeScript('arguments[0].scrollIntoView();',
@@ -502,6 +501,7 @@ describe('Lexicon E2E Editor List and Entry', () => {
   });
 
   it('check that Semantic Domain field is visible (for view settings test later)', async () => {
+      await browser.wait(ExpectedConditions.visibilityOf(await editorPage.edit.fields.last()));
       expect(await editorPage.edit.getOneField('Semantic Domain').isPresent()).toBeTruthy();
     });
 
@@ -526,7 +526,7 @@ describe('Lexicon E2E Editor List and Entry', () => {
         configPage.unifiedPane.entry.fieldSpecificInputSystemCheckbox(lexemeLabel, englishRowLabel), true);
       await configPage.applyButton.click();
       await Utils.clickBreadcrumb(constants.testProjectName);
-      await editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
+      await editorPage.edit.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
     });
 
     it('Word has "th", "tipa", "taud" and "en" visible', async () => {
@@ -546,7 +546,7 @@ describe('Lexicon E2E Editor List and Entry', () => {
         configPage.unifiedPane.entry.fieldSpecificInputSystemCheckbox(lexemeLabel, englishRowLabel), false);
       await configPage.applyButton.click();
       await Utils.clickBreadcrumb(constants.testProjectName);
-      await editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
+      await editorPage.edit.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
     });
 
     it('Word has only "th", "tipa" and "taud" visible again', async () => {
@@ -575,7 +575,6 @@ describe('Lexicon E2E Editor List and Entry', () => {
 
       await configPage.applyButton.click();
       await Utils.clickBreadcrumb(constants.testProjectName);
-      await editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
     });
 
     it('Word has only "th" visible', async () => {
@@ -597,7 +596,7 @@ describe('Lexicon E2E Editor List and Entry', () => {
         configPage.unifiedPane.entry.fieldSpecificInputSystemCheckbox(lexemeLabel, thaiAudioRowLabel), true);
       await configPage.applyButton.click();
       await Utils.clickBreadcrumb(constants.testProjectName);
-      await editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
+      await editorPage.edit.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
     });
 
     it('Word has only "th" and "taud" visible for manager role', async () => {
@@ -613,7 +612,7 @@ describe('Lexicon E2E Editor List and Entry', () => {
       await util.setCheckbox(configPage.unifiedPane.managerCheckbox(ipaRowLabel), true);
       await configPage.applyButton.click();
       await Utils.clickBreadcrumb(constants.testProjectName);
-      await editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
+      await editorPage.edit.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
     });
 
     it('Word has "th", "tipa" and "taud" visible again for manager role', async () => {
@@ -624,28 +623,6 @@ describe('Lexicon E2E Editor List and Entry', () => {
       expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).count()).toEqual(3);
     });
 
-  });
-
-  it('first entry is selected if entryId unknown', async () => {
-    await editorPage.edit.findEntryByLexeme(constants.testEntry3.lexeme.th.value).click();
-    await EditorPage.getProjectIdFromUrl().then(projectId => {
-      return EditorPage.get(projectId, '_unknown_id_1234');
-    });
-
-    expect(await editorPage.edit.getFirstLexeme()).toEqual(constants.testEntry1.lexeme.th.value);
-  });
-
-  it('URL entry id changes with entry', async () => {
-    const entry1Id = await EditorPage.getEntryIdFromUrl();
-    expect(entry1Id).toMatch(/[0-9a-z_]{6,24}/);
-    await editorPage.edit.findEntryByLexeme(constants.testEntry3.lexeme.th.value).click();
-    expect(await editorPage.edit.getFirstLexeme()).toEqual(constants.testEntry3.lexeme.th.value);
-    const entry3Id = await EditorPage.getEntryIdFromUrl();
-    expect(entry3Id).toMatch(/[0-9a-z_]{6,24}/);
-    expect(entry1Id).not.toEqual(entry3Id);
-    await editorPage.edit.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
-    expect(await editorPage.edit.getFirstLexeme()).toEqual(constants.testEntry1.lexeme.th.value);
-    expect(await EditorPage.getEntryIdFromUrl()).not.toEqual(entry3Id);
   });
 
   it('new word is visible in browse page', async () => {
@@ -665,7 +642,7 @@ describe('Lexicon E2E Editor List and Entry', () => {
     await editorPage.edit.actionMenu.click();
     await editorPage.edit.deleteMenuItem.click();
     await browser.waitForAngular();
-    expect<any>(await editorPage.modal.modalBodyText.getText()).toContain(constants.testEntry3.lexeme.th.value);
+    await browser.wait(ExpectedConditions.visibilityOf(await editorPage.modal.modalBodyText));
     await Utils.clickModalButton('Delete Entry');
     await browser.waitForAngular();
     expect<any>(await editorPage.edit.getEntryCount()).toBe(3);

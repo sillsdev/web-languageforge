@@ -15,7 +15,7 @@ export class OfflineCacheUtilsService {
   constructor(private readonly $q: angular.IQService, private readonly sessionService: SessionService,
               private readonly offlineCache: OfflineCacheService) { }
 
-  getProjectData(): angular.IPromise<any> {
+  getProjectData(): Promise<any> {
     return this.offlineCache.getOneFromStore('projects', this.sessionService.projectId());
   }
 
@@ -29,11 +29,11 @@ export class OfflineCacheUtilsService {
     return this.offlineCache.setObjectsInStore('projects', this.sessionService.projectId(), [obj]);
   }
 
-  getProjectMruEnrtyData(): angular.IPromise<any> {
+  getProjectMruEntryData(): Promise<any> {
     return this.offlineCache.getOneFromStore('projectsmru', this.sessionService.projectId());
   }
 
-  updateProjectMruEnrtyData(mruEntryId: string): angular.IPromise<any> {
+  updateProjectMruEntryData(mruEntryId: string): angular.IPromise<any> {
     const obj = {
       id: this.sessionService.projectId(),
       mruEntryId: mruEntryId

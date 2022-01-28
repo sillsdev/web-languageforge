@@ -1,7 +1,7 @@
 import {browser, by, element, ExpectedConditions} from 'protractor';
 
 export class BellowsChangePasswordPage {
-  conditionTimeout: number = 3000;
+  conditionTimeout: number = 12000;
 
   // TODO: this will likely change when we refactor the display of notifications - cjh 2014-06
   async get() {

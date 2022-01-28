@@ -144,7 +144,7 @@ export class EditorPage {
     },
 
     entriesList: this.editDiv.all(by.repeater('entry in $ctrl.visibleEntries')),
-    findEntryByLexeme: (lexeme: string) => {
+    clickEntryByLexeme: (lexeme: string) => {
       const div = this.editDiv.element(by.id('compactEntryListContainer'));
       return div.element(by.cssContainingText('.listItemPrimary',
         lexeme));
