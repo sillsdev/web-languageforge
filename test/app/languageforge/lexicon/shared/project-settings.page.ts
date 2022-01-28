@@ -5,7 +5,7 @@ import {ProjectsPage} from '../../../bellows/shared/projects.page';
 export class ProjectSettingsPage {
   private readonly projectsPage = new ProjectsPage();
 
-  conditionTimeout = 3000;
+  conditionTimeout = 12000;
   settingsMenuLink = element(by.id('settings-dropdown-button'));
   projectSettingsLink = element(by.id('dropdown-project-settings'));
 

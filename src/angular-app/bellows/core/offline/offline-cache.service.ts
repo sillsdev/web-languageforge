@@ -31,10 +31,19 @@ export class OfflineCacheService {
     }));
   }
 
-  getOneFromStore(storeName: string, key: string): angular.IPromise<any> {
-    return this.$q.when(this.getStore(storeName).getItem(key).then(item => {
+  /*
+  @returns the item if found, otherwise null
+  */
+  async getOneFromStore(storeName: string, key: string): Promise<any> {
+    let item;
+    try {
+      item = await this.getStore(storeName).getItem(key);
       return OfflineCacheService.removeProjectId(item);
-    }));
+
+    } catch (err) {
+      item = null;
+    }
+    return this.$q.when(item);
   }
 
   setObjectsInStore(storeName: string, projectId: string, items: any[]): angular.IPromise<any[]> {

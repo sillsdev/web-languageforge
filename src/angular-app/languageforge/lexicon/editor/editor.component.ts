@@ -32,6 +32,7 @@ import {
 import { LexiconProject } from '../shared/model/lexicon-project.model';
 import { LexOptionList } from '../shared/model/option-list.model';
 import { FieldControl } from './field/field-control.model';
+import {OfflineCacheUtilsService} from '../../../bellows/core/offline/offline-cache-utils.service';
 
 class Show {
   more: () => void;
@@ -90,6 +91,7 @@ export class LexiconEditorController implements angular.IController {
     'lexProjectService',
     'lexRightsService',
     'lexSendReceive',
+    'offlineCacheUtils',
   ];
 
   constructor(private readonly $filter: angular.IFilterService,
@@ -110,10 +112,10 @@ export class LexiconEditorController implements angular.IController {
     private readonly lexProjectService: LexiconProjectService,
     private readonly rightsService: LexiconRightsService,
     private readonly sendReceive: LexiconSendReceiveService,
+    private readonly offlineCacheUtils: OfflineCacheUtilsService,
   ) { }
 
   $onInit(): void {
-
     // add PgUp and PgDn global window handlers to facilitate paging through entries
     angular.element(window).bind('keydown', (e: Event) => {
       var key = (e as KeyboardEvent).key;
@@ -181,7 +183,7 @@ export class LexiconEditorController implements angular.IController {
         rightPanelVisible: this.rightPanelVisible,
         rights: this.lecRights
       } as FieldControl;
-      this.evaluateState();
+      this.evaluateStateFromURL();
     }
 
     const configChange = changes.lecConfig as angular.IChangesObject<LexiconConfig>;
@@ -470,7 +472,7 @@ export class LexiconEditorController implements angular.IController {
         this.setCommentContext('');
       }
     }
-
+    this.offlineCacheUtils.updateProjectMruEntryData(this.currentEntry.id);
     this.goToEntry(id);
   }
 
@@ -511,7 +513,6 @@ export class LexiconEditorController implements angular.IController {
       this.editorService.showInitialEntries().then(() => {
         this.scrollListToEntry(newEntry.id, 'top');
       });
-
       this.goToEntry(newEntry.id);
       this.hideRightPanel();
     });
@@ -968,19 +969,35 @@ export class LexiconEditorController implements angular.IController {
     }
   }
 
-  private evaluateState(): void {
-    this.editorService.loadEditorData().then(() => {
-      // if entry not found go to first visible entry
-      let entryId = this.$state.params.entryId;
-      if (this.editorService.getIndexInList(entryId, this.entries) == null) {
-        entryId = '';
-        if (this.visibleEntries[0] != null) {
-          entryId = this.visibleEntries[0].id;
-        }
-      }
+  private evaluateStateFromURL(): void {
+    this.editorService.loadEditorData().then(async () => {
+      if (this.$state.is("editor.entry")) {
 
-      if (this.$state.is('editor.entry')) {
-        this.editEntryAndScroll(entryId);
+        if (this.entries.length > 0) {
+          let entryId = this.$state.params.entryId;
+
+          // if entry not found
+          if (this.editorService.getIndexInList(entryId, this.entries) == null) {
+            entryId = '';
+
+            // see if there is a most-recently viewed entry in the cache
+            await this.offlineCacheUtils.getProjectMruEntryData().then(data => {
+              if(data && data.mruEntryId){
+                entryId = data.mruEntryId;
+              }
+
+              // if cached entry not found go to first visible entry
+              if (entryId == '' && this.visibleEntries[0] != null) {
+                entryId = this.visibleEntries[0].id;
+              }
+            });
+          }
+          this.editEntryAndScroll(entryId);
+        } else {
+          // there are no entries, go to the list view
+          this.$state.go('editor.list');
+        }
+
       }
     });
   }
