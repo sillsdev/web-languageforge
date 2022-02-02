@@ -172,6 +172,8 @@ Visual Studio Code is a simple, free, cross-platform code editor. You can downlo
 
 The first time you open VS Code in the `web-languageforge` directory, it will recommend a list of extensions that are useful for developing Language Forge.  Install all recommended extensions for the best experience.
 
+For Windows/WSL users, it is recommended to clone your repository to your Linux filesystem and open your repository folder with VS Code in WSL mode. Open the folder with VS Code, and run the Command "Reopen Folder in WSL." Using both VS Code and source code in the Windows filesystem could cause issues with code changes being reflected between the two filesystems.
+
 Chrome and PHP debugging have also been configured. Launch configurations are defined in the `.vscode/launch.json` file.
 
 ## Debugging ##
