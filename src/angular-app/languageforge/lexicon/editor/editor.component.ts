@@ -528,7 +528,7 @@ export class LexiconEditorController implements angular.IController {
         if (iShowList !== 0) {
           iShowList--;
         }
-        this.setCurrentEntry(this.visibleEntries[iShowList]);
+        this.editEntryAndScroll(this.visibleEntries[iShowList].id);
       } else {
         this.returnToList();
       }
@@ -982,7 +982,7 @@ export class LexiconEditorController implements angular.IController {
 
             // see if there is a most-recently viewed entry in the cache
             await this.offlineCacheUtils.getProjectMruEntryData().then(data => {
-              if(data && data.mruEntryId){
+              if(data && data.mruEntryId && this.editorService.getIndexInList(data.mruEntryId, this.entries) != null){
                 entryId = data.mruEntryId;
               }
 
