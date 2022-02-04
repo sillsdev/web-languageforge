@@ -528,7 +528,7 @@ export class LexiconEditorController implements angular.IController {
         if (iShowList !== 0) {
           iShowList--;
         }
-        this.setCurrentEntry(this.visibleEntries[iShowList]);
+        this.editEntryAndScroll(this.visibleEntries[iShowList].id);
       } else {
         this.returnToList();
       }
