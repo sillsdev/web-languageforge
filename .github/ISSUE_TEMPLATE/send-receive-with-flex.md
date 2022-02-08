@@ -9,7 +9,7 @@ assignees: ''
 
 If your project has been put on hold and you want to keep the details of your project private, please email languageforgeissues@sil.org with the following information.
 
-The Language Forge project is run as an open-source and open-issue-tracker project, meaning that all our code and issues are publicly available on the internet.  Information you submit below should not container private or personal information.
+The Language Forge project is run as an open-source and open-issue-tracker project, meaning that all our code and issues are publicly available on the internet.  Please do not include any sensitive information (passwords, names, locations, etc.) in this issue report.
 
 
 Project name:

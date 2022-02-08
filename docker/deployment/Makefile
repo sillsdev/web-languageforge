@@ -56,3 +56,11 @@ delete-app-assets:
 	kubectl delete pvc lf-project-assets
 delete-app-sendreceive-data:
 	kubectl delete pvc lfmerge-sendreceive-data
+
+APPPOD = $(shell kubectl get pods --selector='app=app' -o name | sed -e s'/pod\///')
+lfmerge-copy-state:
+	rm -rf all_projects/*.state on_hold/*.state
+	kubectl cp $(APPPOD):/var/lib/languageforge/lexicon/sendreceive/state all_projects
+	grep -l HOLD all_projects/*.state | wc | awk '{printf $$1; }' && echo ' projects on HOLD'
+	mkdir -p on_hold
+	for f in `grep -l HOLD all_projects/*.state`; do mv $$f on_hold; done

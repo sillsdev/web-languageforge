@@ -514,21 +514,7 @@ describe('Lexicon E2E New Project wizard app', () => {
           constants.conditionTimeout);
         expect<any>(await page.modal.selectLanguage.searchLanguageInput.isPresent()).toBe(false);
       });
-
     });
-
-    it('can go to lexicon and primary language has changed', async () => {
-      await page.formStatus.expectHasNoError();
-      expect<any>(await page.nextButton.isEnabled()).toBe(true);
-      await page.expectFormIsValid();
-      await page.nextButton.click();
-      await browser.wait(ExpectedConditions.visibilityOf(editorPage.browse.noEntriesElem), constants.conditionTimeout);
-      expect<any>(await editorPage.browse.noEntriesElem.isDisplayed()).toBe(true);
-      await editorPage.browse.noEntriesNewWordBtn.click();
-      expect<any>(await editorPage.edit.getEntryCount()).toBe(1);
-      expect<any>(await editorPage.edit.getLexemesAsObject()).toEqual({ es: '' });
-    });
-
   });
 
 });
