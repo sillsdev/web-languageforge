@@ -50,9 +50,9 @@ jobs:
       -
         name: Check unit tests
         run: make unit-tests-ci
-      -
-        name: Check e2e tests
-        run: make e2e-tests-ci
+      # -
+      #   name: Check e2e tests
+      #   run: make e2e-tests-ci
       -
         name: Log in to Docker Hub
         uses: docker/login-action@v1
