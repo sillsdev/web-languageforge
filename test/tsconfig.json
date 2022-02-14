@@ -1,0 +1,34 @@
+{
+  "allowSyntheticDefaultImports": true,
+  "buildOnSave": false,
+  "compileOnSave": false,
+  "compilerOptions": {
+    "alwaysStrict": true,
+    "baseUrl": ".",
+    "downlevelIteration": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "lib": ["es7", "dom"],
+    "module": "es6",
+    "moduleResolution": "node",
+    "noImplicitAny": true,
+    "outDir": "src/dist",
+    "paths": {
+      "@node_modules/*": ["node_modules/*"],
+    },
+    "resolveJsonModule": true,
+    "rootDir": ".",
+    "references": { "path": ".." },
+    "sourceMap": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "target": "es5",
+    "typeRoots": [
+      "node_modules/@types",
+      "typings"
+    ]
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}
