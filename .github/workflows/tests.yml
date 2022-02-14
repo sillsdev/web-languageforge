@@ -31,23 +31,15 @@ jobs:
           github_token: ${{ github.token }}
           files: docker/PhpUnitTests.xml
 
-  # e2e-tests:
-  #   runs-on: ubuntu-latest
+  e2e-tests:
+    runs-on: ubuntu-latest
 
-  #   steps:
-  #     -
-  #       uses: actions/checkout@v2
-  #     -
-  #       name: Build app
-  #       run: make build
-  #     -
-  #       name: Run E2E Tests
-  #       run: make e2e-tests-ci
-  #     -
-  #       name: Publish Test Results
-  #       uses: docker://ghcr.io/enricomi/publish-unit-test-result-action:v1
-  #       if: always()
-  #       with:
-  #         check_name: E2E Test Results
-  #         github_token: ${{ github.token }}
-  #         files: docker/e2e-results.xml
+    steps:
+      -
+        uses: actions/checkout@v2
+      -
+        name: Build app
+        run: make build
+      -
+        name: Run E2E Tests
+        run: make e2e-tests-ci
