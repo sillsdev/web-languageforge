@@ -53,6 +53,7 @@
     "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
+    "@playwright/test": "^1.19.0",
     "@types/angular": "1.8.1",
     "@types/angular-mocks": "^1.7.0",
     "@types/angular-route": "^1.7.1",
