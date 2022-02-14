@@ -100,8 +100,9 @@ const config: PlaywrightTestConfig = {
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: '(cd docker; make start)',
-    port: 80,
+    command: 'make start',
+    cwd: 'docker',
+    port: 443,
     timeout: 12 * 60 * 1000,  // 12 minutes
     reuseExistingServer: !process.env.CI,
   },
