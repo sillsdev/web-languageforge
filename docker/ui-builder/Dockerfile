@@ -10,7 +10,8 @@ WORKDIR /data
 # see https://github.com/npm/npm/issues/17346
 # ignore-scripts is required so that Playwright won't download browser binaries, taking forever. Then `rebuild node-sass` ensures that sass binaries *will* be downloaded.
 COPY package.json package-lock.json ./
-RUN npm config set unsafe-perm true && npm install --legacy-peer-deps --ignore-scripts && npm rebuild node-sass
+ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
+RUN npm config set unsafe-perm true && npm install --legacy-peer-deps
 
 # Copy in files needed for compilation, located in the repo root
 COPY typings ./typings/
