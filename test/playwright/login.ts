@@ -2,10 +2,8 @@ import { Page } from '@playwright/test';
 import constants from '../app/testConstants.json';
 
 export async function login(page: Page, username: string, password: string) {
-  await page.goto('http://app-for-e2e/auth/login');
-  await page.locator('input[name="_username"]').click();
+  await page.goto('/auth/login');
   await page.locator('input[name="_username"]').fill(username);
-  await page.locator('input[name="_password"]').click();
   await page.locator('input[name="_password"]').fill(password);
   return Promise.all([
     page.waitForNavigation(),
