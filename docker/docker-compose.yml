@@ -201,12 +201,13 @@ services:
       - WAIT_HOSTS=db:27017, mail:25, selenium:4444, app-for-e2e:80
       - ENVIRONMENT=development
       - LANGUAGE_DEPOT_API_TOKEN=bogus-development-token
-    command: sh -c "npm install -D @playwright/test && npx playwright test"
+    command: sh -c "npx playwright test"
     working_dir: /root
     volumes:
       # for developer convenience
       - ../src:/root/src
       - ../test:/root/test
+      - ../node_modules:/root/node_modules
       - ../typings:/root/typings
       - ../package.json:/root/package.json
       - ../package-lock.json:/root/package-lock.json
