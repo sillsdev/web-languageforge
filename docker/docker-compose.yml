@@ -188,6 +188,30 @@ services:
 # clobbering the JS files produced by tsc in the built image.
 #      - ../test:/data/test
 
+  test-playwright:
+    image: mcr.microsoft.com/playwright:focal
+    container_name: test-playwright
+    # See https://playwright.dev/docs/docker#run-the-image for why we use ipc: host
+    ipc: host
+    depends_on:
+      - db
+      - app-for-e2e
+      - mail
+    environment:
+      - WAIT_HOSTS=db:27017, mail:25, selenium:4444, app-for-e2e:80
+      - ENVIRONMENT=development
+      - LANGUAGE_DEPOT_API_TOKEN=bogus-development-token
+    command: sh -c "npm install -D @playwright/test && npx playwright test"
+    working_dir: /root
+    volumes:
+      # for developer convenience
+      - ../src:/root/src
+      - ../test:/root/test
+      - ../typings:/root/typings
+      - ../package.json:/root/package.json
+      - ../package-lock.json:/root/package-lock.json
+      - ../playwright.config.ts:/root/playwright.config.ts
+
   app-for-e2e:
     build:
       context: ..
