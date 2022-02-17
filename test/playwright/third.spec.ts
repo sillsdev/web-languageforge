@@ -1,12 +1,10 @@
 import { expect, test } from '@playwright/test';
+import { getLoggedInPage } from './login';
 import constants from '../app/testConstants.json';
 
 test.only('Multiple users in different tabs', async ({ browser }) => {
-  const adminContext = await browser.newContext({ storageState: 'admin-storageState.json' });
-  const memberContext = await browser.newContext({ storageState: 'member-storageState.json' });
-
-  const adminPage = await adminContext.newPage();
-  const memberPage = await memberContext.newPage();
+  const adminPage = await getLoggedInPage(browser, 'admin');
+  const memberPage = await getLoggedInPage(browser, 'member');
 
   await adminPage.goto('/');
   await memberPage.goto('/');

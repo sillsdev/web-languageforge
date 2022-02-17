@@ -1,4 +1,4 @@
-import { Page } from '@playwright/test';
+import { Page, Browser } from '@playwright/test';
 import constants from '../app/testConstants.json';
 
 export async function login(page: Page, username: string, password: string) {
@@ -31,4 +31,9 @@ export function getLoginInfo(name: string) {
 export function loginAs(page: Page, name: string) {
   const { username, password } = getLoginInfo(name);
   return login(page, username, password);
+}
+
+export async function getLoggedInPage(browser: Browser, name: string) {
+  const context = await browser.newContext({ storageState: `${name}-storageState.json` });
+  return await context.newPage();
 }
