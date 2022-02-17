@@ -22,6 +22,12 @@ e2e-tests-ci:
 	docker cp e2etests:/data/e2e-output/junitresults.xml e2e-results.xml
 	docker rm e2etests
 
+.PHONY: e2e-playwright
+e2e-playwright:
+	docker-compose build app-for-e2e test-playwright
+	docker-compose up -d app-for-e2e
+	docker-compose run test-playwright
+
 .PHONY: unit-tests
 unit-tests:
 	docker-compose run test-php
