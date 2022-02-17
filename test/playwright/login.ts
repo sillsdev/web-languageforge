@@ -11,6 +11,10 @@ export async function login(page: Page, username: string, password: string) {
   ]);
 }
 
+export async function logout(page: Page) {
+  return await page.goto('http://app-for-e2e/auth/logout');
+}
+
 export function getLoginInfo(name: string) {
   const usernameKey = `${name}Username`;
   const passwordKey = `${name}Password`;

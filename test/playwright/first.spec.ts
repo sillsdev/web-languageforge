@@ -7,7 +7,6 @@ test.describe('Front page', () => {
   });
 
   test('should see the front page', async ({ page }) => {
-    test.fail(); // auto-logged in as admin, so see projects page instead of front page
     const title = page.locator('section#banner h2');
     await expect(title).toHaveText('Language Forge');
   });
