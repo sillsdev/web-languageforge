@@ -29,10 +29,13 @@ const config: PlaywrightTestConfig = {
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: 'html',
+  /* Global setup for things like logging in users and saving login cookies */
+  globalSetup: require.resolve('./test/playwright/globalSetup'),
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Maximum time each action such as `click()` can take. Defaults to 0 (no limit). */
     actionTimeout: 0,
+    storageState: 'storageState.json',
     /* Base URL to use in actions like `await page.goto('/')`. */
     baseURL: 'http://app-for-e2e/',
 
