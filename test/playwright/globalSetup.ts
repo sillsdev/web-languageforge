@@ -2,7 +2,8 @@ import { chromium, PlaywrightTestConfig, Page } from '@playwright/test';
 import { getLoginInfo } from './login';
 import url from 'url';
 
-const testUserList = ['admin', 'manager', 'member', 'member2', 'observer'];
+const testUserList = ['admin', 'member' ];
+// const testUserList = ['admin', 'manager', 'member', 'member2', 'observer'];
 
 async function loginDuringSetup(page: Page, baseURL: string, name: string) {
   const { username, password } = getLoginInfo(name);
