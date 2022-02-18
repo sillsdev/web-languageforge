@@ -20,8 +20,19 @@ test.only('Multiple users in different tabs', async ({ browser }) => {
   expect(session).toBeDefined();
   expect(session?.projectSettings?.config?.pollUpdateIntervalMs).toBeDefined();
   expect(session?.projectSettings?.config?.pollUpdateIntervalMs).toBeGreaterThanOrEqual(0);
+  session.projectSettings.config.pollUpdateIntervalMs = 10 * 1000;
+  expect(session?.projectSettings?.config?.pollUpdateIntervalMs).toEqual(10 * 1000);
+  await updateProjectConfig(adminRequest, session.projectSettings.config);
+  const sessionAfterUpdate = await getSession(adminRequest);
+  console.log('Now session is:');
+  console.log(sessionAfterUpdate);
+  expect(sessionAfterUpdate?.projectSettings?.config?.pollUpdateIntervalMs).toEqual(10 * 1000);
 });
 
 function getSession(requestContext: APIRequestContext) {
   return jsonRpc(requestContext, 'session_getSessionData');
+}
+
+function updateProjectConfig(requestContext: APIRequestContext, config: any) {
+  return jsonRpc(requestContext, 'lex_configuration_update', [config, []]);
 }

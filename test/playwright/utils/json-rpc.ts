@@ -8,7 +8,7 @@ const nextId = (() => {
   };
 })();
 
-export function jsonRpcParams(method: string, params: any = {}, orderedParams: any[] = []) {
+export function jsonRpcParams(method: string, orderedParams: any[] = [], params: any = {}) {
   if (Object.prototype.hasOwnProperty.call(params, 'orderedParams')) {
     // Leave orderedParams alone
   } else {
@@ -17,8 +17,8 @@ export function jsonRpcParams(method: string, params: any = {}, orderedParams: a
   return { version: '2.0', method: 'session_getSessionData', params, id: nextId() };
 }
 
-export async function jsonRpc(request: APIRequestContext, method: string, params: any = {}, orderedParams: any[] = []) {
-  const result = await request.post('/api/sf', { data: jsonRpcParams(method, params, orderedParams) });
+export async function jsonRpc(request: APIRequestContext, method: string, orderedParams: any[] = [], params: any = {}) {
+  const result = await request.post('/api/sf', { data: jsonRpcParams(method, orderedParams, params) });
   const json = await result.json();
   if (json.result) {
     return json.result;
