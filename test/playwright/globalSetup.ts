@@ -9,7 +9,6 @@ async function loginDuringSetup(page: Page, baseURL: string, name: string) {
   const loginUrl = url.resolve(baseURL ?? 'http://app-for-e2e/', '/auth/login');
   console.log(loginUrl);
   await page.goto(loginUrl);
-  await page.screenshot({ path: `${name}-login-page.png` });
   await page.locator('input[name="_username"]').fill(username);
   await page.locator('input[name="_password"]').fill(password);
   return Promise.all([
@@ -17,16 +16,6 @@ async function loginDuringSetup(page: Page, baseURL: string, name: string) {
     page.locator('button:has-text("Login")').click()
   ]);
 
-}
-
-async function logoutDuringSetup(page: Page, baseURL: string) {
-  const logoutUrl = url.resolve(baseURL ?? 'http://app-for-e2e/', '/auth/logout');
-  console.log(logoutUrl);
-  return page.goto(logoutUrl, { waitUntil: 'networkidle' });
-  // return Promise.all([
-  //   page.goto(logoutUrl),
-  //   page.waitForNavigation(),
-  // ]);
 }
 
 async function setupAuth(config: PlaywrightTestConfig) {
@@ -37,7 +26,6 @@ async function setupAuth(config: PlaywrightTestConfig) {
       await loginDuringSetup(page, config?.use?.baseURL, user);
       const stateFile = `${user}-storageState.json`;
       await page.context().storageState({ path: stateFile });
-      // No need to log out now that we're using a new page each time
     }
     await browser.close();
 }
