@@ -2,7 +2,7 @@ import { Page, Browser } from '@playwright/test';
 import constants from '../app/testConstants.json';
 
 export async function login(page: Page, username: string, password: string) {
-  await page.goto('http://app-for-e2e/auth/login');
+  await page.goto('/auth/login');
   await page.locator('input[name="_username"]').fill(username);
   await page.locator('input[name="_password"]').fill(password);
   return Promise.all([
@@ -12,7 +12,7 @@ export async function login(page: Page, username: string, password: string) {
 }
 
 export async function logout(page: Page) {
-  return await page.goto('http://app-for-e2e/auth/logout');
+  return await page.goto('/auth/logout');
 }
 
 export function getLoginInfo(name: string) {

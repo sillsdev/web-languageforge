@@ -7,6 +7,7 @@ import { devices } from '@playwright/test';
  */
 // require('dotenv').config();
 
+export const baseURL = 'http://app-for-e2e/';
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
