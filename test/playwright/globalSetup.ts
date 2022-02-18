@@ -37,8 +37,7 @@ async function setupAuth(config: PlaywrightTestConfig) {
       await loginDuringSetup(page, config?.use?.baseURL, user);
       const stateFile = `${user}-storageState.json`;
       await page.context().storageState({ path: stateFile });
-      await logoutDuringSetup(page, config?.use?.baseURL);
-      await page.screenshot({ path: `${user}-logout-page.png` });
+      // No need to log out now that we're using a new page each time
     }
     await browser.close();
 }
