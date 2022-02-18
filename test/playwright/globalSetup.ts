@@ -31,9 +31,9 @@ async function logoutDuringSetup(page: Page, baseURL: string) {
 
 async function setupAuth(config: PlaywrightTestConfig) {
     const browser = await chromium.launch();
-    const page = await browser.newPage();
 
     for (const user of testUserList) {
+      const page = await browser.newPage();
       await loginDuringSetup(page, config?.use?.baseURL, user);
       const stateFile = `${user}-storageState.json`;
       await page.context().storageState({ path: stateFile });
