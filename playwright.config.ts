@@ -102,6 +102,12 @@ const config: PlaywrightTestConfig = {
   // outputDir: 'test-results/',
 
   /* Run your local dev server before starting the tests */
+  webServer: {
+    command: 'echo Waiting for web server...',
+    url: baseURL + 'auth/login',
+    timeout: 120 * 1000,
+    reuseExistingServer: true // !process.env.CI,
+  }
 };
 
 export default config;
