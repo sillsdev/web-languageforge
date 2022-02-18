@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 import { getLoggedInPage } from './login';
 import constants from '../app/testConstants.json';
 
-test.only('Multiple users in different tabs', async ({ browser }) => {
+test('Multiple users in different tabs', async ({ browser }) => {
   const adminPage = await getLoggedInPage(browser, 'admin');
   const memberPage = await getLoggedInPage(browser, 'member');
 
