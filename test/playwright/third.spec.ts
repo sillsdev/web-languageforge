@@ -8,8 +8,8 @@ test.describe.only('Multiple users editing the same project', () => {
   let memberPage: Page;
   const entryName: string = constants.testEntry2.lexeme.th.value;
 
-  test.beforeEach(async ({browser}) => {
-    const adminRequest = await request.newContext({ storageState: 'admin-storageState.json', baseURL: 'http://app-for-e2e' });
+  test.beforeEach(async ({browser, baseURL}) => {
+    const adminRequest = await request.newContext({ storageState: 'admin-storageState.json', baseURL });
     const session = await getSession(adminRequest);
     session.projectSettings.config.pollUpdateIntervalMs = 10 * 1000;
     await updateProjectConfig(adminRequest, session.projectSettings.config);

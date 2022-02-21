@@ -24,9 +24,9 @@ e2e-tests-ci:
 
 .PHONY: e2e-playwright
 e2e-playwright:
-	docker-compose build app-for-e2e test-playwright
+	docker-compose build app-for-e2e
 	docker-compose up -d app-for-e2e
-	docker-compose run test-playwright
+	npx playwright test
 
 .PHONY: unit-tests
 unit-tests:

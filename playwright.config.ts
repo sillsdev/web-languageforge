@@ -7,7 +7,6 @@ import { devices } from '@playwright/test';
  */
 // require('dotenv').config();
 
-export const baseURL = 'http://app-for-e2e/';
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
@@ -37,7 +36,7 @@ const config: PlaywrightTestConfig = {
     /* Maximum time each action such as `click()` can take. Defaults to 0 (no limit). */
     actionTimeout: 0,
     /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: 'http://app-for-e2e/',
+    baseURL: 'http://localhost:3238',
 
     /* Ignore self-signed certificate when running from localhost */
     ignoreHTTPSErrors: !process.env.CI,
@@ -104,7 +103,7 @@ const config: PlaywrightTestConfig = {
   /* Run your local dev server before starting the tests */
   webServer: {
     command: 'echo Waiting for web server...',
-    url: baseURL + 'auth/login',
+    url: 'http://localhost:3238/auth/login',
     timeout: 120 * 1000,
     reuseExistingServer: true // !process.env.CI,
   }

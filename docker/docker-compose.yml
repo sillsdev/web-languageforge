@@ -220,6 +220,8 @@ services:
     image: app-for-e2e
     container_name: app-for-e2e
     platform: linux/amd64
+    ports:
+      - 3238:80
     depends_on:
       - db
       - mail

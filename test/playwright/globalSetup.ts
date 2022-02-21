@@ -7,7 +7,7 @@ const testUserList = ['admin', 'member' ];
 
 async function loginDuringSetup(page: Page, baseURL: string, name: string) {
   const { username, password } = getLoginInfo(name);
-  const loginUrl = url.resolve(baseURL ?? 'http://app-for-e2e/', '/auth/login');
+  const loginUrl = url.resolve(baseURL ?? 'http://localhost:3238/', '/auth/login');
   console.log(loginUrl);
   await page.goto(loginUrl);
   await page.locator('input[name="_username"]').fill(username);
