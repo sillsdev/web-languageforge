@@ -14,7 +14,7 @@ export function jsonRpcParams(method: string, orderedParams: any[] = [], params:
   } else {
     params.orderedParams = orderedParams;
   }
-  return { version: '2.0', method: 'session_getSessionData', params, id: nextId() };
+  return { version: '2.0', method, params, id: nextId() };
 }
 
 export async function jsonRpc(request: APIRequestContext, method: string, orderedParams: any[] = [], params: any = {}) {
