@@ -15,61 +15,45 @@ test.describe.only('Multiple users editing the same project', () => {
     await updateProjectConfig(adminRequest, session.projectSettings.config);
     adminPage = await getLoggedInPage(browser, 'admin');
     memberPage = await getLoggedInPage(browser, 'member');
-  });
-
-  test('Multiple users in different tabs', async () => {
-    await Promise.all([
-      adminPage.goto('/'),
-      memberPage.goto('/'),
-    ]);
-    await Promise.all([
-      expect(adminPage.locator('#userDropdown')).toContainText(constants.adminUsername),
-      expect(memberPage.locator('#userDropdown')).toContainText(constants.memberUsername),
-    ]);
-  });
-
-  test('Load project and entry', async () => {
     await Promise.all([
       adminPage.goto('/app/projects'),
       memberPage.goto('/app/projects'),
     ]);
     await Promise.all([
-      adminPage.screenshot({path: 'admin-projects.png'}),
-      memberPage.screenshot({path: 'member-projects.png'}),
-    ]);
-    await Promise.all([
       adminPage.locator(`div.listview a:has-text("${constants.testProjectName}")`).click(),
       memberPage.locator(`div.listview a:has-text("${constants.testProjectName}")`).click(),
-    ]);
-    await Promise.all([
-      adminPage.locator(`text=${entryName}`).click(),
-      memberPage.locator(`text=${entryName}`).click(),
-    ]);
-    await Promise.all([
-      adminPage.screenshot({path: 'admin-project.png'}),
-      memberPage.screenshot({path: 'member-project.png'}),
     ]);
   });
 
   test('Edit data in one entry', async () => {
     await Promise.all([
-      adminPage.goto('/app/projects'),
-      // memberPage.goto('/app/projects'),
+      adminPage.locator(`#scrolling-entry-words-container >> text=${entryName}`).click(),
+      memberPage.locator(`#scrolling-entry-words-container >> text=${entryName}`).click(),
     ]);
     await Promise.all([
-      adminPage.locator(`div.listview a:has-text("${constants.testProjectName}")`).click(),
-      // memberPage.locator(`div.listview a:has-text("${constants.testProjectName}")`).click(),
+      expect(await getField(adminPage, "Word", "th").inputValue()).toContain(constants.testEntry2.lexeme['th'].value),
+      expect(await getField(memberPage, "Word", "tipa").inputValue()).toContain(constants.testEntry2.lexeme['th-fonipa'].value),
     ]);
     await Promise.all([
-      adminPage.locator(`text=${entryName}`).click(),
-      // memberPage.locator(`text=${entryName}`).click(),
-    ]);
-    await Promise.all([
-      getField(adminPage, "Word", "tipa").fill('tipa for Word'),
+      getField(adminPage, "Word", "tipa").fill('tipa for Word from admin'),
+      getField(memberPage, "Word", "th").fill('th for Word from member'),
     ]);
     await Promise.all([
       adminPage.screenshot({path: 'admin-filled-in.png'}),
+      memberPage.screenshot({path: 'member-filled-in.png'}),
     ]);
+    await Promise.all([
+      adminPage.waitForTimeout(24 * 1000),
+      memberPage.waitForTimeout(24 * 1000),
+    ]);
+    await Promise.all([
+      adminPage.screenshot({path: 'admin-waited.png'}),
+      memberPage.screenshot({path: 'member-waited.png'}),
+    ]);
+    // await Promise.all([
+    //   expect(await getField(adminPage, "Word", "th").inputValue()).toContain('th for Word from member'),
+    //   expect(await getField(memberPage, "Word", "tipa").inputValue()).toContain('tipa for Word from admin'),
+    // ]);
   });
 });
 
