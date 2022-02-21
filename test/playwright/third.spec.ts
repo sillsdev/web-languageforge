@@ -15,8 +15,6 @@ test.only('Multiple users in different tabs', async ({ browser }) => {
 
   const adminRequest = await request.newContext({ storageState: 'admin-storageState.json', baseURL: 'http://app-for-e2e' });
   const session = await getSession(adminRequest);
-  console.log('Got session. Looking up poll request interval...');
-  console.log(session?.projectSettings?.config?.pollUpdateIntervalMs);
   expect(session).toBeDefined();
   expect(session?.projectSettings?.config?.pollUpdateIntervalMs).toBeDefined();
   expect(session?.projectSettings?.config?.pollUpdateIntervalMs).toBeGreaterThanOrEqual(0);
@@ -24,8 +22,6 @@ test.only('Multiple users in different tabs', async ({ browser }) => {
   expect(session?.projectSettings?.config?.pollUpdateIntervalMs).toEqual(10 * 1000);
   await updateProjectConfig(adminRequest, session.projectSettings.config);
   const sessionAfterUpdate = await getSession(adminRequest);
-  console.log('Now session is:');
-  console.log(sessionAfterUpdate);
   expect(sessionAfterUpdate?.projectSettings?.config?.pollUpdateIntervalMs).toEqual(10 * 1000);
 });
 
