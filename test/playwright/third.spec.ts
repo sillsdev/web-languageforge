@@ -3,26 +3,29 @@ import { getLoggedInPage } from './login';
 import constants from '../app/testConstants.json';
 import { jsonRpc } from './utils/json-rpc';
 
-test.only('Multiple users in different tabs', async ({ browser }) => {
-  const adminPage = await getLoggedInPage(browser, 'admin');
-  const memberPage = await getLoggedInPage(browser, 'member');
+test.describe('Multiple users editing the same project', () => {
 
-  await adminPage.goto('/');
-  await memberPage.goto('/');
+  test.only('Multiple users in different tabs', async ({ browser }) => {
+    const adminPage = await getLoggedInPage(browser, 'admin');
+    const memberPage = await getLoggedInPage(browser, 'member');
 
-  await expect(adminPage.locator('#userDropdown')).toContainText(constants.adminUsername);
-  await expect(memberPage.locator('#userDropdown')).toContainText(constants.memberUsername);
+    await adminPage.goto('/');
+    await memberPage.goto('/');
 
-  const adminRequest = await request.newContext({ storageState: 'admin-storageState.json', baseURL: 'http://app-for-e2e' });
-  const session = await getSession(adminRequest);
-  expect(session).toBeDefined();
-  expect(session?.projectSettings?.config?.pollUpdateIntervalMs).toBeDefined();
-  expect(session?.projectSettings?.config?.pollUpdateIntervalMs).toBeGreaterThanOrEqual(0);
-  session.projectSettings.config.pollUpdateIntervalMs = 10 * 1000;
-  expect(session?.projectSettings?.config?.pollUpdateIntervalMs).toEqual(10 * 1000);
-  await updateProjectConfig(adminRequest, session.projectSettings.config);
-  const sessionAfterUpdate = await getSession(adminRequest);
-  expect(sessionAfterUpdate?.projectSettings?.config?.pollUpdateIntervalMs).toEqual(10 * 1000);
+    await expect(adminPage.locator('#userDropdown')).toContainText(constants.adminUsername);
+    await expect(memberPage.locator('#userDropdown')).toContainText(constants.memberUsername);
+
+    const adminRequest = await request.newContext({ storageState: 'admin-storageState.json', baseURL: 'http://app-for-e2e' });
+    const session = await getSession(adminRequest);
+    expect(session).toBeDefined();
+    expect(session?.projectSettings?.config?.pollUpdateIntervalMs).toBeDefined();
+    expect(session?.projectSettings?.config?.pollUpdateIntervalMs).toBeGreaterThanOrEqual(0);
+    session.projectSettings.config.pollUpdateIntervalMs = 10 * 1000;
+    expect(session?.projectSettings?.config?.pollUpdateIntervalMs).toEqual(10 * 1000);
+    await updateProjectConfig(adminRequest, session.projectSettings.config);
+    const sessionAfterUpdate = await getSession(adminRequest);
+    expect(sessionAfterUpdate?.projectSettings?.config?.pollUpdateIntervalMs).toEqual(10 * 1000);
+  });
 });
 
 function getSession(requestContext: APIRequestContext) {
