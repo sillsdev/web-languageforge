@@ -37,21 +37,26 @@ test.describe.only('Multiple users editing the same project', () => {
       getField(memberPage, "Word", "th").fill('th for Word from member'),
     ]);
     await Promise.all([
+      getField(adminPage, "Word", "th").click(),
+      getField(memberPage, "Word", "tipa").click(),
+    ]);
+    await Promise.all([
       adminPage.screenshot({path: 'admin-filled-in.png'}),
       memberPage.screenshot({path: 'member-filled-in.png'}),
     ]);
+    test.setTimeout(120 * 1000); // Otherwise waiting 75s will run over the default 30s timeout
     await Promise.all([
-      adminPage.waitForTimeout(24 * 1000),
-      memberPage.waitForTimeout(24 * 1000),
+      adminPage.waitForTimeout(75 * 1000),
+      memberPage.waitForTimeout(75 * 1000),
     ]);
     await Promise.all([
       adminPage.screenshot({path: 'admin-waited.png'}),
       memberPage.screenshot({path: 'member-waited.png'}),
     ]);
-    // await Promise.all([
-    //   expect(await getField(adminPage, "Word", "th").inputValue()).toContain('th for Word from member'),
-    //   expect(await getField(memberPage, "Word", "tipa").inputValue()).toContain('tipa for Word from admin'),
-    // ]);
+    await Promise.all([
+      expect(await getField(adminPage, "Word", "th").inputValue()).toContain('th for Word from member'),
+      expect(await getField(memberPage, "Word", "tipa").inputValue()).toContain('tipa for Word from admin'),
+    ]);
   });
 });
 
