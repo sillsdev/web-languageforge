@@ -346,6 +346,21 @@ class ProjectCommands
     }
 
     /**
+     * @param string $code
+     * @return string
+     */
+    public static function getProjectIdByCode($code)
+    {
+        $project = new ProjectModel();
+
+        if ($project->readByProperties(array('projectCode' => $code))) {
+            return $project->id->asString();
+        } else {
+            return '';
+        }
+    }
+
+    /**
      * @param string $projectId
      * @param string $defaultRole
      * @return string invite link to project

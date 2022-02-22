@@ -6,6 +6,7 @@ import { jsonRpc } from './utils/json-rpc';
 test.describe.only('Multiple users editing the same project', () => {
   let adminPage: Page;
   let memberPage: Page;
+  let projectId: string;
   const entryName: string = constants.testEntry2.lexeme.th.value;
 
   test.beforeEach(async ({browser, baseURL}) => {
@@ -13,15 +14,12 @@ test.describe.only('Multiple users editing the same project', () => {
     const session = await getSession(adminRequest);
     session.projectSettings.config.pollUpdateIntervalMs = 10 * 1000;
     await updateProjectConfig(adminRequest, session.projectSettings.config);
+    projectId = await getProjectId(adminRequest, constants.testProjectCode);
     adminPage = await getLoggedInPage(browser, 'admin');
     memberPage = await getLoggedInPage(browser, 'member');
     await Promise.all([
-      adminPage.goto('/app/projects'),
-      memberPage.goto('/app/projects'),
-    ]);
-    await Promise.all([
-      adminPage.locator(`div.listview a:has-text("${constants.testProjectName}")`).click(),
-      memberPage.locator(`div.listview a:has-text("${constants.testProjectName}")`).click(),
+      projectId ? adminPage.goto(`/app/lexicon/${projectId}`) : adminPage.goto('/app/projects'),
+      projectId ? memberPage.goto(`/app/lexicon/${projectId}`) : memberPage.goto('/app/projects'),
     ]);
   });
 
@@ -67,4 +65,8 @@ function updateProjectConfig(requestContext: APIRequestContext, config: any) {
 
 function getField(page: Page, fieldName: string, ws: string) {
   return page.locator(`div.dc-entry form:has-text("${fieldName}") .input-group:has(span.wsid:text-is("${ws}")) textarea`)
+}
+
+function getProjectId(requestContext: APIRequestContext, projectCode: string) {
+  return jsonRpc(requestContext, 'project_id_by_code', [projectCode]);
 }

@@ -347,6 +347,11 @@ class Sf
         return ProjectListDto::encode($this->userId, $this->website);
     }
 
+    public function project_id_by_code($code)
+    {
+        return ProjectCommands::getProjectIdByCode($code);
+    }
+
     public function project_joinProject($projectId, $role)
     {
         return ProjectCommands::updateUserRole($projectId, $this->userId, $role);

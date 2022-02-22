@@ -180,6 +180,7 @@ class RightsHelper
                 return $this->userHasSiteRight(Domain::PROJECTS + Operation::ARCHIVE);
 
             case 'project_list':
+            case 'project_id_by_code':
                 return $this->userHasSiteRight(Domain::PROJECTS + Operation::VIEW);
 
             case 'project_create':
