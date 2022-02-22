@@ -26,7 +26,7 @@ test.describe.only('Multiple users editing the same project', () => {
   test('Edit data in one entry', async () => {
     await Promise.all([
       adminPage.locator(`#scrolling-entry-words-container >> text=${entryName}`).click(),
-      memberPage.locator(`#scrolling-entry-words-container >> text=${entryName}`).click(),
+      memberPage.waitForTimeout(1000).then(() => memberPage.locator(`#scrolling-entry-words-container >> text=${entryName}`).click()),
     ]);
     await Promise.all([
       expect(await getField(adminPage, "Word", "th").inputValue()).toContain(constants.testEntry2.lexeme['th'].value),
@@ -34,7 +34,7 @@ test.describe.only('Multiple users editing the same project', () => {
     ]);
     await Promise.all([
       getField(adminPage, "Word", "tipa").fill('tipa for Word from admin'),
-      getField(memberPage, "Word", "th").fill('th for Word from member'),
+      memberPage.waitForTimeout(1000).then(() => getField(memberPage, "Word", "th").fill('th for Word from member')),
     ]);
     await Promise.all([
       getField(adminPage, "Word", "th").click(),
