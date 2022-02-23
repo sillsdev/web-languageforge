@@ -17,18 +17,18 @@ test.describe.only('Multiple users editing the same project', () => {
     adminPage.goto(`/app/lexicon/${projectId}`);
     const session = await getSession(adminPage.request);
     expect(session.project.id).toEqual(projectId);
-    session.projectSettings.config.pollUpdateIntervalMs = 5000;
+    session.projectSettings.config.pollUpdateIntervalMs = 500;
     expect(session).toBeDefined();
     expect(session?.projectSettings?.config?.pollUpdateIntervalMs).toBeDefined();
     expect(session?.projectSettings?.config?.pollUpdateIntervalMs).toBeGreaterThanOrEqual(0);
     await updateProjectConfig(adminPage.request, session.projectSettings.config);
     const sessionAfterUpdate = await getSession(adminPage.request);
-    expect(sessionAfterUpdate?.projectSettings?.config?.pollUpdateIntervalMs).toEqual(5000);
+    expect(sessionAfterUpdate?.projectSettings?.config?.pollUpdateIntervalMs).toEqual(500);
   });
 
   test('Edit data in one entry', async ({ baseURL }) => {
     const session = await getSession(adminPage.request);
-    expect(session?.projectSettings?.config?.pollUpdateIntervalMs).toEqual(5000);
+    expect(session?.projectSettings?.config?.pollUpdateIntervalMs).toEqual(500);
     await Promise.all([
       projectId ? adminPage.goto(`/app/lexicon/${projectId}`) : adminPage.goto('/app/projects'),
       projectId ? memberPage.goto(`/app/lexicon/${projectId}`) : memberPage.goto('/app/projects'),
