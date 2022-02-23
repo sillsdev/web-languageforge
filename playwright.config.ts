@@ -102,9 +102,9 @@ const config: PlaywrightTestConfig = {
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: 'echo Waiting for web server...',
-    url: 'http://localhost:3238/auth/login',
-    timeout: 120 * 1000,
+    command: 'docker-compose -f docker/docker-compose.yml up app-for-e2e',
+    port: 3238,
+    timeout: 10 * 1000,
     reuseExistingServer: true // !process.env.CI,
   }
 };
