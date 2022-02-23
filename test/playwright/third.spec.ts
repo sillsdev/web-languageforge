@@ -1,4 +1,4 @@
-import { expect, test, APIRequestContext, request, Page } from '@playwright/test';
+import { expect, test, APIRequestContext, request, Page, Route, Response } from '@playwright/test';
 import { getLoggedInPage } from './login';
 import constants from '../app/testConstants.json';
 import { jsonRpc } from './utils/json-rpc';
@@ -12,7 +12,7 @@ test.describe.only('Multiple users editing the same project', () => {
   test.beforeEach(async ({browser, baseURL}) => {
     const adminRequest = await request.newContext({ storageState: 'admin-storageState.json', baseURL });
     const session = await getSession(adminRequest);
-    session.projectSettings.config.pollUpdateIntervalMs = 10 * 1000;
+    session.projectSettings.config.pollUpdateIntervalMs = 5 * 1000;
     await updateProjectConfig(adminRequest, session.projectSettings.config);
     projectId = await getProjectId(adminRequest, constants.testProjectCode);
     adminPage = await getLoggedInPage(browser, 'admin');
@@ -24,6 +24,40 @@ test.describe.only('Multiple users editing the same project', () => {
   });
 
   test('Edit data in one entry', async () => {
+    const routeHandler = (method: string) => {
+      let allowMethod = false;
+      const handler = (route: Route) => {
+        const req = route.request();
+        const json = req.postDataJSON();
+        if (json.method === method) {
+          if (allowMethod) {
+            // allowMethod = false;  // Keep allowing after allowing it once
+            route.continue();
+          } else {
+            route.abort('connectionfailed');
+          }
+        } else {
+          route.continue();
+        }
+      };
+      handler.allowOnce = () => { allowMethod = true; };
+      return handler;
+    };
+    const responseAwaiter = (method: string) => {
+      return (response: Response) => {
+        if (!response.url().endsWith('/api/sf')) return false;
+        const json = response.request().postDataJSON();
+        return (json?.method === method);
+      };
+    };
+    const adminUpdateRouteHandler = routeHandler('lex_entry_update');
+    const memberUpdateRouteHandler = routeHandler('lex_entry_update');
+    const adminDtoUpdateRouteHandler = routeHandler('lex_dbeDtoUpdatesOnly');
+    const memberDtoUpdateRouteHandler = routeHandler('lex_dbeDtoUpdatesOnly');
+    await adminPage.route('**/api/sf', adminUpdateRouteHandler);
+    await memberPage.route('**/api/sf', memberUpdateRouteHandler);
+    await adminPage.route('**/api/sf', adminDtoUpdateRouteHandler);
+    await memberPage.route('**/api/sf', memberDtoUpdateRouteHandler);
     await Promise.all([
       adminPage.locator(`#scrolling-entry-words-container >> text=${entryName}`).click(),
       memberPage.waitForTimeout(1000).then(() => memberPage.locator(`#scrolling-entry-words-container >> text=${entryName}`).click()),
@@ -44,10 +78,18 @@ test.describe.only('Multiple users editing the same project', () => {
       adminPage.screenshot({path: 'admin-filled-in.png'}),
       memberPage.screenshot({path: 'member-filled-in.png'}),
     ]);
-    test.setTimeout(120 * 1000); // Otherwise waiting 75s will run over the default 30s timeout
+    test.setTimeout(45 * 1000); // Otherwise waiting 30s will run over the default 30s timeout
     await Promise.all([
-      adminPage.waitForTimeout(75 * 1000),
-      memberPage.waitForTimeout(75 * 1000),
+      adminPage.waitForResponse(responseAwaiter('lex_entry_update')),
+      memberPage.waitForResponse(responseAwaiter('lex_entry_update')),
+      adminUpdateRouteHandler.allowOnce(),
+      memberUpdateRouteHandler.allowOnce(),
+      ]);
+    await Promise.all([
+      adminPage.waitForResponse(responseAwaiter('lex_dbeDtoUpdatesOnly')),
+      memberPage.waitForResponse(responseAwaiter('lex_dbeDtoUpdatesOnly')),
+      memberDtoUpdateRouteHandler.allowOnce(),
+      adminDtoUpdateRouteHandler.allowOnce(),
     ]);
     await Promise.all([
       adminPage.screenshot({path: 'admin-waited.png'}),
