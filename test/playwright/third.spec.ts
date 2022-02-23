@@ -11,19 +11,28 @@ test.describe.only('Multiple users editing the same project', () => {
 
   test.beforeEach(async ({browser, baseURL}) => {
     const adminRequest = await request.newContext({ storageState: 'admin-storageState.json', baseURL });
-    const session = await getSession(adminRequest);
-    session.projectSettings.config.pollUpdateIntervalMs = 5 * 1000;
-    await updateProjectConfig(adminRequest, session.projectSettings.config);
     projectId = await getProjectId(adminRequest, constants.testProjectCode);
     adminPage = await getLoggedInPage(browser, 'admin');
     memberPage = await getLoggedInPage(browser, 'member');
+    adminPage.goto(`/app/lexicon/${projectId}`);
+    const session = await getSession(adminPage.request);
+    expect(session.project.id).toEqual(projectId);
+    session.projectSettings.config.pollUpdateIntervalMs = 5000;
+    expect(session).toBeDefined();
+    expect(session?.projectSettings?.config?.pollUpdateIntervalMs).toBeDefined();
+    expect(session?.projectSettings?.config?.pollUpdateIntervalMs).toBeGreaterThanOrEqual(0);
+    await updateProjectConfig(adminPage.request, session.projectSettings.config);
+    const sessionAfterUpdate = await getSession(adminPage.request);
+    expect(sessionAfterUpdate?.projectSettings?.config?.pollUpdateIntervalMs).toEqual(5000);
+  });
+
+  test('Edit data in one entry', async ({ baseURL }) => {
+    const session = await getSession(adminPage.request);
+    expect(session?.projectSettings?.config?.pollUpdateIntervalMs).toEqual(5000);
     await Promise.all([
       projectId ? adminPage.goto(`/app/lexicon/${projectId}`) : adminPage.goto('/app/projects'),
       projectId ? memberPage.goto(`/app/lexicon/${projectId}`) : memberPage.goto('/app/projects'),
     ]);
-  });
-
-  test('Edit data in one entry', async () => {
     const routeHandler = (method: string) => {
       let allowMethod = false;
       const handler = (route: Route) => {
@@ -60,7 +69,7 @@ test.describe.only('Multiple users editing the same project', () => {
     await memberPage.route('**/api/sf', memberDtoUpdateRouteHandler);
     await Promise.all([
       adminPage.locator(`#scrolling-entry-words-container >> text=${entryName}`).click(),
-      memberPage.waitForTimeout(1000).then(() => memberPage.locator(`#scrolling-entry-words-container >> text=${entryName}`).click()),
+      memberPage.waitForTimeout(100).then(() => memberPage.locator(`#scrolling-entry-words-container >> text=${entryName}`).click()),
     ]);
     await Promise.all([
       expect(await getField(adminPage, "Word", "th").inputValue()).toContain(constants.testEntry2.lexeme['th'].value),
@@ -68,7 +77,7 @@ test.describe.only('Multiple users editing the same project', () => {
     ]);
     await Promise.all([
       getField(adminPage, "Word", "tipa").fill('tipa for Word from admin'),
-      memberPage.waitForTimeout(1000).then(() => getField(memberPage, "Word", "th").fill('th for Word from member')),
+      memberPage.waitForTimeout(100).then(() => getField(memberPage, "Word", "th").fill('th for Word from member')),
     ]);
     await Promise.all([
       getField(adminPage, "Word", "th").click(),
