@@ -377,7 +377,7 @@ export class LexiconEditorController implements angular.IController {
       const pristineEntryForDiffing = this.removeCustomFieldsForDeltaUpdate(this.prepEntryForUpdate(this.pristineEntry));
       const diffForUpdate = isNewEntry ? undefined : {
         id: entryForUpdate.id,
-        _update_deep_diff: diff(pristineEntryForDiffing, entryForDiffing)
+        _update_deep_diff: diff(LexiconEditorController.normalizeStrings(pristineEntryForDiffing), entryForDiffing)
       };
       let entryOrDiff = isNewEntry ? entryForUpdate : diffForUpdate;
       if (!isNewEntry && this.hasArrayChange(diffForUpdate._update_deep_diff)) {
