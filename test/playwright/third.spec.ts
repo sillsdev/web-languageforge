@@ -29,6 +29,11 @@ test.describe.only('Multiple users editing the same project', () => {
   test('Edit data in one entry', async ({ baseURL }) => {
     const session = await getSession(adminPage.request);
     expect(session?.projectSettings?.config?.pollUpdateIntervalMs).toEqual(500);
+    // Ensure new page load by going to / before project page
+    await Promise.all([
+      adminPage.goto('/'),
+      memberPage.goto('/'),
+    ]);
     await Promise.all([
       projectId ? adminPage.goto(`/app/lexicon/${projectId}`) : adminPage.goto('/app/projects'),
       projectId ? memberPage.goto(`/app/lexicon/${projectId}`) : memberPage.goto('/app/projects'),
