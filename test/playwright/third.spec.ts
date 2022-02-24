@@ -47,34 +47,6 @@ test.describe.only('Multiple users editing the same project', () => {
     expect(adminSession?.projectSettings?.config?.pollUpdateIntervalMs).toEqual(500);
     expect(memberSession?.projectSettings?.config?.pollUpdateIntervalMs).toEqual(500);
 
-    // TODO: Refactor these functions to be *outside* the test since they're generally useful
-    const routeHandler = (method: string) => {
-      let allowMethod = false;
-      const handler = (route: Route) => {
-        const req = route.request();
-        const json = req.postDataJSON();
-        if (json.method === method) {
-          if (allowMethod) {
-            // allowMethod = false;  // Keep allowing after allowing it once
-            route.continue();
-          } else {
-            route.abort('connectionfailed');
-          }
-        } else {
-          route.continue();
-        }
-      };
-      handler.allowOnce = () => { allowMethod = true; };
-      return handler;
-    };
-    const responseAwaiter = (method: string) => {
-      return (response: Response) => {
-        if (!response.url().endsWith('/api/sf')) return false;
-        const json = response.request().postDataJSON();
-        return (json?.method === method);
-      };
-    };
-
     // Give names to the four route handlers so we can call .allow() on them later on
     const adminUpdateRouteHandler = routeHandler('lex_entry_update');
     const memberUpdateRouteHandler = routeHandler('lex_entry_update');
@@ -166,4 +138,32 @@ function getField(page: Page, fieldName: string, ws: string) {
 
 function getProjectId(requestContext: APIRequestContext, projectCode: string) {
   return jsonRpc(requestContext, 'project_id_by_code', [projectCode]);
+}
+
+function routeHandler(method: string) {
+  let allowMethod = false;
+  const handler = (route: Route) => {
+    const req = route.request();
+    const json = req.postDataJSON();
+    if (json.method === method) {
+      if (allowMethod) {
+        // allowMethod = false;  // Keep allowing after allowing it once
+        route.continue();
+      } else {
+        route.abort('connectionfailed');
+      }
+    } else {
+      route.continue();
+    }
+  };
+  handler.allowOnce = () => { allowMethod = true; };
+  return handler;
+}
+
+function responseAwaiter(method: string) {
+  return (response: Response) => {
+    if (!response.url().endsWith('/api/sf')) return false;
+    const json = response.request().postDataJSON();
+    return (json?.method === method);
+  };
 }
