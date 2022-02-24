@@ -12,18 +12,19 @@ test.describe.only('Multiple users editing the same project', () => {
   test.beforeEach(async ({browser, baseURL}) => {
     const adminRequest = await request.newContext({ storageState: 'admin-storageState.json', baseURL });
     projectId = await getProjectId(adminRequest, constants.testProjectCode);
-    adminPage = await getLoggedInPage(browser, 'admin');
-    memberPage = await getLoggedInPage(browser, 'member');
-    adminPage.goto(`/app/lexicon/${projectId}`);
-    const session = await getSession(adminPage.request);
+
+    const session = await getSession(adminRequest);
     expect(session.project.id).toEqual(projectId);
     session.projectSettings.config.pollUpdateIntervalMs = 500;
     expect(session).toBeDefined();
     expect(session?.projectSettings?.config?.pollUpdateIntervalMs).toBeDefined();
     expect(session?.projectSettings?.config?.pollUpdateIntervalMs).toBeGreaterThanOrEqual(0);
-    await updateProjectConfig(adminPage.request, session.projectSettings.config);
-    const sessionAfterUpdate = await getSession(adminPage.request);
+    await updateProjectConfig(adminRequest, session.projectSettings.config);
+    const sessionAfterUpdate = await getSession(adminRequest);
     expect(sessionAfterUpdate?.projectSettings?.config?.pollUpdateIntervalMs).toEqual(500);
+
+    adminPage = await getLoggedInPage(browser, 'admin');
+    memberPage = await getLoggedInPage(browser, 'member');
   });
 
   test('Edit data in one entry', async ({ baseURL }) => {
