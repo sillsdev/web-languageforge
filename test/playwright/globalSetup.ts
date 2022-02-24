@@ -27,7 +27,7 @@ function getProjectId(requestContext: APIRequestContext, baseUrl: string, projec
 
 async function loginDuringSetup(page: Page, config: PlaywrightTestConfig, name: string) {
   const { username, password } = getLoginInfo(name);
-  const baseUrl = config?.use?.baseURL ?? `http://localhost:${config.webServer?.port}/`;
+  const baseUrl = config.projects?.[0]?.use?.baseURL ?? `http://localhost:${config.webServer?.port}/`;
   const loginUrl = url.resolve(baseUrl, '/auth/login');
   console.log(loginUrl);
   await page.goto(loginUrl);
