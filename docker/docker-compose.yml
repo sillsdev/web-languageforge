@@ -37,6 +37,7 @@ services:
       - db
       - mail
       - ld-api
+      - lfmerge
     environment:
       - WAIT_HOSTS=db:27017, mail:25
       - XDEBUG_MODE=develop,debug
@@ -53,7 +54,6 @@ services:
       - FACEBOOK_CLIENT_SECRET=bogus-development-token
       - REMEMBER_ME_SECRET=bogus-development-key
       - LANGUAGE_DEPOT_API_TOKEN=bogus-development-token
-      - LFMERGE_LOGGING_DEST=syslog
     command: sh -c "/wait && apache2-foreground"
     extra_hosts:
       - "host.docker.internal:host-gateway"
@@ -75,6 +75,29 @@ services:
 
       # needed this volume mapping so changes to partials would be reflected in running app.
       - ../src/angular-app:/var/www/src/angular-app
+
+  lfmerge:
+    image: ghcr.io/sillsdev/lfmerge
+    container_name: lfmerge
+    platform: linux/amd64
+    depends_on:
+      - db
+      - ld-api
+    environment:
+      - WAIT_HOSTS=db:27017
+      - ENVIRONMENT=development
+      - DATABASE=scriptureforge
+      - MONGODB_CONN=mongodb://db:27017
+      - LANGUAGE_DEPOT_API_TOKEN=bogus-development-token
+      - LFMERGE_LOGGING_DEST=syslog
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      # holds things like audio files or pictures attached to words within a project
+      - lf-project-assets:/var/www/src/assets
+
+      # holds mercurial repos to avoid full clones/downloads on s/r projects
+      - lfmerge-sendreceive-data:/var/lib/languageforge/lexicon/sendreceive
 
   ssl:
     image: caddy
