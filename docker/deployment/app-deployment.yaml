@@ -178,3 +178,37 @@ spec:
               secretKeyRef:
                 key: LD_TRUST_TOKEN
                 name: ld-trust-token
+      - name: lfmerge
+        # TODO: Decide on a verion-numbering policy for LfMerge releases
+        image: ghcr.io/sillsdev/lfmerge:latest
+        imagePullPolicy: Always
+        volumeMounts:
+          - mountPath: /var/lib/languageforge/lexicon/sendreceive
+            name: sendreceive-data
+        env:
+          - name: DATABASE
+            value: scriptureforge
+          - name: ENVIRONMENT
+            value: production
+          - name: LFMERGE_LOGGING_DEST
+            value: syslog
+          - name: MONGODB_CONN
+            valueFrom:
+              secretKeyRef:
+                key: MONGODB_CONN
+                name: app
+          - name: LDAPI_BASE_URL
+            valueFrom:
+              secretKeyRef:
+                key: LDAPI_BASE_URL
+                name: ld-api
+          - name: LANGUAGE_DEPOT_API_TOKEN
+            valueFrom:
+              secretKeyRef:
+                key: LANGUAGE_DEPOT_API_TOKEN
+                name: ld-api
+          - name: LD_TRUST_TOKEN
+            valueFrom:
+              secretKeyRef:
+                key: LD_TRUST_TOKEN
+                name: ld-trust-token
