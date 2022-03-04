@@ -24,8 +24,8 @@ RUN curl -L http://linux.lsdev.sil.org/downloads/sil-testing.gpg | apt-key add -
 && apt-get update \
 && apt-get install --yes --no-install-recommends python lfmerge rsyslog logrotate iputils-ping \
 && rm -rf /var/lib/apt/lists/*
-COPY docker/app/lfmerge.conf /etc/languageforge/conf/sendreceive.conf
-COPY docker/app/lfmergeqm-background.sh /
+COPY docker/base-php/lfmerge.conf /etc/languageforge/conf/sendreceive.conf
+COPY docker/base-php/lfmergeqm-background.sh /
 RUN adduser www-data fieldworks \
 && chown -R www-data:www-data /var/lib/languageforge \
 && chmod 0755 /var/lib/languageforge \
@@ -36,8 +36,8 @@ RUN adduser www-data fieldworks \
 RUN sed -i '/load="imklog"/s/^/#/' /etc/rsyslog.conf
 
 # php customizations
-COPY docker/app/customizations.php.ini $PHP_INI_DIR/conf.d/
+COPY docker/base-php/customizations.php.ini $PHP_INI_DIR/conf.d/
 
 # apache2 customizations
 RUN a2enmod headers rewrite
-COPY docker/app/000-default.conf /etc/apache2/sites-enabled
+COPY docker/base-php/000-default.conf /etc/apache2/sites-enabled
