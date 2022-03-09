@@ -1,0 +1,60 @@
+name: set-backlog-fields
+
+on:
+  issues:
+    types: [ opened ] ############ exclude pull requests
+
+jobs:
+  steve:
+    runs-on: ubuntu-latest
+    steps:
+      - name: get backlog field ID
+        run: |
+          echo issue $NUMBER created
+          
+          gh api graphql -f query='
+            query($org: String!) {
+              organization(login: $org){
+                projectNext(number: 1) {
+                  id
+                  fields(first:20) {
+                    nodes {
+                      id
+                      name
+                      settings
+                    }
+                  }
+                }
+              }
+            }'
+        env:
+          NUMBER: ${{ github.event.issue.number }}
+          FIELD: ${{ ??????????????????????????????? }}
+        
+      - name: set fields
+        run: |
+          gh api graphql -f query='
+            mutation(
+              $project:ID!
+              $item:ID!
+              $status_field: ID!
+              $status_value: String!)
+            {
+              addProjectNextItem(input: {projectId: $project, contentId: $item})
+              {
+                projectNextItem {
+                  id
+                }
+              }
+              updateProjectNextItemField(input: {
+                projectId: $project
+                itemId: $item
+                fieldId: $field
+                value: $field_value})
+              {
+                projectNextItem {
+                  id
+                }
+              }
+            }' -f project=1 -f item=$NUMBER -f field=$FIELD -f field_value=Ideas
+            
