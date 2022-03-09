@@ -10,12 +10,12 @@ If you don't have a GitHub account or don't want your issue to be public, you ca
 
 ## Other Resources ##
 
-[Acknowledgements](docs/ACKNOWLEDGEMENTS.md)
-[App Known Issues and Limitations](https://github.com/sillsdev/web-languageforge/wiki/Known-Issues-and-Limitations)
-[Issue Tracker](https://github.com/sillsdev/web-languageforge/issues)
-[Community Help Forum](https://community.software.sil.org/c/language-forge/20)
-[Release Announcements](https://github.com/sillsdev/web-languageforge/releases)
-[Language Forge Presentation by Chris Hirt](https://www.youtube.com/watch?v=yyTpviyKBAc)
+* [Acknowledgements](docs/ACKNOWLEDGEMENTS.md)
+* [App Known Issues and Limitations](https://github.com/sillsdev/web-languageforge/wiki/Known-Issues-and-Limitations)
+* [Issue Tracker](https://github.com/sillsdev/web-languageforge/issues)
+* [Community Help Forum](https://community.software.sil.org/c/language-forge/20)
+* [Release Announcements](https://github.com/sillsdev/web-languageforge/releases)
+* [Language Forge Presentation by Chris Hirt](https://www.youtube.com/watch?v=yyTpviyKBAc)
 
 ## Contributing ##
 
