@@ -8,3 +8,5 @@ test/php/\.phpunit\.result\.cache
 node_modules
 .DS_Store
 docker-scan-results.txt
+test-results/
+playwright-report/
