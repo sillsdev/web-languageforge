@@ -24,15 +24,21 @@ export class NavbarController implements angular.IController {
   displayShareButton: boolean;
   projectTypeNames: ProjectTypeNames;
   siteName: string;
+  isLexiconProject: boolean = false;
 
-  static $inject = ['$uibModal',
-    'projectService', 'sessionService',
+  static $inject = [
+    '$scope',
+    '$uibModal',
+    'projectService',
+    'sessionService',
     'offlineCacheUtils',
     'applicationHeaderService'];
-  constructor(private readonly $modal: ModalService,
+  constructor(private readonly $scope: angular.IScope,
+              private readonly $modal: ModalService,
               private readonly projectService: ProjectService, private readonly sessionService: SessionService,
               private readonly offlineCacheUtils: OfflineCacheUtilsService,
-              private readonly applicationHeaderService: ApplicationHeaderService) { }
+              private readonly applicationHeaderService: ApplicationHeaderService,
+              ) { }
 
   $onInit(): void {
     this.projectTypeNames = this.projectService.data.projectTypeNames;
@@ -72,9 +78,17 @@ export class NavbarController implements angular.IController {
         this.displayShareButton =
           (this.currentUserIsProjectManager || (this.project.allowSharing && this.session.data.userIsProjectMember));
       }
+
       this.rights.canCreateProject =
         session.hasSiteRight(this.sessionService.domain.PROJECTS, this.sessionService.operation.CREATE);
       this.siteName = session.baseSite();
+    });
+    this.$scope.$on('$locationChangeStart', (event, next, current) => {
+      if (current.includes('/lexicon') && !current.includes('/new-project')) {
+        this.isLexiconProject = true;
+      } else {
+        this.isLexiconProject = false;
+      }
     });
   }
 
