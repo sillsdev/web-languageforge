@@ -1,4 +1,5 @@
 import { test, expect, Page } from '@playwright/test';
+import { testControl } from './jsonrpc';
 
 test.beforeEach(async ({ page }) => {
   await page.goto('https://demo.playwright.dev/todomvc');
@@ -9,6 +10,13 @@ const TODO_ITEMS = [
   'feed the cat',
   'book a doctors appointment'
 ];
+
+test.only('API call', async ({ request }) => {
+  const result = await testControl(request, 'check_test_api');
+  expect(result).toBeDefined();
+  expect(result).toHaveProperty('api_is_working');
+  expect(result.api_is_working).toBeTruthy();
+});
 
 test.describe('New Todo', () => {
   test('should allow me to add todo items', async ({ page }) => {

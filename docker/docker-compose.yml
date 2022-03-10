@@ -210,6 +210,31 @@ services:
       - LANGUAGE_DEPOT_API_TOKEN=bogus-development-token
     command: sh -c "/wait && /run.sh"
 
+  app-for-playwright:
+    image: lf-app
+    container_name: app-for-playwright
+    platform: linux/amd64
+    depends_on:
+      - db
+      - mail
+    ports:
+      - 3238:80
+    environment:
+      - WAIT_HOSTS=db:27017, mail:25
+      - LDAPI_BASE_URL=http://ld-api:3000/api/v2/
+      - ENVIRONMENT=development
+      - WEBSITE=localhost
+      - DATABASE=scriptureforge_test
+      - MONGODB_CONN=mongodb://db:27017
+      - MAIL_HOST=mail
+      - REMEMBER_ME_SECRET=bogus-development-key
+      - LANGUAGE_DEPOT_API_TOKEN=bogus-development-token
+    command: sh -c "/wait && apache2-foreground"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ../src/Api/Service/TestControl.php:/var/www/src/Api/Service/TestControl.php
+
   test-php:
     build:
       context: ..
