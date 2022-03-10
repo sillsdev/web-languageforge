@@ -264,18 +264,6 @@
     }
   }
 
-  #settings-dropdown-button:not(.app-settings-available) {
-    .dropdown-toggle {
-      visibility: hidden;
-    }
-  }
-
-  #settings-dropdown-button.app-settings-available {
-    .dropdown-toggle {
-      visibility: visible;
-    }
-  }
- 
   #settingsBtn {
     margin: 12px;
     margin-right: 6px;
@@ -287,7 +275,7 @@
       font-size: 1rem;
     }
   }
-  
+
   #settingsBtn::after {
     display:none;
   }

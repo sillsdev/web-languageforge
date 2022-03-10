@@ -40,7 +40,7 @@ describe('Lexicon E2E Configuration Fields', () => {
   });
 
   it('can go to Configuration and select unified Fields tab', async () => {
-    expect<any>(await configPage.settingsMenuLink.isDisplayed()).toBe(true);
+    expect<any>(await configPage.settingsMenuLink.isPresent()).toBe(true);
     await configPage.get();
     expect<any>(await configPage.applyButton.isDisplayed()).toBe(true);
     expect<any>(await configPage.applyButton.isEnabled()).toBe(false);
