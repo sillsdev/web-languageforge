@@ -18,7 +18,11 @@ export function jsonRpcParams(method: string, orderedParams: any[] = [], params:
 }
 
 export async function jsonRpc(request: APIRequestContext, url: string, method: string, orderedParams: any[] = [], params: any = {}) {
-  const result = await request.post(url, { data: jsonRpcParams(method, orderedParams, params) });
+  const result = await request.post(url, {
+    data: jsonRpcParams(method, orderedParams, params),
+    // If debugging API calls, uncomment the next line so your debug session won't time out
+    // timeout: 0,
+   });
   const json = await result.json();
   if (json.result) {
     return json.result;
