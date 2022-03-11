@@ -229,6 +229,7 @@ services:
       - MAIL_HOST=mail
       - REMEMBER_ME_SECRET=bogus-development-key
       - LANGUAGE_DEPOT_API_TOKEN=bogus-development-token
+      - XDEBUG_MODE=develop,debug
     command: sh -c "/wait && apache2-foreground"
     extra_hosts:
       - "host.docker.internal:host-gateway"
