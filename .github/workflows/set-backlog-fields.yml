@@ -2,7 +2,9 @@ name: set-backlog-fields
 
 on:
   issues:
-    types: [ opened ] ############ exclude pull requests
+    types: [ opened ] ############ exclude pull requests and items that already have a Project
+
+  workflow_dispatch:
 
 jobs:
   steve:
@@ -18,7 +20,7 @@ jobs:
       - name: get backlog field ID
         env:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
-          NUMBER: ${{ github.event.issue.number }}
+          NUMBER: 1326
           ORGANIZATION: sillsdev
         run: |
           echo issue $NUMBER created
