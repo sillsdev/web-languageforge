@@ -4,6 +4,7 @@ namespace Api\Service;
 use Api\Model\Shared\Mapper\MongoStore;
 use Api\Model\Shared\Command\UserCommands;
 use Api\Model\Shared\ProjectModel;
+use Api\Model\Shared\UserModel;
 use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\Rights\SystemRoles;
@@ -34,8 +35,6 @@ class TestControl
     /** @var Website */
     private $website;
 
-    private $constants;
-
     public function checkPermissions($methodName)
     {
         // Do nothing; all methods are allowed
@@ -52,10 +51,45 @@ class TestControl
         return ['api_is_working' => true];
     }
 
-    public function init_test_project($projectCode = null, $projectName = null)
+    public function create_user($username, $humanName = null, $password = null, $email = null)
     {
-        $constants = $this->constants;
+        if (! $password) {
+            $password = 'x';
+        }
+        if (! $email) {
+            $email = $username . '@example.com';
+        }
+        if (! $humanName) {
+            $humanName = ucwords(str_replace('_', ' ', $username));
+        }
 
+        // TODO: Handle this with MongoStore instead of through Commands library
+        $userId = UserCommands::createUser([
+            'name' => $humanName,
+            'email' => $email,
+            'password' => $password
+        ],
+            $this->website
+        );
+
+        UserCommands::updateUser([
+            'id' => $userId,
+            'name' => $humanName,
+            'email' => $email,
+            'username' => $username,
+            'password' => $password,
+            'active' => true,
+            'languageDepotUsername' => $username,
+            'role' => strpos($username, 'admin') === false ? SystemRoles::USER : SystemRoles::SYSTEM_ADMIN,
+        ],
+            $this->website
+        );
+
+        return $userId;
+    }
+
+    public function init_test_project($projectCode = null, $projectName = null, $ownerUsername = null)
+    {
         if (! $projectCode) {
             $projectCode = 'test_project';
         }
@@ -64,25 +98,14 @@ class TestControl
         }
 
         // TODO: Handle this with MongoStore instead of through Commands library
-        $adminUserId = UserCommands::createUser([
-            'name' => 'Test Admin', // $constants['adminName'],
-            'email' => 'test_runner_admin@example.com', // $constants['adminEmail'],
-            'password' =>'hammertime', // $constants['adminPassword']
-        ],
-            $this->website
-        );
-        $adminUserId = UserCommands::updateUser([
-            'id' => $adminUserId,
-            'name' => 'Test Admin', // $constants['adminName'],
-            'email' => 'test_runner_admin@example.com', // $constants['adminEmail'],
-            'username' => 'test_runner_admin', // $constants['adminUsername'],
-            'password' =>'hammertime', // $constants['adminPassword'],
-            'active' => true,
-            'languageDepotUsername' => 'admin',
-            'role' => SystemRoles::SYSTEM_ADMIN
-        ],
-            $this->website
-        );
+        $owner = new UserModel();
+        $ownerId = '';
+        if ($owner->readByUserName($ownerUsername)) {
+            $ownerId = $owner->id->asString();
+        } else {
+            $ownerId = $this->create_user($ownerUsername);
+        }
+
 
         $db = MongoStore::connect(DATABASE);
         $db->dropCollection('projects');
@@ -93,8 +116,8 @@ class TestControl
         $projectModel->projectCode = $projectCode;
         $projectModel->appName = LexProjectModel::LEXICON_APP;
         $projectModel->siteName = $this->website->domain;
-        $projectModel->ownerRef = new IdReference($adminUserId);
-        $projectModel->addUser($adminUserId, ProjectRoles::MANAGER);
+        $projectModel->ownerRef = new IdReference($ownerId);
+        $projectModel->addUser($ownerId, ProjectRoles::MANAGER);
         MongoStore::dropAllCollections($projectModel->databaseName());
         MongoStore::dropDB($projectModel->databaseName());
         $projectModel->write();

@@ -11,7 +11,18 @@ test('API call', async ({ request }) => {
 });
 
 test('Reset project', async ({ request, page }) => {
-  const result = await testControl(request, 'init_test_project');
+  const adminId = await testControl(request, 'create_user', [
+    constants.adminUsername,
+    constants.adminName,
+    constants.adminPassword,
+    constants.adminEmail,
+  ]);
+  const result = await testControl(request, 'init_test_project', [
+    constants.testProjectCode,
+    constants.testProjectName,
+    constants.adminUsername,
+  ]);
   await login(page, constants.adminUsername, constants.adminPassword);
+  await page.waitForTimeout(2500);
   await page.screenshot({ path: 'post-login.png' });
 });
