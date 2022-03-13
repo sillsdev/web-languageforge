@@ -35,6 +35,7 @@ FROM ui-builder-base AS development-ui-builder
 ENV NPM_BUILD_SUFFIX=dev
 
 FROM ${ENVIRONMENT}-ui-builder AS ui-builder
+
 # artifacts built to /data/src/dist
 RUN npm run build:${NPM_BUILD_SUFFIX}
 
@@ -42,11 +43,12 @@ RUN npm run build:${NPM_BUILD_SUFFIX}
 # download composer app dependencies
 # git - needed for composer install
 FROM sillsdev/web-languageforge:base-php AS composer-builder
-WORKDIR /composer
-COPY src/composer.json src/composer.lock /composer/
 ENV COMPOSER_ALLOW_SUPERUSER=1
 RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/* \
-    && install-php-extensions @composer && composer install
+    && install-php-extensions @composer
+WORKDIR /composer
+COPY src/composer.json src/composer.lock /composer/
+RUN composer install
 
 # PRODUCTION IMAGE
 FROM sillsdev/web-languageforge:base-php AS production-app
