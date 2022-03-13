@@ -43,6 +43,8 @@ jobs:
           node-version: '14.16.1'
           cache: 'npm'
       -
+        run: npm install -g npm@7.6.3
+      -
         run: npm install
       -
         run: docker-compose build app
