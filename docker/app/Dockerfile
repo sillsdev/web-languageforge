@@ -10,16 +10,15 @@ RUN npm config set unsafe-perm true && npm install -g npm@7.6.3
 RUN mkdir -p /data
 WORKDIR /data
 
-# copy npm cache directory; as optimization for npm install
-COPY --from=sillsdev/web-languageforge:npm-cache /root/.npm /root/.npm
-
 # Copy in files needed for compilation, located in the repo root
 COPY typings ./typings/
-COPY package.json package-lock.json webpack.config.js webpack-dev.config.js webpack-prd.config.js tsconfig.json tslint.json ./
+COPY package.json webpack.config.js webpack-dev.config.js webpack-prd.config.js tsconfig.json tslint.json ./
 
-# unsafe-perm true is required to work around an npm bug since we are running as root, have a git+HTTPS repo source and it has a `prepare` script (perfect storm).
-# see https://github.com/npm/npm/issues/17346
-RUN npm config set unsafe-perm true && npm install --legacy-peer-deps
+# Use built node_modules from host
+COPY node_modules ./node_modules/
+
+# node-sass is platform dependent and so must be rebuilt inside docker
+RUN npm rebuild node-sass
 
 # copy in src local files
 # Note: *.html files in src/angular-app aren't necessary for webpack compilation, however changes to HTML files will invalidate this layer

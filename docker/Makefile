@@ -34,6 +34,7 @@ unit-tests-ci:
 
 .PHONY: build
 build:
+	npm install
 	docker-compose build mail app ld-api
 
 .PHONY: scan
@@ -56,4 +57,3 @@ clean-volumes:
 .PHONY: clean-powerwash
 clean-powerwash: clean-volumes
 	docker-compose down --rmi all
-	docker rmi -f lf-npm-cache:npm-cache
