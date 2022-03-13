@@ -6,7 +6,8 @@ Welcome!  We're glad that you are interested in helping develop Language Forge.
 
 1. Install [Docker](https://www.docker.com/get-started) (Linux users will need some additional steps, please visit https://docs.docker.com/compose/install for info on installing the engine and compose)
 1. Install [Make](https://www.gnu.org/software/make/).  This is actually optional but simplifies things a bit.
-1. Install [Node 14](https://nodejs.org/en/download/).  We recommend using a Node version manager e.g. [nvm](https://github.com/nvm-sh/nvm#installation-and-update)
+1. Install [Node 14.16.1](https://nodejs.org/en/download/).  We recommend using a Node version manager e.g. [nvm](https://github.com/nvm-sh/nvm#installation-and-update)
+1. `npm install -g npm@7.6.3`
 1. Clone the repo:  `git clone https://github.com/sillsdev/web-languageforge`
 1. `cd web-languageforge/docker`
 
