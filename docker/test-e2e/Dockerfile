@@ -1,8 +1,5 @@
 # UI-BUILDER
-FROM node:14.16.1-alpine3.11
-
-# install npm globally
-RUN npm config set unsafe-perm true && npm install -g npm@7.6.3
+FROM node:16.14.0-alpine3.15
 
 RUN mkdir -p /data
 WORKDIR /data
