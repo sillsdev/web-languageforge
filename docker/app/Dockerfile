@@ -19,7 +19,6 @@ COPY package.json package-lock.json webpack.config.js webpack-dev.config.js webp
 
 # unsafe-perm true is required to work around an npm bug since we are running as root, have a git+HTTPS repo source and it has a `prepare` script (perfect storm).
 # see https://github.com/npm/npm/issues/17346
-ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
 RUN npm config set unsafe-perm true && npm install --legacy-peer-deps
 
 # copy in src local files

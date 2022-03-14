@@ -224,7 +224,7 @@ services:
       - LDAPI_BASE_URL=http://ld-api:3000/api/v2/
       - ENVIRONMENT=development
       - WEBSITE=localhost
-      - DATABASE=scriptureforge_test
+      - DATABASE=e2e_test
       - MONGODB_CONN=mongodb://db:27017
       - MAIL_HOST=mail
       - REMEMBER_ME_SECRET=bogus-development-key
