@@ -7,6 +7,7 @@
       "request": "launch",
       "port": 9003,
       "pathMappings": {
+        "/var/www/html/Api/Service/TestControl.php": "${workspaceRoot}/test/e2e/TestControl.php",
         "/var/www/html/": "${workspaceRoot}/src/",
         "/var/www/test/": "${workspaceRoot}/test/"
       }
