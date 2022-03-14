@@ -1,8 +1,9 @@
-import type { APIRequestContext, Page } from '@playwright/test';
-import { expect, test } from '@playwright/test';
+import type { APIRequestContext } from '@playwright/test';
+import { expect } from '@playwright/test';
 import constants from '../app/testConstants.json';
 import { testControl } from './jsonrpc';
-import { login } from './login';
+import type { UserTab } from './fixtures';
+import { test } from './fixtures';
 
 test('API call', async ({ request }: { request: APIRequestContext }) => {
   const result = await testControl(request, 'check_test_api');
@@ -11,19 +12,13 @@ test('API call', async ({ request }: { request: APIRequestContext }) => {
   expect(result.api_is_working).toBeTruthy();
 });
 
-test('Reset project', async ({ request, page }: { request: APIRequestContext, page: Page }) => {
-  const adminId = await testControl(request, 'create_user', [
-    constants.adminUsername,
-    constants.adminName,
-    constants.adminPassword,
-    constants.adminEmail,
-  ]);
+test('Reset project', async ({ request, adminTab }: { request: APIRequestContext, adminTab: UserTab }) => {
   const result = await testControl(request, 'init_test_project', [
     constants.testProjectCode,
     constants.testProjectName,
     constants.adminUsername,
   ]);
-  await login(page, constants.adminUsername, constants.adminPassword);
-  await page.waitForTimeout(2500);
-  await page.screenshot({ path: 'post-login.png' });
+  await adminTab.goto('/app/projects');
+  await expect(adminTab.locator(`[data-ng-repeat="project in visibleProjects"] a:has-text("${constants.testProjectName}")`)).toBeVisible();
+  // await adminTab.screenshot({ path: 'post-login.png' });
 });
