@@ -43,6 +43,15 @@ jobs:
           echo ::set-output name=NAMESPACE::sillsdev/web-languageforge
           echo ::set-output name=TAG::${{ inputs.image-tag }}
       -
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14.16.1'
+          cache: 'npm'
+      -
+        run: npm install -g npm@7.6.3
+      -
+        run: npm install
+      -
         name: Build app
         run: docker-compose build --build-arg ENVIRONMENT=production --build-arg BUILD_VERSION=${{ steps.image.outputs.TAG }} app
       -

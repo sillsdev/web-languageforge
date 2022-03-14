@@ -2,48 +2,12 @@
 
 Welcome!  We're glad that you are interested in helping develop Language Forge.
 
-### Typical ###
-1.  Create a branch off of `develop`
-1.  Create a PR back into `develop`
-1.  Once approved and merged, test those changes on [qa.languageforge.org](https://qa.languageforge.org)
-1.  Once you are satisfied with the changes, coordinate with the team to deliver those changes to the production environment
-1.  Team leads will determine when the right time to cut a release, i.e., tag and deploy, typically this should be within a day or two
-
-### Exception ###
-1.  There may be times when it's necessary to create a branch off of `master` (e.g. a hotfix for the production environment)
-1.  Coordinate with the team to deliver those changes to the production environment
-1.  Team leads will determine when the right time to cut a release, i.e., tag and deploy, this would likely be right away under these exceptional circumstances
-
-## Style Guides ##
-
-PHP code conforms to [PSR-2](http://www.php-fig.org/psr/psr-2/).
-
-- Add `php-cs-fixer` globally installed with *composer* (http://cs.sensiolabs.org/). Here is how to add it to **PhpStorm** (https://hackernoon.com/how-to-configure-phpstorm-to-use-php-cs-fixer-1844991e521f). Use it with the parameters `fix --verbose "$FileDir$/$FileName$"`.
-
-JavaScript code conforms to [AirBNB JS style guide](https://github.com/airbnb/javascript).
-
-- Using PhpStorm with JSCS helps a lot with automating this (see the section below on PhpStorm [Coding Standard and Style](#coding-standard-and-style)).
-
-### AngularJS TypeScript Style Guide ###
-
-Our front-end and E2E tests are written in [**TypeScript**](https://www.typescriptlang.org).
-
-> Note: this repo is currently AngularJS (1.8) not Angular (2+).
-
-Our TypeScript follows the [Angular Style Guide](https://angular.io/guide/styleguide).
-
-Other useful resources:
-
-- [x] [angularjs-styleguide/typescript at master · toddmotto/angularjs-styleguide](https://github.com/toddmotto/angularjs-styleguide/tree/master/typescript#stateless-components)
-- [x] [AngularJS 1.x with TypeScript (or ES6) Best Practices by Martin McWhorter on CodePen](https://codepen.io/martinmcwhorter/post/angularjs-1-x-with-typescript-or-es6-best-practices)
-- [x] [What is best practice to create an AngularJS 1.5 component in Typescript? - Stack Overflow](https://stackoverflow.com/questions/35451652/what-is-best-practice-to-create-an-angularjs-1-5-component-in-typescript)
-- [x] [Don't Panic: Using ui-router as a Component Router](http://dontpanic.42.nl/2016/07/using-ui-router-as-component-router.html)
-- [x] [Lifecycle hooks in Angular 1.5](https://toddmotto.com/angular-1-5-lifecycle-hooks#onchanges)
-
-## Docker Development Environment ##
+## Development Environment Quick Start ##
 
 1. Install [Docker](https://www.docker.com/get-started) (Linux users will need some additional steps, please visit https://docs.docker.com/compose/install for info on installing the engine and compose)
 1. Install [Make](https://www.gnu.org/software/make/).  This is actually optional but simplifies things a bit.
+1. Install [Node 14.16.1](https://nodejs.org/en/download/).  We recommend using a Node version manager e.g. [nvm](https://github.com/nvm-sh/nvm#installation-and-update)
+1. `npm install -g npm@7.6.3`
 1. Clone the repo:  `git clone https://github.com/sillsdev/web-languageforge`
 1. `cd web-languageforge/docker`
 
@@ -100,6 +64,32 @@ To quickly re-run the tests without going through the `make build` process, you 
 
 1. `make unit-tests`
 1. Test results will appear in your terminal
+
+## Style Guides ##
+
+PHP code conforms to [PSR-2](http://www.php-fig.org/psr/psr-2/).
+
+- Add `php-cs-fixer` globally installed with *composer* (http://cs.sensiolabs.org/). Here is how to add it to **PhpStorm** (https://hackernoon.com/how-to-configure-phpstorm-to-use-php-cs-fixer-1844991e521f). Use it with the parameters `fix --verbose "$FileDir$/$FileName$"`.
+
+JavaScript code conforms to [AirBNB JS style guide](https://github.com/airbnb/javascript).
+
+- Using PhpStorm with JSCS helps a lot with automating this (see the section below on PhpStorm [Coding Standard and Style](#coding-standard-and-style)).
+
+### AngularJS TypeScript Style Guide ###
+
+Our front-end and E2E tests are written in [**TypeScript**](https://www.typescriptlang.org).
+
+> Note: this repo is currently AngularJS (1.8) not Angular (2+).
+
+Our TypeScript follows the [Angular Style Guide](https://angular.io/guide/styleguide).
+
+Other useful resources:
+
+- [x] [angularjs-styleguide/typescript at master · toddmotto/angularjs-styleguide](https://github.com/toddmotto/angularjs-styleguide/tree/master/typescript#stateless-components)
+- [x] [AngularJS 1.x with TypeScript (or ES6) Best Practices by Martin McWhorter on CodePen](https://codepen.io/martinmcwhorter/post/angularjs-1-x-with-typescript-or-es6-best-practices)
+- [x] [What is best practice to create an AngularJS 1.5 component in Typescript? - Stack Overflow](https://stackoverflow.com/questions/35451652/what-is-best-practice-to-create-an-angularjs-1-5-component-in-typescript)
+- [x] [Don't Panic: Using ui-router as a Component Router](http://dontpanic.42.nl/2016/07/using-ui-router-as-component-router.html)
+- [x] [Lifecycle hooks in Angular 1.5](https://toddmotto.com/angular-1-5-lifecycle-hooks#onchanges)
 
 ### Debugging E2E Tests
 
