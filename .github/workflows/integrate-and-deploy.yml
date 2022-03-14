@@ -45,10 +45,8 @@ jobs:
       -
         uses: actions/setup-node@v2
         with:
-          node-version: '14.16.1'
+          node-version: '16.14.0'
           cache: 'npm'
-      -
-        run: npm install -g npm@7.6.3
       -
         run: npm install
       -
