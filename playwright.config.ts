@@ -99,8 +99,9 @@ const config: PlaywrightTestConfig = {
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: 'sleep 1',
+    command: 'docker-compose -f docker/docker-compose.yml up app-for-playwright',
     port: 3238,
+    timeout: 15 * 1000,
     reuseExistingServer: true,
   },
 };
