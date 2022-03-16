@@ -90,6 +90,14 @@ services:
       - MONGODB_CONN=mongodb://db:27017
       - LANGUAGE_DEPOT_API_TOKEN=bogus-development-token
       - LFMERGE_LOGGING_DEST=syslog
+      - LFMERGE_BASE_DIR=/var/lib/languageforge/lexicon/sendreceive
+      - LFMERGE_WEBWORK_DIR=webwork
+      - LFMERGE_TEMPLATES_DIR=Templates
+      - LFMERGE_MONGO_HOSTNAME=db
+      - LFMERGE_MONGO_PORT=27017
+      - LFMERGE_MONGO_MAIN_DB_NAME=scriptureforge
+      - LFMERGE_MONGO_DB_NAME_PREFIX=sf_
+      - LFMERGE_VERBOSE_PROGRESS=true
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:

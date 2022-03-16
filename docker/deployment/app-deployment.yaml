@@ -192,6 +192,22 @@ spec:
             value: production
           - name: LFMERGE_LOGGING_DEST
             value: syslog
+          - name: LFMERGE_BASE_DIR
+            value: /var/lib/languageforge/lexicon/sendreceive
+          - name: LFMERGE_WEBWORK_DIR
+            value: webwork
+          - name: LFMERGE_TEMPLATES_DIR
+            value: Templates
+          - name: LFMERGE_MONGO_HOSTNAME
+            value: db
+          - name: LFMERGE_MONGO_PORT
+            value: 27017
+          - name: LFMERGE_MONGO_MAIN_DB_NAME
+            value: scriptureforge
+          - name: LFMERGE_MONGO_DB_NAME_PREFIX
+            value: sf_
+          - name: LFMERGE_VERBOSE_PROGRESS
+            value: true
           - name: MONGODB_CONN
             valueFrom:
               secretKeyRef:
