@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: Generate token
         id: generate_token
-        uses: tibdex/github-app-token@3bc28d706f1f8026f2d39c8fc790d4336bb1cf7e
+        uses: tibdex/github-app-token@36464acb844fc53b9b8b2401da68844f6b05ebb0
         with:
           app_id: ${{ secrets.LFPROJECTBOARDAUTOMATION_APP_ID }}
           private_key: ${{ secrets.LFPROJECTBOARDAUTOMATION_PRIVATE_KEY }}
