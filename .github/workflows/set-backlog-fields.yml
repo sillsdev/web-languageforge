@@ -1,13 +1,12 @@
-name: set-backlog-fields
+name: Add Issue to Project
 
 on:
   issues:
-    types: [ opened ] ############ exclude pull requests and items that already have a Project
-
-  workflow_dispatch:
+    types: [ opened ]
 
 jobs:
   steve:
+    if: ${{ !github.event.issue.pull_request }}
     runs-on: ubuntu-latest
     steps:
       - name: Generate token
@@ -17,32 +16,71 @@ jobs:
           app_id: ${{ secrets.LFPROJECTBOARDAUTOMATION_APP_ID }}
           private_key: ${{ secrets.LFPROJECTBOARDAUTOMATION_PRIVATE_KEY }}
           
-      - name: get backlog field ID
+      - name: determine if issue is already on a project
         env:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
-          NUMBER: 1326
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPO: ${{ toJson(github.event.repository.name) }}
           ORGANIZATION: sillsdev
         run: |
-          echo issue $NUMBER created
+          echo issue $ISSUE_NUMBER added to $REPO
           
+          gh api graphql -f query='
+            query($issue_number:Int!, $org:ID!) {
+              repository(name:"web-languageforge", owner:$org) {
+                issue(number: $issue_number) {
+                  id
+                  projectNextItems(first:100) {
+                    nodes {
+                      id
+                    }
+                  }
+                }
+              }
+            }' -F issue_number=$ISSUE_NUMBER -f org=$ORGANIZATION > project_data.json
+          
+          echo 'IN_PROJECT='$(jq '.data.repository.issue.projectNextItems[] | length' project_data.json) >> $GITHUB_ENV
+    
+      - name: get required info for set operations
+        run: |
           gh api graphql -f query='
             query($org: String!) {
               organization(login: $org){
                 projectNext(number: 1) {
                   id
-                  fields(first:20) {
+                  fields(first:100) {
                     nodes {
                       id
                       name
+                      settings
                     }
                   }
                 }
               }
             }' -f org=$ORGANIZATION > project_data.json
             
-          echo 'FIELD='$(jq '.data.organization.projectNext.fields.nodes[] | select(.name== "Backlog") | .id' project_data.json) >> $GITHUB_ENV
+          echo 'PROJECT_ID='$(jq '.data.organization.projectNext.id' project_data.json) >> $GITHUB_ENV
+          echo 'FIELD_ID='$(jq '.data.organization.projectNext.fields.nodes[] | select(.name== "Backlog") | .id' project_data.json) >> $GITHUB_ENV
+          echo 'TRIAGE_ID='$(jq '.data.organization.projectNext.fields.nodes[] | select(.name== "Backlog") | .settings | fromjson.options[] | select(.name=="Triage") | .id' project_data.json) >> $GITHUB_ENV
         
-      - name: set fields
+      - name: Add issue to project
+        if: env.IN_PROJECT == 0
+        env:
+          ISSUE_ID: ${{ github.event.issue.node_id }} #use ITEM_ID instead for finding on projects
+        run: |
+          item_id="$( gh api graphql -f query='
+            mutation($project:ID!, $item:ID!) {
+              addProjectNextItem(input: {projectId: $project, contentId: $item}) {
+                projectNextItem {
+                  id
+                }
+              }
+            }' -f project=$PROJECT_ID -f item=$ISSUE_ID --jq '.data.addProjectNextItem.projectNextItem.id')"
+          
+          echo 'ITEM_ID='$item_id >> $GITHUB_ENV
+          
+      - name: set Backlog field
+        if: env.IN_PROJECT == 0
         run: |
           gh api graphql -f query='
             mutation(
@@ -51,12 +89,6 @@ jobs:
               $field: ID!
               $field_value: String!)
             {
-              addProjectNextItem(input: {projectId: $project, contentId: $item})
-              {
-                projectNextItem {
-                  id
-                }
-              }
               updateProjectNextItemField(input: {
                 projectId: $project
                 itemId: $item
@@ -67,5 +99,5 @@ jobs:
                   id
                 }
               }
-            }' -f project=1 -f item=$NUMBER -f field=$FIELD -f field_value=Triage
+            }' -f project=$PROJECT_ID -f item=$ITEM_ID -f field=$FIELD_ID -f field_value=${{ env.TRIAGE_ID }}
             
