@@ -2,7 +2,7 @@
 import type { APIRequestContext, FullConfig } from '@playwright/test';
 import { chromium, firefox, webkit } from '@playwright/test';
 import { testControl } from './jsonrpc';
-import constants from '../app/testConstants.json';
+import constants from '../../app/testConstants.json';
 import { loginAs } from './login';
 import { usersToCreate } from './userFixtures';
 
