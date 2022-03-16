@@ -1,9 +1,9 @@
 import type { APIRequestContext } from '@playwright/test';
 import { expect } from '@playwright/test';
 import constants from '../app/testConstants.json';
-import { testControl } from './jsonrpc';
-import type { UserTab } from './fixtures';
-import { test } from './fixtures';
+import { testControl } from './utils/jsonrpc';
+import type { UserTab } from './utils/fixtures';
+import { test } from './utils/fixtures';
 
 test('API call', async ({ request }: { request: APIRequestContext }) => {
   const result = await testControl(request, 'check_test_api');
