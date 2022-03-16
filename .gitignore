@@ -11,3 +11,4 @@ node_modules
 docker-scan-results.txt
 test-results/
 playwright-report/
+*storageState.json
