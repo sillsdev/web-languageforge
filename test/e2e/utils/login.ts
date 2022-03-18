@@ -1,5 +1,5 @@
 import { Browser, Page } from '@playwright/test';
-import constants from '../../app/testConstants.json';
+import constants from '../testConstants.json';
 
 export async function login(page: Page, username: string, password: string) {
   await page.goto('/auth/login');
