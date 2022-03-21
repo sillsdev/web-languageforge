@@ -5,7 +5,7 @@ on:
     types: [ opened ]
 
 jobs:
-  steve:
+  add-to-project:
     if: ${{ !github.event.issue.pull_request }}
     runs-on: ubuntu-latest
     steps:
