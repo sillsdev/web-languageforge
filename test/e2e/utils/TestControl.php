@@ -116,7 +116,6 @@ class TestControl
             $projectName = 'Test Project';
         }
 
-        // TODO: Handle this with MongoStore instead of through Commands library
         $owner = new UserModel();
         $ownerId = '';
         if ($owner->readByUserName($ownerUsername)) {
