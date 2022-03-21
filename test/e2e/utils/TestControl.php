@@ -99,6 +99,14 @@ class TestControl
         return '';
     }
 
+    public function reset_projects()
+    {
+        $db = MongoStore::connect(DATABASE);
+        $db->dropCollection('projects');
+        $db->createCollection('projects');
+        return true;
+    }
+
     public function init_test_project($projectCode = null, $projectName = null, $ownerUsername = null)
     {
         if (! $projectCode) {
@@ -117,10 +125,7 @@ class TestControl
             $ownerId = $this->create_user($ownerUsername);
         }
 
-
         $db = MongoStore::connect(DATABASE);
-        $db->dropCollection('projects');
-        $db->createCollection('projects');
         $coll = $db->selectCollection('projects');
         $projectModel = new ProjectModel();
         $projectModel->projectName = $projectName;

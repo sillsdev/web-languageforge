@@ -14,6 +14,7 @@ test('API call', async ({ request }: { request: APIRequestContext }) => {
 });
 
 test('Reset project', async ({ request, adminTab }: { request: APIRequestContext, adminTab: UserTab }) => {
+  await testControl(request, 'reset_projects');
   const result = await testControl(request, 'init_test_project', [
     constants.testProjectCode,
     constants.testProjectName,
