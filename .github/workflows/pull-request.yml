@@ -31,7 +31,7 @@ jobs:
           github_token: ${{ github.token }}
           files: docker/PhpUnitTests.xml
 
-  build-app:
+  build-app-run-e2e-tests:
     runs-on: ubuntu-latest
 
     steps:
@@ -46,8 +46,16 @@ jobs:
         run: npm install
       -
         run: docker-compose build app
+      -
+        run: docker-compose up -d app-for-playwright
+      -
+        run: npx playwright install
+        working-directory: .
+      -
+        run: npx playwright test
+        working-directory: .
 
-  # e2e-tests:
+  # protractor-tests:
   #   runs-on: ubuntu-latest
 
   #   steps:
