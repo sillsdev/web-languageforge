@@ -1,7 +1,7 @@
 import { expect } from '@playwright/test';
 import { test } from './utils/fixtures';
 import { ChangePasswordPage } from './pages/change-password.page';
-import { changePassword } from './utils/testControl';
+import { changePassword } from './utils/testSetup';
 import { LoginPage } from './pages/login.page';
 import { PageHeader } from './pages/page-header.page';
 
