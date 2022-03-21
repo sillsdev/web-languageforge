@@ -1,6 +1,7 @@
 PhpUnitTests.xml
 docker/e2e-results.xml
 src/assets/*
+src/dist/*
 !src/assets/.gitkeep
 src/cache/*
 !src/cache/.gitkeep
@@ -8,3 +9,6 @@ test/php/\.phpunit\.result\.cache
 node_modules
 .DS_Store
 docker-scan-results.txt
+test-results/
+playwright-report/
+*storageState.json

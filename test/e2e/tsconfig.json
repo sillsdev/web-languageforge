@@ -1,0 +1,26 @@
+{
+  "buildOnSave": false,
+  "compileOnSave": false,
+  "compilerOptions": {
+    "alwaysStrict": true,
+    "emitDecoratorMetadata": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "lib": ["es7", "dom"],
+    "module" : "commonjs",
+    "moduleResolution": "Node",
+    "noImplicitAny": true,
+    "resolveJsonModule": true,
+    "rootDir": ".",
+    "sourceMap": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "target": "ES6",
+    "typeRoots": [
+      "node_modules/@types"
+    ]
+  },
+  "exclude": [
+    "node_modules"
+  ],
+  "include": ["**/*.ts"]
+}
