@@ -10,7 +10,7 @@ use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Shared\Mapper\IdReference;
-
+use Api\Model\Languageforge\Lexicon\Command\LexProjectCommands;
 // use MongoDB\Client;
 
 use Api\Library\Shared\Website;
@@ -133,5 +133,25 @@ class TestControl
         MongoStore::dropDB($projectModel->databaseName());
         $projectModel->write();
         return $projectModel->id->asString();
+    }
+
+    public function add_custom_field(string $projectCode, string $customFieldName, string $customFieldType = 'MultiString')
+    {
+        if (\strpos($customFieldName, 'customField_') !== 0) {
+            $customFieldName = 'customField_' . $customFieldName;
+        }
+        $customFieldSpec = [ 'fieldName' => $customFieldName, 'fieldType' => $customFieldType ];
+        $result = LexProjectCommands::updateCustomFieldViews($projectCode, [$customFieldSpec]);
+        return $result;
+    }
+
+    public function get_project_json(string $projectCode) {
+        $db = MongoStore::connect(DATABASE);
+        $project = $db->projects->findOne(['projectCode' => $projectCode]);
+        return $project;
+    }
+
+    public function new_method() {
+        return 'hello';
     }
 }
