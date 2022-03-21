@@ -5,7 +5,7 @@ on:
     types: [ opened ]
 
 jobs:
-  steve:
+  add_issue_to_project:
     if: ${{ !github.event.issue.pull_request }}
     runs-on: ubuntu-latest
     steps:
@@ -26,7 +26,7 @@ jobs:
           echo issue $ISSUE_NUMBER added to $REPO
           
           gh api graphql -f query='
-            query($issue_number:Int!, $org:ID!) {
+            query($issue_number:Int!, $org:String!) {
               repository(name:"web-languageforge", owner:$org) {
                 issue(number: $issue_number) {
                   id
@@ -60,8 +60,8 @@ jobs:
             }' -f org=$ORGANIZATION > project_data.json
             
           echo 'PROJECT_ID='$(jq '.data.organization.projectNext.id' project_data.json) >> $GITHUB_ENV
-          echo 'FIELD_ID='$(jq '.data.organization.projectNext.fields.nodes[] | select(.name== "Backlog") | .id' project_data.json) >> $GITHUB_ENV
-          echo 'TRIAGE_ID='$(jq '.data.organization.projectNext.fields.nodes[] | select(.name== "Backlog") | .settings | fromjson.options[] | select(.name=="Triage") | .id' project_data.json) >> $GITHUB_ENV
+          echo 'FIELD_ID='$(jq '.data.organization.projectNext.fields.nodes[] | select(.name== "ProductOwner") | .id' project_data.json) >> $GITHUB_ENV
+          echo 'TRIAGE_ID='$(jq '.data.organization.projectNext.fields.nodes[] | select(.name== "ProductOwner") | .settings | fromjson.options[] | select(.name=="Triage") | .id' project_data.json) >> $GITHUB_ENV
         
       - name: Add issue to project
         if: env.IN_PROJECT == 0
@@ -79,7 +79,7 @@ jobs:
           
           echo 'ITEM_ID='$item_id >> $GITHUB_ENV
           
-      - name: set Backlog field
+      - name: set project field
         if: env.IN_PROJECT == 0
         run: |
           gh api graphql -f query='
