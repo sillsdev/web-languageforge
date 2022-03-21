@@ -73,7 +73,6 @@ test.describe('E2E Page Traversal', () => {
     await siteAdminPage.goto();
 
     await siteAdminPage.tabs.archivedProjects.click();
-    // TODO: data.slice is not a function (error in console) when clicked - fix this bug
     await expect(siteAdminPage.archivedProjectsTab.republishButton).toBeDisabled();
     await expect(siteAdminPage.archivedProjectsTab.deleteButton).toBeDisabled();
     await siteAdminPage.archivedProjectsTab.projectsList.count();
