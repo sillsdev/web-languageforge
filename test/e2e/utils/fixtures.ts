@@ -2,9 +2,13 @@
 import { test as base } from '@playwright/test';
 import type { Browser, Page } from '@playwright/test';
 import type { usernamesForFixture } from './userFixtures';
+import constants from '../testConstants.json';
 
 export type UserTab = Page & {
-  username: string;
+  username: string,
+  password: string,
+  name: string,
+  email: string,
 }
 
 const userTab = (username: usernamesForFixture) => async ({ browser, browserName }: { browser: Browser, browserName: string}, use: (r: UserTab) => Promise<void>) => {
@@ -12,7 +16,10 @@ const userTab = (username: usernamesForFixture) => async ({ browser, browserName
   const context = await browser.newContext({ storageState })
   const page = await context.newPage();
   const tab = page as UserTab;
-  tab.username = username;
+  tab.username = constants[`${username}Username`] ?? username;
+  tab.name = constants[`${username}Name`] ?? username;
+  tab.password = constants[`${username}Password`] ?? 'x';
+  tab.email = constants[`${username}Email`] ?? `${username}@example.com`;
   await use(tab);
   await tab.close();
   await context.close();
