@@ -47,7 +47,7 @@ export default async function globalSetup(config: FullConfig) {
       const context = await browser.newContext({ baseURL });
       const page = await context.newPage();
       await loginAs(page, user);
-      await context.storageState({ path: `${browserName}-${user}-storageState.json` });
+      await context.storageState({ path });
     }
   }
 }
