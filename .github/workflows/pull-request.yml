@@ -43,13 +43,15 @@ jobs:
           node-version: '16.14.0'
           cache: 'npm'
       -
-        run: npm install
+        run: npm ci
       -
         run: docker-compose build app
       -
         run: docker-compose up -d app-for-playwright
+        
+        # see https://playwright.dev/docs/ci#github-actions
       -
-        run: npx playwright install
+        run: npx playwright install --with-deps
         working-directory: .
       -
         run: npx playwright test
