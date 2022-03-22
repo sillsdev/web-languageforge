@@ -5,6 +5,7 @@ import { testControl } from './jsonrpc';
 import constants from '../../app/testConstants.json';
 import { loginAs } from './login';
 import { usersToCreate } from './userFixtures';
+import * as fs from 'fs';
 
 function createUser(request: APIRequestContext, baseName: string) {
   const username = constants[`${baseName}Username`] ?? baseName;
@@ -34,13 +35,19 @@ export default async function globalSetup(config: FullConfig) {
       createUser(context.request, user);
     }
     // Now log in as each user and ensure there's a storage state saved
-    // TODO: Optimize by skipping if storage state exists and is less than N days old,
-    // where N is based on the lifetime of our login cookies in the Language Forge source
+    const sessionLifetime = 365 * 24 * 60 * 60 * 1000;  // 1 year, in milliseconds
+    const now = new Date();
+    const sessionCutoff = now.getTime() - sessionLifetime;
     for (const user of usersToCreate) {
+      const path = `${browserName}-${user}-storageState.json`;
+      if (fs.existsSync(path) && fs.statSync(path)?.ctimeMs >= sessionCutoff) {
+        // Storage state file is recent, no need to re-create it
+        continue;
+      }
       const context = await browser.newContext({ baseURL });
       const page = await context.newPage();
       await loginAs(page, user);
-      await context.storageState({ path: `${browserName}-${user}-storageState.json` });
+      await context.storageState({ path });
     }
   }
 }
