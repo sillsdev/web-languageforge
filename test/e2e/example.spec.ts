@@ -1,6 +1,6 @@
 import type { APIRequestContext } from '@playwright/test';
 import { expect } from '@playwright/test';
-import constants from '../app/testConstants.json';
+import constants from './testConstants.json';
 import { testControl } from './utils/jsonrpc';
 import type { UserTab } from './utils/fixtures';
 import { test } from './utils/fixtures';

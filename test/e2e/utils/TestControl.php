@@ -5,6 +5,7 @@ use Api\Model\Shared\Mapper\MongoStore;
 use Api\Model\Shared\Command\UserCommands;
 use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\UserModel;
+use Api\Model\Shared\UserModelWithPassword;
 use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\Rights\SystemRoles;
@@ -86,6 +87,16 @@ class TestControl
         );
 
         return $userId;
+    }
+
+    public function change_password($username, $password)
+    {
+        $user = new UserModelWithPassword();
+        if ($user->readByUserName($username)) {
+            $user->changePassword($password);
+            return $user->write();
+        }
+        return '';
     }
 
     public function init_test_project($projectCode = null, $projectName = null, $ownerUsername = null)

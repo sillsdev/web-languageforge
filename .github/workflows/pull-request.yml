@@ -31,7 +31,7 @@ jobs:
           github_token: ${{ github.token }}
           files: docker/PhpUnitTests.xml
 
-  build-app:
+  build-app-run-e2e-tests:
     runs-on: ubuntu-latest
 
     steps:
@@ -43,11 +43,21 @@ jobs:
           node-version: '16.14.0'
           cache: 'npm'
       -
-        run: npm install
+        run: npm ci
       -
         run: docker-compose build app
+      -
+        run: docker-compose up -d app-for-playwright
+        
+        # see https://playwright.dev/docs/ci#github-actions
+      -
+        run: npx playwright install --with-deps
+        working-directory: .
+      -
+        run: npx playwright test
+        working-directory: .
 
-  # e2e-tests:
+  # protractor-tests:
   #   runs-on: ubuntu-latest
 
   #   steps:
