@@ -31,13 +31,15 @@ export const test = (base
    managerTab: UserTab,
    memberTab: UserTab,
    member2Tab: UserTab,
-   observerTab: UserTab
+   observerTab: UserTab,
+   tab: Page
   }>(
   {
     adminTab: userTab('admin'),
     managerTab: userTab('manager'),
     memberTab: userTab('member'),
     member2Tab: userTab('member2'),
-    observerTab: userTab('observer')
+    observerTab: userTab('observer'),
+    tab: async ({ page }, use) => use(page)
   }
 ));
