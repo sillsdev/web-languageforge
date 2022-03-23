@@ -20,6 +20,4 @@ export class ProjectsPage {
     await this.page.goto(ProjectsPage.url);
     await expect(this.pageName).toBeVisible();
   }
-
-  // TODO: write feature request: implement a waiting spinning somthing indicator - create github issue as feature request
 }

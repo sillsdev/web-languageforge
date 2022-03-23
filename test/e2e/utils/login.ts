@@ -1,5 +1,6 @@
 import { Browser, Page } from '@playwright/test';
 import constants from '../testConstants.json';
+import type { usernamesForFixture } from './userFixtures';
 
 export async function login(page: Page, username: string, password: string) {
   await page.goto('/auth/login');
@@ -15,7 +16,7 @@ export async function logout(page: Page) {
   return await page.goto('/auth/logout');
 }
 
-export function getLoginInfo(name: string) {
+export function getLoginInfo(name: usernamesForFixture) {
   const usernameKey = `${name}Username`;
   const passwordKey = `${name}Password`;
   if (Object.hasOwnProperty.call(constants, usernameKey)) {
@@ -28,7 +29,7 @@ export function getLoginInfo(name: string) {
   }
 }
 
-export function loginAs(page: Page, name: string) {
+export function loginAs(page: Page, name: usernamesForFixture) {
   const { username, password } = getLoginInfo(name);
   return login(page, username, password);
 }
