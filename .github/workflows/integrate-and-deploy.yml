@@ -48,18 +48,23 @@ jobs:
           node-version: '16.14.0'
           cache: 'npm'
       -
-        run: npm install
+        run: npm ci
       -
         name: Build app
         run: docker-compose build --build-arg ENVIRONMENT=production --build-arg BUILD_VERSION=${{ steps.image.outputs.TAG }} app
       -
         run:  docker-compose run --rm app cat /var/www/html/build-version.txt /var/www/html/version.php
       -
-        name: Check unit tests
+        name: Unit Tests
         run: make unit-tests-ci
-      # -
-      #   name: Check e2e tests
-      #   run: make e2e-tests-ci
+      -
+        name: Setup Playwright E2E test environment
+        run: docker-compose up -d app-for-playwright
+        working-directory: docker
+      -
+        run: npx playwright install
+      -
+        run: npx playwright test
       -
         name: Log in to Docker Hub
         uses: docker/login-action@v1
