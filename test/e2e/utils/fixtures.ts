@@ -27,9 +27,17 @@ const userTab = (username: usernamesForFixture) => async ({ browser, browserName
 
 // Extend basic test by providing a "todoPage" fixture.
 export const test = (base
-  .extend<{ adminTab: UserTab }>({ adminTab: userTab('admin') })
-  .extend<{ managerTab: UserTab }>({ managerTab: userTab('manager') })
-  .extend<{ memberTab: UserTab }>({ memberTab: userTab('member') })
-  .extend<{ member2Tab: UserTab }>({ member2Tab: userTab('member2') })
-  .extend<{ observerTab: UserTab }>({ observerTab: userTab('observer') })
-);
+  .extend<{ adminTab: UserTab,
+   managerTab: UserTab,
+   memberTab: UserTab,
+   member2Tab: UserTab,
+   observerTab: UserTab
+  }>(
+  {
+    adminTab: userTab('admin'),
+    managerTab: userTab('manager'),
+    memberTab: userTab('member'),
+    member2Tab: userTab('member2'),
+    observerTab: userTab('observer')
+  }
+));
