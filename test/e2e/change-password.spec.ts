@@ -9,14 +9,14 @@ test.describe('E2E Change Password app', () => {
   const newPassword = '12345678';
   let changePasswordPage: ChangePasswordPage;
 
-  test.beforeEach(async ({ memberTab }) => {
+  test.beforeAll(async ({ memberTab }) => {
     changePasswordPage = new ChangePasswordPage(memberTab);
     await changePasswordPage.goto();
   });
 
-  test.afterEach(async ({ memberTab, request }) => {
+  test.afterAll(async ({ member, request }) => {
     // reset password back to original
-    await changePassword(request, memberTab.username, memberTab.password);
+    await changePassword(request, member.username, member.password);
   });
 
   test('Refuses to allow form submission if the confirm input does not match', async () => {
@@ -38,7 +38,7 @@ test.describe('E2E Change Password app', () => {
     await expect (changePasswordPage.submitButton).toBeDisabled();
   });
 
-  test('Can successfully change user\'s password after form submission', async ({ page, memberTab }) => {
+  test('Can successfully change user\'s password after form submission', async ({ page, member }) => {
     await changePasswordPage.passwordInput.fill(newPassword);
     await changePasswordPage.confirmInput.fill(newPassword);
     await expect (changePasswordPage.passwordMatchImage).toBeVisible();
@@ -56,7 +56,7 @@ test.describe('E2E Change Password app', () => {
     // await login(memberTab, memberTab.username, newPassword);
 
     const loginPage = new LoginPage(page);
-    await loginPage.loginAs(memberTab.username, newPassword);
+    await loginPage.loginAs(member.username, newPassword);
     const pageHeader = new PageHeader(page);
     await expect (pageHeader.myProjects.button).toBeVisible();
   });
