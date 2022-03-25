@@ -2,12 +2,18 @@
 
 namespace Api\Service;
 use Api\Model\Shared\Mapper\MongoStore;
+use Api\Model\Shared\Mapper\ArrayOf;
 use Api\Model\Shared\Command\UserCommands;
 use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\UserModel;
 use Api\Model\Shared\UserModelWithPassword;
 use Api\Model\Languageforge\Lexicon\LexEntryModel;
 use Api\Model\Languageforge\Lexicon\LexProjectModel;
+use Api\Model\Languageforge\Lexicon\Config\LexConfig;
+use Api\Model\Languageforge\Lexicon\Config\LexConfigOptionList;
+use Api\Model\Languageforge\Lexicon\Config\LexConfigMultiOptionList;
+use Api\Model\Languageforge\Lexicon\Config\LexConfigMultiParagraph;
+use Api\Model\Languageforge\Lexicon\Config\LexConfigMultiText;
 use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Shared\Mapper\IdReference;
@@ -141,11 +147,54 @@ class TestControl
         return $projectModel->id->asString();
     }
 
-    public function add_custom_field(string $projectCode, string $customFieldName, string $customFieldType = 'MultiString')
+    public function add_custom_field(string $projectCode, string $customFieldName, string $parentField = 'entry', string $customFieldType = 'MultiString', $extraOptions = null)
     {
-        if (\strpos($customFieldName, 'customField_') !== 0) {
-            $customFieldName = 'customField_' . $customFieldName;
+        error_log('add_custom_field');
+        $prefix = 'customField_' . $parentField . '_';
+        if (\strpos($customFieldName, $prefix) !== 0) {
+            $customFieldName = $prefix . $customFieldName;
         }
+        $project = ProjectModel::getByProjectCode($projectCode);
+        error_log($project->id->asString());
+        switch($parentField) {
+            case 'entry': $config = $project->config->entry; break;
+            case 'senses': $config = $project->config->entry->fields[LexConfig::SENSES_LIST]; break;
+            case 'examples': $config = $project->config->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST]; break;
+        }
+        $config->fieldOrder->ensureValueExists($customFieldName);
+        if (! array_key_exists($customFieldName, $config->fields)) {
+            switch($customFieldType) {
+                case "ReferenceAtom":
+                    $config->fields[$customFieldName] = new LexConfigOptionList();
+                    $config->fields[$customFieldName]->listCode = $extraOptions['listCode'];
+                    break;
+                case "ReferenceCollection":
+                    $config->fields[$customFieldName] = new LexConfigMultiOptionList();
+                    $config->fields[$customFieldName]->listCode = $extraOptions['listCode'];
+                    break;
+                case "OwningAtom":
+                    $config->fields[$customFieldName] = new LexConfigMultiParagraph();
+                    break;
+                default:
+                    $config->fields[$customFieldName] = new LexConfigMultiText();
+                    $config->fields[$customFieldName]->inputSystems = new ArrayOf();
+                    if ($extraOptions['inputSystems']) {
+                        foreach ($extraOptions['inputSystems'] as $ws) {
+                            $config->fields[$customFieldName]->inputSystems->ensureValueExists($ws);
+                        }
+                    }
+            };
+            $label = str_replace($prefix, '', $customFieldName);
+            $config->fields[$customFieldName]->label = str_replace(' ', '_', $label);
+            $config->fields[$customFieldName]->hideIfEmpty = false;
+        }
+        // PHP copies objects by value, not reference, so now we have to write the config back
+        switch($parentField) {
+            case 'entry': $project->config->entry = $config; break;
+            case 'senses': $project->config->entry->fields[LexConfig::SENSES_LIST] = $config; break;
+            case 'examples': $project->config->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST] = $config; break;
+        }
+        $project->write();
         $customFieldSpec = [ 'fieldName' => $customFieldName, 'fieldType' => $customFieldType ];
         $result = LexProjectCommands::updateCustomFieldViews($projectCode, [$customFieldSpec]);
         return $result;
