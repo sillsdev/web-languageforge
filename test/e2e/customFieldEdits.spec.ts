@@ -1,9 +1,9 @@
 import type { APIRequestContext } from '@playwright/test';
 import { expect } from '@playwright/test';
 import constants from './testConstants.json';
+import { test } from './utils/fixtures';
 import { testControl } from './utils/jsonrpc';
 import { addLexEntry } from './utils/testSetup';
-import { test } from './utils/fixtures';
 import { addCustomField, getProjectJson } from './utils/testSetup';
 
 test('API call', async ({ request }: { request: APIRequestContext }) => {
