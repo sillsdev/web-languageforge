@@ -13,6 +13,25 @@ import { UserProfilePage } from './pages/user-profile.page';
  * page traversal without testing functionality
  */
 test.describe('E2E Page Traversal', () => {
+  // let signupPage: SignupPage;
+  // let forgotPasswordPage: ForgotPasswordPage;
+  // let loginPage: LoginPage;
+  let changePasswordPage: ChangePasswordPage;
+  let activityPage: ActivityPage;
+  let projectsPage: ProjectsPage;
+  let siteAdminPage: SiteAdminPage;
+  let userProfilePage: UserProfilePage;
+
+  test.beforeAll(async ({ adminTab }) => {
+    // signupPage = new SignupPage(adminTab);
+    // forgotPasswordPage = new ForgotPasswordPage(adminTab);
+    // loginPage = new LoginPage(adminTab);
+    changePasswordPage = new ChangePasswordPage(adminTab);
+    activityPage = new ActivityPage(adminTab);
+    projectsPage = new ProjectsPage(adminTab);
+    siteAdminPage = new SiteAdminPage(adminTab);
+    userProfilePage = new UserProfilePage(adminTab);
+  })
 
   test('Explore signup page', async ({ page }) => {
     const signupPage = new SignupPage(page);
@@ -43,8 +62,7 @@ test.describe('E2E Page Traversal', () => {
     await loginPage.submitButton.click();
   });
 
-  test('Explore change passsword page (admin)', async ({ adminTab }) => {
-    const changePasswordPage = new ChangePasswordPage(adminTab);
+  test('Explore change passsword page (admin)', async () => {
     await changePasswordPage.goto();
 
     await changePasswordPage.passwordInput.type('');
@@ -52,15 +70,13 @@ test.describe('E2E Page Traversal', () => {
     await expect(changePasswordPage.submitButton).toBeDisabled();
   });
 
-  test('Explore activity page (admin)', async ({ adminTab }) => {
-    const activityPage = new ActivityPage(adminTab);
+  test('Explore activity page (admin)', async () => {
     await activityPage.goto();
 
     await activityPage.activitiesList.count();
   });
 
-  test('Explore project page (admin)', async ({ adminTab }) => {
-    const projectsPage = new ProjectsPage(adminTab);
+  test('Explore project page (admin)', async () => {
     await projectsPage.goto();
 
     await projectsPage.projectsList.count();
@@ -68,8 +84,7 @@ test.describe('E2E Page Traversal', () => {
     await projectsPage.createButton.click();
   });
 
-  test('Explore site admin page', async ({ adminTab }) => {
-    const siteAdminPage = new SiteAdminPage(adminTab);
+  test('Explore site admin page', async () => {
     await siteAdminPage.goto();
 
     await siteAdminPage.tabs.archivedProjects.click();
@@ -78,8 +93,7 @@ test.describe('E2E Page Traversal', () => {
     await siteAdminPage.archivedProjectsTab.projectsList.count();
   });
 
-  test('Explore user profile page (admin)', async ({ adminTab }) => {
-    const userProfilePage = new UserProfilePage(adminTab);
+  test('Explore user profile page (admin)', async () => {
     await userProfilePage.goto();
 
     await userProfilePage.activitiesList.count();
