@@ -3,7 +3,6 @@ import { expect } from '@playwright/test';
 import constants from './testConstants.json';
 import { testControl } from './utils/jsonrpc';
 import { addLexEntry } from './utils/testSetup';
-import type { UserTab } from './utils/fixtures';
 import { test } from './utils/fixtures';
 import { addCustomField, getProjectJson } from './utils/testSetup';
 
@@ -14,16 +13,13 @@ test('API call', async ({ request }: { request: APIRequestContext }) => {
   expect(result.api_is_working).toBeTruthy();
 });
 
-test('Reset project', async ({ request, adminTab }: { request: APIRequestContext, adminTab: UserTab }) => {
+test('Reset project', async ({ request }: { request: APIRequestContext }) => {
   await testControl(request, 'reset_projects');
   const result = await testControl(request, 'init_test_project', [
     constants.testProjectCode,
     constants.testProjectName,
     constants.adminUsername,
   ]);
-  // await adminTab.goto('/app/projects');
-  // await expect(adminTab.locator(`[data-ng-repeat="project in visibleProjects"] a:has-text("${constants.testProjectName}")`)).toBeVisible();
-  // await adminTab.screenshot({ path: 'post-login.png' });
   const json = await getProjectJson(request, constants.testProjectCode);
   expect(json.projectCode).toEqual(constants.testProjectCode);
   expect(json.missingProp).toBeUndefined();
