@@ -2,6 +2,7 @@ import type { APIRequestContext } from '@playwright/test';
 import { expect } from '@playwright/test';
 import constants from './testConstants.json';
 import { testControl } from './utils/jsonrpc';
+import { addLexEntry } from './utils/testSetup';
 import type { UserTab } from './utils/fixtures';
 import { test } from './utils/fixtures';
 import { addCustomField, getProjectJson } from './utils/testSetup';
@@ -39,4 +40,13 @@ test('Second test', async ({ request }: { request: APIRequestContext }) => {
   const result = await testControl(request, 'new_method');
   console.log(result);
   expect(result).toBe('hello');
+});
+
+test.only('Try this', async ({request}) => {
+  // const data = { ...constants.testEntry1, id: '' };
+  // const d = new Date();
+  // const uniqueId = '_new_' + d.getSeconds() + d.getMilliseconds();
+  console.log('Calling PHP with data', constants.testEntry1);
+  const result = await addLexEntry(request, constants.testProjectCode, constants.testEntry1);
+  console.log('Result was', result);
 });

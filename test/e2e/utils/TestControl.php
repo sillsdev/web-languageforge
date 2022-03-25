@@ -6,10 +6,12 @@ use Api\Model\Shared\Command\UserCommands;
 use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\UserModel;
 use Api\Model\Shared\UserModelWithPassword;
+use Api\Model\Languageforge\Lexicon\LexEntryModel;
 use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Shared\Mapper\IdReference;
+use Api\Model\Languageforge\Lexicon\Command\LexEntryDecoder;
 use Api\Model\Languageforge\Lexicon\Command\LexProjectCommands;
 // use MongoDB\Client;
 
@@ -147,6 +149,14 @@ class TestControl
         $customFieldSpec = [ 'fieldName' => $customFieldName, 'fieldType' => $customFieldType ];
         $result = LexProjectCommands::updateCustomFieldViews($projectCode, [$customFieldSpec]);
         return $result;
+    }
+
+    public function add_lexical_entry(string $projectCode, array $data)
+    {
+        $project = ProjectModel::getByProjectCode($projectCode);
+        $entry = new LexEntryModel($project);
+        LexEntryDecoder::decode($entry, $data);
+        return $entry->write();
     }
 
     public function get_project_json(string $projectCode) {
