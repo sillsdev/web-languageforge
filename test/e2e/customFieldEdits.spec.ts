@@ -37,7 +37,7 @@ test('Second test', async ({ request }: { request: APIRequestContext }) => {
   expect(result).toBe('hello');
 });
 
-test.only('Try this', async ({request}) => {
+test('Try this', async ({request}) => {
   const data = { ...constants.testEntry1 } as any;
   data.customFields = {
     customField_entry_Foo: { th: { value: 'something' } }
@@ -47,4 +47,24 @@ test.only('Try this', async ({request}) => {
   console.log('Calling PHP with data', data);
   const result = await addLexEntry(request, constants.testProjectCode, data);
   console.log('Result was', result);
+});
+
+test.describe.only('Custom fields', () => {
+  test.beforeEach(async ({ request }) => {
+    await testControl(request, 'init_test_project', [
+      constants.testProjectCode,
+      constants.testProjectName,
+      constants.adminUsername,
+    ]);
+    await addCustomField(request, constants.testProjectCode, 'Foo', 'entry', 'MultiString', {inputSystems: ['th']});
+    const data = { ...constants.testEntry1 } as any;
+    data.customFields = {
+      customField_entry_Foo: { th: { value: 'something' } }
+    };
+    await addLexEntry(request, constants.testProjectCode, data);
+  });
+
+  test('Custom fields with two users', async () => {
+    console.log('testing');
+  });
 });

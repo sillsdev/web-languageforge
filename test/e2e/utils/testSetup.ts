@@ -18,6 +18,14 @@ type LfFieldType =
   'pictures'
 ;
 
+export function initTestProject(request: APIRequestContext,
+                                projectCode: string,
+                                projectName: string,
+                                ownerUsername: string)
+{
+  return testControl(request, 'init_test_project', [projectCode, projectName, ownerUsername]);
+}
+
 export function addCustomField(request: APIRequestContext,
                                projectCode: string,
                                fieldName: string,
