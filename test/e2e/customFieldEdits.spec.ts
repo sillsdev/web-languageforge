@@ -55,7 +55,8 @@ test.describe.only('Custom fields', () => {
     projectId = await testControl(request, 'init_test_project', [
       constants.testProjectCode,
       constants.testProjectName,
-      constants.adminUsername,
+      constants.managerUsername,
+      [constants.memberUsername, constants.member2Username],
     ]);
     await addCustomField(request, constants.testProjectCode, 'Foo', 'entry', 'MultiString', {inputSystems: ['th']});
     const data = { ...constants.testEntry1 } as any;

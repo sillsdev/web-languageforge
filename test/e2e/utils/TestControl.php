@@ -115,7 +115,7 @@ class TestControl
         return true;
     }
 
-    public function init_test_project($projectCode = null, $projectName = null, $ownerUsername = null)
+    public function init_test_project($projectCode = null, $projectName = null, $ownerUsername = null, $memberUsernames = [])
     {
         if (! $projectCode) {
             $projectCode = 'test_project';
@@ -141,6 +141,13 @@ class TestControl
         $projectModel->siteName = $this->website->domain;
         $projectModel->ownerRef = new IdReference($ownerId);
         $projectModel->addUser($ownerId, ProjectRoles::MANAGER);
+        foreach ($memberUsernames as $username) {
+            $user = new UserModel();
+            if ($user->readByUserName($username)) {
+                $userId = $user->id->asString();
+                $projectModel->addUser($userId, ProjectRoles::CONTRIBUTOR);
+            }
+        }
         MongoStore::dropAllCollections($projectModel->databaseName());
         MongoStore::dropDB($projectModel->databaseName());
         $projectModel->write();

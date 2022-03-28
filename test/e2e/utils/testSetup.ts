@@ -21,9 +21,10 @@ type LfFieldType =
 export function initTestProject(request: APIRequestContext,
                                 projectCode: string,
                                 projectName: string,
-                                ownerUsername: string)
+                                ownerUsername: string,
+                                memberUsernames: string[] = [])
 {
-  return testControl(request, 'init_test_project', [projectCode, projectName, ownerUsername]);
+  return testControl(request, 'init_test_project', [projectCode, projectName, ownerUsername, memberUsernames]);
 }
 
 export function addCustomField(request: APIRequestContext,
