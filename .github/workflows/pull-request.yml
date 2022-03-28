@@ -20,7 +20,7 @@ jobs:
       -
         uses: actions/checkout@v2
       -
-        name: Run Unit Tests
+        name: Unit Tests
         run: make unit-tests-ci
       -
         name: Publish Test Results
@@ -43,19 +43,18 @@ jobs:
           node-version: '16.14.0'
           cache: 'npm'
       -
-        run: npm ci
+        name: Build app
+        run: |
+          npm ci
+          docker-compose build app
       -
-        run: docker-compose build app
-      -
-        run: docker-compose up -d app-for-playwright
-        
+        name: Playwright E2E Tests
+        working-directory: .
         # see https://playwright.dev/docs/ci#github-actions
-      -
-        run: npx playwright install --with-deps
-        working-directory: .
-      -
-        run: npx playwright test
-        working-directory: .
+        run: |
+          docker-compose -f docker/docker-compose.yml up -d app-for-playwright
+          npx playwright install
+          npx playwright test
 
   # protractor-tests:
   #   runs-on: ubuntu-latest
