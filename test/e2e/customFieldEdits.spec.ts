@@ -50,8 +50,9 @@ test('Try this', async ({request}) => {
 });
 
 test.describe.only('Custom fields', () => {
+  let projectId: string;
   test.beforeEach(async ({ request }) => {
-    await testControl(request, 'init_test_project', [
+    projectId = await testControl(request, 'init_test_project', [
       constants.testProjectCode,
       constants.testProjectName,
       constants.adminUsername,
@@ -64,7 +65,10 @@ test.describe.only('Custom fields', () => {
     await addLexEntry(request, constants.testProjectCode, data);
   });
 
-  test('Custom fields with two users', async () => {
-    console.log('testing');
+  const run = async (...list: Array<Promise<any>>) => await Promise.all(list);
+
+  test('Custom fields with two users', async ({ managerTab, memberTab }) => {
+    await run(managerTab.goto(`/app/lexicon/${projectId}`), memberTab.goto(`/app/lexicon/${projectId}`));
+    await run(managerTab.locator('text=Foo').nth(0).click(), memberTab.locator('text=Foo').nth(0).click());
   });
 });
