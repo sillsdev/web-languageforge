@@ -61,7 +61,7 @@ test.describe.only('Custom fields', () => {
     await addCustomField(request, constants.testProjectCode, 'CustomField', 'entry', 'MultiString', {inputSystems: ['th']});
     const data = { ...constants.testEntry1 } as any;
     data.customFields = {
-      customField_entry_Foo: { th: { value: 'something' } }
+      customField_entry_CustomField: { th: { value: 'something' } }
     };
     await addLexEntry(request, constants.testProjectCode, data);
   });
