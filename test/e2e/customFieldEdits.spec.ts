@@ -64,6 +64,14 @@ test.describe.only('Custom fields', () => {
       customField_entry_CustomField: { th: { value: 'something' } }
     };
     await addLexEntry(request, constants.testProjectCode, data);
+    const json = await getProjectJson(request, constants.testProjectCode);
+    expect(json?.config?.roleViews?.project_manager?.fields?.customField_entry_CustomField).toBeDefined();
+    expect(json?.config?.roleViews?.project_manager?.fields?.customField_entry_CustomField?.type).toEqual('multitext');
+    expect(json?.config?.roleViews?.project_manager?.fields?.customField_entry_CustomField?.show).toBeTruthy();
+    expect(json?.config?.roleViews?.contributor?.fields?.customField_entry_CustomField?.show).toBeTruthy();
+    expect(json?.config?.entry?.fields?.customField_entry_CustomField?.inputSystems).toBeDefined();
+    expect(json?.config?.entry?.fields?.customField_entry_CustomField?.inputSystems.length).toBeGreaterThan(0);
+    expect(json?.config?.entry?.fields?.customField_entry_CustomField?.inputSystems).toContainEqual('th');
   });
 
   const run = async (...list: Array<Promise<any>>) => await Promise.all(list);
