@@ -14,6 +14,10 @@ use Api\Model\Languageforge\Lexicon\Config\LexConfigOptionList;
 use Api\Model\Languageforge\Lexicon\Config\LexConfigMultiOptionList;
 use Api\Model\Languageforge\Lexicon\Config\LexConfigMultiParagraph;
 use Api\Model\Languageforge\Lexicon\Config\LexConfigMultiText;
+use Api\Model\Languageforge\Lexicon\Config\LexRoleViewConfig;
+use Api\Model\Languageforge\Lexicon\Config\LexUserViewConfig;
+use Api\Model\Languageforge\Lexicon\Config\LexViewFieldConfig;
+use Api\Model\Languageforge\Lexicon\Config\LexViewMultiTextFieldConfig;
 use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Shared\Mapper\IdReference;
@@ -202,10 +206,32 @@ class TestControl
             case 'senses': $project->config->entry->fields[LexConfig::SENSES_LIST] = $config; break;
             case 'examples': $project->config->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST] = $config; break;
         }
+
+        // Now make the custom field visible in all views
+        foreach ($project->config->roleViews as $role => $roleView) {
+            if (!array_key_exists($customFieldName, $roleView->fields)) {
+                if ($customFieldType == 'MultiUnicode' || $customFieldType == 'MultiString') {
+                    $roleView->fields[$customFieldName] = new LexViewMultiTextFieldConfig();
+                } else {
+                    $roleView->fields[$customFieldName] = new LexViewFieldConfig();
+                }
+                $roleView->fields[$customFieldName]->show = true;
+            }
+        }
+        foreach ($project->config->userViews as $userId => $userView) {
+            if (!array_key_exists($customFieldName, $userView->fields)) {
+                if ($customFieldType == 'MultiUnicode' || $customFieldType == 'MultiString') {
+                    $userView->fields[$customFieldName] = new LexViewMultiTextFieldConfig();
+                } else {
+                    $userView->fields[$customFieldName] = new LexViewFieldConfig();
+                }
+                $userView->fields[$customFieldName]->show = true;
+            }
+        }
+
         $project->write();
-        $customFieldSpec = [ 'fieldName' => $customFieldName, 'fieldType' => $customFieldType ];
-        $result = LexProjectCommands::updateCustomFieldViews($projectCode, [$customFieldSpec]);
-        return $result;
+
+        return $customFieldName;
     }
 
     public function add_lexical_entry(string $projectCode, array $data)
