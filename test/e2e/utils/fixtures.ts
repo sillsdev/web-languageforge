@@ -12,6 +12,7 @@ export type UserDetails = {
 }
 
 export type UserTab = Page & UserDetails;
+export type AnonTab = Page;
 
 function setupUserDetails(obj: any, username: usernamesForFixture) {
   obj.username = constants[`${username}Username`] ?? username;
@@ -29,6 +30,13 @@ const userTab = (username: usernamesForFixture) => async ({ browser, browserName
   await use(tab);
 }
 
+const anonTab = () => async ({ browser }: { browser: Browser }, use: (r: AnonTab) => Promise<void>) => {
+  const context = await browser.newContext();
+  const page = await context.newPage();
+  const tab = page as AnonTab;
+  await use(tab);
+}
+
 // Add user fixtures to test function
 // Two kinds of fixtures: userTab and user, where "user" is one of "admin", "manager", "member", "member2", or "observer"
 // The userTab fixture represents a browser tab (a "page" in Playwright terms) that's already logged in as that user
@@ -41,6 +49,7 @@ export const test = (base
     memberTab: UserTab,
     member2Tab: UserTab,
     observerTab: UserTab,
+    anonTab: AnonTab,
     admin: UserDetails,
     manager: UserDetails,
     member: UserDetails,
@@ -52,6 +61,7 @@ export const test = (base
     memberTab: userTab('member'),
     member2Tab: userTab('member2'),
     observerTab: userTab('observer'),
+    anonTab: anonTab(),
     admin: async ({}, use) => {
       let admin = {} as UserDetails;
       setupUserDetails(admin, 'admin');

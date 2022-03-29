@@ -13,19 +13,19 @@ import { UserProfilePage } from './pages/user-profile.page';
  * page traversal without testing functionality
  */
 test.describe('E2E Page Traversal', () => {
-  // let signupPage: SignupPage;
-  // let forgotPasswordPage: ForgotPasswordPage;
-  // let loginPage: LoginPage;
+  let signupPage: SignupPage;
+  let forgotPasswordPage: ForgotPasswordPage;
+  let loginPage: LoginPage;
   let changePasswordPage: ChangePasswordPage;
   let activityPage: ActivityPage;
   let projectsPage: ProjectsPage;
   let siteAdminPage: SiteAdminPage;
   let userProfilePage: UserProfilePage;
 
-  test.beforeAll(async ({ adminTab }) => {
-    // signupPage = new SignupPage(adminTab);
-    // forgotPasswordPage = new ForgotPasswordPage(adminTab);
-    // loginPage = new LoginPage(adminTab);
+  test.beforeAll(async ({ anonTab, adminTab }) => {
+    signupPage = new SignupPage(anonTab);
+    forgotPasswordPage = new ForgotPasswordPage(anonTab);
+    loginPage = new LoginPage(anonTab);
     changePasswordPage = new ChangePasswordPage(adminTab);
     activityPage = new ActivityPage(adminTab);
     projectsPage = new ProjectsPage(adminTab);
@@ -33,8 +33,7 @@ test.describe('E2E Page Traversal', () => {
     userProfilePage = new UserProfilePage(adminTab);
   })
 
-  test('Explore signup page', async ({ page }) => {
-    const signupPage = new SignupPage(page);
+  test('Explore signup page', async () => {
     await signupPage.goto();
 
     await signupPage.emailInput.fill('');
@@ -45,16 +44,14 @@ test.describe('E2E Page Traversal', () => {
     await signupPage.captcha.redTriangleButton.click();
   });
 
-  test('Explore forgot password page', async ({ page }) => {
-    const forgotPasswordPage = new ForgotPasswordPage(page);
+  test('Explore forgot password page', async () => {
     await forgotPasswordPage.goto();
 
     await forgotPasswordPage.usernameInput.fill('');
     await forgotPasswordPage.submitButton.click();
   });
 
-  test('Explore login page', async ({ page }) => {
-    const loginPage = new LoginPage(page);
+  test('Explore login page', async () => {
     await loginPage.goto();
 
     await loginPage.usernameInput.type('');
