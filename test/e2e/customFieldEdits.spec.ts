@@ -58,7 +58,7 @@ test.describe.only('Custom fields', () => {
       constants.managerUsername,
       [constants.memberUsername, constants.member2Username],
     ]);
-    await addCustomField(request, constants.testProjectCode, 'Foo', 'entry', 'MultiString', {inputSystems: ['th']});
+    await addCustomField(request, constants.testProjectCode, 'CustomField', 'entry', 'MultiString', {inputSystems: ['th']});
     const data = { ...constants.testEntry1 } as any;
     data.customFields = {
       customField_entry_Foo: { th: { value: 'something' } }
@@ -70,6 +70,6 @@ test.describe.only('Custom fields', () => {
 
   test('Custom fields with two users', async ({ managerTab, memberTab }) => {
     await run(managerTab.goto(`/app/lexicon/${projectId}`), memberTab.goto(`/app/lexicon/${projectId}`));
-    await run(managerTab.locator('text=Foo').nth(0).click(), memberTab.locator('text=Foo').nth(0).click());
+    await run(managerTab.locator('text=CustomField').nth(0).click(), memberTab.locator('text=CustomField').nth(0).click());
   });
 });

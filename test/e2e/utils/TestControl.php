@@ -134,6 +134,7 @@ class TestControl
 
         $db = MongoStore::connect(DATABASE);
         $coll = $db->selectCollection('projects');
+        $coll->deleteOne([ 'projectCode' => $projectCode ]);
         $projectModel = new ProjectModel();
         $projectModel->projectName = $projectName;
         $projectModel->projectCode = $projectCode;
