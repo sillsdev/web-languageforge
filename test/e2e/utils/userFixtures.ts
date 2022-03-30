@@ -6,7 +6,7 @@ export type usernamesForFixture =
     'observer'
 ;
 
-export const usersToCreate = [
+export const usersToCreate: usernamesForFixture[] = [
   'admin',
   'manager',
   'member',
