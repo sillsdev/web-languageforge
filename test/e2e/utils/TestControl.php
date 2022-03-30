@@ -115,7 +115,6 @@ class TestControl
     {
         $db = MongoStore::connect(DATABASE);
         $db->dropCollection('projects');
-        $db->createCollection('projects');
         return true;
     }
 
@@ -246,9 +245,5 @@ class TestControl
         $db = MongoStore::connect(DATABASE);
         $project = $db->projects->findOne(['projectCode' => $projectCode]);
         return $project;
-    }
-
-    public function new_method() {
-        return 'hello';
     }
 }
