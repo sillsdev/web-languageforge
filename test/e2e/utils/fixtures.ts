@@ -32,6 +32,7 @@ const userTab = (username: usernamesForFixture) => async ({ browser, browserName
 // Add user fixtures to test function
 // Two kinds of fixtures: userTab and user, where "user" is one of "admin", "manager", "member", "member2", or "observer"
 // The userTab fixture represents a browser tab (a "page" in Playwright terms) that's already logged in as that user
+// The anonTab fixture represents a browser tab (a "page" in Playwright terms) where nobody is logged in; this tab can be used across different tests (like userTab)
 // The user fixture just carries that user's details (username, password, name and email)
 // Note: "Tab" was chosen instead of "Page" to avoid confusion with Page Object Model classes like SiteAdminPage
 export const test = (base
