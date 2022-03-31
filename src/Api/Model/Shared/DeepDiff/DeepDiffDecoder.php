@@ -122,10 +122,16 @@ class DeepDiffDecoder
     private static function setValue(&$target, $last, $value) {
         if ($target instanceof \Api\Model\Languageforge\Lexicon\LexMultiText) {
             $target->form($last, $value);
+        } else if ($target instanceof \Api\Model\Languageforge\Lexicon\LexValue) {
+            $target->value($value);  // TODO: Test this
         } else if ($target instanceof \ArrayObject) {
             $target[$last] = $value;
         } else {
-            $target->$last = $value;
+            if ($target->$last instanceof \Api\Model\Languageforge\Lexicon\LexValue) {
+                $target->$last->value($value);
+            } else {
+                $target->$last = $value;
+            }
         }
     }
 
