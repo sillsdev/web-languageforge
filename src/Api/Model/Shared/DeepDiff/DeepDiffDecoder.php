@@ -72,18 +72,70 @@ class DeepDiffDecoder
         $path = $diff->path;
         $allButLast = $path; // This is a copy
         $last = array_pop($allButLast);
-        $isLexValue = false;
-        if ($last === 'value') {
-            $isLexValue = true;
-            $last = array_pop($allButLast);
-        }
         $target = $model;
+        $value = $diff->getValue();
+        $customFieldsIdx = array_search('customFields', $allButLast);
+        $customFieldData = [];
+        if ($customFieldsIdx !== false && $customFieldsIdx+2 <= count($path)) {
+            // Custom fields need special handling
+            $allButLast = array_slice($path, 0, $customFieldsIdx+2);
+            $customFieldName = $path[$customFieldsIdx+1];
+            $rest = array_slice($path, $customFieldsIdx+2);
+            foreach (\array_reverse($rest) as $step) {
+                $customFieldData = [$step => $customFieldData];
+            }
+        }
+        // Custom fields need to call generateCustomField with appropriate data. The generateCustomField function can be seen below.
+        // function generateCustomField($data)
+        // {
+        //     CodeGuard::checkTypeAndThrow($data, 'array');
+        //     if (array_key_exists('type', $data)) {
+        //         switch ($data['type']) {
+        //             case LexConfig::MULTIPARAGRAPH:
+        //                 return new LexMultiParagraph();
+        //             default:
+        //                 $type = $data['type'];
+        //                 throw new \Exception("Cannot generate unknown custom field type: $type");
+        //         }
+        //     } elseif (array_key_exists('value', $data)) {
+        //         return new LexValue();
+        //     } elseif (array_key_exists('values', $data)) {
+        //         return new LexMultiValue();
+        //     } elseif (array_key_exists('paragraphs', $data)) {
+        //         return new LexMultiParagraph();
+        //     } else {
+        //         return new LexMultiText();
+        //     }
+        // }
+
+        // Therefore, what we need is to reconstruct the shape of $data from the last array entries after [customFields, customField_entry_Foo, ...]
+        // The ... is what we need. It'll either be 'value => "some value"' or 'values => [some list]' or 'en => [value => "foo"]'.
+        // We need to grab the last few entries in the $path (NOT the $allButLast) and see what shape they have, then construct an array with that shape
+        // The generate() call should be in getNextStep, as before
+        // The tricky thing is, now that we've removed he part where we strip a final "value" from the allButLast list, we still need to be able to
+        // handle MultiText fields correctly. Tricky.
+        // MultiText needs to turn ["en", "value"] into ->form('en', value)
+        // Other fields need other conditions. Argh, why did we do this to ourselves?
+        $prevStep = '';
         foreach ($allButLast as $step) {
-            $target = static::getNextStep($target, $step);
+            if ($prevStep === 'customFields') {
+                $target = static::getCustomFieldStep($target, $step, $customFieldData);
+            } else {
+                $target = static::getNextStep($target, $step, $last, $value);
+            }
+            if ($target instanceof \Api\Model\Languageforge\Lexicon\LexMultiText && $last === 'value') {
+                // For MultiText fields, we need $last to be NEXT-to-last step (the writing system), not "value"
+                $last = $path[count($path) - 2];
+                // $last = $step;
+                break;
+            }
+            // For a custom single-line MultiText field: [customFields, cf_entry_Cust_Single_Line, en, value] and value is "what was typed"
+            // For a custom list field, [customFields, cf_entry_Cust_Single_ListRef, value] and value is "what was selected"
+            $prevStep = $step;
         }
         if ($diff instanceof ArrayDiff) {
             if ($diff->item['kind'] == 'N') {
-                static::pushValue($target, $last, $diff->getValue());
+                static::pushValue($target, $last, $value);
             } elseif ($diff->item['kind'] == 'D') {
                 if ($target instanceof \ArrayObject) {
                     array_pop($target[$last]);
@@ -94,25 +146,21 @@ class DeepDiffDecoder
                 // Invalid ArrayDiff; do nothing
             }
         } else {
-            static::setValue($target, $last, $diff->getValue());
+            static::setValue($target, $last, $value);
             // TODO: Verify that this works as desired for deletions
         }
     }
 
+    private static function getCustomFieldStep($target, $step, $customFieldData) {
+        if (isset($target[$step])) {
+            return $target[$step];
+        } else {
+            return $target->generate($customFieldData);
+        }
+    }
+
     private static function getNextStep($target, $step) {
-        if ($target instanceof \Api\Model\Shared\Mapper\MapOf && strpos($step, 'customField_') === 0) {
-            // Custom fields should be created if they do not exist
-            if (isset($target[$step])) {
-                return $target[$step];
-            } else {
-                if ($target->hasGenerator()) {
-                    return $target->generate([$step]);
-                } else {
-                    // This will probably fail
-                    return $target[$step];
-                }
-            }
-        } else if ($target instanceof \ArrayObject) {
+        if ($target instanceof \ArrayObject) {
             return $target[$step];
         } else {
             return $target->$step;
