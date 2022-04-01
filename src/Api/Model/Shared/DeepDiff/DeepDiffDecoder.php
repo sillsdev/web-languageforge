@@ -74,7 +74,7 @@ class DeepDiffDecoder
         $last = array_pop($allButLast);
         $target = $model;
         $value = $diff->getValue();
-        $customFieldsIdx = array_search('customFields', $allButLast);
+        $customFieldsIdx = array_search('customFields', $allButLast, true);
         $customFieldData = [];
         if ($customFieldsIdx !== false && $customFieldsIdx+2 <= count($path)) {
             // Custom fields need special handling
