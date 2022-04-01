@@ -85,37 +85,14 @@ class DeepDiffDecoder
                 $customFieldData = [$step => $customFieldData];
             }
         }
-        // Custom fields need to call generateCustomField with appropriate data. The generateCustomField function can be seen below.
-        // function generateCustomField($data)
-        // {
-        //     CodeGuard::checkTypeAndThrow($data, 'array');
-        //     if (array_key_exists('type', $data)) {
-        //         switch ($data['type']) {
-        //             case LexConfig::MULTIPARAGRAPH:
-        //                 return new LexMultiParagraph();
-        //             default:
-        //                 $type = $data['type'];
-        //                 throw new \Exception("Cannot generate unknown custom field type: $type");
-        //         }
-        //     } elseif (array_key_exists('value', $data)) {
-        //         return new LexValue();
-        //     } elseif (array_key_exists('values', $data)) {
-        //         return new LexMultiValue();
-        //     } elseif (array_key_exists('paragraphs', $data)) {
-        //         return new LexMultiParagraph();
-        //     } else {
-        //         return new LexMultiText();
-        //     }
-        // }
+        // Custom fields need to call MapOf->generate() with a specific shape in order to work:
+        // For LexValue fields (list fields with a single value): ['value' => (anything)]
+        // For LexMultiValue fields (list fields where you can choose multiple values): ['values' => (anything)]
+        // For LexMultiParagraph fields: ['paragraphs' => (anything)] *or* ['type' => 'multiparagraph']
+        // For LexMultiText fields: ['en' => ['value' => (anything)]], where any writing system can be in place of 'en' here
 
-        // Therefore, what we need is to reconstruct the shape of $data from the last array entries after [customFields, customField_entry_Foo, ...]
-        // The ... is what we need. It'll either be 'value => "some value"' or 'values => [some list]' or 'en => [value => "foo"]'.
-        // We need to grab the last few entries in the $path (NOT the $allButLast) and see what shape they have, then construct an array with that shape
-        // The generate() call should be in getNextStep, as before
-        // The tricky thing is, now that we've removed he part where we strip a final "value" from the allButLast list, we still need to be able to
-        // handle MultiText fields correctly. Tricky.
-        // MultiText needs to turn ["en", "value"] into ->form('en', value)
-        // Other fields need other conditions. Argh, why did we do this to ourselves?
+        // The tricky part is distinguishing LexMultiText fields from LexValue fields, hence the slightly-convoluted construction of $customFieldData
+
         $prevStep = '';
         foreach ($allButLast as $step) {
             if ($prevStep === 'customFields') {
