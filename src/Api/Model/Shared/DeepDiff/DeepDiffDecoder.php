@@ -132,7 +132,9 @@ class DeepDiffDecoder
         if (isset($target[$step])) {
             return $target[$step];
         } else {
-            return $target->generate($customFieldData);
+            $object = $target->generate($customFieldData);
+            $target[$step] = $object;
+            return $object;
         }
     }
 
