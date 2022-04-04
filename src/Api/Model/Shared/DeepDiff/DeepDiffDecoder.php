@@ -72,18 +72,47 @@ class DeepDiffDecoder
         $path = $diff->path;
         $allButLast = $path; // This is a copy
         $last = array_pop($allButLast);
-        $isLexValue = false;
-        if ($last === 'value') {
-            $isLexValue = true;
-            $last = array_pop($allButLast);
-        }
         $target = $model;
+        $value = $diff->getValue();
+        $customFieldsIdx = array_search('customFields', $allButLast, true);
+        $customFieldData = [];
+        if ($customFieldsIdx !== false && $customFieldsIdx+2 <= count($path)) {
+            // Custom fields need special handling
+            $allButLast = array_slice($path, 0, $customFieldsIdx+2);
+            $customFieldName = $path[$customFieldsIdx+1];
+            $rest = array_slice($path, $customFieldsIdx+2);
+            foreach (\array_reverse($rest) as $step) {
+                $customFieldData = [$step => $customFieldData];
+            }
+        }
+        // Custom fields need to call MapOf->generate() with a specific shape in order to work:
+        // For LexValue fields (list fields with a single value): ['value' => (anything)]
+        // For LexMultiValue fields (list fields where you can choose multiple values): ['values' => (anything)]
+        // For LexMultiParagraph fields: ['paragraphs' => (anything)] *or* ['type' => 'multiparagraph']
+        // For LexMultiText fields: ['en' => ['value' => (anything)]], where any writing system can be in place of 'en' here
+
+        // The tricky part is distinguishing LexMultiText fields from LexValue fields, hence the slightly-convoluted construction of $customFieldData
+
+        $prevStep = '';
         foreach ($allButLast as $step) {
-            $target = static::getNextStep($target, $step);
+            if ($prevStep === 'customFields') {
+                $target = static::getCustomFieldStep($target, $step, $customFieldData);
+            } else {
+                $target = static::getNextStep($target, $step, $last, $value);
+            }
+            if ($target instanceof \Api\Model\Languageforge\Lexicon\LexMultiText && $last === 'value') {
+                // For MultiText fields, we need $last to be NEXT-to-last step (the writing system), not "value"
+                $last = $path[count($path) - 2];
+                // $last = $step;
+                break;
+            }
+            // For a custom single-line MultiText field: [customFields, cf_entry_Cust_Single_Line, en, value] and value is "what was typed"
+            // For a custom list field, [customFields, cf_entry_Cust_Single_ListRef, value] and value is "what was selected"
+            $prevStep = $step;
         }
         if ($diff instanceof ArrayDiff) {
             if ($diff->item['kind'] == 'N') {
-                static::pushValue($target, $last, $diff->getValue());
+                static::pushValue($target, $last, $value);
             } elseif ($diff->item['kind'] == 'D') {
                 if ($target instanceof \ArrayObject) {
                     array_pop($target[$last]);
@@ -94,25 +123,23 @@ class DeepDiffDecoder
                 // Invalid ArrayDiff; do nothing
             }
         } else {
-            static::setValue($target, $last, $diff->getValue());
+            static::setValue($target, $last, $value);
             // TODO: Verify that this works as desired for deletions
         }
     }
 
+    private static function getCustomFieldStep($target, $step, $customFieldData) {
+        if (isset($target[$step])) {
+            return $target[$step];
+        } else {
+            $object = $target->generate($customFieldData);
+            $target[$step] = $object;
+            return $object;
+        }
+    }
+
     private static function getNextStep($target, $step) {
-        if ($target instanceof \Api\Model\Shared\Mapper\MapOf && strpos($step, 'customField_') === 0) {
-            // Custom fields should be created if they do not exist
-            if (isset($target[$step])) {
-                return $target[$step];
-            } else {
-                if ($target->hasGenerator()) {
-                    return $target->generate([$step]);
-                } else {
-                    // This will probably fail
-                    return $target[$step];
-                }
-            }
-        } else if ($target instanceof \ArrayObject) {
+        if ($target instanceof \ArrayObject) {
             return $target[$step];
         } else {
             return $target->$step;
@@ -122,10 +149,16 @@ class DeepDiffDecoder
     private static function setValue(&$target, $last, $value) {
         if ($target instanceof \Api\Model\Languageforge\Lexicon\LexMultiText) {
             $target->form($last, $value);
+        } else if ($target instanceof \Api\Model\Languageforge\Lexicon\LexValue) {
+            $target->value($value);  // TODO: Test this
         } else if ($target instanceof \ArrayObject) {
             $target[$last] = $value;
         } else {
-            $target->$last = $value;
+            if ($target->$last instanceof \Api\Model\Languageforge\Lexicon\LexValue) {
+                $target->$last->value($value);
+            } else {
+                $target->$last = $value;
+            }
         }
     }
 

@@ -2,11 +2,12 @@ import { expect, Locator, Page } from '@playwright/test';
 
 export class ForgotPasswordPage {
   readonly page: Page;
-  form: Locator;
-  infoMessages: Locator;
-  errors: Locator;
-  usernameInput: Locator;
-  submitButton: Locator;
+  readonly form: Locator;
+  readonly infoMessages: Locator;
+  readonly errors: Locator;
+  readonly usernameInput: Locator;
+  readonly submitButton: Locator;
+  static readonly url: string = '/auth/forgot_password';
 
   constructor(page: Page) {
     this.page = page;
@@ -19,7 +20,7 @@ export class ForgotPasswordPage {
   }
 
   async goto() {
-    await this.page.goto('/auth/forgot_password');
+    await this.page.goto(ForgotPasswordPage.url);
     await expect(this.form).toBeVisible();
   }
 }

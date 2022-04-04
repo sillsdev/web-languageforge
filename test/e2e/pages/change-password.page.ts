@@ -2,16 +2,17 @@ import { expect, Locator, Page } from '@playwright/test';
 
 export class ChangePasswordPage {
   readonly page: Page;
-  readonly password: Locator;
-  readonly confirm: Locator;
+  readonly passwordInput: Locator;
+  readonly confirmInput: Locator;
   readonly passwordMatchImage: Locator;
   readonly submitButton: Locator;
   readonly noticeList: Locator;
+  static readonly url: string = '/app/changepassword';
 
   constructor(page: Page) {
     this.page = page;
-    this.password = page.locator('#change-password-input');
-    this.confirm = page.locator('#change-password-confirm-input');
+    this.passwordInput = page.locator('#change-password-input');
+    this.confirmInput = page.locator('#change-password-confirm-input');
     this.passwordMatchImage = page.locator('#change-password-match');
     this.submitButton = page.locator('#change-password-submit-button');
     // Note ng-repeat here, not data-ng-repeat. Search for "notice in $ctrl.notices()"
@@ -20,7 +21,7 @@ export class ChangePasswordPage {
   }
 
   async goto() {
-    await this.page.goto('/app/changepassword');
-    await expect(this.password).toBeVisible();
+    await this.page.goto(ChangePasswordPage.url);
+    await expect(this.passwordInput).toBeVisible();
   }
 }
