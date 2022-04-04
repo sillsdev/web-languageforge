@@ -1157,6 +1157,9 @@ export class LexiconEditorController implements angular.IController {
   }
 
   private prepCustomFieldsForUpdate(data: any): any {
+    if (Array.isArray(data)) {
+      return data.map(item => this.prepCustomFieldsForUpdate(item));
+    }
     data.customFields = {};
     for (const fieldName in data) {
       if (data.hasOwnProperty(fieldName)) {
