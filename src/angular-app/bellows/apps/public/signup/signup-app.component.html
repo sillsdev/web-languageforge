@@ -85,7 +85,7 @@
             <span role="alert" class="alert-danger" id="emailInvalid" data-ng-show="!$ctrl.emailValid">
                 Please enter a valid email address. An example of an email address: john@doe.com<br></span>
             <span role="alert" class="alert-danger" id="emailTaken" data-ng-show="$ctrl.emailExists">
-                {{$ctrl.takenEmail}} is taken. Please use another.<br></span>
+                {{$ctrl.takenEmail}} is taken. If this is you, you can <a href="/auth/login">login now</a> or <a href="/auth/forgot_password">reset your forgotten password</a>.<br></span>
             <span role="alert" class="alert-danger" id="passwordIsWeak" data-ng-show="$ctrl.passwordIsWeak">
                 Password is too weak.<br></span>
         </div>
