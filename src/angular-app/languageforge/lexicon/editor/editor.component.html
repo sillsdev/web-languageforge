@@ -11,7 +11,7 @@
                             <span class="d-none d-md-inline-block">List</span></a>
                     </div>
                     <div class="float-right" data-ng-show="$ctrl.isAtEditorEntry()">
-                        <div class="btn-group dc-rendered-on-desktop" ng-form="validateGoto" ng-hide="$ctrl.entryListModifiers.filterActive()">
+                        <div class="btn-group hide-on-mobile" ng-form="validateGoto" ng-hide="$ctrl.entryListModifiers.filterActive()">
                             <button class="btn btn-std" data-ng-click="$ctrl.skipToEntry(-1)" ng-disabled="!$ctrl.canSkipToEntry(-1)">
                                 <span class="fa fa-arrow-left"></span> <span class="d-none d-lg-inline-block">Previous</span>
                             </button>
@@ -43,7 +43,7 @@
                 </div>
             </div>
         </div>
-        <div class="row dc-rendered-on-desktop" data-ng-if="$ctrl.isAtEditorEntry()">
+        <div class="row hide-on-mobile" data-ng-if="$ctrl.isAtEditorEntry()">
             <div class="col">
                 <div class="word-definition-title">
                     <dc-rendered config="$ctrl.lecConfig.entry" global-config="$ctrl.lecConfig"

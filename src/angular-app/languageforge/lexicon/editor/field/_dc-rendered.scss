@@ -26,7 +26,7 @@
   }
 }
 @include media-breakpoint-down(sm) {
-  .dc-rendered-on-desktop {
+  .hide-on-mobile {
     display: none;
   }
 }
