@@ -10,18 +10,6 @@ test.describe('E2E Signup app', () => {
     signupPage = new SignupPage(anonTab);
   })
 
-  // this name is not very descriptive
-  test('Can verify required information filled', async () => {
-    await signupPage.goto();
-
-    await expect(signupPage.signupButton).toBeDisabled();
-    await signupPage.nameInput.fill(constants.unusedName);
-    await signupPage.emailInput.fill(constants.unusedEmail);
-    await signupPage.passwordInput.fill(constants.passwordValid);
-    await signupPage.captcha.setInvalidCaptcha();
-    await expect(signupPage.signupButton).toBeEnabled();
-  });
-
   test('Cannot submit if email is invalid', async () => {
     await signupPage.goto();
 
@@ -47,7 +35,7 @@ test.describe('E2E Signup app', () => {
     await expect(signupPage.signupButton).not.toBeEnabled();
   });
 
-  test('Can submit if password not weak', async () => {
+  test('Can submit if the password is strong', async () => {
     await signupPage.goto();
 
     await signupPage.nameInput.fill(constants.unusedName);
@@ -79,9 +67,7 @@ test.describe('E2E Signup app', () => {
     await expect(signupPage.signupButton).toBeDisabled();
   });
 
-  // name is not good
-  // suggested name: invalid captcha allows submit but then displays error
-  test('Can submit a user registration request and captcha is invalid', async () => {
+  test('Captcha is invalid but user can still submit form', async () => {
     await signupPage.goto();
 
     await signupPage.nameInput.fill(constants.unusedName);
