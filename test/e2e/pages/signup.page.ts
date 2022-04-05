@@ -1,4 +1,4 @@
-import { expect, Locator, Page } from '@playwright/test';
+import { ElementHandle, expect, Locator, Page } from '@playwright/test';
 
 type Captcha = {
   expectedItemName: Locator;
@@ -34,7 +34,7 @@ export class SignupPage {
     this.nameInput = page.locator('#name');
     this.passwordInput = page.locator('#password');
     this.passwordIsWeak = page.locator('#passwordIsWeak');
-    this.showPassword = page.locator('data-ng-model="$ctrl.showPassword"');
+    this.showPassword = page.locator('[data-ng-model="$ctrl.showPassword"]');
 
     this.captchaDiv = page.locator('#pui-captcha');
     this.captcha = {
@@ -46,33 +46,46 @@ export class SignupPage {
       setInvalidCaptcha: async () => {
         await this.captcha.blueSquareButton.click();
         if (await this.captcha.expectedItemName.innerText() === 'Blue Square') {
-          this.captcha.yellowCircleButton.click();
+          await this.captcha.yellowCircleButton.click();
         }
       },
 
       setValidCaptcha: async () => {
+        await expect(this.captcha.expectedItemName).not.toHaveText('');
+        // Could also have done this: -RM
+        // const itemNameHandle = (await this.captcha.expectedItemName.elementHandle()) as ElementHandle<HTMLElement>;
+        // await this.page.waitForFunction(elem => elem.innerText, itemNameHandle);
+
         switch (await this.captcha.expectedItemName.innerText()) {
           case 'Blue Square':
-            this.captcha.blueSquareButton.click();
+            await this.captcha.blueSquareButton.click();
+            break;
           case 'Yellow Circle':
-            this.captcha.yellowCircleButton.click();
+            await this.captcha.yellowCircleButton.click();
+            break;
           case 'Red Triangle':
-            this.captcha.redTriangleButton.click();
+            await this.captcha.redTriangleButton.click();
         }
       }
     };
     this.captchaInvalid = page.locator('#captchaInvalid');
-
     this.signupButton = page.locator('#submit');
   }
 
   async goto(email: string = '') {
-    let appendEmailtoURL: string = '';
-    if (email != '') {
-      appendEmailtoURL = '#!/?e=' + encodeURIComponent(email);
+    if (email === '') {
+      await this.page.goto(SignupPage.url);
     }
-    await this.page.goto(SignupPage.url + appendEmailtoURL);
+    else {
+      await this.page.goto(SignupPage.url + '#!/?e=' + encodeURIComponent(email));
+      await this.page.reload();
+    }
     await expect(this.emailInput).toBeVisible();
+  }
+
+  async gotoExpectRedirect(redirectedToUrl: string) {
+    await this.page.goto(SignupPage.url);
+    expect(this.page.url()).toContain(redirectedToUrl);
   }
 
   async setInvalidCaptcha() {
