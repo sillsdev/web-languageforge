@@ -83,11 +83,6 @@ export class SignupPage {
     await expect(this.emailInput).toBeVisible();
   }
 
-  async gotoExpectRedirect(redirectedToUrl: string) {
-    await this.page.goto(SignupPage.url);
-    expect(this.page.url()).toContain(redirectedToUrl);
-  }
-
   async setInvalidCaptcha() {
     await this.captcha.blueSquareButton.click();
     if (await this.captcha.expectedItemName.innerText() === 'Blue Square') {
