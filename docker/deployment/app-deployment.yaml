@@ -179,8 +179,7 @@ spec:
                 key: LD_TRUST_TOKEN
                 name: ld-trust-token
       - name: lfmerge
-        # TODO: Decide on a verion-numbering policy for LfMerge releases
-        image: ghcr.io/sillsdev/lfmerge:latest
+        image: ghcr.io/sillsdev/lfmerge:2.0.98
         imagePullPolicy: Always
         volumeMounts:
           - mountPath: /var/lib/languageforge/lexicon/sendreceive
