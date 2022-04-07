@@ -1,6 +1,7 @@
 {
   "name": "next",
   "version": "0.0.1",
+  "type": "module",
   "scripts": {
     "dev": "svelte-kit dev --host",
     "build": "svelte-kit build",
@@ -10,6 +11,5 @@
     "@sveltejs/adapter-node": "next",
     "@sveltejs/kit": "next",
     "svelte": "^3.44.0"
-  },
-  "type": "module"
+  }
 }
