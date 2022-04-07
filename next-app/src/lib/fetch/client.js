@@ -1,6 +1,5 @@
 import { throwError } from '$lib/error'
 import { start, stop } from '$lib/progress'
-// import t from '../i18n'
 
 export async function CREATE(url, body) { return await customFetch('post'  , url, body) }
 export async function GET   (url      ) { return await customFetch('get'   , url      ) }
