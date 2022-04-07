@@ -94,6 +94,38 @@ services:
       # for developer convenience
       - ./ssl/Caddyfile:/etc/caddy/Caddyfile
 
+  next-proxy:
+    image: caddy
+    container_name: lf-next-proxy
+    ports:
+      - 80:80
+      - 3000:3000
+    restart: unless-stopped
+    depends_on:
+      - app
+      - next-app
+    environment:
+      - LEGACY_APP=app:80
+      - NEXT_APP=next-app:3000
+    volumes:
+      - lf-caddy-data:/data
+      - lf-caddy-config:/config
+
+      # for developer convenience
+      - ./next-proxy/Caddyfile:/etc/caddy/Caddyfile
+
+  next-app:
+    build:
+      context: ../next-app
+      dockerfile: ../docker/next-app/Dockerfile
+    image: lf-next-app
+    container_name: lf-next-app
+    command: npm run dev
+    volumes:
+      # for developer convenience
+      - ../next-app/src:/app/src
+      - ../next-app/static:/app/src/static
+
   mail:
     image: juanluisbaptiste/postfix:1.0.0
     container_name: lf-mail
