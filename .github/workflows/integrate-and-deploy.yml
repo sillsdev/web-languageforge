@@ -92,12 +92,12 @@ jobs:
     #       docker-compose -f docker/docker-compose.yml up -d app-for-playwright
     #       npx playwright install
     #       npx playwright test
-    #   -
-    #     name: Log in to Docker Hub
-    #     uses: docker/login-action@v1
-    #     with:
-    #       username: ${{ secrets.image-repo-username }}
-    #       password: ${{ secrets.image-repo-password }}
+      -
+        name: Log in to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.image-repo-username }}
+          password: ${{ secrets.image-repo-password }}
       -
         name: Tag images
     #     run: docker tag lf-app ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG }}
