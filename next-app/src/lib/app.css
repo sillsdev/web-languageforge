@@ -5,10 +5,12 @@
 	/* https://github.com/AgnosticUI/agnosticui/blob/master/agnostic-css/public/css-src/colors.css */
 	--agnostic-primary: #104060;
 	--agnostic-secondary: #0a2440;
+	--agnostic-light: whitesmoke;
 }
 
 body {
 	/* https://github.com/AgnosticUI/agnosticui/blob/master/agnostic-css/public/css-src/typography.css */
+	background: var(--agnostic-light);
 	color: var(--agnostic-font-color);
 }
 

@@ -1,6 +1,7 @@
 <script>
 import Error from '$lib/error/Error.svelte'
 import Progress from '$lib/progress/Progress.svelte'
+
 </script>
 
 <header>
@@ -13,8 +14,8 @@ import Progress from '$lib/progress/Progress.svelte'
 
 <style>
 header {
-	background-color: var(--color-primary);
-	color: var(--color-primary-text);
+	background-color: var(--agnostic-primary);
+	color: var(--agnostic-light);
 
 	min-height: 4rem;
 	width: 100vw;
