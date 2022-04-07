@@ -12,6 +12,7 @@ on:
 
 jobs:
   staging:
+    steps:
       -
         id: tag
         run: echo ::set-output name=ID::$(date +%Y%m%d)-${{ github.sha }}
