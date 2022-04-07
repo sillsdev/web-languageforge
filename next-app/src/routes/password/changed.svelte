@@ -12,10 +12,12 @@ function kill_session() {
 	<title>Password is changed</title>
 </svelte:head>
 
-<h1>
-	🎉 Your password has been changed! 🎉
-</h1>
+<div class='text-center'>
+	<h1>
+		🎉 Your password has been changed! 🎉
+	</h1>
 
-<p>
-	You have been logged out now so you can try your new password by <a rel=external href=/auth/login>logging in</a> again.
-</p>
+	<p>
+		You have been logged out now so you can try your new password by <a rel=external href=/auth/login>logging in</a> again.
+	</p>
+</div>
