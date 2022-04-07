@@ -1,6 +1,6 @@
 FROM node:alpine AS builder
 
-COPY package.json svelte.config.js /app/
+COPY package.json svelte.config.js postcss.config.cjs tailwind.config.cjs /app/
 COPY src /app/src
 
 WORKDIR /app
