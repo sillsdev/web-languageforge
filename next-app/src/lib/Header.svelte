@@ -6,9 +6,9 @@ import Progress from '$lib/progress/Progress.svelte'
 
 <header>
 	<span>Language  Forge</span>
-
-	<Error />
 </header>
+
+<Error />
 
 <Progress />
 
@@ -19,7 +19,6 @@ header {
 		navbar
 		bg-primary
 		text-primary-content
-		dark:text-white
 
 		w-screen
 
