@@ -35,4 +35,6 @@ async function change_password_sleek() {
     <button on:click|preventDefault={change_password_chatty}>Change my password (chatty)</button>
 </form>
 
-<pre>{JSON.stringify(data, null, 2)}</pre>
+{#if data}
+    <pre>{JSON.stringify(data, null, 2)}</pre>
+{/if}

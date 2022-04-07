@@ -44,9 +44,9 @@ scan:
 	docker login
 	-docker scan --accept-license lf-app:prod > docker-scan-results.txt
 
-.PHONY: next
-next:
-	docker compose up -d next-proxy
+.PHONY: next-dev
+next-dev:
+	docker compose up -d next-proxy-dev
 
 .PHONY: clean
 clean:
