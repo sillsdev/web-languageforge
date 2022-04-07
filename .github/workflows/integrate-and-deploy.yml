@@ -107,9 +107,9 @@ jobs:
           docker tag lf-next-app ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG_NEXT_APP }}
       -
         run: docker images
-    #   -
-    #     name: Publish image
-    #     run: docker push ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG }}
+      -
+        name: Publish images
+        run: docker push --all-tags ${{ steps.image.outputs.NAMESPACE }}
 
     # outputs:
     #   IMAGE: ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG }}
