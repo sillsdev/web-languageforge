@@ -12,6 +12,8 @@ on:
 
 jobs:
   staging:
+    runs-on: ubuntu-latest
+
     steps:
       -
         id: tag
