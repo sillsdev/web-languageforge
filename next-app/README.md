@@ -2,7 +2,7 @@
 
 ## Local development
 
-From within the `/docker` directory, `make next` will start the proxy as well as the legacy and next apps.  The proxy listens on `::1:80` and will route requests to the appropriate app, therefore navigating to http://locahost will bring up the legacy app.  `admin` and `password` can be used to login.  Choosing the "Change password" option in the dropdown will get your routed over to the next app.
+From within the `/docker` directory, `make next` will start the proxy as well as the legacy and next apps.  The proxy listens on `:80` and will route requests to the appropriate app, therefore navigating to http://locahost will bring up the legacy app.  `admin` and `password` can be used to login.  Choosing the "Change password" option in the dropdown will get your routed over to the next app.
 
 ## Capabilities
 
