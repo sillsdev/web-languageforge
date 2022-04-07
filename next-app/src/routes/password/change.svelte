@@ -28,7 +28,7 @@
 	<title>Change your password</title>
 </svelte:head>
 
-<div>
+<div class='mx-auto max-w-lg'>
 	<h1>Change your password</h1>
 
 	<Form on:submit={change_password}>
@@ -38,10 +38,3 @@
 		<Button>Change my password</Button>
 	</Form>
 </div>
-
-<style>
-	div { @apply
-		mx-auto
-		max-w-lg;
-	}
-</style>

@@ -16,32 +16,18 @@
 	<title>Password is changed</title>
 </svelte:head>
 
-<div>
+<div class='text-center'>
 	<h1>
 		🎉 Your password has been changed! 🎉
 	</h1>
 
-	<p>
+	<p class='pt-4 max-w-[45ch] mx-auto'>
 		You have been logged out now so you can try your new password by <a rel=external href=/auth/login>logging in</a> again.
 	</p>
 
 	<p>
-		<a rel=external href=/auth/login class=button>Log back in again</a>
+		<a rel=external href=/auth/login class='btn btn-primary no-underline'>
+			Log back in again
+		</a>
 	</p>
 </div>
-
-<style>
-div { @apply
-	text-center;
-}
-p { @apply
-	pt-4
-	max-w-[45ch]
-	mx-auto;
-}
-.button { @apply
-	btn
-	btn-primary
-	no-underline;
-}
-</style>

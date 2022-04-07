@@ -5,12 +5,6 @@
 
 <Header />
 
-<main>
+<main class='px-6'>
 	<slot />
 </main>
-
-<style>
-main { @apply
-	px-4;
-}
-</style>

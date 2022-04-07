@@ -26,22 +26,11 @@
 	}
 </script>
 
-<label for={id}>
-	<span>{label}</span>
+<!-- https://daisyui.com/components/input -->
+<label for={id} class=label>
+	<span class='label-text'>
+		{label}
+	</span>
 </label>
 
-<input {id} use:typeWorkaround bind:value {required} bind:this={input} />
-
-<style>
-	/* https://daisyui.com/components/input */
-	label { @apply
-		label;
-	}
-	label > span { @apply
-		label-text;
-	}
-	input { @apply
-		input
-		input-bordered;
-	}
-</style>
+<input {id} use:typeWorkaround bind:value {required} bind:this={input} class='input input-bordered' />

@@ -2,16 +2,12 @@
 	export let danger = false
 </script>
 
-<button on:click class:danger>
+<!-- https://daisyui.com/components/button -->
+<button on:click class:danger class='btn btn-primary'>
 	<slot />
 </button>
 
 <style>
-button { @apply
-	/* https://daisyui.com/components/button */
-	btn
-	btn-primary;
-}
 .danger { @apply
 	btn-error;
 }

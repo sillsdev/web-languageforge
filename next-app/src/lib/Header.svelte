@@ -3,29 +3,13 @@
 	import Progress from '$lib/progress/Progress.svelte'
 </script>
 
-<header>
-	<span>Language  Forge</span>
+<!-- https://daisyui.com/components/navbar -->
+<header class='navbar bg-primary text-primary-content'>
+	<span class='text-3xl ml-4 tracking-wider'>
+		Language  Forge
+	</span>
 </header>
 
 <Error />
 
 <Progress />
-
-<style>
-	header { @apply
-		/* https://daisyui.com/components/navbar/ */
-		navbar
-		bg-primary
-		text-primary-content
-
-		w-screen
-
-		text-2xl
-		font-medium
-		tracking-wide;
-	}
-	span { @apply
-		text-4xl
-		ml-4;
-	}
-</style>

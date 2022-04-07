@@ -1,11 +1,8 @@
-<form on:submit|preventDefault novalidate>
+<form on:submit|preventDefault novalidate class='form-control'>
 	<slot />
 </form>
 
 <style>
-	form { @apply
-		form-control;
-	}
 	:global(form > input) { @apply
 		mb-6;
 	}

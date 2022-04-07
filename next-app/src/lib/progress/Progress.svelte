@@ -2,16 +2,4 @@
 	import { loading } from '$lib/progress'
 </script>
 
-<progress  class:visible={$loading} class:invisible={!$loading} />
-
-<style>
-progress { @apply
-	progress
-	progress-secondary
-
-	w-screen
-
-	relative
-	-top-4;
-}
-</style>
+<progress class:visible={$loading} class:invisible={!$loading} class='progress progress-secondary relative -top-4' />
