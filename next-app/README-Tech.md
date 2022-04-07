@@ -69,7 +69,10 @@ src
 
 Of course choosing tailwindcss comes with a number of criticisms but we believe it's a good choice for the following reasons:
 
-1. The codebase can be kept free of class clutter by simply utlizing `@apply` in the `<style>` section of our `.svelte` files.
+1. The codebase can be kept free of class clutter by simply utlizing `@apply` in the `<style>` section of our `.svelte` files but when doing this a couple of things need to be taken into consideration:
+
+> modifiers are not supported in `@apply` without additional `preprocess` and `postcss` configuration and increased specificity can sometimes cause problems when class overrides are needed on an element directly.
+
 2. We will inevitably have situations where parent components or views will want to pass styles down to children.  This is very common and requires writing global classes anyway.  Using something like tailwindcss or bootstrap takes all of that work off of our plate.  Unused CSS will still get purged by the compiler so the app doesn't take on unnecessary bloat.
 3. daisyUI is built upon tailwindcss anyway so we benefit from using it in both situations.
 
