@@ -10,6 +10,7 @@
 		Form,
 		Input,
 	} from '$lib/forms'
+	import PageHeader from '$lib/PageHeader.svelte'
 
 	let new_password = ''
 	let new_password_confirm = ''
@@ -29,7 +30,9 @@
 </svelte:head>
 
 <div class='mx-auto max-w-lg'>
-	<h1>Change your password</h1>
+	<PageHeader>
+		Change your password
+	</PageHeader>
 
 	<Form on:submit={change_password}>
 		<Input label='New password:' type=password bind:value={new_password} required autofocus />

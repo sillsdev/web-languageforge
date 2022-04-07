@@ -3,6 +3,7 @@
 </script>
 
 <script>
+	import PageHeader from '$lib/PageHeader.svelte'
 	import { onMount } from 'svelte'
 
 	onMount(kill_session)
@@ -17,9 +18,9 @@
 </svelte:head>
 
 <div class='text-center'>
-	<h1>
+	<PageHeader>
 		🎉 Your password has been changed! 🎉
-	</h1>
+	</PageHeader>
 
 	<p class='pt-4 max-w-[45ch] mx-auto'>
 		You have been logged out now so you can try your new password by <a rel=external href=/auth/login>logging in</a> again.
