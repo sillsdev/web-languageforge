@@ -41,10 +41,8 @@ export async function put({ request }) {
 			status: error.code,
 			body: error,
 		}
-
 	}
 
     return {
-        body: { userId },
 	}
 }
