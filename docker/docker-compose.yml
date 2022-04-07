@@ -96,7 +96,7 @@ services:
 
   next-proxy-dev:
     image: caddy
-    container_name: lf-next-proxy
+    container_name: lf-next-proxy-dev
     ports:
       - 80:80
       - 3000:3000
@@ -108,9 +108,6 @@ services:
       - LEGACY_APP=app:80
       - NEXT_APP=next-app-dev:3000
     volumes:
-      - lf-caddy-data:/data
-      - lf-caddy-config:/config
-
       # for developer convenience
       - ./next-app/dev/Caddyfile:/etc/caddy/Caddyfile
 
@@ -118,8 +115,8 @@ services:
     build:
       context: ../next-app
       dockerfile: ../docker/next-app/dev/Dockerfile
-    image: lf-next-app
-    container_name: lf-next-app
+    image: lf-next-app-dev
+    container_name: lf-next-app-dev
     environment:
       - API_HOST=http://app
     command: npm run dev
@@ -127,6 +124,31 @@ services:
       # for developer convenience
       - ../next-app/src:/app/src
       - ../next-app/static:/app/static
+
+  next-proxy:
+    build:
+      context: next-app
+      dockerfile: Dockerfile.proxy
+    image: lf-next-proxy
+    container_name: lf-next-proxy
+    ports:
+      - 80:80
+    restart: unless-stopped
+    depends_on:
+      - app
+      - next-app
+    environment:
+      - LEGACY_APP=app:80
+      - NEXT_APP=next-app:3000
+
+  next-app:
+    build:
+      context: ../next-app
+      dockerfile: ../docker/next-app/Dockerfile.next-app
+    image: lf-next-app
+    container_name: lf-next-app
+    environment:
+      - API_HOST=http://app
 
   mail:
     image: juanluisbaptiste/postfix:1.0.0

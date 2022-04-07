@@ -48,6 +48,10 @@ scan:
 next-dev:
 	docker compose up -d next-proxy-dev
 
+.PHONY: next
+next:
+	docker compose up -d next-proxy
+
 .PHONY: clean
 clean:
 	docker-compose down
