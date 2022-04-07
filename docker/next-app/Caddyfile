@@ -8,9 +8,10 @@
 	@next_app_paths {
 		path /_app/*
 		path /app/changepassword
-		path /password
+		path /password*
 	}
 	route @next_app_paths {
+		rewrite /app/changepassword /password/change
 		reverse_proxy {$NEXT_APP}
 	}
 

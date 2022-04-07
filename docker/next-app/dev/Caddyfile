@@ -12,8 +12,10 @@
 		path /src/lib* # when running next-app in dev mode, this is needed.
 		path /_app/*
 		path /app/changepassword
+		path /password*
 	}
 	route @next_app_paths {
+		rewrite /app/changepassword /password/change
 		reverse_proxy {$NEXT_APP}
 	}
 
@@ -21,13 +23,6 @@
 		header referer *.svelte # when running next-app in dev mode, this is needed.
 	}
 	route @next_app_header {
-		reverse_proxy {$NEXT_APP}
-	}
-
-	@next_app_backends {
-		path /password
-	}
-	route @next_app_backends {
 		reverse_proxy {$NEXT_APP}
 	}
 
