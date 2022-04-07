@@ -84,7 +84,7 @@ jobs:
       -
         name: Playwright E2E Tests
         run: |
-          docker-compose -f docker/docker-compose.yml up -d app-for-playwright
+          docker-compose up -d app-for-playwright
           npx playwright install
           npx playwright test
       -
