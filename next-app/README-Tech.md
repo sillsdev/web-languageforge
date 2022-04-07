@@ -79,3 +79,9 @@ Of course choosing tailwindcss comes with a number of criticisms but we believe 
 
 With such a small team, we were always going to need a well thought-out UI library to keep us from having to make a bunch of design decisions along the way.  While there are a handful of Svelte-based libraries, none of them met the crtieria necessary to help make our team as efficient as possible.  There were many mature UI systems already in place built upon tailwindcss and daisyUI represents one of the best of the ones we looked at in it's goal of further simplifying the use of tailwindcss.  Additionally, daisyUI has already integrated many best practices and opinions in its design decisions.
 
+### Backend layer
+
+A backend layer is being utilized to insulate the UI from implemenation details in the calls to the legacy app's backend.  In addition to this insulation, introducing this additional backend layer will allow the contracts between the UI and the backend to be more refined and sensible.  There is a possibility that calls to the legacy app could move to a different provider at some point and this step now will facilitate that.  It also shields the end user and UI from what are potenitally messy communication requirements with the legacy backend.
+
+> As a result, the UI should only communicate with endpoints in the Next App.  Page endpoints should be favored for Svelte views that require data be loaded for the page and stand-alone endpoints used for everything else, refer to https://kit.svelte.dev/docs/routing#endpoints for further details.
+
