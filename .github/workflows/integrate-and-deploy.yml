@@ -125,9 +125,9 @@ jobs:
       -
         uses: sillsdev/common-github-actions/install-kubectl@v1
       -
-        run: echo ${{ needs.integrate.outputs.IMAGE_PROXY }} ${{ needs.integrate.outputs.IMAGE_NEXT_APP }}
+        # run: echo ${{ needs.integrate.outputs.IMAGE_PROXY }} ${{ needs.integrate.outputs.IMAGE_NEXT_APP }}
   #       run: kubectl --context ${{ secrets.kube-context }} set image deployment/app app=${{ needs.integrate.outputs.IMAGE }}
           # kubectl --context ${{ secrets.kube-context }} set image deployment/app app={{ needs.integrate.outputs.APP }}
-        # run: |
-        #   kubectl --context ${{ secrets.kube-context }} set image deployment/next-proxy next-proxy={{ needs.integrate.outputs.IMAGE_PROXY }}
-        #   kubectl --context ${{ secrets.kube-context }} set image deployment/next-app next-app={{ needs.integrate.outputs.IMAGE_NEXT_APP }}
+        run: |
+          kubectl --context ${{ secrets.kube-context }} set image deployment/next-proxy next-proxy=${{ needs.integrate.outputs.IMAGE_PROXY }}
+          kubectl --context ${{ secrets.kube-context }} set image deployment/next-app next-app=${{ needs.integrate.outputs.IMAGE_NEXT_APP }}
