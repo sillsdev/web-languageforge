@@ -30,6 +30,8 @@ jobs:
       -
         name: Build LFNext images
         run: make build-next
+      -
+        run: docker images
 
         # run: docker build -t ${{ env.IMAGE }}:{ adhoc-$(date +%Y%m%d)-${{ github.sha }}} -f docker/app/Dockerfile .
 
