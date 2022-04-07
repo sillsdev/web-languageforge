@@ -1,3 +1,7 @@
+<script context=module>
+	export const prerender = true
+</script>
+
 <script>
 import { browser } from '$app/env'
 import { throwError } from '$lib/error'
