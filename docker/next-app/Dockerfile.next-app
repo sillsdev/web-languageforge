@@ -1,13 +1,16 @@
+# Build the app
 FROM node:alpine AS builder
 
-COPY package.json svelte.config.js postcss.config.cjs tailwind.config.cjs /app/
-COPY src /app/src
-
 WORKDIR /app
+
+COPY jsconfig.json package-lock.json package.json postcss.config.cjs svelte.config.js tailwind.config.cjs /app
+COPY src /app/src
+COPY static /app/static
+
 RUN npm install
 RUN npm run build
 
-
+# Run
 FROM node:alpine
 
 COPY --from=builder /app/build /app/
@@ -17,4 +20,3 @@ COPY --from=builder /app/package.json /app/
 EXPOSE 3000
 
 CMD node app/index.js
-

@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "type": "module",
   "scripts": {
+	"//TODO:": "don't need --host when running in docker",
     "dev": "svelte-kit dev --host",
     "build": "svelte-kit build",
     "preview": "svelte-kit preview",
