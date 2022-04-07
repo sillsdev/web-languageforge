@@ -124,7 +124,7 @@ services:
     volumes:
       # for developer convenience
       - ../next-app/src:/app/src
-      - ../next-app/static:/app/src/static
+      - ../next-app/static:/app/static
 
   mail:
     image: juanluisbaptiste/postfix:1.0.0
