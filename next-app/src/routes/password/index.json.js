@@ -1,43 +1,50 @@
+import { throwError } from '$lib/error'
+import { CREATE } from '$lib/fetch/server'
+
 /** @type {import('@sveltejs/kit').RequestHandler} */
 export async function put({ request }) {
-    let response = await fetch(`${process.env.API_HOST}/api/sf`, {
-        method: 'post',
-        headers: {
-            'content-type': 'application/json',
-            cookie: request.headers.get('cookie'),
-        },
-        body: JSON.stringify({
-            id: 1,
-            method: 'session_getSessionData',
-            params: {
-                orderedParams:[],
-            },
-        }),
-    })
+	try {
+		const { password, password_confirm } = await request.json()
 
-    const { result: { userId } } = await response.json()
-    const { new_password } = await request.json()
+		if (!password) {
+			throwError('Password is required', 400)
+		}
+		if (password !== password_confirm) {
+			throwError('Passwords do not match', 400)
+		}
 
-    response = await fetch(`${process.env.API_HOST}/api/sf`, {
-        method: 'post',
-        headers: {
-            'content-type': 'application/json',
-            cookie: request.headers.get('cookie'),
-        },
-        body: JSON.stringify({
-            id: 1,
-            method: 'change_password',
-            params: {
-                orderedParams:
-                [
-                    userId,
-                    new_password,
-                ],
-            },
-        }),
-    })
+		const { result: { userId } } = await CREATE({
+				id: 1, //TODO: what's the significance of this?
+				method: 'session_getSessionData',
+				params: {
+					orderedParams:[],
+				},
+			},
+			request.headers.get('cookie'),
+		)
+
+		await CREATE({
+				id: 1, //TODO: what's the significance of this?
+				method: 'change_password',
+				params: {
+					orderedParams:
+					[
+						userId,
+						password,
+					],
+				},
+			},
+			request.headers.get('cookie'),
+		)
+	} catch (error) {
+		return {
+			status: error.code,
+			body: error,
+		}
+
+	}
 
     return {
         body: { userId },
-	};
+	}
 }

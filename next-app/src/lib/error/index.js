@@ -12,6 +12,7 @@ if (browser) {
 	// https://developer.mozilla.org/en-US/docs/Web/API/PromiseRejectionEvent
 	window.onunhandledrejection = event => set(event.reason)
 }
+// TODO: is there an else here for server side hook?
 
 function set(someError) {
   const code = someError.code || 0

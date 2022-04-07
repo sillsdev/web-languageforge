@@ -1,5 +1,5 @@
 <script>
-import { UPDATE } from '$lib/fetch'
+import { UPDATE } from '$lib/fetch/client'
 
 let data = null
 let new_password = ''
@@ -16,8 +16,8 @@ async function change_password() {
 <h1>LFNext app - Change password</h1>
 
 <form on:submit|preventDefault={change_password}>
-    <input type=password bind:value={new_password}         placeholder="New password" />
-    <input type=password bind:value={new_password_confirm} placeholder="Repeat new password" />
+    <input type=password bind:value={new_password}         placeholder="New password" required />
+    <input type=password bind:value={new_password_confirm} placeholder="Repeat new password" required />
 
     <button>Change my password</button>
 </form>
