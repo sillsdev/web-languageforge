@@ -6,6 +6,7 @@
 import { browser } from '$app/env'
 import { throwError } from '$lib/error'
 import { GET } from '$lib/fetch/client'
+import { Button } from '$lib/forms'
 import { start, stop } from '$lib/progress'
 import { onMount } from 'svelte'
 
@@ -25,18 +26,18 @@ $: browser && document.documentElement.setAttribute('data-theme', dark_mode ? 'd
 
 <section>
 	<h2>Progress indicator</h2>
-	<button on:click={() => start('index.svelte')}>start progress</button>
-	<button on:click={() => stop('index.svelte')}>stop progress</button>
+	<Button on:click={() => start('index.svelte')}>start progress</Button>
+	<Button on:click={() => stop('index.svelte')}>stop progress</Button>
 </section>
 
 <section>
 	<h2>Error handling</h2>
 
 	<h3>Client</h3>
-	<button on:click={ () => globalThis.whatIsTheAirspeedVelocityOfAnUnladenSwallow() }>Cause run-time error</button>
-	<button on:click={ async () => await GET('//LFAPP') }>Cause network error</button>
-	<button on:click={ () => throwError("sorry, that's not a good password") }>Cause biz logic error</button>
-	<button on:click={ async () => await GET('//httpbin.org/status/500') }>Cause backend error</button>
+	<Button on:click={ () => globalThis.whatIsTheAirspeedVelocityOfAnUnladenSwallow() } danger>Cause run-time error</Button>
+	<Button on:click={ async () => await GET('//LFAPP') } danger>Cause network error</Button>
+	<Button on:click={ () => throwError("sorry, that's not a good password") } danger>Cause biz logic error</Button>
+	<Button on:click={ async () => await GET('//httpbin.org/status/500') } danger>Cause backend error</Button>
 
 	<h3>Server</h3>
 	The change password page has a few options:
@@ -53,7 +54,7 @@ $: browser && document.documentElement.setAttribute('data-theme', dark_mode ? 'd
 	<h3>Button</h3>
 	<button class='btn btn-primary'>primary</button>
 	<button class='btn btn-secondary'>secondary</button>
-	<button class='btn btn-outline btn-primary'>outline</button>
+	<button class='btn btn-error'>error</button>
 	<button class='btn btn-lg'>large</button>
 	<button class='btn' disabled>disabled</button>
 
