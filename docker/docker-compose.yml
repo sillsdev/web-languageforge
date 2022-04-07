@@ -119,7 +119,7 @@ services:
     container_name: lf-next-app-dev
     environment:
       - API_HOST=http://app
-    command: npm run dev
+    command: npm run dev-w-host
     volumes:
       # for developer convenience
       - ../next-app/src:/app/src
