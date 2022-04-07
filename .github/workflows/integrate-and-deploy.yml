@@ -127,6 +127,6 @@ jobs:
       -
   #       run: kubectl --context ${{ secrets.kube-context }} set image deployment/app app=${{ needs.integrate.outputs.IMAGE }}
           # kubectl --context ${{ secrets.kube-context }} set image deployment/app app={{ needs.integrate.outputs.APP }}
-        run: |
-          kubectl --context ${{ secrets.kube-context }} set image deployment/next-proxy app={{ needs.integrate.outputs.IMAGE_PROXY }}
-          kubectl --context ${{ secrets.kube-context }} set image deployment/next-app app={{ needs.integrate.outputs.IMAGE_NEXT_APP }}
+        run: kubectl --context ${{ secrets.kube-context }} set image deployment/next-proxy app={{ needs.integrate.outputs.IMAGE_PROXY }}
+      -
+        run: kubectl --context ${{ secrets.kube-context }} set image deployment/next-app app={{ needs.integrate.outputs.IMAGE_NEXT_APP }}
