@@ -52,6 +52,10 @@ next-dev:
 next:
 	docker compose up -d next-proxy
 
+.PHONY: build-next
+build-next:
+	docker compose build next-proxy next-app
+
 .PHONY: clean
 clean:
 	docker-compose down

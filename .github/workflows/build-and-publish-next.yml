@@ -1,0 +1,44 @@
+name: Publish LFNext images to Docker Hub on-demand
+
+# https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#on
+on:
+  workflow_dispatch:
+
+  # TODO: remove branch trigger before merging into `develop`
+  push:
+    branches:
+      - /next/changepassword
+
+jobs:
+  build-n-publish:
+    runs-on: ubuntu-latest
+
+    env:
+      # https://docs.docker.com/develop/develop-images/build_enhancements/
+      DOCKER_BUILDKIT: 1
+
+    defaults:
+      run:
+        working-directory: docker
+
+    # env:
+    #   IMAGE: sillsdev/web-languageforge
+
+    steps:
+      -
+        uses: actions/checkout@v2
+      -
+        name: Build LFNext images
+        run: make build-next
+
+        # run: docker build -t ${{ env.IMAGE }}:{ adhoc-$(date +%Y%m%d)-${{ github.sha }}} -f docker/app/Dockerfile .
+
+      # - name: Log in to Docker Hub
+      #   uses: docker/login-action@v1
+      #   with:
+      #     username: ${{ secrets.DOCKERHUB_USERNAME }}
+      #     password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+
+      # - name: Publish image
+      #   run: |
+      #     docker push ${{ env.IMAGE }}:${{ github.event.inputs.tag }}
