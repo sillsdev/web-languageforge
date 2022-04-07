@@ -51,11 +51,11 @@ jobs:
           echo ::set-output name=TAG_APP::${{ inputs.image-tag-app }}
           echo ::set-output name=TAG_PROXY::${{ inputs.image-tag-proxy }}
           echo ::set-output name=TAG_NEXT_APP::${{ inputs.image-tag-next-app }}
-      -
-        uses: actions/setup-node@v2
-        with:
-          node-version: '16.14.0'
-          cache: 'npm'
+      # -
+      #   uses: actions/setup-node@v2
+      #   with:
+      #     node-version: '16.14.0'
+      #     cache: 'npm'
       -
         run: npm ci
       -
@@ -76,10 +76,15 @@ jobs:
           echo ${{ steps.image.outputs.TAG_NEXT_APP }}
     #     run: npm ci
     #   -
-    #     name: Build app
+    #     name: Build legacy app
     #     run: docker-compose build --build-arg ENVIRONMENT=production --build-arg BUILD_VERSION=${{ steps.image.outputs.TAG }} app
     #   -
     #     run:  docker-compose run --rm app cat /var/www/html/build-version.txt /var/www/html/version.php
+      -
+        name: Build "next" images
+        run: make build-next
+      -
+        run: docker images
     #   -
     #     name: Unit Tests
     #     run: make unit-tests-ci
