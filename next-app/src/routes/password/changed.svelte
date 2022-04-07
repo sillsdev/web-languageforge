@@ -23,7 +23,7 @@ function kill_session() {
 	</p>
 
 	<p>
-		<Button>Log back in again</Button>
+		<a rel=external href=/auth/login class='btn btn-primary no-underline'>Log back in again</a>
 	</p>
 </div>
 
