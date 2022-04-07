@@ -41,7 +41,7 @@ Migrating legacy routes will be accomplished through rules established in the Pr
 
 * [Svelte](https://svelte.dev/) – Language abstraction for UI that compiles to small, performant, vanilla JavaScript
 * [daisyUI](https://daisyui.com/) – Pre-designed UI componentry
-* [Tailwindcss](https://tailwindcss.com/) – CSS utils for class slinging in the (Svelte) UI
+* [Tailwindcss](https://tailwindcss.com/) – CSS utils for class slinging in the (Svelte) UI (as well as the foundation for daisyUI)
 * [SvelteKit](https://kit.svelte.dev/) – Javascript backend supporting SSG, SSR, and client-side hydration
 
 ## Technical design notes
