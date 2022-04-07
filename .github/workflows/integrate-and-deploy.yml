@@ -52,41 +52,30 @@ jobs:
           echo ::set-output name=TAG_PROXY::${{ inputs.image-tag-proxy }}
           echo ::set-output name=TAG_NEXT_APP::${{ inputs.image-tag-next-app }}
       -
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16.14.0'
+          cache: 'npm'
+      -
         run: npm ci
       -
-        name: Build app
-        run: docker-compose build --build-arg ENVIRONMENT=production --build-arg BUILD_VERSION=${{ steps.image.outputs.TAG }} app
-      -
-        run:  docker-compose run --rm app cat /var/www/html/build-version.txt /var/www/html/version.php
-      -
-        name: Unit Tests
-        run: make unit-tests-ci
-      -
-        name: Playwright E2E Tests
-        working-directory: .
+        name: Build legacy app
         run: |
-          echo ${{ steps.image.outputs.NAMESPACE }}
-          echo ${{ steps.image.outputs.TAG_APP }}
-          echo ${{ steps.image.outputs.TAG_PROXY }}
-          echo ${{ steps.image.outputs.TAG_NEXT_APP }}
-    #     run: npm ci
-    #   -
-    #     name: Build legacy app
-    #     run: docker-compose build --build-arg ENVIRONMENT=production --build-arg BUILD_VERSION=${{ steps.image.outputs.TAG }} app
-    #   -
-    #     run:  docker-compose run --rm app cat /var/www/html/build-version.txt /var/www/html/version.php
+          docker-compose build --build-arg ENVIRONMENT=production --build-arg BUILD_VERSION=${{ steps.image.outputs.TAG }} app
+          docker-compose run --rm app cat /var/www/html/build-version.txt /var/www/html/version.php
       -
         name: Build "next" images
         run: make build-next
       -
         name: Unit Tests
         run: make unit-tests-ci
-      # -
-      #   name: Playwright E2E Tests
-      #   run: |
-      #     docker-compose up -d app-for-playwright
-      #     npx playwright install
-      #     npx playwright test
+      -
+        name: E2E Tests
+        working-directory: .
+        run: |
+          docker-compose -f docker/docker-compose.yml up -d app-for-playwright
+          npx playwright install
+          npx playwright test
       -
         name: Log in to Docker Hub
         uses: docker/login-action@v1
@@ -120,6 +109,6 @@ jobs:
         uses: sillsdev/common-github-actions/install-kubectl@v1
       -
         run: |
-          kubectl --context ${{ secrets.kube-context }} set image deployment/app app={{ needs.integrate.outputs.IMAGE_APP }}
+          kubectl --context ${{ secrets.kube-context }} set image deployment/app app=${{ needs.integrate.outputs.IMAGE_APP }}
           kubectl --context ${{ secrets.kube-context }} set image deployment/next-proxy next-proxy=${{ needs.integrate.outputs.IMAGE_PROXY }}
           kubectl --context ${{ secrets.kube-context }} set image deployment/next-app next-app=${{ needs.integrate.outputs.IMAGE_NEXT_APP }}
