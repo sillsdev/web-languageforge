@@ -81,12 +81,12 @@ jobs:
       -
         name: Unit Tests
         run: make unit-tests-ci
-      -
-        name: Playwright E2E Tests
-        run: |
-          docker-compose up -d app-for-playwright
-          npx playwright install
-          npx playwright test
+      # -
+      #   name: Playwright E2E Tests
+      #   run: |
+      #     docker-compose up -d app-for-playwright
+      #     npx playwright install
+      #     npx playwright test
       -
         name: Log in to Docker Hub
         uses: docker/login-action@v1
