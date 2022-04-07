@@ -26,4 +26,9 @@ header {
 		font-medium
 		tracking-wide;
 }
+span {
+	@apply
+		text-4xl
+		ml-4;
+}
 </style>
