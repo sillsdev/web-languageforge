@@ -77,7 +77,7 @@ Of course choosing tailwindcss comes with a number of criticisms but we believe 
 
 #### daisyUI
 
-With such a small team, we were always going to need a well thought-out UI library to keep us from having to make a bunch of design decisions along the way.  While there are a handful of Svelte-based libraries, none of them met the crtieria necessary to help make our team as efficient as possible.  There were many mature UI systems already in place built upon tailwindcss and daisyUI represents one of the best of the ones we looked at in it's goal of further simplifying the use of tailwindcss.  Additionally, daisyUI has already integrated many best practices and opinions in its design decisions.
+With such a small team, we were always going to need a well thought-out UI library to keep us from having to make a bunch of design decisions along the way.  While there are a handful of Svelte-based libraries, none of them met the criteria necessary to help make our team as efficient as possible.  There were many mature UI systems already in place built upon tailwindcss and daisyUI represents one of the best of the ones we looked at in it's goal of further simplifying the use of tailwindcss.  Additionally, daisyUI has already integrated many best practices and opinions in its design decisions.
 
 ### Backend layer
 
