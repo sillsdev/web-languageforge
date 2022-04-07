@@ -4,7 +4,7 @@ import { error, dismiss } from '$lib/error'
 
 let errContainer = null
 
-$: errContainer && scrollIntoView(errContainer)
+$: errContainer && $error.message && scrollIntoView(errContainer)
 $: beforeNavigate(() => $error.message && dismiss())
 
 const scrollIntoView = element => element.scrollIntoView({behavior: 'smooth'})
