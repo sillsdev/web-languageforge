@@ -2,7 +2,7 @@
 
 ## Architectural diagram
 
-![image](https://user-images.githubusercontent.com/4412848/158887242-ec0a663d-b06c-4348-bb50-3d5c024c7a61.png)
+![image](https://user-images.githubusercontent.com/4412848/158890929-7042b002-5759-4de6-ac6a-3e55c29d440e.png)
 
 ## Technology stack
 
