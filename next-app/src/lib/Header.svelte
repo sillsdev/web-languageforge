@@ -5,7 +5,7 @@ import Progress from '$lib/progress/Progress.svelte'
 </script>
 
 <header>
-	<h1>Language Forge</h1>
+	<span>Language  Forge</span>
 
 	<Error />
 </header>
@@ -14,20 +14,17 @@ import Progress from '$lib/progress/Progress.svelte'
 
 <style>
 header {
-	background-color: var(--agnostic-primary);
-	color: var(--agnostic-light);
+	@apply
+		/* https://daisyui.com/components/navbar/ */
+		navbar
+		bg-primary
+		text-primary-content
+		dark:text-white
 
-	min-height: 4rem;
-	width: 100vw;
-	padding-left: 1rem;
-	padding-right: 1rem;
+		w-screen
 
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-}
-
-h1 {
-	padding-right: 2rem;
+		text-2xl
+		font-medium
+		tracking-wide;
 }
 </style>

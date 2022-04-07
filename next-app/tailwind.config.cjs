@@ -1,9 +1,5 @@
 module.exports = {
 	content: ['./src/**/*.{html,js,svelte,ts}'],
-	theme: {
-		extend: {
-		},
-	},
 	plugins: [
 		require('@tailwindcss/typography'),
 		require('daisyui'),
@@ -11,17 +7,17 @@ module.exports = {
 	daisyui: {
 		themes: [
 			{
-				'light': {
-					...require('daisyui/src/colors/themes')['[data-theme=corporate]'],
-					'primary': '#104060',
-					'secondary': '#0a2440',
+				light: {
+					...require('daisyui/src/colors/themes')['[data-theme=light]'],
+					primary: '#104060',
+					secondary: '#0a2440',
 				}
 			},
 			{
-				'dark': {
+				dark: {
 					...require('daisyui/src/colors/themes')['[data-theme=dark]'],
-					'primary': '#0a2440',
-					'secondary': '#104060',
+					primary: '#0a2440',
+					secondary: '#104060',
 				}
 			},
 		],

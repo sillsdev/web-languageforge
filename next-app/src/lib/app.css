@@ -2,7 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-	/* https://tailwindcss.com/docs/typography-plugin */
-	@apply prose;
+@layer base {
+	body {
+		@apply
+			/* https://tailwindcss.com/docs/typography-plugin */
+			prose
+	}
 }
