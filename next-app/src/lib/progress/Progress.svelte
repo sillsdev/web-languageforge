@@ -18,6 +18,8 @@ function start() {
 }
 function stop() {
 	clearInterval(intervalId)
+
+	value = 0
 }
 </script>
 
