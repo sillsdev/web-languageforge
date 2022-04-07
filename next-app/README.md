@@ -2,24 +2,6 @@
 
 ## Local development
 
-Once you've created a project and installed dependencies with `npm install` start a development server:
-
-```bash
-npm run dev
-```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-## Proxied infrastructure
-
 From within the `/docker` directory, `make next` will start the proxy as well as the legacy and next apps.  The proxy listens on `::1:80` and will route requests to the appropriate app, therefore navigating to http://locahost will bring up the legacy app.  `admin` and `password` can be used to login.  Choosing the "Change password" option in the dropdown will get your routed over to the next app.
 
 ## Capabilities
