@@ -1,7 +1,7 @@
 import { throwError } from '$lib/error'
-// import t from '../i18n'
 
-export async function CREATE(body, cookie) { return await customFetch('post'  , body, cookie) }
+export async function CREATE(body, cookie) { return await customFetch('post', body, cookie) }
+
 // https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch#Supplying_request_options
 async function customFetch(method, body, cookie) {
 	let response = {}
@@ -13,7 +13,7 @@ async function customFetch(method, body, cookie) {
 				'content-type': 'application/json',
 				cookie,
 			},
-			body: JSON.stringify(body),
+			body: JSON.stringify({ id: Date.now(), ...body }),
 		})
 	} catch (e) {
 		// these only occur for network errors, like these:
@@ -22,11 +22,15 @@ async function customFetch(method, body, cookie) {
 		throwError('NETWORK ERROR', 500)
 	}
 
-	const result = await response.json()
+	const results = await response.json()
 
-	if (result.error) {
-		throwError(result.error.message, 500)
+	if (results.error) {
+		throwError(results.error.message, 500)
 	}
 
-	return result
+	if (! results.result) {
+		throwError('Badly formed response, missing result', 500)
+	}
+
+	return results.result
 }
