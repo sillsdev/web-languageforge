@@ -1,5 +1,4 @@
 <script>
-import { Button } from '$lib/forms'
 import { onMount } from 'svelte'
 
 onMount(kill_session)
