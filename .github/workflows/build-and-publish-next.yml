@@ -21,18 +21,20 @@ jobs:
       run:
         working-directory: docker
 
-    # env:
-    #   IMAGE: sillsdev/web-languageforge
-
     steps:
       -
         uses: actions/checkout@v2
       -
         run: make build-next
       -
+        id: image
         run: |
-          docker tag lf-next-app   sillsdev/web-languageforge:next-app
-          docker tag lf-next-proxy sillsdev/web-languageforge:next-proxy
+          echo ::set-output name=NAMESPACE::sillsdev/web-languageforge
+          echo ::set-output name=UID::$(date +%Y%m%d)-${{ github.sha }}
+      -
+        run: |
+          docker tag lf-next-app   ${{ steps.image.outputs.NAMESPACE }}:next-app-${{ steps.image.outputs.UID }}
+          docker tag lf-next-proxy ${{ steps.image.outputs.NAMESPACE }}:next-proxy-${{ steps.image.outputs.UID }}
       -
         run: docker images
       -
@@ -41,4 +43,4 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
       -
-        run: docker push --all-tags sillsdev/web-languageforge
+        run: docker push --all-tags ${{ steps.image.outputs.NAMESPACE }}
