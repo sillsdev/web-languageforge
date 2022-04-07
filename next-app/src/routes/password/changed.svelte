@@ -3,13 +3,13 @@
 </script>
 
 <script>
-import { onMount } from 'svelte'
+	import { onMount } from 'svelte'
 
-onMount(kill_session)
+	onMount(kill_session)
 
-function kill_session() {
-	document.cookie = 'PHPSESSID=; max-age=0; path=/'
-}
+	function kill_session() {
+		document.cookie = 'PHPSESSID=; max-age=0; path=/'
+	}
 </script>
 
 <svelte:head>
@@ -31,10 +31,9 @@ function kill_session() {
 </div>
 
 <style>
-p {
-	@apply
-		pt-4
-		max-w-[45ch]
-		mx-auto;
+p { @apply
+	pt-4
+	max-w-[45ch]
+	mx-auto;
 }
 </style>

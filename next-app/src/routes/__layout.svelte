@@ -1,6 +1,6 @@
 <script>
-import '$lib/app.css'
-import Header from '$lib/Header.svelte'
+	import '$lib/app.css'
+	import Header from '$lib/Header.svelte'
 </script>
 
 <Header />
@@ -10,8 +10,7 @@ import Header from '$lib/Header.svelte'
 </main>
 
 <style>
-main {
-	@apply
-		px-4;
+main { @apply
+	px-4;
 }
 </style>

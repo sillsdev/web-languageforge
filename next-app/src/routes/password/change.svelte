@@ -3,25 +3,25 @@
 </script>
 
 <script>
-import { goto } from '$app/navigation'
-import { UPDATE } from '$lib/fetch/client'
-import {
-	Button,
-	Form,
-	Input,
-} from '$lib/forms'
+	import { goto } from '$app/navigation'
+	import { UPDATE } from '$lib/fetch/client'
+	import {
+		Button,
+		Form,
+		Input,
+	} from '$lib/forms'
 
-let new_password = ''
-let new_password_confirm = ''
+	let new_password = ''
+	let new_password_confirm = ''
 
-async function change_password() {
-	await UPDATE('/password.json', {
-		password: new_password,
-		password_confirm: new_password_confirm
-	})
+	async function change_password() {
+		await UPDATE('/password.json', {
+			password: new_password,
+			password_confirm: new_password_confirm
+		})
 
-	goto('/password/changed')
-}
+		goto('/password/changed')
+	}
 </script>
 
 <svelte:head>

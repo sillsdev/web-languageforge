@@ -3,18 +3,18 @@
 </script>
 
 <script>
-import { browser } from '$app/env'
-import { throwError } from '$lib/error'
-import { GET } from '$lib/fetch/client'
-import { Button } from '$lib/forms'
-import { start, stop } from '$lib/progress'
-import { onMount } from 'svelte'
+	import { browser } from '$app/env'
+	import { throwError } from '$lib/error'
+	import { GET } from '$lib/fetch/client'
+	import { Button } from '$lib/forms'
+	import { start, stop } from '$lib/progress'
+	import { onMount } from 'svelte'
 
-let dark_mode = false
+	let dark_mode = false
 
-onMount(() => dark_mode = window.matchMedia('(prefers-color-scheme: dark)').matches)
+	onMount(() => dark_mode = window.matchMedia('(prefers-color-scheme: dark)').matches)
 
-$: browser && document.documentElement.setAttribute('data-theme', dark_mode ? 'dark' : 'light')
+	$: browser && document.documentElement.setAttribute('data-theme', dark_mode ? 'dark' : 'light')
 </script>
 
 <h1>LFNext app</h1>

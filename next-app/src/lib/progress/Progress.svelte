@@ -1,40 +1,39 @@
 <script>
-import { loading } from '$lib/progress'
+	import { loading } from '$lib/progress'
 
-let value = 0
+	let value = 0
 
-$: $loading ? start() : stop()
+	$: $loading ? start() : stop()
 
-let intervalId = 0;
-function start() {
-	intervalId = setInterval(() => {
-		value += 0.1
+	let intervalId = 0;
+	function start() {
+		intervalId = setInterval(() => {
+			value += 0.1
 
-		if (value >= 1) {
-			value = 0
-		}
+			if (value >= 1) {
+				value = 0
+			}
 
-	}, 100)
-}
-function stop() {
-	clearInterval(intervalId)
+		}, 100)
+	}
+	function stop() {
+		clearInterval(intervalId)
 
-	value = 0
-}
+		value = 0
+	}
 </script>
 
 <progress {value} class:visible={$loading} class:invisible={!$loading} />
 <!-- TODO: watch for https://github.com/saadeghi/daisyui/issues/605 -->
 
 <style>
-progress {
-	@apply
-		progress
-		progress-secondary
+progress { @apply
+	progress
+	progress-secondary
 
-		w-screen
+	w-screen
 
-		relative
-		-top-4;
+	relative
+	-top-4;
 }
 </style>

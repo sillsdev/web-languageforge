@@ -1,7 +1,6 @@
 <script>
-import Error from '$lib/error/Error.svelte'
-import Progress from '$lib/progress/Progress.svelte'
-
+	import Error from '$lib/error/Error.svelte'
+	import Progress from '$lib/progress/Progress.svelte'
 </script>
 
 <header>
@@ -13,8 +12,7 @@ import Progress from '$lib/progress/Progress.svelte'
 <Progress />
 
 <style>
-header {
-	@apply
+	header { @apply
 		/* https://daisyui.com/components/navbar/ */
 		navbar
 		bg-primary
@@ -25,10 +23,9 @@ header {
 		text-2xl
 		font-medium
 		tracking-wide;
-}
-span {
-	@apply
+	}
+	span { @apply
 		text-4xl
 		ml-4;
-}
+	}
 </style>

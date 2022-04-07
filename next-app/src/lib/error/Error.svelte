@@ -1,13 +1,13 @@
 <script>
-import { beforeNavigate } from '$app/navigation'
-import { error, dismiss } from '$lib/error'
+	import { beforeNavigate } from '$app/navigation'
+	import { error, dismiss } from '$lib/error'
 
-let errContainer = null
+	let errContainer = null
 
-$: errContainer && $error.message && scrollIntoView(errContainer)
-$: beforeNavigate(() => $error.message && dismiss())
+	$: errContainer && $error.message && scrollIntoView(errContainer)
+	$: beforeNavigate(() => $error.message && dismiss())
 
-const scrollIntoView = element => element.scrollIntoView({behavior: 'smooth'})
+	const scrollIntoView = element => element.scrollIntoView({behavior: 'smooth'})
 </script>
 
 {#if $error.message}
@@ -21,8 +21,7 @@ const scrollIntoView = element => element.scrollIntoView({behavior: 'smooth'})
 {/if}
 
 <style>
-aside {
-	@apply
+	aside { @apply
 		/* https://daisyui.com/components/alert */
 		alert
 		alert-error
@@ -32,14 +31,12 @@ aside {
 
 		absolute
 		top-0
-		z-10;
-}
-
-button {
-	@apply
+			z-10;
+	}
+	button { @apply
 		/* https://daisyui.com/components/button */
 		btn
 		btn-ghost;
-}
+	}
 </style>
 

@@ -1,5 +1,5 @@
 <script>
-export let danger = false
+	export let danger = false
 </script>
 
 <button on:click class:danger>
@@ -7,13 +7,12 @@ export let danger = false
 </button>
 
 <style>
-button {
-	@apply
-		/* https://daisyui.com/components/button */
-		btn
-		btn-primary;
+button { @apply
+	/* https://daisyui.com/components/button */
+	btn
+	btn-primary;
 }
-.danger {
-	@apply btn-error;
+.danger { @apply
+	btn-error;
 }
 </style>
