@@ -1,19 +1,15 @@
 @import 'agnostic-svelte/css/common.properties.min.css';
-@import 'agnostic-svelte/css/common.resets.min.css';
+@import 'modern-normalize';
 
 :root {
+	/* https://github.com/AgnosticUI/agnosticui/blob/master/agnostic-css/public/css-src/colors.css */
 	--agnostic-primary: #104060;
 	--agnostic-secondary: #0a2440;
 }
 
 body {
-
-	/* line-height: 1.15; */
-	/* font-family: Roboto, sans-serif; */
-	/* font-size: 1.25vw; */
-
-	/* background-color: var(--color-default-background); */
-	/* color: var(--color-default-text); */
+	/* https://github.com/AgnosticUI/agnosticui/blob/master/agnostic-css/public/css-src/typography.css */
+	color: var(--agnostic-font-color);
 }
 
 p {

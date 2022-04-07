@@ -51,6 +51,7 @@ import { Button } from 'agnostic-svelte'
 	<Button isRounded>rounded</Button>
 	<Button isDisabled>disabled</Button>
 </section>
+
 <style>
 section {
 	padding-top: 1rem;
