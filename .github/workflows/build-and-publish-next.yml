@@ -4,11 +4,6 @@ name: Publish LFNext images to Docker Hub on-demand
 on:
   workflow_dispatch:
 
-  # TODO: remove branch trigger before merging into `develop`
-  push:
-    branches:
-      - next/changepassword
-
 jobs:
   build-n-publish:
     runs-on: ubuntu-latest
