@@ -13,7 +13,7 @@ This being done through the use of a Proxy, concretely speaking, [Caddy](https:/
 Migrating legacy routes will be accomplished through rules established in the Proxy, i.e., the `/docker/next-app/Caddyfile`.
 
 **Change password data flow example:**
-1. request for `/app/changepassword` comes into the Proxy and the following rules are encountered:
+1. request for the legacy route, `/app/changepassword`, comes into the Proxy and the following rules are encountered:
 
 > ```
 > @next_app_paths {
