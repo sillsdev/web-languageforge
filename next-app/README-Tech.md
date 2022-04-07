@@ -87,9 +87,11 @@ A backend layer is being utilized to insulate the UI from implemenation details 
 
 ### Common error handling
 
+
+
 ### Common fetch
 
-In an effort to reduce boilerplate, a common fetch was written.  Since there are deviations between the way that is helpful on the client and server sides, there have been split into a client-side version and a server-side version instead of writing a bunch of `if`'s in a single file.
+In an effort to reduce boilerplate, a common fetch was written.  Since there are deviations between the way that is helpful on the client and server sides, they have been split into a client-side version and a server-side version instead of writing a bunch of `if`'s in a single file.
 
 #### Client-side
 
