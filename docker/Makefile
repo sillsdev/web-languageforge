@@ -45,11 +45,11 @@ scan:
 	-docker scan --accept-license lf-app:prod > docker-scan-results.txt
 
 .PHONY: next-dev
-next-dev: build
+next-dev: build build-next
 	docker compose up -d next-proxy-dev
 
 .PHONY: next
-next: build
+next: build build-next
 	docker compose up -d next-proxy
 
 .PHONY: build-next
