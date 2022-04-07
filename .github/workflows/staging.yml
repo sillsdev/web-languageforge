@@ -25,8 +25,3 @@ jobs:
           kube-context: ${{ secrets.LTOPS_K8S_STAGING_CONTEXT }}
           image-repo-username: ${{ secrets.DOCKERHUB_USERNAME }}
           image-repo-password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
-
-
-# VERSION_APP=develop-20220321-1ff79ed4ff4363d40e07ecff3d5e6eb9f12bdaee
-# VERSION_PROXY=next-proxy-20220329-ce962fb24668319b69575fe37ceed0d8667b1e9a
-# VERSION_NEXT_APP=next-app-20220329-ce962fb24668319b69575fe37ceed0d8667b1e9a make deploy-staging

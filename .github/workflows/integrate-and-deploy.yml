@@ -51,11 +51,6 @@ jobs:
           echo ::set-output name=TAG_APP::${{ inputs.image-tag-app }}
           echo ::set-output name=TAG_PROXY::${{ inputs.image-tag-proxy }}
           echo ::set-output name=TAG_NEXT_APP::${{ inputs.image-tag-next-app }}
-      # -
-      #   uses: actions/setup-node@v2
-      #   with:
-      #     node-version: '16.14.0'
-      #     cache: 'npm'
       -
         run: npm ci
       -
@@ -83,15 +78,15 @@ jobs:
       -
         name: Build "next" images
         run: make build-next
-    #   -
-    #     name: Unit Tests
-    #     run: make unit-tests-ci
-    #   -
-    #     name: Playwright E2E Tests
-    #     run: |
-    #       docker-compose -f docker/docker-compose.yml up -d app-for-playwright
-    #       npx playwright install
-    #       npx playwright test
+      -
+        name: Unit Tests
+        run: make unit-tests-ci
+      -
+        name: Playwright E2E Tests
+        run: |
+          docker-compose -f docker/docker-compose.yml up -d app-for-playwright
+          npx playwright install
+          npx playwright test
       -
         name: Log in to Docker Hub
         uses: docker/login-action@v1
@@ -100,9 +95,8 @@ jobs:
           password: ${{ secrets.image-repo-password }}
       -
         name: Tag images
-    #     run: docker tag lf-app ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG }}
-          # docker tag lf-app ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG_APP }}
         run: |
+          docker tag lf-app ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG_APP }}
           docker tag lf-next-proxy ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG_PROXY }}
           docker tag lf-next-app ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG_NEXT_APP }}
       -
@@ -112,7 +106,7 @@ jobs:
         run: docker push --all-tags ${{ steps.image.outputs.NAMESPACE }}
 
     outputs:
-      # IMAGE_APP: ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG_APP }}
+      IMAGE_APP: ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG_APP }}
       IMAGE_PROXY: ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG_PROXY }}
       IMAGE_NEXT_APP: ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG_NEXT_APP }}
 
@@ -125,9 +119,7 @@ jobs:
       -
         uses: sillsdev/common-github-actions/install-kubectl@v1
       -
-        # run: echo ${{ needs.integrate.outputs.IMAGE_PROXY }} ${{ needs.integrate.outputs.IMAGE_NEXT_APP }}
-  #       run: kubectl --context ${{ secrets.kube-context }} set image deployment/app app=${{ needs.integrate.outputs.IMAGE }}
-          # kubectl --context ${{ secrets.kube-context }} set image deployment/app app={{ needs.integrate.outputs.APP }}
         run: |
+          kubectl --context ${{ secrets.kube-context }} set image deployment/app app={{ needs.integrate.outputs.IMAGE_APP }}
           kubectl --context ${{ secrets.kube-context }} set image deployment/next-proxy next-proxy=${{ needs.integrate.outputs.IMAGE_PROXY }}
           kubectl --context ${{ secrets.kube-context }} set image deployment/next-app next-app=${{ needs.integrate.outputs.IMAGE_NEXT_APP }}
