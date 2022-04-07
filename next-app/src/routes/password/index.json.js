@@ -1,5 +1,5 @@
 import { throwError } from '$lib/error'
-import { CREATE } from '$lib/fetch/server'
+import { sf } from '$lib/fetch/server'
 
 /** @type {import('./index.json').RequestHandler} */
 export async function put({ request }) {
@@ -13,31 +13,22 @@ export async function put({ request }) {
 			throwError('Passwords do not match', 400)
 		}
 
-		const { userId } = await CREATE({
-				method: 'session_getSessionData',
-				params: {
-					orderedParams:[],
-				},
-			},
-			request.headers.get('cookie'),
-		)
+		const cookie = request.headers.get('cookie')
+
+		const { userId } = await sf({
+			name: 'session_getSessionData',
+			cookie,
+		})
 
 		if (! userId) {
 			throwError('User unknown', 404)
 		}
 
-		await CREATE({
-				method: 'change_password',
-				params: {
-					orderedParams:
-					[
-						userId,
-						password,
-					],
-				},
-			},
-			request.headers.get('cookie'),
-		)
+		await sf({
+			name: 'change_password',
+			args: [userId, password],
+			cookie,
+		})
 	} catch (error) {
 		return {
 			status: error.code,
@@ -45,5 +36,5 @@ export async function put({ request }) {
 		}
 	}
 
-    return {}
+	return {}
 }
