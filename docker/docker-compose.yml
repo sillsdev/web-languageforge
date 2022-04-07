@@ -120,6 +120,8 @@ services:
       dockerfile: ../docker/next-app/Dockerfile
     image: lf-next-app
     container_name: lf-next-app
+    environment:
+      - API_HOST=http://app
     command: npm run dev
     volumes:
       # for developer convenience

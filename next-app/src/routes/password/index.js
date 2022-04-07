@@ -1,6 +1,6 @@
 /** @type {import('@sveltejs/kit').RequestHandler} */
 export async function put({ request }) {
-	let response = await fetch('http://app/api/sf', { // TODO: parameterize app here.
+    let response = await fetch(`${process.env.API_HOST}/api/sf`, {
         method: 'post',
         headers: {
             'content-type': 'application/json',
@@ -18,7 +18,7 @@ export async function put({ request }) {
     const { result: { userId } } = await response.json()
     const { new_password } = await request.json()
 
-    response = await fetch('http://app/api/sf', { // TODO: parameterize app here.
+    response = await fetch(`${process.env.API_HOST}/api/sf`, {
         method: 'post',
         headers: {
             'content-type': 'application/json',
