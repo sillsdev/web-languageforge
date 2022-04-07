@@ -12,7 +12,6 @@ export async function put({ request }) {
             params: {
                 orderedParams:[],
             },
-            version: '2.0',
         })
     })
 
@@ -35,7 +34,6 @@ export async function put({ request }) {
                     new_password,
                 ],
             },
-            version: '2.0',
         })
     })
 

@@ -7,7 +7,6 @@ export async function change(new_password, new_password_confirm) {
 		params: {
 			orderedParams:[],
 		},
-		version: '2.0',
 	})
 
 	return await CREATE('/api/sf', {
@@ -20,20 +19,5 @@ export async function change(new_password, new_password_confirm) {
 				new_password,
 			],
 		},
-		version: '2.0',
 	})
 }
-
-// POST /api/sf TODO: this should really be a PUT
-// {
-// 	"id":3 // TODO: is this necessary?
-//     "method":"change_password",
-//     "params": {
-// 		"orderedParams":
-// 		[
-// 			"611bb9ecf88b8b192254a012",  //TODO: not sure yet where to get this from, probably a user ID
-// 			"user-entered-password"
-// 		]
-//     },
-// 	"version":"2.0",
-// }
