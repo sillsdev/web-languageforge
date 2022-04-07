@@ -5,5 +5,12 @@ import Header from '$lib/Header.svelte'
 <Header />
 
 <main>
-    <slot />
+	<slot />
 </main>
+
+
+<style>
+main {
+	padding: 1rem;
+}
+</style>
