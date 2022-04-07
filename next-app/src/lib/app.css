@@ -1,0 +1,21 @@
+@import 'agnostic-svelte/css/common.properties.min.css';
+@import 'agnostic-svelte/css/common.resets.min.css';
+
+:root {
+	--agnostic-primary: #104060;
+	--agnostic-secondary: #0a2440;
+}
+
+body {
+
+	/* line-height: 1.15; */
+	/* font-family: Roboto, sans-serif; */
+	/* font-size: 1.25vw; */
+
+	/* background-color: var(--color-default-background); */
+	/* color: var(--color-default-text); */
+}
+
+p {
+	max-width: 75ch;
+}

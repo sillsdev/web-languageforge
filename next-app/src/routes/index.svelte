@@ -3,6 +3,7 @@ import { throwError } from '$lib/error'
 import { GET } from '$lib/fetch/client'
 import { start, stop } from '$lib/progress'
 
+import { Button } from 'agnostic-svelte'
 </script>
 
 <h1>LFNext app</h1>
@@ -36,6 +37,20 @@ import { start, stop } from '$lib/progress'
 	</ul>
 </section>
 
+<section>
+	<h2>UI library <small><a href=http://www.agnosticui.com rel=external>http://www.agnosticui.com</a></small></h2>
+
+	<h3>Button</h3>
+	<Button>default</Button>
+	<Button isRaised>raised</Button>
+	<Button isCircle>circle</Button>
+	<Button mode=primary>primary</Button>
+	<Button mode=secondary>secondary</Button>
+	<Button isBordered>bordered</Button>
+	<Button isLink>link</Button>
+	<Button isRounded>rounded</Button>
+	<Button isDisabled>disabled</Button>
+</section>
 <style>
 section {
 	padding-top: 1rem;
