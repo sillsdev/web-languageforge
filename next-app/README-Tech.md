@@ -85,3 +85,17 @@ A backend layer is being utilized to insulate the UI from implemenation details 
 
 > As a result, the UI should only communicate with endpoints in the Next App.  Page endpoints should be favored for Svelte views that require data be loaded for the page and stand-alone endpoints used for everything else, refer to https://kit.svelte.dev/docs/routing#endpoints for further details.
 
+### Common error handling
+
+### Common fetch
+
+In an effort to reduce boilerplate, a common fetch was written.  Since there are deviations between the way that is helpful on the client and server sides, there have been split into a client-side version and a server-side version instead of writing a bunch of `if`'s in a single file.
+
+#### Client-side
+
+Found in `$lib/fetch/client.js`.  This wrapper exports some of the most common types of fetches, handles errors consistently and hooks into the client-side progress infrastructure.
+
+#### Server-side
+
+Found in `$lib/fetch/server.js`.  This wrapper exports some of the most common types of fetches, handles errors consistently and abides by the legacy app's `/api/sf` contract.
+
