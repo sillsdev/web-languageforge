@@ -11,6 +11,7 @@ export default {
 			onError: ({ path, status }) => {
 				const externalLinks = [
 					'/auth/login',
+					'/app',
 				]
 
 				if (externalLinks.includes(path)) {
