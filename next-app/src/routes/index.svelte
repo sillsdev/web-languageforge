@@ -2,8 +2,6 @@
 import { throwError } from '$lib/error'
 import { GET } from '$lib/fetch/client'
 import { start, stop } from '$lib/progress'
-
-import { Button } from 'agnostic-svelte'
 </script>
 
 <h1>LFNext app</h1>
@@ -38,23 +36,14 @@ import { Button } from 'agnostic-svelte'
 </section>
 
 <section>
-	<h2>UI library <small><a href=http://www.agnosticui.com rel=external>http://www.agnosticui.com</a></small></h2>
+	<h2>UI library <small><a href=//daisyui.com rel='external noopener' target=_blank>//daisyui.com</a></small></h2>
 
 	<h3>Button</h3>
-	<Button>default</Button>
-	<Button isRaised>raised</Button>
-	<Button isCircle>circle</Button>
-	<Button mode=primary>primary</Button>
-	<Button mode=secondary>secondary</Button>
-	<Button isBordered>bordered</Button>
-	<Button isLink>link</Button>
-	<Button isRounded>rounded</Button>
-	<Button isDisabled>disabled</Button>
+	<button class='btn btn-primary'>primary default</button>
+	<button class='btn btn-outline btn-primary'>outline</button>
+	<button class='btn btn-lg'>large</button>
+	<button class='btn' disabled>disabled</button>
 </section>
 
 <style>
-section {
-	padding-top: 1rem;
-	padding-bottom: 1rem;
-}
 </style>

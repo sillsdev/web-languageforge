@@ -11,7 +11,7 @@ import Header from '$lib/Header.svelte'
 
 <style>
 main {
-	padding-left: 1rem;
-	padding-right: 1rem;
+	@apply
+		px-4;
 }
 </style>

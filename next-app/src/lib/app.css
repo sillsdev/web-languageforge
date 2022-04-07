@@ -1,19 +1,8 @@
-@import 'agnostic-svelte/css/common.properties.min.css';
-@import 'modern-normalize';
-
-:root {
-	/* https://github.com/AgnosticUI/agnosticui/blob/master/agnostic-css/public/css-src/colors.css */
-	--agnostic-primary: #104060;
-	--agnostic-secondary: #0a2440;
-	--agnostic-light: whitesmoke;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 body {
-	/* https://github.com/AgnosticUI/agnosticui/blob/master/agnostic-css/public/css-src/typography.css */
-	background: var(--agnostic-light);
-	color: var(--agnostic-font-color);
-}
-
-p {
-	max-width: 75ch;
+	/* https://tailwindcss.com/docs/typography-plugin */
+	@apply prose;
 }
