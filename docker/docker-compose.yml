@@ -84,9 +84,9 @@ services:
       - 443:443
     restart: unless-stopped
     depends_on:
-      - app
+      - next-proxy
     environment:
-      - APP_ADDRESS=app:80
+      - APP_ADDRESS=next-proxy:80
     volumes:
       - lf-caddy-data:/data
       - lf-caddy-config:/config
@@ -131,8 +131,6 @@ services:
       dockerfile: Dockerfile.proxy
     image: lf-next-proxy
     container_name: lf-next-proxy
-    ports:
-      - 80:80
     restart: unless-stopped
     depends_on:
       - app

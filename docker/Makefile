@@ -35,7 +35,7 @@ unit-tests-ci:
 .PHONY: build
 build:
 	npm install
-	docker-compose build mail app ld-api
+	docker-compose build mail app ld-api next-proxy next-app
 
 .PHONY: scan
 # https://docs.docker.com/engine/scan
@@ -45,16 +45,8 @@ scan:
 	-docker scan --accept-license lf-app:prod > docker-scan-results.txt
 
 .PHONY: next-dev
-next-dev: build build-next
+next-dev: build
 	docker compose up -d next-proxy-dev
-
-.PHONY: next
-next: build build-next
-	docker compose up -d next-proxy
-
-.PHONY: build-next
-build-next:
-	docker compose build next-proxy next-app
 
 .PHONY: clean
 clean:
