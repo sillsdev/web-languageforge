@@ -28,8 +28,11 @@ jobs:
       -
         uses: actions/checkout@v2
       -
-        name: Build LFNext images
         run: make build-next
+      -
+        run: |
+          docker tag lf-next-app sillsdev/web-languageforge:next-app
+          docker tag lf-next-proxy sillsdev/web-languageforge:next-proxy
       -
         run: docker images
 
