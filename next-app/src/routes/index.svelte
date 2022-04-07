@@ -1,7 +1,15 @@
 <script>
+import { browser } from '$app/env'
 import { throwError } from '$lib/error'
 import { GET } from '$lib/fetch/client'
 import { start, stop } from '$lib/progress'
+import { onMount } from 'svelte'
+
+let dark_mode = false
+
+onMount(() => dark_mode = window.matchMedia('(prefers-color-scheme: dark)').matches)
+
+$: browser && document.documentElement.setAttribute('data-theme', dark_mode ? 'dark' : 'light')
 </script>
 
 <h1>LFNext app</h1>
@@ -43,7 +51,7 @@ import { start, stop } from '$lib/progress'
 	<button class='btn btn-outline btn-primary'>outline</button>
 	<button class='btn btn-lg'>large</button>
 	<button class='btn' disabled>disabled</button>
-</section>
 
-<style>
-</style>
+	<h3>Light/Dark mode</h3>
+	<input type=checkbox bind:checked={dark_mode} class='toggle toggle-primary toggle-lg'>
+</section>
