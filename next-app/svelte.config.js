@@ -6,7 +6,19 @@ export default {
   kit: {
     adapter: adapter(),
 	prerender: {
-		onError: 'continue',
+		// https://kit.svelte.dev/docs/configuration#prerender
+		onError: ({ path, status }) => {
+			const externalLinks = [
+				'/auth/login',
+			]
+
+			if (externalLinks.includes(path)) {
+				// :-( https://github.com/sveltejs/kit/issues/3402
+				console.info(`skipping ${status} error while crawling ${path} since it's an external link`)
+			} else {
+				throw new Error(`${status} error while crawling ${path}`)
+			}
+		}
 	},
   },
 
