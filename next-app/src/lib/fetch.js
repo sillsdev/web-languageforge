@@ -1,5 +1,5 @@
+import { throwError } from '$lib/error'
 import { start, stop } from '$lib/progress'
-// import { throwError } from '../error'
 // import t from '../i18n'
 
 export async function CREATE(url, body) { return await customFetch('post'  , url, body) }
@@ -40,23 +40,18 @@ async function customFetch(method, url, body) {
     //     the host is refusing connections
     //     client is offline, i.e., airplane mode or something
     //     CORS preflight failures
-    // throwError(e)
-    console.error(e)
+    throwError(e)
   } finally {
     stop(url)
   }
 
-  const results = await response.json()
-
   // reminder: fetch does not throw exceptions for non-200 responses (https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch)
   if (! response.ok) {
-    const code = response.status
-    // const message = code === 401 ? t(response.statusText) : response.statusText
-    const message = response.statusText
+	  const code = response.status
+	  const message = response.statusText
 
-    // throwError(message, code)
-    console.error(message, code)
-  }
+	  throwError(message, code)
+	}
 
-  return results
+  return await response.json()
 }

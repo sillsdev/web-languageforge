@@ -1,9 +1,12 @@
 <script>
+import Error from '$lib/error/Error.svelte'
 import Progress from '$lib/progress/Progress.svelte'
 </script>
 
 <header>
 	<h1>Language Forge</h1>
+
+	<Error />
 </header>
 
 <Progress />
@@ -21,5 +24,9 @@ header {
 	display: flex;
 	flex-direction: row;
 	align-items: center;
+}
+
+h1 {
+	padding-right: 2rem;
 }
 </style>
