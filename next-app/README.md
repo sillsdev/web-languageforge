@@ -18,6 +18,10 @@ npm run build
 
 You can preview the production build with `npm run preview`.
 
+## Proxied infrastructure
+
+From within the `/docker` directory, `make next` will start the proxy as well as the legacy and next apps.  The proxy listens on `::1:80` and will route requests to the appropriate app.  `admin` and `password` can be used to login.
+
 ## Capabilities
 
 ### Change password
