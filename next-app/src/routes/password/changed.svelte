@@ -1,4 +1,5 @@
 <script>
+import { Button } from '$lib/forms'
 import { onMount } from 'svelte'
 
 onMount(kill_session)
@@ -20,4 +21,17 @@ function kill_session() {
 	<p>
 		You have been logged out now so you can try your new password by <a rel=external href=/auth/login>logging in</a> again.
 	</p>
+
+	<p>
+		<Button>Log back in again</Button>
+	</p>
 </div>
+
+<style>
+p {
+	@apply
+		pt-4
+		max-w-[45ch]
+		mx-auto;
+}
+</style>
