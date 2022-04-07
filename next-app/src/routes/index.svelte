@@ -47,7 +47,8 @@ $: browser && document.documentElement.setAttribute('data-theme', dark_mode ? 'd
 	<h2>UI library <small><a href=//daisyui.com rel='external noopener' target=_blank>//daisyui.com</a></small></h2>
 
 	<h3>Button</h3>
-	<button class='btn btn-primary'>primary default</button>
+	<button class='btn btn-primary'>primary</button>
+	<button class='btn btn-secondary'>secondary</button>
 	<button class='btn btn-outline btn-primary'>outline</button>
 	<button class='btn btn-lg'>large</button>
 	<button class='btn' disabled>disabled</button>
