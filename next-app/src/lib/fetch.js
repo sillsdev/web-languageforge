@@ -1,20 +1,18 @@
-// import { getToken } from '../authn/token'
-// import { start, stop } from '../components/progress'
+import { start, stop } from '$lib/progress'
 // import { throwError } from '../error'
 // import t from '../i18n'
 
-export async function CREATE(uri, body) { return await customFetch('post'  , uri, body) }
-export async function GET   (uri      ) { return await customFetch('get'   , uri      ) }
-export async function UPDATE(uri, body) { return await customFetch('put'   , uri, body) }
-export async function DELETE(uri      ) { return await customFetch('delete', uri      ) }
+export async function CREATE(url, body) { return await customFetch('post'  , url, body) }
+export async function GET   (url      ) { return await customFetch('get'   , url      ) }
+export async function UPDATE(url, body) { return await customFetch('put'   , url, body) }
+export async function DELETE(url      ) { return await customFetch('delete', url      ) }
 
 // https://developer.mozilla.org/en-US/docs/Web/API/FormData/FormData
 export const upload = async formData => await CREATE('post', formData)
 
 // https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch#Supplying_request_options
-async function customFetch(method, uri, body) {
+async function customFetch(method, url, body) {
   const headers = {
-    // authorization: `Bearer ${getToken()}`,
     'content-type': 'application/json',
   }
 
@@ -26,14 +24,13 @@ async function customFetch(method, uri, body) {
     body = JSON.stringify(body)
   }
 
-  // const url = includesHost(uri) ? uri : `${process.env.API_HOST}/${uri}`
   let response = {}
   try {
-    // start(url)
+    start(url)
 
-    response = await fetch(uri, {
+    response = await fetch(url, {
       method,
-      // credentials: 'include', // ensures the response back from the api will be allowed to "set-cookie"
+      credentials: 'include', // ensures the response back from the api will be allowed to "set-cookie"
       headers,
       body,
     })
@@ -46,7 +43,7 @@ async function customFetch(method, uri, body) {
     // throwError(e)
     console.error(e)
   } finally {
-    // stop(url)
+    stop(url)
   }
 
   const results = await response.json()
@@ -63,12 +60,3 @@ async function customFetch(method, uri, body) {
 
   return results
 }
-
-// matches:
-//    http://example.com
-//    https://example.com
-//    //example.com
-// not these:
-//    redirect-to?url=//example.org/home?abc=123
-//    redirect-to?url=https://example.org/home?abc=123
-// const includesHost = uri => uri.match(/^(?:https?:)?\/\//)

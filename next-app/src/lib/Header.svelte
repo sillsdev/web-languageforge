@@ -1,6 +1,12 @@
+<script>
+import Progress from '$lib/progress/Progress.svelte'
+</script>
+
 <header>
 	<h1>Language Forge</h1>
 </header>
+
+<Progress />
 
 <style>
 header {

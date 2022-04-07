@@ -8,9 +8,9 @@ import Header from '$lib/Header.svelte'
 	<slot />
 </main>
 
-
 <style>
 main {
-	padding: 1rem;
+	padding-left: 1rem;
+	padding-right: 1rem;
 }
 </style>

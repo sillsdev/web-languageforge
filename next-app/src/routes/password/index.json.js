@@ -12,7 +12,7 @@ export async function put({ request }) {
             params: {
                 orderedParams:[],
             },
-        })
+        }),
     })
 
     const { result: { userId } } = await response.json()
@@ -34,10 +34,10 @@ export async function put({ request }) {
                     new_password,
                 ],
             },
-        })
+        }),
     })
 
     return {
-        body: { userId }//await response.json()
+        body: { userId },
 	};
 }
