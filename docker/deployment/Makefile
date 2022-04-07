@@ -1,25 +1,33 @@
 # https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands
-list-services:
-	kubectl get services
-
 list-deployments:
 	kubectl get deployments
+list-services:
+	kubectl get services
+list-pods:
+	kubectl get pods
+list-contexts:
+	kubectl config get-contexts
+list-config:
+	cat ~/.kube/config
 
-logs: logs-app logs-db logs-mail
+logs: logs-app logs-db logs-mail logs-next-app logs-next-proxy
 logs-app:
 	kubectl logs deploy/app
+logs-next-app:
+	kubectl logs deploy/next-app
+logs-next-proxy:
+	kubectl logs deploy/next-proxy
 logs-db:
 	kubectl logs deploy/db
 logs-mail:
 	kubectl logs deploy/mail
 
-retrieve-current-deployments:
-	kubectl get deploy app  -o yaml > app-deployment-current.yaml
-	kubectl get deploy mail -o yaml > mail-deployment-current.yaml
-	kubectl get deploy db   -o yaml > db-deployment-current.yaml
-
 shell-app:
 	kubectl exec -it deploy/app -- sh
+shell-next-app:
+	kubectl exec -it deploy/next-app -- sh
+shell-next-proxy:
+	kubectl exec -it deploy/next-proxy -- sh
 
 init-secrets:
 	kubectl apply -f secrets.yaml
