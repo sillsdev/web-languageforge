@@ -19,19 +19,17 @@ jobs:
         id: tag
         run: echo ::set-output name=ID::$(date +%Y%m%d)-${{ github.sha }}
       -
-        run: echo ${{ steps.tag.outputs.ID }}
-      # -
-      #   # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#jobsjob_iduses
-      #   uses: sillsdev/web-languageforge/.github/workflows/integrate-and-deploy.yml@develop
-      #   with:
-      #     image-tag-app: develop-$(date +%Y%m%d)-${{ github.sha }}
-      #     image-tag-proxy: next-proxy-$(date +%Y%m%d)-${{ github.sha }}
-      #     image-tag-next-app: next-app-$(date +%Y%m%d)-${{ github.sha }}
-      #   # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idsecrets
-      #   secrets:
-      #     kube-context: ${{ secrets.LTOPS_K8S_STAGING_CONTEXT }}
-      #     image-repo-username: ${{ secrets.DOCKERHUB_USERNAME }}
-      #     image-repo-password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+        # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#jobsjob_iduses
+        uses: sillsdev/web-languageforge/.github/workflows/integrate-and-deploy.yml@develop
+        with:
+          image-tag-app: develop-${{ steps.tag.outputs.ID }}
+          image-tag-proxy: next-proxy-${{ steps.tag.outputs.ID }}
+          image-tag-next-app: next-app-${{ steps.tag.outputs.ID }}
+        # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idsecrets
+        secrets:
+          kube-context: ${{ secrets.LTOPS_K8S_STAGING_CONTEXT }}
+          image-repo-username: ${{ secrets.DOCKERHUB_USERNAME }}
+          image-repo-password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
 
 # VERSION_APP=develop-20220321-1ff79ed4ff4363d40e07ecff3d5e6eb9f12bdaee
