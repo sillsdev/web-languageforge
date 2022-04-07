@@ -83,8 +83,6 @@ jobs:
       -
         name: Build "next" images
         run: make build-next
-      -
-        run: docker images
     #   -
     #     name: Unit Tests
     #     run: make unit-tests-ci
@@ -100,9 +98,15 @@ jobs:
     #     with:
     #       username: ${{ secrets.image-repo-username }}
     #       password: ${{ secrets.image-repo-password }}
-    #   -
-    #     name: Tag image
+      -
+        name: Tag images
     #     run: docker tag lf-app ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG }}
+          # docker tag lf-app ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG_APP }}
+        run: |
+          docker tag lf-next-proxy ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG_PROXY }}
+          docker tag lf-next-app ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG_NEXT_APP }}
+      -
+        run: docker images
     #   -
     #     name: Publish image
     #     run: docker push ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG }}
