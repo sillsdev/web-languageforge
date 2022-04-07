@@ -7,17 +7,23 @@
 	export let required = false
 	export let autofocus = false
 
-	let id = 0
+	let id = randomId()
 	let input = {}
 
-	onMount(() => {
-		id = Math.random().toString(36).substring(2, 7)
+	onMount(autofocusIfRequested)
 
+	function randomId() {
+		return Math.random().toString(36).substring(2, 7)
+	}
+
+	function autofocusIfRequested() {
 		autofocus && input.focus()
-	})
+	}
 
 	// works around "svelte(invalid-type)" warning, i.e., can't have a dynamic type AND bind:value...keep an eye on https://github.com/sveltejs/svelte/issues/3921
-	const typeWorkaround = node => node.type = type
+	function typeWorkaround(node) {
+		node.type = type
+	}
 </script>
 
 <label for={id}>
