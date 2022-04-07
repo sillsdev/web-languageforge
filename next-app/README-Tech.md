@@ -8,7 +8,7 @@
 
 Migration will occur on a capability-by-capability basis, e.g., "Change password" is the first capability to be migrated from the legacy implementation to the new one.
 
-This being done through the use of a Proxy, concretely speaking, [Caddy](https://github.com/caddyserver/caddy) in our stack.
+This is being done through the use of a Proxy, concretely speaking, [Caddy](https://github.com/caddyserver/caddy) in our stack.
 
 Migrating legacy routes will be accomplished through rules established in the Proxy, i.e., the `/docker/next-app/Caddyfile`.
 
