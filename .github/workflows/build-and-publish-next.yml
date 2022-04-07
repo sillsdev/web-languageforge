@@ -25,11 +25,11 @@ jobs:
         id: image
         run: |
           echo ::set-output name=NAMESPACE::sillsdev/web-languageforge
-          echo ::set-output name=UID::$(date +%Y%m%d)-${{ github.sha }}
+          echo ::set-output name=BUILD_ID::$(date +%Y%m%d)-${{ github.sha }}
       -
         run: |
-          docker tag lf-next-app   ${{ steps.image.outputs.NAMESPACE }}:next-app-${{ steps.image.outputs.UID }}
-          docker tag lf-next-proxy ${{ steps.image.outputs.NAMESPACE }}:next-proxy-${{ steps.image.outputs.UID }}
+          docker tag lf-next-app   ${{ steps.image.outputs.NAMESPACE }}:next-app-${{ steps.image.outputs.BUILD_ID }}
+          docker tag lf-next-proxy ${{ steps.image.outputs.NAMESPACE }}:next-proxy-${{ steps.image.outputs.BUILD_ID }}
       -
         run: docker images
       -
