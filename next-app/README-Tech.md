@@ -65,7 +65,7 @@ src
 
 ### UI design
 
-### Tailwindcss
+#### Tailwindcss
 
 Of course choosing tailwindcss comes with a number of criticisms but we believe it's a good choice for the following reasons:
 
@@ -75,7 +75,7 @@ Of course choosing tailwindcss comes with a number of criticisms but we believe 
 
 [ ] Confirm no additional configuration is required to purge unused CSS.
 
-### daisyUI
+#### daisyUI
 
 With such a small team, we were always going to need a well thought-out UI library to keep us from having to make a bunch of design decisions along the way.  While there are a handful of Svelte-based libraries, none of them met the crtieria necessary to help make our team as efficient as possible.  There were many mature UI systems already in place built upon Tailwindcss and daisyUI represents one of the best of the ones we looked at in it's goal of further simplifying the use of Tailwindcss.  Additionally, daisyUI has already integrated many best practices and opinions in its design decisions.
 
