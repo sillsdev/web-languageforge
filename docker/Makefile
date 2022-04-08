@@ -35,7 +35,8 @@ unit-tests-ci:
 .PHONY: build
 build:
 	npm install
-	docker-compose build mail app ld-api next-proxy next-app
+    # TODO: When this Makefile is moved to repo root, turn "../" below into "./"
+	LFMERGE_VERSION="$(shell jq -r .lfmerge ../other-dependencies.json)" docker-compose build mail app ld-api next-proxy next-app
 
 .PHONY: scan
 # https://docs.docker.com/engine/scan

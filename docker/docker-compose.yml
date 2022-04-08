@@ -77,7 +77,7 @@ services:
       - ../src/angular-app:/var/www/src/angular-app
 
   lfmerge:
-    image: ghcr.io/sillsdev/lfmerge
+    image: ghcr.io/sillsdev/lfmerge:${LFMERGE_VERSION:-latest}
     container_name: lfmerge
     platform: linux/amd64
     depends_on:
