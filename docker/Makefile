@@ -24,6 +24,7 @@ e2e-tests-ci:
 
 .PHONY: unit-tests
 unit-tests:
+	docker-compose build test-php
 	docker-compose run test-php
 
 .PHONY: unit-tests-ci
