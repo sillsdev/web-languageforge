@@ -9,6 +9,19 @@ start: build
 dev: start
 	docker-compose up -d ui-builder
 
+.PHONY: playwright-tests
+playwright-tests:
+
+    # delete any cached session storage state files if the service isn't running
+	docker compose ps app-for-playwright > /dev/null 2>&1 || rm -f ../*-storageState.json
+
+	docker-compose up -d app-for-playwright
+
+    # wait until the app-for-playwright service is serving up HTTP before continuing
+	until curl localhost:3238 > /dev/null 2>&1; do sleep 1; done
+
+	cd .. && npx playwright install && npx playwright test
+
 .PHONY: e2e-tests
 e2e-tests:
 	docker-compose build app-for-e2e test-e2e
