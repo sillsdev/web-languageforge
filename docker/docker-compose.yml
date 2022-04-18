@@ -265,6 +265,11 @@ services:
     command: sh -c "/wait && /run.sh"
 
   app-for-playwright:
+    build:
+      context: ..
+      dockerfile: docker/app/Dockerfile
+      args:
+        - ENVIRONMENT=development
     image: lf-app
     container_name: app-for-playwright
     platform: linux/amd64
