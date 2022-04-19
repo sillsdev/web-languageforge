@@ -46,12 +46,17 @@ deploy-next-proxy-staging:
   | sed -e s/{{VERSION}}/$(VERSION_PROXY)/ | kubectl apply -f -
 deploy-next-app-staging:
 	sed -e s/{{VERSION}}/$(VERSION_NEXT_APP)/ next-app-deployment.yaml | kubectl apply -f -
-deploy-prod: deploy-db deploy-mail-prod deploy-app-prod
+deploy-prod: deploy-db deploy-mail-prod deploy-app-prod deploy-next-proxy-prod deploy-next-app-prod
 deploy-mail-prod:
 	sed -e s/{{SERVER_HOSTNAME}}/languageforge.org/ mail-deployment.yaml | kubectl apply -f -
 deploy-app-prod:
 	sed -e s/{{WEBSITE}}/languageforge.org/ app-deployment.yaml \
-  | sed -e s/{{VERSION}}/$(VERSION)/ | kubectl apply -f -
+  | sed -e s/{{VERSION}}/$(VERSION_APP)/ | kubectl apply -f -
+deploy-next-proxy-prod:
+	sed -e s/{{WEBSITE}}/languageforge.org/ next-proxy-deployment.yaml \
+  | sed -e s/{{VERSION}}/$(VERSION_PROXY)/ | kubectl apply -f -
+deploy-next-app-prod:
+	sed -e s/{{VERSION}}/$(VERSION_NEXT_APP)/ next-app-deployment.yaml | kubectl apply -f -
 deploy-db:
 	kubectl apply -f db-deployment.yaml
 
