@@ -8,12 +8,15 @@ on:
 
 jobs:
   staging:
-      # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#jobsjob_iduses
-      uses: sillsdev/web-languageforge/.github/workflows/integrate-and-deploy.yml@develop
-      with:
-        image-tag: develop-$(date +%Y%m%d)-${{ github.sha }}
-      # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idsecrets
-      secrets:
-        kube-context: ${{ secrets.LTOPS_K8S_STAGING_CONTEXT }}
-        image-repo-username: ${{ secrets.DOCKERHUB_USERNAME }}
-        image-repo-password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+        # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#jobsjob_iduses
+        uses: sillsdev/web-languageforge/.github/workflows/integrate-and-deploy.yml@develop
+        with:
+          image-tag-app: develop-$(date +%Y%m%d)-${{ github.sha }}
+          image-tag-proxy: develop-next-proxy-$(date +%Y%m%d)-${{ github.sha }}
+          image-tag-next-app: develop-next-app-$(date +%Y%m%d)-${{ github.sha }}
+
+        # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idsecrets
+        secrets:
+          kube-context: ${{ secrets.LTOPS_K8S_STAGING_CONTEXT }}
+          image-repo-username: ${{ secrets.DOCKERHUB_USERNAME }}
+          image-repo-password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}

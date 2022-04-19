@@ -2,6 +2,7 @@ PhpUnitTests.xml
 docker/e2e-results.xml
 src/assets/*
 src/dist/*
+src/vendor/*
 !src/assets/.gitkeep
 src/cache/*
 !src/cache/.gitkeep

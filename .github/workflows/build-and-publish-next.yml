@@ -1,0 +1,41 @@
+name: Publish LFNext images to Docker Hub on-demand
+
+# https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#on
+on:
+  workflow_dispatch:
+
+jobs:
+  build-n-publish:
+    runs-on: ubuntu-latest
+
+    env:
+      # https://docs.docker.com/develop/develop-images/build_enhancements/
+      DOCKER_BUILDKIT: 1
+
+    defaults:
+      run:
+        working-directory: docker
+
+    steps:
+      -
+        uses: actions/checkout@v2
+      -
+        run: make build-next
+      -
+        id: image
+        run: |
+          echo ::set-output name=NAMESPACE::sillsdev/web-languageforge
+          echo ::set-output name=BUILD_ID::$(date +%Y%m%d)-${{ github.sha }}
+      -
+        run: |
+          docker tag lf-next-app   ${{ steps.image.outputs.NAMESPACE }}:next-app-${{ steps.image.outputs.BUILD_ID }}
+          docker tag lf-next-proxy ${{ steps.image.outputs.NAMESPACE }}:next-proxy-${{ steps.image.outputs.BUILD_ID }}
+      -
+        run: docker images
+      -
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+      -
+        run: docker push --all-tags ${{ steps.image.outputs.NAMESPACE }}

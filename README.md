@@ -19,7 +19,8 @@ If you don't have a GitHub account or don't want your issue to be public, you ca
 
 ## Contributing ##
 
-We're glad you're here!  Read our [Contributing Guide](CONTRIBUTING.md) for how you can help this project.  You don't have to be a software developer to help make Language Forge better.  
+We're glad you're here!  Read our [Contributing Guide](CONTRIBUTING.md) for how you can help this project.  You don't have to be a software developer to help make Language Forge better.
+
 ## Developers ##
 
 Please see our [Developer Guide](docs/DEVELOPER.md) for developer best practices and environment setup
