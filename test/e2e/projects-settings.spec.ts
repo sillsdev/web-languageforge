@@ -1,153 +1,122 @@
 import { expect } from '@playwright/test';
 import { test } from './utils/fixtures';
-import { ProjectsPage } from './pages/projects.page';
 import { ProjectSettingsPage } from './pages/project-settings.page';
+import { initTestProject, addUserToProject } from './utils/testSetup';
+import { ProjectsPage } from './pages/projects.page';
 
 
-import { browser, ExpectedConditions } from 'protractor';
-
-import {BellowsLoginPage} from './shared/login.page';
-import {Utils} from './shared/utils';
+export type Project = {
+  name: string,
+  code: string,
+  id: string
+}
 
 test.describe('E2E Project Settings app', () => {
-  const constants = require('../testConstants.json');
-  const loginPage = new BellowsLoginPage();
+  let projectSettingsPageManager: ProjectSettingsPage;
+  const projects: Project[] = [
+    {
+      name: 'projects_settings_spec_ts Project 01',
+      code: 'p01_projects_settings_spec_ts__project_01',
+      id: ''
+    },
+    {
+      name: 'projects_settings_spec_ts Project 02',
+      code: 'p02_projects_settings_spec_ts__project_02',
+      id: ''
+    },
+    {
+      name: 'projects_settings_spec_ts Project 03',
+      code: 'p03_projects_settings_spec_ts__project_03',
+      id: ''
+    },
+  ];
+  const project4: Project = {
+    name: 'projects_settings_spec_ts Project 04',
+    code: 'p04_projects_settings_spec_ts__project_04',
+    id: ''
+  };
+
+  test.beforeAll(async ({ request, admin, member, manager, managerTab }) => {
+    projectSettingsPageManager = new ProjectSettingsPage(managerTab);
+    // Do this
+    for (const project of projects) {
+      const projectId = await initTestProject(request, project.code, project.name, admin.username, [member.username]);
+      project.id = projectId;
+    }
+    await addUserToProject(request, projects[0].code, manager.username, 'manager');
+    project4.id = await initTestProject(request, project4.code, project4.name, manager.username, []);
+    // instead of this:
+    // const projectSettingsPage: ProjectSettingsPage = new ProjectSettingsPage(managerTab);
+    // console.log(await projectSettingsPage.projectsPage.findProject(projects[0].name));
+
+    // if (await projectSettingsPage.projectsPage.findProject(projects[0].name) != '-1') {
+    //   await projectSettingsPage.goto(projects[0].name);
+    //   await projectSettingsPage.deleteProject();
+    // }
+    // await projectSettingsPage.projectsPage.createEmptyProject(projects[0].name);
+    // await projectSettingsPage.projectsPage.addUserToProject(projects[0].name, 'test_runner_normal_user@example.com', 'can comment');
+  });
+
+
+  // test if can change project name
 
   test('Normal user cannot access projectSettings to a project of which the user is a member', async ({ memberTab }) => {
-    const projectsPage = new ProjectsPage(memberTab);
-    await projectsPage.clickOnProject(constants.testProjectName);
     const projectSettingsPage = new ProjectSettingsPage(memberTab);
+    await projectSettingsPage.gotoProjectDirectly(projects[0].id, projects[0].name);
     await expect (projectSettingsPage.settingsMenuLink).not.toBeVisible();
   });
 
-  test('System Admin can manage project', async ({ adminTab }) => {
+  // original name: System Admin can manage project
+  // alternative suggestion: System Admin can manage project
+  test('Project Owner can manage project they own', async ({ adminTab }) => {
     const projectSettingsPage = new ProjectSettingsPage(adminTab);
-    await projectSettingsPage.goto(constants.testProjectName);
-    await expect (projectSettingsPage.noticeList.count()).toBe(0);
-
-    // Archive tab currently disabled
-    /*
-    managementPage.tabs.archive.click();
-    expect(managementPage.archiveTab.archiveButton.isDisplayed()).toBe(true);
-    expect(managementPage.archiveTab.archiveButton.isEnabled()).toBe(true);
-    */
-    await browser.wait(ExpectedConditions.visibilityOf(settingsPage.tabs.remove), constants.conditionTimeout);
-    // await browser.actions().mouseMove(settingsPage.tabs.remove).click().perform();
-    await settingsPage.tabs.remove.click();
-    // await browser.wait(ExpectedConditions.visibilityOf(settingsPage.deleteTab.deleteButton), constants.conditionTimeout);
-    expect<boolean>(await settingsPage.deleteTab.deleteButton.isDisplayed()).toBe(true);
-    expect<boolean>(await settingsPage.deleteTab.deleteButton.isEnabled()).toBe(false);
+    await projectSettingsPage.gotoProjectSettingsDirectly(projects[0].id, projects[0].name);
+    expect(await projectSettingsPage.noticeList.count()).toBe(0);
+    await projectSettingsPage.deleteTab.tabTitle.click();
+    await expect(projectSettingsPage.deleteTab.deleteProjectButton).toBeVisible();
+    await expect(projectSettingsPage.deleteTab.deleteProjectButton).toBeDisabled();
   });
 
-  test('confirm Manager is not owner of test project', async () => {
-    await loginPage.loginAsManager();
-    await settingsPage.get(constants.testProjectName);
-    await settingsPage.tabs.project.click();
-    expect<any>(await settingsPage.projectTab.projectOwner.isDisplayed()).toBe(true);
-    expect(await settingsPage.projectTab.projectOwner.getText())
-      .not.toContain(constants.managerUsername);
+  //TOASK: is this test really needed?
+  test('Confirm Manager is not owner of test project 0', async ({ manager }) => {
+    await projectSettingsPageManager.gotoProjectSettingsDirectly(projects[0].id, projects[0].name);
+    expect(await projectSettingsPageManager.projectTab.projectOwner.innerText()).not.toContain(manager.username);
   });
 
-  // Archive tab is a disabled/hidden feature
-  /*
-  xit('Manager cannot view archive tab if not owner', function () {
-    expect(settingsPage.tabs.archive.isPresent()).toBe(false);
-  });
-  */
-
-  test('Manager cannot view delete tab if not owner', async ({ managerTab }) => {
-    expect<any>(await settingsPage.tabs.remove.isPresent()).toBe(false);
+  test('Manager cannot view delete tab if not owner', async ({ manager }) => {
+    await projectSettingsPageManager.gotoProjectSettingsDirectly(projects[0].id, projects[0].name);
+    expect(await projectSettingsPageManager.projectTab.projectOwner.innerText()).not.toContain(manager.username);
+    await expect(projectSettingsPageManager.deleteTab.tabTitle).not.toBeVisible();
   });
 
-  test('confirm Manager is owner of fourth project', async () => {
-    await loginPage.loginAsManager();
-    await settingsPage.get(constants.fourthProjectName);
-    await settingsPage.tabs.project.click();
-    expect<any>(await settingsPage.projectTab.projectOwner.isDisplayed()).toBe(true);
-    expect(await settingsPage.projectTab.projectOwner.getText()).toContain(constants.managerUsername);
+  // Alternative name: confirm name of owner is displayed in project settings
+  test('Confirm Manager is owner of project 4', async ({ manager }) => {
+    await projectSettingsPageManager.gotoProjectSettingsDirectly(project4.id, project4.name);
+    await projectSettingsPageManager.projectTab.tabTitle.click();
+    await expect(projectSettingsPageManager.projectTab.projectOwner).toBeVisible();
+    expect(await projectSettingsPageManager.projectTab.projectOwner.innerText()).toContain(manager.username);
   });
 
-  // For Jamaican Psalms, only system admins can delete projects.
-  // Project Manager is an ordinary user, so this test is ignored for Jamaican Psalms
   test('Manager can delete if owner', async () => {
-    if (!browser.baseUrl.startsWith('http://jamaicanpsalms') && !browser.baseUrl.startsWith('https://jamaicanpsalms')) {
-      await loginPage.loginAsManager();
-      await projectsPage.get();
-      expect<any>(await projectsPage.projectsList.count()).toBe(4);
-      await settingsPage.get(constants.fourthProjectName);
-      expect<any>(await settingsPage.noticeList.count()).toBe(0);
-      await settingsPage.tabs.remove.click();
-      await browser.wait(ExpectedConditions.visibilityOf(settingsPage.deleteTab.deleteButton), constants.conditionTimeout);
-      expect<any>(await settingsPage.deleteTab.deleteButton.isDisplayed()).toBe(true);
-      expect<any>(await settingsPage.deleteTab.deleteButton.isEnabled()).toBe(false);
-      await settingsPage.deleteTab.deleteBoxText.sendKeys('DELETE');
-      expect<any>(await settingsPage.deleteTab.deleteButton.isEnabled()).toBe(true);
-      await settingsPage.deleteTab.deleteButton.click();
-      await Utils.clickModalButton('Delete');
-      // await browser.wait(() => false, constants.conditionTimeout * 10);
-      await projectsPage.get();
-      expect<any>(await projectsPage.projectsList.count()).toBe(3);
-    }
+    await projectSettingsPageManager.projectsPage.goto();
+    const nProjects = await projectSettingsPageManager.projectsPage.countProjects();
+    await projectSettingsPageManager.gotoProjectSettingsDirectly(project4.id, project4.name);
+    expect(await projectSettingsPageManager.countNotices()).toBe(0);
+
+    await projectSettingsPageManager.deleteTab.tabTitle.click();
+    await expect(projectSettingsPageManager.deleteTab.deleteProjectButton).toBeVisible();
+    await expect(projectSettingsPageManager.deleteTab.deleteProjectButton).toBeDisabled();
+    await projectSettingsPageManager.deleteTab.confirmDeleteInput.fill('delete');
+    await expect(projectSettingsPageManager.deleteTab.deleteProjectButton).toBeEnabled();
+    await projectSettingsPageManager.deleteTab.deleteProjectButton.click();
+    await projectSettingsPageManager.deleteModal.confirm.click();
+
+    await projectSettingsPageManager.page.waitForNavigation({ url: ProjectsPage.url });
+    //Or...
+    // await projectSettingsPageManager.page.waitForNavigation({ waitUntil: 'networkidle' });
+
+    expect(await projectSettingsPageManager.projectsPage.countProjects()).toBe(nProjects - 1);
   });
 
-  // Since Archive tab is now disabled, ignoring Archive / re-publish tests
-  /*
-  xit('Manager can archive if owner', function () {
-    loginPage.loginAsManager();
-    settingsPage.get(constants.testProjectName);
-    expect(settingsPage.noticeList.count()).toBe(0);
-    settingsPage.tabs.archive.click();
-    expect(settingsPage.archiveTab.archiveButton.isDisplayed()).toBe(true);
-    expect(settingsPage.archiveTab.archiveButton.isEnabled()).toBe(true);
-    settingsPage.archiveTab.archiveButton.click();
-    util.clickModalButton('Archive');
-    expect(projectsPage.projectsList.count()).toBe(2);
-  }).pend('Archive tab is currently disabled');
-
-  xit('System Admin can re-publish project', function () {
-    loginPage.loginAsAdmin();
-    siteAdminPage.get();
-    siteAdminPage.tabs.archivedProjects.click();
-    expect(siteAdminPage.tabs.archivedProjects.republishButton.isDisplayed()).toBe(true);
-    expect(siteAdminPage.tabs.archivedProjects.republishButton.isEnabled()).toBe(false);
-    expect(siteAdminPage.tabs.archivedProjects.deleteButton.isDisplayed()).toBe(true);
-    expect(siteAdminPage.tabs.archivedProjects.deleteButton.isEnabled()).toBe(false);
-    expect(siteAdminPage.tabs.archivedProjects.projectsList.count()).toBe(1);
-    siteAdminPage.tabs.archivedProjects.setCheckbox(0, true);
-    expect(siteAdminPage.tabs.archivedProjects.republishButton.isEnabled()).toBe(true);
-    expect(siteAdminPage.tabs.archivedProjects.deleteButton.isEnabled()).toBe(true);
-    siteAdminPage.tabs.archivedProjects.republishButton.click();
-    projectsPage.get();
-    expect(projectsPage.projectsList.count()).toBe(3);
-  }).pend('Archive tab is currently disabled');
-
-  xit('System Admin can archive', function () {
-    loginPage.loginAsAdmin();
-    settingsPage.get(constants.testProjectName);
-    expect(settingsPage.noticeList.count()).toBe(0);
-    settingsPage.tabs.archive.click();
-    expect(settingsPage.archiveTab.archiveButton.isDisplayed()).toBe(true);
-    expect(settingsPage.archiveTab.archiveButton.isEnabled()).toBe(true);
-    settingsPage.archiveTab.archiveButton.click();
-    util.clickModalButton('Archive');
-    expect(projectsPage.projectsList.count()).toBe(2);
-  }).pend('Archive tab is currently disabled');
-
-  xit('System Admin can re-publish project', function () {
-    siteAdminPage.get();
-    siteAdminPage.tabs.archivedProjects.click();
-    expect(siteAdminPage.tabs.archivedProjects.republishButton.isDisplayed()).toBe(true);
-    expect(siteAdminPage.tabs.archivedProjects.republishButton.isEnabled()).toBe(false);
-    expect(siteAdminPage.tabs.archivedProjects.deleteButton.isDisplayed()).toBe(true);
-    expect(siteAdminPage.tabs.archivedProjects.deleteButton.isEnabled()).toBe(false);
-    expect(siteAdminPage.tabs.archivedProjects.projectsList.count()).toBe(1);
-    siteAdminPage.tabs.archivedProjects.setCheckbox(0, true);
-    expect(siteAdminPage.tabs.archivedProjects.republishButton.isEnabled()).toBe(true);
-    expect(siteAdminPage.tabs.archivedProjects.deleteButton.isEnabled()).toBe(true);
-    siteAdminPage.tabs.archivedProjects.republishButton.click();
-    projectsPage.get();
-    expect(projectsPage.projectsList.count()).toBe(3);
-  }).pend('Archive tab is currently disabled');
-  */
 
 });
