@@ -14,9 +14,6 @@ on:
       image-tag-next-app:
         type: string
         required: true
-      image-tag-lfmerge:
-        type: string
-        required: false
 
     # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#onworkflow_callsecrets
     secrets:
@@ -58,8 +55,7 @@ jobs:
           echo ::set-output name=TAG_NEXT_APP::${{ inputs.image-tag-next-app }}
           echo ::set-output name=LFMERGE_NAMESPACE::ghcr.io/sillsdev/lfmerge
           # LfMerge tag from parameter if provided, use .json file if exists, fallback to "latest" as default
-          TAG_LFMERGE=${{ inputs.image-tag-lfmerge }}
-          TAG_LFMERGE=${TAG_LFMERGE:-$(head -n 1 docker/lfmerge/Dockerfile | cut -d: -f2)}
+          TAG_LFMERGE=$(head -n 1 docker/lfmerge/Dockerfile | cut -d: -f2)
           TAG_LFMERGE=${TAG_LFMERGE:-latest}
           echo ::set-output name=TAG_LFMERGE::${TAG_LFMERGE}
       -
