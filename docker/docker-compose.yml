@@ -103,8 +103,6 @@ services:
       - LFMERGE_MONGO_MAIN_DB_NAME=scriptureforge
       - LFMERGE_MONGO_DB_NAME_PREFIX=sf_
       - LFMERGE_VERBOSE_PROGRESS=true
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
     volumes:
       # holds things like audio files or pictures attached to words within a project
       - lf-project-assets:/var/www/src/assets
