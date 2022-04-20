@@ -77,7 +77,12 @@ services:
       - ../src/angular-app:/var/www/src/angular-app
 
   lfmerge:
-    image: ghcr.io/sillsdev/lfmerge:${LFMERGE_VERSION:-latest}
+    build:
+      context: ..
+      dockerfile: docker/lfmerge/Dockerfile
+      args:
+        - ENVIRONMENT=development
+    image: lfmerge
     container_name: lfmerge
     platform: linux/amd64
     depends_on:

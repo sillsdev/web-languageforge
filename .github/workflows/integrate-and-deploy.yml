@@ -59,7 +59,7 @@ jobs:
           echo ::set-output name=LFMERGE_NAMESPACE::ghcr.io/sillsdev/lfmerge
           # LfMerge tag from parameter if provided, use .json file if exists, fallback to "latest" as default
           TAG_LFMERGE=${{ inputs.image-tag-lfmerge }}
-          TAG_LFMERGE=${TAG_LFMERGE:-$(jq -r .lfmerge other-dependencies.json)}
+          TAG_LFMERGE=${TAG_LFMERGE:-$(head -n 1 docker/lfmerge/Dockerfile | cut -d: -f2)}
           TAG_LFMERGE=${TAG_LFMERGE:-latest}
           echo ::set-output name=TAG_LFMERGE::${TAG_LFMERGE}
       -
