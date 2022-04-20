@@ -38,23 +38,13 @@ test.describe('E2E Project Settings app', () => {
 
   test.beforeAll(async ({ request, admin, member, manager, managerTab }) => {
     projectSettingsPageManager = new ProjectSettingsPage(managerTab);
-    // Do this
+
     for (const project of projects) {
       const projectId = await initTestProject(request, project.code, project.name, admin.username, [member.username]);
       project.id = projectId;
     }
     await addUserToProject(request, projects[0].code, manager.username, 'manager');
     project4.id = await initTestProject(request, project4.code, project4.name, manager.username, []);
-    // instead of this:
-    // const projectSettingsPage: ProjectSettingsPage = new ProjectSettingsPage(managerTab);
-    // console.log(await projectSettingsPage.projectsPage.findProject(projects[0].name));
-
-    // if (await projectSettingsPage.projectsPage.findProject(projects[0].name) != '-1') {
-    //   await projectSettingsPage.goto(projects[0].name);
-    //   await projectSettingsPage.deleteProject();
-    // }
-    // await projectSettingsPage.projectsPage.createEmptyProject(projects[0].name);
-    // await projectSettingsPage.projectsPage.addUserToProject(projects[0].name, 'test_runner_normal_user@example.com', 'can comment');
   });
 
 
@@ -63,12 +53,10 @@ test.describe('E2E Project Settings app', () => {
   test('Normal user cannot access projectSettings to a project of which the user is a member', async ({ memberTab }) => {
     const projectSettingsPage = new ProjectSettingsPage(memberTab);
     await projectSettingsPage.gotoProjectDirectly(projects[0].id, projects[0].name);
-    await expect (projectSettingsPage.settingsMenuLink).not.toBeVisible();
+    await expect(projectSettingsPage.settingsMenuLink).not.toBeVisible();
   });
 
-  // original name: System Admin can manage project
-  // alternative suggestion: System Admin can manage project
-  test('Project Owner can manage project they own', async ({ adminTab }) => {
+  test('Project owner can manage project they own', async ({ adminTab }) => {
     const projectSettingsPage = new ProjectSettingsPage(adminTab);
     await projectSettingsPage.gotoProjectSettingsDirectly(projects[0].id, projects[0].name);
     expect(await projectSettingsPage.noticeList.count()).toBe(0);
@@ -77,11 +65,6 @@ test.describe('E2E Project Settings app', () => {
     await expect(projectSettingsPage.deleteTab.deleteProjectButton).toBeDisabled();
   });
 
-  //TOASK: is this test really needed?
-  test('Confirm Manager is not owner of test project 0', async ({ manager }) => {
-    await projectSettingsPageManager.gotoProjectSettingsDirectly(projects[0].id, projects[0].name);
-    expect(await projectSettingsPageManager.projectTab.projectOwner.innerText()).not.toContain(manager.username);
-  });
 
   test('Manager cannot view delete tab if not owner', async ({ manager }) => {
     await projectSettingsPageManager.gotoProjectSettingsDirectly(projects[0].id, projects[0].name);
@@ -89,13 +72,6 @@ test.describe('E2E Project Settings app', () => {
     await expect(projectSettingsPageManager.deleteTab.tabTitle).not.toBeVisible();
   });
 
-  // Alternative name: confirm name of owner is displayed in project settings
-  test('Confirm Manager is owner of project 4', async ({ manager }) => {
-    await projectSettingsPageManager.gotoProjectSettingsDirectly(project4.id, project4.name);
-    await projectSettingsPageManager.projectTab.tabTitle.click();
-    await expect(projectSettingsPageManager.projectTab.projectOwner).toBeVisible();
-    expect(await projectSettingsPageManager.projectTab.projectOwner.innerText()).toContain(manager.username);
-  });
 
   test('Manager can delete if owner', async () => {
     await projectSettingsPageManager.projectsPage.goto();
@@ -117,6 +93,5 @@ test.describe('E2E Project Settings app', () => {
 
     expect(await projectSettingsPageManager.projectsPage.countProjects()).toBe(nProjects - 1);
   });
-
 
 });
