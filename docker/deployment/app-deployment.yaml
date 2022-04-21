@@ -43,7 +43,7 @@ spec:
     - ReadWriteMany
   resources:
     requests:
-      storage: 35Gi
+      storage: 50Gi
   storageClassName: weekly-snapshots-retain-4 # provided by LTOps
 
 ---

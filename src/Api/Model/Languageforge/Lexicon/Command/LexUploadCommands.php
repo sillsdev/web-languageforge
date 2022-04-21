@@ -52,6 +52,10 @@ class LexUploadCommands
 
         $allowedTypes = array(
             "application/octet-stream",
+
+            // allow m4a audio uploads, which curiously has a mime type of video/mp4
+            "video/mp4",
+
             "audio/mpeg",
             "audio/x-mpeg",
             "audio/mp3",
@@ -68,6 +72,7 @@ class LexUploadCommands
             ".mp3",
             ".mpa",
             ".mpg",
+            ".m4a",
             ".wav"
         );
 
