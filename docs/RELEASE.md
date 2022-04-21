@@ -15,7 +15,7 @@ Language Forge is built to run in a containerized environment.  Kubernetes is ou
 
 [qa.languageforge.org](https://qa.languageforge.org)
 
-Staging deployments can be manually run with `VERSION_APP=<some-docker-tag-or-semver> VERSION_PROXY=<some-docker-tag-or-semver> VERSION_NEXT_APP=<some-docker-tag-or-semver> make deploy-staging`.
+Staging deployments can be manually run with `VERSION_APP=<some-docker-tag-or-semver> VERSION_PROXY=<some-docker-tag-or-semver> VERSION_NEXT_APP=<some-docker-tag-or-semver> VERSION_LFMERGE=<some-docker-tag-or-semver> make deploy-staging`.
 
 Current workflow:
 1. merge PR into or make commits on `develop` branch
@@ -25,7 +25,7 @@ Current workflow:
 
 [languageforge.org](https://languageforge.org)
 
-Production deployments can be manually run with `VERSION=<some-docker-tag-or-semver> make deploy-prod`.
+Production deployments can be manually run with `VERSION_APP=<some-docker-tag-or-semver> VERSION_PROXY=<some-docker-tag-or-semver> VERSION_NEXT_APP=<some-docker-tag-or-semver> VERSION_LFMERGE=<some-docker-tag-or-semver> make deploy-prod`.
 
 Current workflow:
 1. merge from `develop` into `master`
