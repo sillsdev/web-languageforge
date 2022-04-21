@@ -46,15 +46,13 @@ jobs:
       -
         name: Establish image name
         id: image
-        env:
-          TAG_LFMERGE:
         run: |
           echo ::set-output name=NAMESPACE::sillsdev/web-languageforge
           echo ::set-output name=TAG_APP::${{ inputs.image-tag-app }}
           echo ::set-output name=TAG_PROXY::${{ inputs.image-tag-proxy }}
           echo ::set-output name=TAG_NEXT_APP::${{ inputs.image-tag-next-app }}
           echo ::set-output name=LFMERGE_NAMESPACE::ghcr.io/sillsdev/lfmerge
-          # LfMerge tag from parameter if provided, use .json file if exists, fallback to "latest" as default
+          # Get LfMerge tag from Dockerfile, fallback to "latest" as default if that fails
           TAG_LFMERGE=$(head -n 1 docker/lfmerge/Dockerfile | cut -d: -f2)
           TAG_LFMERGE=${TAG_LFMERGE:-latest}
           echo ::set-output name=TAG_LFMERGE::${TAG_LFMERGE}
