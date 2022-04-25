@@ -58,4 +58,8 @@
 	ul {
 		min-width: 33%;
 	}
+
+	li.menu-title {
+		border-bottom-width: 1px;
+	}
 </style>
