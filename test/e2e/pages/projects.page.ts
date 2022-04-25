@@ -1,11 +1,11 @@
 import { expect, Locator, Page } from '@playwright/test';
 
 export type UserRoles =
-    'can manage' |
-    'can edit' |
-    'can comment' |
-    'can view'
-;
+  'can manage' |
+  'can edit' |
+  'can comment' |
+  'can view'
+  ;
 export class ProjectsPage {
   readonly page: Page;
   readonly pageName: Locator;
@@ -27,6 +27,9 @@ export class ProjectsPage {
   readonly shareProjectEmailInput: Locator;
   readonly shareProjectUserRoleDropdown: Locator;
   readonly shareProjectSendInvitationButton: Locator;
+
+  readonly projectsPerPageDropdown: Locator;
+  readonly addAsTechSupportBtnText: string;
 
   static readonly url: string = '/app/projects';
 
@@ -50,16 +53,23 @@ export class ProjectsPage {
     this.shareProjectButton = page.locator('span:has-text("Share")');
     this.shareProjectEmailInput = page.locator('[placeholder="Email"]');
     this.shareProjectUserRoleDropdown = page.locator('role-dropdown[target="\'email_invite\'"]');
-    this.shareProjectSendInvitationButton = page.locator('button[ng-click="$ctrl.sendEmailInvite()"]')
+    this.shareProjectSendInvitationButton = page.locator('button[ng-click="$ctrl.sendEmailInvite()"]');
+
+    this.projectsPerPageDropdown = page.locator('select[data-ng-model="$ctrl.itemsPerPage"]');
+    this.addAsTechSupportBtnText = 'text=Tech Support';
   }
 
   async goto() {
     // if url not ProjectsPage.url
-    if (! this.page.url().endsWith(ProjectsPage.url)) {
+    if (!this.page.url().endsWith(ProjectsPage.url)) {
       await this.page.goto(ProjectsPage.url);
       //await this.page.waitForLoadState('domcontentloaded');
     }
     await expect(this.createButton).toBeVisible();
+    if (await this.projectsPerPageDropdown.isVisible()) {
+      await this.projectsPerPageDropdown.selectOption('100');
+    }
+
   }
 
   async createEmptyProject(projectName: string) {
@@ -93,14 +103,17 @@ export class ProjectsPage {
     return await this.projectsList.count();
   }
 
-  async findProject(projectName: string): Promise<string>  {
+  async findProject(projectName: string): Promise<string> {
     await this.goto();
-    if (await this.page.locator('text=' + projectName + ' >> nth=1').isVisible()) {
-      return 'text=' + projectName + ' >> nth=1';
+    const foundElements = this.page.locator('span:has-text("' + projectName + '")');
+    const nFoundElements = await foundElements.count();
+    for (let i = 0; i < nFoundElements; i++) {
+
+      if (await foundElements.nth(i).isVisible()) {
+        return 'span:has-text("' + projectName + '") >> nth=' + i;
+      }
     }
-    else {
-      return '-1';
-    }
+    return '-1';
   }
 
   async clickOnProject(projectName: string) {
