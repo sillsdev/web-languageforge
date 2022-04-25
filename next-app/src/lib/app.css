@@ -10,4 +10,8 @@
 
 			max-w-none;
 	}
+
+	ul.menu li a {
+		text-decoration: none;
+	}
 }
