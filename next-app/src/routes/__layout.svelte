@@ -32,7 +32,7 @@
 	  <div class=drawer-overlay></div>
 
 	  <!-- https://daisyui.com/components/menu  -->
-	  <ul class='menu bg-base-100'>
+	  <ul class='menu p-4 bg-base-100'>
 		<li class=menu-title>User</li>
 		<li><a href=/app/userprofile rel=external>My profile</a></li>
 		<li><a href=/password/change  class:active={current_page.startsWith('/password/change')}>Change password</a></li>
