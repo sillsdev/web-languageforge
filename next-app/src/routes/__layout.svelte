@@ -39,21 +39,21 @@
 
 	  <!-- https://daisyui.com/components/menu  -->
 	  <ul class='menu p-4 bg-base-100'>
-		<li class=menu-title>User</li>
+		<li class=menu-title><span>User</span></li>
 		<li><a href=/app/userprofile rel=external>My profile</a></li>
 		<li><a href=/password/change  class:active={current_page.startsWith('/password/change')}>Change password</a></li>
 		<li><a href=/app/siteadmin rel=external>Site administration</a></li>
 		<li><a href=/auth/logout rel=external>Logout</a></li>
 
-		<li class=menu-title>Project</li>
+		<li class='menu-title mt-6'><span>Project</span></li>
 		<li><a href=/app rel=external>My projects</a></li>
 
-		<li class=menu-title>About</li>
+		<li class='menu-title mt-6'><span>About</span></li>
 		<li><a href=https://community.software.sil.org/t/w/5454 target=_blank rel=external>What's new</a></li>
 		<li><a href='https://www.youtube.com/playlist?list=PLJLUPwIFOI8d8lmQVAcBapyw87jCtmDNA' target=_blank rel=external>Videos</a></li>
 		<li><a href=https://github.com/sillsdev/web-languageforge/wiki/Known-Issues-and-Limitations target=_blank rel=external>Known issues and limitations</a></li>
 
-		<li class=menu-title>Help</li>
+		<li class='menu-title mt-6'><span>Help</span></li>
 		<li><a href=https://community.software.sil.org/c/language-forge target=_blank rel=external>Community Support</a></li>
 		<li><a href=mailto:issues@languageforge.org target=_blank rel=external>Report a Problem</a></li>
 	  </ul>
@@ -63,9 +63,5 @@
 <style>
 	ul {
 		min-width: 33%;
-	}
-
-	li.menu-title {
-		border-bottom-width: 1px;
 	}
 </style>
