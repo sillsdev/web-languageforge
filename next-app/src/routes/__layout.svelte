@@ -49,13 +49,13 @@
 
 		<li class=menu-title>Help</li>
 		<li><a href=https://community.software.sil.org/c/language-forge target=_blank rel=external>Community Support</a></li>
-		<li><a href=mailto:issues@languageforge.org target=_blank rel=external>Report a Problem (email issues@languageforge.org)</a></li>
+		<li><a href=mailto:issues@languageforge.org target=_blank rel=external>Report a Problem</a></li>
 	  </ul>
 	</div>
   </div>
 
 <style>
 	ul {
-		width: 33%;
+		min-width: 33%;
 	}
 </style>
