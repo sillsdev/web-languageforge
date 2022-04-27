@@ -14,7 +14,13 @@
 	function close() {
 		menu_toggle = false
 	}
+
+	function closeOnEscape(e) {
+		e.key === 'Escape' && close()
+	}
 </script>
+
+<svelte:window on:keydown={closeOnEscape} />
 
 <!-- https://daisyui.com/components/drawer -->
 <div class='drawer drawer-end'>
