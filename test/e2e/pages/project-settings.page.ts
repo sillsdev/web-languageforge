@@ -78,11 +78,6 @@ export class ProjectSettingsPage {
     await expect(this.page.locator('.page-name >> text=' + projectName)).toBeVisible();
   }
 
-  async gotoProjectDirectly(projectId: string, projectName: string) {
-    await this.page.goto('app/lexicon/' + projectId);
-    await expect(this.page.locator('.page-name >> text=' + projectName)).toBeVisible();
-  }
-
   async deleteProject() {
     await this.deleteTab.tabTitle.click();
     await this.deleteTab.confirmDeleteInput.fill('delete');

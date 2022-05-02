@@ -3,6 +3,7 @@ import { test } from './utils/fixtures';
 import { ProjectSettingsPage } from './pages/project-settings.page';
 import { initTestProject, addUserToProject } from './utils/testSetup';
 import { ProjectsPage } from './pages/projects.page';
+import { gotoProjectDirectly } from './utils/navigation';
 
 
 export type Project = {
@@ -52,7 +53,7 @@ test.describe('E2E Project Settings app', () => {
 
   test('Normal user cannot access projectSettings to a project of which the user is a member', async ({ memberTab }) => {
     const projectSettingsPage = new ProjectSettingsPage(memberTab);
-    await projectSettingsPage.gotoProjectDirectly(projects[0].id, projects[0].name);
+    await gotoProjectDirectly(projectSettingsPage.page, projects[0].id, projects[0].name);
     await expect(projectSettingsPage.settingsMenuLink).not.toBeVisible();
   });
 

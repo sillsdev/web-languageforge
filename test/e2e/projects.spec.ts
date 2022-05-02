@@ -4,6 +4,7 @@ import { ProjectsPage } from './pages/projects.page';
 import { Project } from './projects-settings.spec';
 
 import { initTestProject, addUserToProject } from './utils/testSetup';
+import { gotoProjectDirectly } from './utils/navigation';
 
 
 // import {EditorPage} from '../languageforge/lexicon/shared/editor.page';
@@ -174,14 +175,13 @@ test.describe('E2E Projects List app', () => {
     //     */
     //   });
 
-    //   test('User redirected to projects app when accessing without membership', async () => {
-    //     await loginPage.loginAsManager();
-    //     const url = await browser.getCurrentUrl();
-    //     await loginPage.loginAsSecondUser();
-    //     await browser.get(url);
-    //     await browser.wait(ExpectedConditions.visibilityOf(projectsPage.createBtn), constants.conditionTimeout);
-    //     expect<any>(await projectsPage.createBtn.isPresent()).toBe(true);
-    //   });
+    test('Admin added to project when accessing without membership', async () => {
+      // this is already tested in a test above but makes the test more understandable
+      await expect(await projectsPageAdmin.projectLinkLocator(projects[2].name)).not.toBeVisible();
+      await gotoProjectDirectly(projectsPageAdmin.page, projects[2].id, projects[2].name);
+      await projectsPageAdmin.goto();
+      await expect(await projectsPageAdmin.projectLinkLocator(projects[2].name)).toBeVisible();
+    });
 
     // });
 
