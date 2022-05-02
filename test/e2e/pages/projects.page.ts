@@ -103,6 +103,20 @@ export class ProjectsPage {
     return await this.projectsList.count();
   }
 
+  // TODO@JeanneSon: in order to be able to run the tests in parallel, the countProjects function should only count the projects created in that test file
+  async countSpecificProjects(projects: string): Promise<number> {
+    await this.goto();
+    const nAllProjects = await this.projectNames.count();
+    let nSpecificProjects = 0;
+    for (let i = 0; i < nAllProjects; i++) {
+      const projectName = await this.projectNames.nth(i).locator('span').innerText();
+      if (projectName.includes(projects)) {
+        nSpecificProjects++;
+      }
+    }
+    return nSpecificProjects;
+  }
+
   async findProject(projectName: string): Promise<string> {
     await this.goto();
     const foundElements = this.page.locator('span:has-text("' + projectName + '")');

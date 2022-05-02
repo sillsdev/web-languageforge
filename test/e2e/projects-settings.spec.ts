@@ -75,7 +75,7 @@ test.describe('E2E Project Settings app', () => {
 
   test('Manager can delete if owner', async () => {
     await projectSettingsPageManager.projectsPage.goto();
-    const nProjects = await projectSettingsPageManager.projectsPage.countProjects();
+    const nProjects = await projectSettingsPageManager.projectsPage.countSpecificProjects('projects_settings_spec_ts');
     await projectSettingsPageManager.gotoProjectSettingsDirectly(project4.id, project4.name);
     expect(await projectSettingsPageManager.countNotices()).toBe(0);
 
@@ -91,7 +91,7 @@ test.describe('E2E Project Settings app', () => {
     //Or...
     // await projectSettingsPageManager.page.waitForNavigation({ waitUntil: 'networkidle' });
 
-    expect(await projectSettingsPageManager.projectsPage.countProjects()).toBe(nProjects - 1);
+    expect(await projectSettingsPageManager.projectsPage.countSpecificProjects('projects_settings_spec_ts')).toBe(nProjects - 1);
   });
 
 });
