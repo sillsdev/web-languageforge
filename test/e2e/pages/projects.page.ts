@@ -12,6 +12,9 @@ export class ProjectsPage {
   readonly projectsList: Locator;
   readonly projectNames: Locator;
 
+  readonly projectNameLinked: string;
+  readonly projectNameUnlinked: string;
+
   readonly createButton: Locator;
   readonly createNonSRProjectButton: Locator; // SR - send/receive
   readonly projectNameInput: Locator;
@@ -38,6 +41,9 @@ export class ProjectsPage {
     this.pageName = page.locator('.page-name >> text=My Projects');
     this.projectsList = page.locator('[data-ng-repeat="project in visibleProjects"]');
     this.projectNames = this.projectsList.locator('a[href^="/app/lexicon"]');
+
+    this.projectNameLinked = 'projectNameLinked';
+    this.projectNameUnlinked = '';
 
     this.createButton = page.locator('button:has-text("Start or Join a New Project")');
     this.createNonSRProjectButton = page.locator('text=Create a non-send/receive project (not recommended)');
@@ -122,13 +128,50 @@ export class ProjectsPage {
     const foundElements = this.page.locator('span:has-text("' + projectName + '")');
     const nFoundElements = await foundElements.count();
     for (let i = 0; i < nFoundElements; i++) {
-
       if (await foundElements.nth(i).isVisible()) {
         return 'span:has-text("' + projectName + '") >> nth=' + i;
       }
     }
     return '-1';
   }
+
+  // findProjectRow = returns selector like "*div[data-ng-repeat='project of projects'] >> span:has-text(name)"
+  // Note the * which ends up returning the div instead of the span
+  async findProjectRow(projectName: string): Promise<Locator> {
+    await this.goto();
+    //const rowLocator = `*css=[data-ng-class="{active: $ctrl.isSelected(project)}"] >> span:has-text("${projectName}")`;
+    //const rowLocator = this.page.locator('css=[data-ng-class="{active: $ctrl.isSelected(project)}"]', { has: this.page.locator(`span:has-text("${projectName}")`)});
+    const rowLocator = this.page.locator(`css=[data-ng-class="{active: $ctrl.isSelected(project)}"]:has(span:has-text("${projectName}"))`);
+    if (await rowLocator.count() == 1) {
+      return rowLocator;
+    }
+    return undefined;
+  }
+
+  async projectIsLinked(projectName: string): Promise<boolean> {
+    const rowLocator: Locator = await this.findProjectRow(projectName);
+    expect(rowLocator).not.toBeUndefined();
+    return rowLocator.locator('a').isVisible();
+  }
+
+  async projectLinkLocator(projectName: string): Promise<Locator> {
+    const rowLocator: Locator = await this.findProjectRow(projectName);
+    expect(rowLocator).not.toBeUndefined();
+    return rowLocator.locator('a');
+  }
+
+  async projectHasAddTechSupportButton(projectName: string): Promise<boolean> {
+    const rowLocator: Locator = await this.findProjectRow(projectName);
+    expect(rowLocator).not.toBeUndefined();
+    return rowLocator.locator('text=Tech Support').isVisible();
+  }
+
+  async projectAddTechSupportButtonLocator(projectName: string): Promise<Locator> {
+    const rowLocator: Locator = await this.findProjectRow(projectName);
+    expect(rowLocator).not.toBeUndefined();
+    return rowLocator.locator('text=Tech Support');
+  }
+
 
   async clickOnProject(projectName: string) {
     const projectLocatorString: string = await this.findProject(projectName);
