@@ -6,13 +6,13 @@ import { Project } from './projects-settings.spec';
 import { initTestProject, addUserToProject } from './utils/testSetup';
 import { gotoProjectDirectly } from './utils/navigation';
 
+import { NoticeElement } from './components/notice.component';
 
-// import {EditorPage} from '../languageforge/lexicon/shared/editor.page';
-// import {BellowsLoginPage} from './shared/login.page';
 
 test.describe('E2E Projects List app', () => {
-  // const constants = require('../testConstants.json');
   let projectsPageMember: ProjectsPage;
+  let projectsPageAdmin: ProjectsPage;
+
   const projects: Project[] = [
     {
       name: 'projects_spec_ts Project 01',
@@ -41,12 +41,9 @@ test.describe('E2E Projects List app', () => {
     id: ''
   };
 
-  // const editorPage = new EditorPage();
-  // const projectNameLabel = element(by.className('page-name ng-binding'));
-  // let projectsPage: ProjectsPage;
-
-  test.beforeAll(async ({ request, member, manager, memberTab, admin }) => {
+  test.beforeAll(async ({ request, member, manager, memberTab, admin, adminTab }) => {
     projectsPageMember = new ProjectsPage(memberTab);
+    projectsPageAdmin = new ProjectsPage(adminTab);
 
     for (const project of projects) {
       const projectId = await initTestProject(request, project.code, project.name, manager.username, [member.username]);
@@ -82,37 +79,24 @@ test.describe('E2E Projects List app', () => {
     });
   });
 
-  // // Two helper functions to avoid duplicating the same checks in admin test below
-  // const shouldProjectBeLinked = async (projectName: string, projectRow: ElementFinder, bool: boolean) => {
-  //   expect<any>(await projectRow.element(by.cssContainingText('a', projectName)).isDisplayed()).toBe(bool);
-  // };
-
-  // const shouldProjectHaveButtons = async (projectRow: ElementFinder, bool: boolean) => {
-  //   const addAsTechSupportBtn = projectRow.element(by.id('techSupportButton'));
-  //   expect<any>(await addAsTechSupportBtn.isDisplayed()).toBe(bool);
-  // };
 
   test.describe('for System Admin User', () => {
-    let projectsPageAdmin: ProjectsPage;
-
-    test.beforeAll(async ({ adminTab }) => {
-      projectsPageAdmin = new ProjectsPage(adminTab);
+    test.beforeEach(async () => {
+      await projectsPageAdmin.goto();
     });
 
     test('Should list all projects', async () => {
-      await projectsPageAdmin.goto();
-      expect(await projectsPageAdmin.projectsList.count()).toBeGreaterThan(0);
-      for (const project of projects) {
+      for (const project of [...projects, project4, project5]) {
         expect(await projectsPageAdmin.findProject(project.name)).not.toMatch('-1');
       }
-
-      // Check that the test project is around
-      // return projectsPage.findProject(constants.testProjectName).then((projectRow: ElementFinder) => {
-      //   return shouldProjectBeLinked(constants.testProjectName, projectRow, true);
-      // });
+      // only project4 where admin is a member should be linked
+      for (const project of [...projects, project5]) {
+        await expect(await projectsPageAdmin.projectLinkLocator(project.name)).not.toBeVisible();
+      }
+      await expect(await projectsPageAdmin.projectLinkLocator(project4.name)).toBeVisible();
     });
 
-    // TOASK: is this test really useful?
+    // TOASK: is this test really useful? - delete
     test('Should show add and delete buttons', async () => {
       await expect(projectsPageAdmin.createButton).toBeVisible();
 
@@ -121,58 +105,40 @@ test.describe('E2E Projects List app', () => {
     });
 
     // demonstrating how one can access the names of all projects
-    test.skip('admin', async () => {
-      await projectsPageAdmin.goto();
+    test.skip('example code', async () => {
+      //await projectsPageAdmin.goto();
       const nProjects = await projectsPageAdmin.projectNames.count();
       for (let i = 0; i < nProjects; i++) {
         console.log(i + " " + await projectsPageAdmin.projectNames.nth(i).locator('span').innerText());
 
       }
+      console.log('ok \n');
+      await projectsPageAdmin.countSpecificProjects('projects_spec_ts');
+
       await projectsPageAdmin.page.pause();
     });
 
+    // TOASK: can we find a more precise description?
     test('Should allow the admin to add themselves to the project as member or manager', async () => {
-      await projectsPageAdmin.goto();
-      // The admin should not see "Add myself to project" buttons when he's already a project member
-      // or manager, and the project name should be a clickable link
-      const project4LocatorString: string = await projectsPageAdmin.findProject(project4.name);
-      // This attribute results in making the element clickable.
-      await expect(projectsPageAdmin.page.locator(project4LocatorString + ' >> xpath=..')).toHaveAttribute('data-ng-show', '$ctrl.isInProject(project)');
-      // not have tech support button TOASK: why does this not work?
-      //await expect(projectsPageAdmin.page.locator(project4LocatorString + ' >> xpath=.. >> xpath=.. >> xpath=.. >> ' + projectsPageAdmin.addAsTechSupportBtnText)).not.toBeVisible();
+      // admin is not a member and adds himself/herself as tech support
+      expect(await projectsPageAdmin.projectIsLinked(project5.name)).toBe(false);
+      expect(await projectsPageAdmin.projectHasAddTechSupportButton(project5.name)).toBe(true);
 
-      const project5LocatorString: string = await projectsPageAdmin.findProject(project5.name);
-      // This attribute results in making the element not clickable. Playwright does not have a isClickable method
-      await expect(projectsPageAdmin.page.locator(project5LocatorString)).toHaveAttribute('data-ng-show', '!$ctrl.isInProject(project)');
-      // have tech support button
-      await expect(projectsPageAdmin.page.locator(project5LocatorString + ' >> xpath=.. >> xpath=.. >> ' + projectsPageAdmin.addAsTechSupportBtnText)).toBeVisible();
+      await (await projectsPageAdmin.projectAddTechSupportButtonLocator(project5.name)).click();
 
-      // add admin as tech support
-      await projectsPageAdmin.page.locator(project5LocatorString + ' >> xpath=.. >> xpath=.. >> ' + projectsPageAdmin.addAsTechSupportBtnText).click();
-      // not have tech support button any more
-      await expect(projectsPageAdmin.page.locator(project5LocatorString + ' >> xpath=.. >> xpath=.. >> ' + projectsPageAdmin.addAsTechSupportBtnText)).not.toBeVisible();
-      // project should now be clickable
-      // TOASK: how to make this more comprehensible
-      await expect(projectsPageAdmin.page.locator(project5LocatorString)).toBeHidden();
+      const noticeElement = new NoticeElement(projectsPageAdmin.page);
+      await expect(noticeElement.notice).toBeVisible();
+      await expect(noticeElement.notice).toContainText(`You are now Tech Support for the '${project5.name}' project.`);
+      await expect(await projectsPageAdmin.projectAddTechSupportButtonLocator(project5.name)).not.toBeVisible();
+      await expect(await projectsPageAdmin.projectLinkLocator(project5.name)).toBeVisible();
+
+      // admin is a constributor
+      expect(await projectsPageAdmin.projectIsLinked(project4.name)).toBe(true);
+      expect(await projectsPageAdmin.projectHasAddTechSupportButton(project4.name)).toBe(true);
     });
+  });
 
-    // test.describe('Lexicon E2E Project Access', () => {
-
-    //   test('Admin added to project when accessing without membership', async () => {
-    //     /* This test passes on my local machine.  It's a valid test.  However it fails on GHA for an unknown reason.
-    //        I am going to comment out this test so that it is still present to be converted to Cyprus E2E when that happens
-    //     await loginPage.loginAsManager();
-    //     const url = await browser.getCurrentUrl();
-    //     const projectName = await projectNameLabel.getText();
-    //     await projectsPage.get();
-    //     await browser.wait(ExpectedConditions.visibilityOf(projectsPage.createBtn), constants.conditionTimeout);
-    //     await projectsPage.removeUserFromProject(projectName, constants.adminUsername);
-    //     await loginPage.loginAsAdmin();
-    //     await browser.get(url);
-    //     await browser.wait(ExpectedConditions.visibilityOf(editorPage.editDiv), constants.conditionTimeout);
-    //     expect<any>(await editorPage.editDiv.isPresent()).toBe(true);
-    //     */
-    //   });
+  test.describe('Lexicon E2E Project Access', () => {
 
     test('Admin added to project when accessing without membership', async () => {
       // this is already tested in a test above but makes the test more understandable
@@ -182,7 +148,12 @@ test.describe('E2E Projects List app', () => {
       await expect(await projectsPageAdmin.projectLinkLocator(projects[2].name)).toBeVisible();
     });
 
-    // });
+    test('User redirected to projects app when accessing without membership', async ({ baseURL }) => {
+      await projectsPageMember.page.goto('/app/lexicon/' + project5.id + '/#!/editor/list');
+      // redirect
+      await expect(projectsPageMember.createButton).toBeVisible();
+      expect(projectsPageMember.page.url().startsWith(baseURL + ProjectsPage.url)).toBe(true);
+    });
 
   });
 });
