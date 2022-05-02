@@ -58,22 +58,21 @@ test.describe('E2E Projects List app', () => {
   });
 
   test.describe('for Normal User', () => {
+    test.beforeEach(async () => {
+      await projectsPageMember.goto();
+    });
 
     test('Should list projects of which the user is a member', async () => {
-      await projectsPageMember.goto();
       for (const project of projects) {
         expect(await projectsPageMember.findProject(project.name)).not.toMatch('-1');
       }
     });
 
     test('Should not list projects the user is not a member of', async () => {
-      await projectsPageMember.goto();
       expect(await projectsPageMember.findProject(project4.name)).toMatch('-1');
     });
 
     test('Project to which user is added shows up when page reloaded', async ({ request, member }) => {
-      await projectsPageMember.goto();
-
       const nProjects = await projectsPageMember.countProjects();
 
       await addUserToProject(request, project4.code, member.username);
