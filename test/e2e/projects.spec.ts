@@ -55,6 +55,7 @@ test.describe('E2E Projects List app', () => {
   });
 
   test.describe('for Normal User', () => {
+
     test.beforeEach(async () => {
       await projectsPageMember.goto();
     });
@@ -96,31 +97,7 @@ test.describe('E2E Projects List app', () => {
       await expect(await projectsPageAdmin.projectLinkLocator(project4.name)).toBeVisible();
     });
 
-    // TOASK: is this test really useful? - delete
-    test('Should show add and delete buttons', async () => {
-      await expect(projectsPageAdmin.createButton).toBeVisible();
-
-      // // projectsPage.createBtn.getOuterHtml().then(console.log);
-      // expect(await projectsPage.createBtn.isDisplayed()).toBeTruthy();
-    });
-
-    // demonstrating how one can access the names of all projects
-    test.skip('example code', async () => {
-      //await projectsPageAdmin.goto();
-      const nProjects = await projectsPageAdmin.projectNames.count();
-      for (let i = 0; i < nProjects; i++) {
-        console.log(i + " " + await projectsPageAdmin.projectNames.nth(i).locator('span').innerText());
-
-      }
-      console.log('ok \n');
-      await projectsPageAdmin.countSpecificProjects('projects_spec_ts');
-
-      await projectsPageAdmin.page.pause();
-    });
-
-    // TOASK: can we find a more precise description?
-    test('Should allow the admin to add themselves to the project as member or manager', async () => {
-      // admin is not a member and adds himself/herself as tech support
+    test('Should allow admin to add him- or herself to the project as tech support if not already a manager', async () => {
       expect(await projectsPageAdmin.projectIsLinked(project5.name)).toBe(false);
       expect(await projectsPageAdmin.projectHasAddTechSupportButton(project5.name)).toBe(true);
 
@@ -132,7 +109,7 @@ test.describe('E2E Projects List app', () => {
       await expect(await projectsPageAdmin.projectAddTechSupportButtonLocator(project5.name)).not.toBeVisible();
       await expect(await projectsPageAdmin.projectLinkLocator(project5.name)).toBeVisible();
 
-      // admin is a constributor
+      // admin is a contributor
       expect(await projectsPageAdmin.projectIsLinked(project4.name)).toBe(true);
       expect(await projectsPageAdmin.projectHasAddTechSupportButton(project4.name)).toBe(true);
     });
