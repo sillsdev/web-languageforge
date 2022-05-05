@@ -1,12 +1,13 @@
 import { expect } from '@playwright/test';
 import { test } from './utils/fixtures';
+
 import { ProjectsPage } from './pages/projects.page';
+import { NoticeElement } from './components/notice.component';
+
 import { Project } from './projects-settings.spec';
 
 import { initTestProject, addUserToProject } from './utils/testSetup';
 import { gotoProjectDirectly } from './utils/navigation';
-
-import { NoticeElement } from './components/notice.component';
 
 
 test.describe('E2E Projects List app', () => {

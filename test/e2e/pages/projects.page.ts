@@ -75,7 +75,6 @@ export class ProjectsPage {
     if (await this.projectsPerPageDropdown.isVisible()) {
       await this.projectsPerPageDropdown.selectOption('100');
     }
-
   }
 
   async createEmptyProject(projectName: string) {
@@ -109,7 +108,7 @@ export class ProjectsPage {
     return await this.projectsList.count();
   }
 
-  // TODO@JeanneSon: in order to be able to run the tests in parallel, the countProjects function should only count the projects created in that test file
+  // in order to be able to run the tests in parallel, this function only counts the projects created in that test file
   async countSpecificProjects(projects: string): Promise<number> {
     await this.goto();
     const nAllProjects = await this.projectNames.count();
@@ -135,12 +134,8 @@ export class ProjectsPage {
     return '-1';
   }
 
-  // findProjectRow = returns selector like "*div[data-ng-repeat='project of projects'] >> span:has-text(name)"
-  // Note the * which ends up returning the div instead of the span
   async findProjectRow(projectName: string): Promise<Locator> {
     await this.goto();
-    //const rowLocator = `*css=[data-ng-class="{active: $ctrl.isSelected(project)}"] >> span:has-text("${projectName}")`;
-    //const rowLocator = this.page.locator('css=[data-ng-class="{active: $ctrl.isSelected(project)}"]', { has: this.page.locator(`span:has-text("${projectName}")`)});
     const rowLocator = this.page.locator(`css=[data-ng-class="{active: $ctrl.isSelected(project)}"]:has(span:has-text("${projectName}"))`);
     if (await rowLocator.count() == 1) {
       return rowLocator;
@@ -171,7 +166,6 @@ export class ProjectsPage {
     expect(rowLocator).not.toBeUndefined();
     return rowLocator.locator('text=Tech Support');
   }
-
 
   async clickOnProject(projectName: string) {
     const projectLocatorString: string = await this.findProject(projectName);
