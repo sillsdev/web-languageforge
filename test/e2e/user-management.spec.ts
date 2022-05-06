@@ -8,14 +8,6 @@ import { UserManagementPage } from './pages/user-management.page';
 import { initTestProject } from './utils/testSetup';
 
 
-
-import {by, browser, ExpectedConditions, Locator} from 'protractor';
-import {ElementFinder} from 'protractor/built/element';
-
-// import {BellowsLoginPage} from './shared/login.page';
-// import {UserManagementPage} from './shared/user-management.page';
-// import { Utils } from './shared/utils';
-
 test.describe('E2E User Management App', () => {
   let userManagementPageAdmin: UserManagementPage;
   let userManagementPageManager: UserManagementPage;
@@ -28,14 +20,14 @@ test.describe('E2E User Management App', () => {
     },
   ];
 
-  test.beforeAll(async ({ request, manager, adminTab, managerTab }) => {
+  test.beforeAll(async ({ request, manager, adminTab, managerTab, member }) => {
     userManagementPageAdmin = new UserManagementPage(adminTab);
     userManagementPageManager = new UserManagementPage(managerTab);
-    projects[0].id = await initTestProject(request, projects[0].code, projects[0].name, manager.username, []);
+    projects[0].id = await initTestProject(request, projects[0].code, projects[0].name, manager.username, [member.username]);
   });
 
   // TOASK: why does is not display owner?
-  test.only('generating', async ({ managerTab }) => {
+  test.skip('generating', async ({ managerTab }) => {
     await userManagementPageAdmin.goto(projects[0].id);
     await userManagementPageAdmin.page.pause();
     // const userManagementPage = new UserManagementPage(managerTab);
@@ -66,16 +58,15 @@ test.describe('E2E User Management App', () => {
   });
 
 
-  // TOASK: manager is owner, tries to assign tech support role to admin, admin is currently manager
-  // test('User cannot assign member to Tech Support role', async () => {
-  //   await loginPage.loginAsManager();
-  //   await UserManagementPage.getByProjectName(constants.otherProjectName);
-  //   const row = await userManagementPage.getUserRow(constants.adminUsername) as ElementFinder;
-  //   const text = await row.element(by.css('select')).getText();
-  //   expect<string>(text).toContain('Manager');
-  //   expect<string>(text).toContain('Contributor');
-  //   expect<string>(text).toContain('Observer');
-  //   expect<string>(text).toContain('Observer with comment');
-  //   expect<string>(text).not.toContain('Tech Support');
-  // });
+  test('Project manager cannot assign member to Tech Support role', async ({ member }) => {
+    const roleSelect: Locator = await userManagementPageManager.getRoleSelectLocator(projects[0].id, member.username);
+    const options: Locator = roleSelect.locator('option');
+    const expectedOptions: string[] = ['Manager', 'Contributor', 'Observer', 'Observer with comment'];
+
+    for (let i = 0; i < await options.count(); i++) {
+      let option = await options.nth(i).innerText();
+      console.log(option);
+      expect(option in expectedOptions).toBe(true);
+    }
+  });
 });

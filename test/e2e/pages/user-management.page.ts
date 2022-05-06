@@ -39,9 +39,4 @@ export class UserManagementPage {
     expect(userRow).not.toBeUndefined();
     return userRow.locator('select[data-ng-model="user.role"]');
   }
-
-  async changeUserRole(projectId: string, userName: string) {
-
-  }
-
 }
