@@ -1,16 +1,13 @@
 import { expect } from '@playwright/test';
 import { test } from './utils/fixtures';
-import { ProjectSettingsPage } from './pages/project-settings.page';
+
 import { initTestProject, addUserToProject } from './utils/testSetup';
+import { Project} from './utils/types';
+
+import { ProjectSettingsPage } from './pages/project-settings.page';
 import { ProjectsPage } from './pages/projects.page';
 import { gotoProjectDirectly } from './utils/navigation';
 
-
-export type Project = {
-  name: string,
-  code: string,
-  id: string
-}
 
 test.describe('E2E Project Settings app', () => {
   let projectSettingsPageManager: ProjectSettingsPage;
