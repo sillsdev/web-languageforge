@@ -3,11 +3,12 @@ import { EntriesListPage } from './entries-list.page';
 import { CommentsPanelElement } from '../components/comments-panel.component';
 
 type LexAppToolbar = {
-  backToListButton: Locator;
+  backToListButton: Locator,
+  toggleCommentsButton: Locator
 };
 
 type EntryCard = {
-  entryName: string;
+  entryName: string
 };
 
 // TOASK: rename this to MeaningCard?
@@ -27,9 +28,12 @@ export class EditorPage {
   readonly entryCard: EntryCard;
   readonly senseCard: SenseCard;
 
+  readonly commentsRightPanel: Locator;
   readonly commentsPanel: Locator;
+  readonly commentSearchContainer: Locator;
 
   readonly firstCommentBubbleButton: Locator;
+  readonly secondCommentBubbleButton: Locator;
   readonly thirdCommentBubbleButton: Locator;
   readonly commentCreationTextInput: Locator;
   readonly commentCreationPostButton: Locator;
@@ -45,6 +49,7 @@ export class EditorPage {
 
     this.lexAppToolbar = {
       backToListButton: this.page.locator('#toListLink'),
+      toggleCommentsButton: this.page.locator('#toCommentsLink')
     };
     this.entryCard = {
       entryName: '.entry-card >> textarea'
@@ -54,9 +59,12 @@ export class EditorPage {
       definitionInput:  this.page.locator('[data-ng-repeat="tag in $ctrl.config.inputSystems"]:has-text("Definition") >> textarea')
     }
 
+    this.commentsRightPanel = this.page.locator('comments-right-panel');
     this.commentsPanel = this.page.locator('#lexAppCommentView');
+    this.commentSearchContainer = this.page.locator('.comments-search-container');
 
     this.firstCommentBubbleButton = this.page.locator('.commentBubble').nth(1);
+    this.secondCommentBubbleButton = this.page.locator('.commentBubble').nth(2);
     this.thirdCommentBubbleButton = this.page.locator('.commentBubble').nth(3);
     this.commentCreationTextInput = this.page.locator('[placeholder="Your comment goes here.  Be the first to share!"]');
     this.commentCreationPostButton = this.page.locator('button:has-text("Post")');
@@ -66,9 +74,23 @@ export class EditorPage {
 
   async goto() {
     await this.page.goto(this.url);
+    // work around bug
+    const lexAppCommentView: Locator = this.page.locator('#lexAppCommentView');
+    // await lexAppCommentView.evaluate(
+    //   node => {
+    //     node.classList.add('panel-visible')
+    //   }
+    // );
   }
 
   async navigateToEntriesList() {
     await this.lexAppToolbar.backToListButton.click();
+  }
+
+  async getWidthOfCommentsRightPanel() {
+    const commentsRightPanel: Locator = this.page.locator('comments-right-panel');
+    const width = await commentsRightPanel.evaluate(ele => window.getComputedStyle(ele).getPropertyValue('width'));
+    console.log(width);
+
   }
 }

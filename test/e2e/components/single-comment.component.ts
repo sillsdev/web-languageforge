@@ -12,6 +12,7 @@ export class SingleCommentElement {
   readonly likeButton: Locator;
   readonly disabledLikeButton: Locator;
   readonly date: Locator;
+  readonly author: Locator;
 
   readonly regardingField: Locator;
 
@@ -24,6 +25,7 @@ export class SingleCommentElement {
     this.likeButton = this.commentLocator.locator('[data-ng-click="$ctrl.plusOneComment({ commentId: $ctrl.comment.id })"]');
     this.disabledLikeButton = this.commentLocator.locator('[data-ng-hide="$ctrl.canLike()"]');
     this.date = this.commentLocator.locator('.comment-date');
+    this.author = this.commentLocator.locator('.comment-author');
 
     this.regardingField = this.commentLocator.locator('div.commentRegarding');
   }
