@@ -75,8 +75,6 @@ COPY --from=ui-builder /data/src/dist /var/www/html/dist
 RUN    chown -R www-data:www-data /var/www/html/assets /var/www/html/cache \
     && chmod -R g+ws /var/www/html/assets /var/www/html/cache
 
-COPY docker/app/entrypoint.sh /
-
 COPY --from=composer-builder /composer/vendor /var/www/html/vendor
 
 # patch exception handling from Symfony to actually show exceptions instead of swallowing them
@@ -86,5 +84,4 @@ RUN patch -p4 -i /symfony-exceptions.patch
 RUN echo "${BUILD_VERSION}" > /var/www/html/build-version.txt \
  && sed -i /var/www/html/version.php -e "s/^\\(define('VERSION', '\\).*;\$/\\1${BUILD_VERSION}'\\);/"
 
-ENTRYPOINT [ "/entrypoint.sh" ]
 CMD [ "apache2-foreground" ]

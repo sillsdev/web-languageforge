@@ -6,6 +6,7 @@ export type UserRoles =
   'can comment' |
   'can view'
   ;
+
 export class ProjectsPage {
   readonly page: Page;
   readonly pageName: Locator;
@@ -67,7 +68,7 @@ export class ProjectsPage {
 
   async goto() {
     // if url not ProjectsPage.url
-    if (!this.page.url().endsWith(ProjectsPage.url)) {
+    if (! this.page.url().endsWith(ProjectsPage.url)) {
       await this.page.goto(ProjectsPage.url);
       //await this.page.waitForLoadState('domcontentloaded');
     }

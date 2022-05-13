@@ -9,6 +9,19 @@ start: build
 dev: start
 	docker-compose up -d ui-builder
 
+.PHONY: playwright-tests
+playwright-tests:
+
+    # delete any cached session storage state files if the service isn't running
+	docker compose ps app-for-playwright > /dev/null 2>&1 || rm -f ../*-storageState.json
+
+	docker-compose up -d app-for-playwright
+
+    # wait until the app-for-playwright service is serving up HTTP before continuing
+	until curl localhost:3238 > /dev/null 2>&1; do sleep 1; done
+
+	cd .. && npx playwright install && npx playwright test
+
 .PHONY: e2e-tests
 e2e-tests:
 	docker-compose build app-for-e2e test-e2e
@@ -24,6 +37,7 @@ e2e-tests-ci:
 
 .PHONY: unit-tests
 unit-tests:
+	docker-compose build test-php
 	docker-compose run test-php
 
 .PHONY: unit-tests-ci
@@ -35,7 +49,7 @@ unit-tests-ci:
 .PHONY: build
 build:
 	npm install
-	docker-compose build mail app ld-api
+	docker-compose build mail app lfmerge ld-api next-proxy next-app
 
 .PHONY: scan
 # https://docs.docker.com/engine/scan
@@ -43,6 +57,14 @@ scan:
 	docker build -t lf-app:prod -f app/Dockerfile --platform linux/amd64 ..
 	docker login
 	-docker scan --accept-license lf-app:prod > docker-scan-results.txt
+
+.PHONY: next-dev
+next-dev: build
+	docker compose up -d next-proxy-dev
+
+.PHONY: build-next
+build-next:
+	docker compose build next-proxy next-app
 
 .PHONY: clean
 clean:

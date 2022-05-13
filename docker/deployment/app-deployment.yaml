@@ -7,6 +7,7 @@ metadata:
   name: app
 spec:
   type: ClusterIP
+  clusterIP: None
   ports:
   - name: http
     protocol: TCP
@@ -14,34 +15,6 @@ spec:
     targetPort: 80
   selector:
     app: app
-
----
-
-# https://kubernetes.io/docs/concepts/services-networking/ingress/#the-ingress-resource
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: languageforge-app
-  annotations:
-    # https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/#custom-max-body-size
-    # Added this to allow large file uploads, this setting should match the php custom config, i.e., upload_max_filesize, found in the app's customizations.php.ini
-    nginx.ingress.kubernetes.io/proxy-body-size: 60M
-spec:
-  rules:
-  - host: {{WEBSITE}}
-    http:
-      paths:
-      - path: /
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            name: app
-            port:
-              number: 80
-  tls:
-  - hosts:
-    - {{WEBSITE}}
-    secretName: languageforge-tls
 
 ---
 
@@ -70,7 +43,7 @@ spec:
     - ReadWriteMany
   resources:
     requests:
-      storage: 35Gi
+      storage: 50Gi
   storageClassName: weekly-snapshots-retain-4 # provided by LTOps
 
 ---
@@ -179,7 +152,7 @@ spec:
                 key: LD_TRUST_TOKEN
                 name: ld-trust-token
       - name: lfmerge
-        image: ghcr.io/sillsdev/lfmerge:2.0.98
+        image: ghcr.io/sillsdev/lfmerge:{{VERSION_LFMERGE}}
         imagePullPolicy: Always
         volumeMounts:
           - mountPath: /var/lib/languageforge/lexicon/sendreceive

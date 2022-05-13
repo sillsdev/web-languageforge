@@ -3,10 +3,11 @@ FROM sillsdev/web-languageforge:base-php
 
 # ----- LINES BELOW COPIED FROM APP DOCKERFILE ----------
 WORKDIR /var/www/html
-COPY src/composer.json src/composer.lock /var/www/html/
 ENV COMPOSER_ALLOW_SUPERUSER=1
 RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/* \
-    && install-php-extensions @composer && composer install
+    && install-php-extensions @composer
+COPY src/composer.json src/composer.lock /var/www/html/
+RUN composer install
 
 # uncomment if you want xdebug in your local image
 #RUN install-php-extensions xdebug

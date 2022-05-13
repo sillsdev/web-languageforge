@@ -1,0 +1,19 @@
+# https://caddyserver.com/docs/caddyfile
+{
+	#debug
+	auto_https off
+}
+
+:80 {
+	@next_app_paths {
+		path /_app/*
+		path /app/changepassword
+		path /password*
+	}
+	route @next_app_paths {
+		rewrite /app/changepassword /password/change
+		reverse_proxy {$NEXT_APP}
+	}
+
+	reverse_proxy {$LEGACY_APP}
+}

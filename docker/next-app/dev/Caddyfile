@@ -1,0 +1,35 @@
+# https://caddyserver.com/docs/caddyfile
+{
+	#debug
+	auto_https off
+}
+
+:80 {
+	@next_app_paths {
+		path *svelte* # when running next-app in dev mode, this is needed.
+		path *node_modules* # when running next-app in dev mode, this is needed.
+		path *vite* # when running next-app in dev mode, this is needed.
+		path /src/lib* # when running next-app in dev mode, this is needed.
+		path /_app/*
+		path /app/changepassword
+		path /password*
+	}
+	route @next_app_paths {
+		rewrite /app/changepassword /password/change
+		reverse_proxy {$NEXT_APP}
+	}
+
+	@next_app_header {
+		header referer *.svelte # when running next-app in dev mode, this is needed.
+	}
+	route @next_app_header {
+		reverse_proxy {$NEXT_APP}
+	}
+
+	reverse_proxy {$LEGACY_APP}
+}
+
+# when running next-app in dev mode, this is needed, specifically for vite's ws connection.
+:3000 {
+	reverse_proxy {$NEXT_APP}
+}
