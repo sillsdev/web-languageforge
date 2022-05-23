@@ -52,5 +52,5 @@ export function changePassword(request: APIRequestContext, username: string, pas
 
 export function addLexEntry(request: APIRequestContext, projectCode: string, data: any) {
   if (data.id == null) data.id = '';
-  return testControl(request, 'add_lexical_entry', [projectCode, data]);
+  return testControl(request, 'add_lexical_entry', [projectCode, data]) as Promise<string>;
 }
