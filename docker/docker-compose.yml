@@ -78,8 +78,8 @@ services:
 
   lfmerge:
     build:
-      context: ..
-      dockerfile: docker/lfmerge/Dockerfile
+      context: lfmerge
+      dockerfile: Dockerfile
       args:
         - ENVIRONMENT=development
     image: lfmerge
