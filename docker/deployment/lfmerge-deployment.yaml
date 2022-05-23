@@ -3,8 +3,8 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: app
-  name: app
+    app: lfmerge
+  name: lfmerge
 spec:
   type: ClusterIP
   clusterIP: None
@@ -14,7 +14,7 @@ spec:
     port: 80
     targetPort: 80
   selector:
-    app: app
+    app: lfmerge
 
 ---
 
@@ -53,22 +53,29 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: app
-  name: app
+    app: lfmerge
+  name: lfmerge
 spec:
   selector:
     matchLabels:
-      app: app
+      app: lfmerge
   template:
     # https://kubernetes.io/docs/concepts/workloads/pods/#pod-templates
     metadata:
       labels:
-        app: app
+        app: lfmerge
     spec:
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - app
+            topologyKey: kubernetes.io/hostname
       volumes:
-      - name: assets
-        persistentVolumeClaim:
-          claimName: lf-project-assets
       - name: sendreceive-data
         persistentVolumeClaim:
           claimName: lfmerge-sendreceive-data
@@ -79,73 +86,40 @@ spec:
           - 'sh'
           - '-c'
           - |-
-            mkdir /var/lib/languageforge/lexicon/sendreceive/state
-            chown www-data:www-data /var/www/html/assets /var/lib/languageforge/lexicon/sendreceive /var/lib/languageforge/lexicon/sendreceive/state
+            mkdir -m 02775 -p /var/lib/languageforge/lexicon/sendreceive/state /var/lib/languageforge/lexicon/sendreceive/syncqueue /var/lib/languageforge/lexicon/sendreceive/webwork /var/lib/languageforge/lexicon/sendreceive/Templates
+            chown www-data:www-data /var/lib/languageforge/lexicon/sendreceive /var/lib/languageforge/lexicon/sendreceive/state /var/lib/languageforge/lexicon/sendreceive/syncqueue /var/lib/languageforge/lexicon/sendreceive/webwork /var/lib/languageforge/lexicon/sendreceive/Templates
         volumeMounts:
-          - mountPath: /var/www/html/assets
-            name: assets
           - mountPath: /var/lib/languageforge/lexicon/sendreceive
             name: sendreceive-data
       containers:
-      - name: app
-        image: sillsdev/web-languageforge:{{VERSION}}
+      - name: lfmerge
+        image: ghcr.io/sillsdev/lfmerge:{{VERSION_LFMERGE}}
         imagePullPolicy: Always
         volumeMounts:
-          - mountPath: /var/www/html/assets
-            name: assets
           - mountPath: /var/lib/languageforge/lexicon/sendreceive
             name: sendreceive-data
         env:
-          - name: DATABASE
-            value: scriptureforge
           - name: ENVIRONMENT
             value: production
-          - name: WEBSITE
-            value: {{WEBSITE}}
-          - name: MAIL_HOST
-            value: mail
           - name: LFMERGE_LOGGING_DEST
             value: syslog
-          - name: MONGODB_CONN
-            valueFrom:
-              secretKeyRef:
-                key: MONGODB_CONN
-                name: app
-          - name: REMEMBER_ME_SECRET
-            valueFrom:
-              secretKeyRef:
-                key: REMEMBER_ME_SECRET
-                name: app
-          - name: LDAPI_BASE_URL
-            valueFrom:
-              secretKeyRef:
-                key: LDAPI_BASE_URL
-                name: ld-api
-          - name: LANGUAGE_DEPOT_API_TOKEN
-            valueFrom:
-              secretKeyRef:
-                key: LANGUAGE_DEPOT_API_TOKEN
-                name: ld-api
-          - name: FACEBOOK_CLIENT_ID
-            valueFrom:
-              secretKeyRef:
-                key: FACEBOOK_CLIENT_ID
-                name: oauth
-          - name: FACEBOOK_CLIENT_SECRET
-            valueFrom:
-              secretKeyRef:
-                key: FACEBOOK_CLIENT_SECRET
-                name: oauth
-          - name: GOOGLE_CLIENT_ID
-            valueFrom:
-              secretKeyRef:
-                key: GOOGLE_CLIENT_ID
-                name: oauth
-          - name: GOOGLE_CLIENT_SECRET
-            valueFrom:
-              secretKeyRef:
-                key: GOOGLE_CLIENT_SECRET
-                name: oauth
+          - name: LFMERGE_BASE_DIR
+            value: /var/lib/languageforge/lexicon/sendreceive
+          - name: LFMERGE_WEBWORK_DIR
+            value: webwork
+          - name: LFMERGE_TEMPLATES_DIR
+            value: Templates
+          - name: LFMERGE_MONGO_HOSTNAME
+            value: db
+          - name: LFMERGE_MONGO_PORT
+            value: "27017"
+          - name: LFMERGE_MONGO_MAIN_DB_NAME
+            value: scriptureforge
+          - name: LFMERGE_MONGO_DB_NAME_PREFIX
+            value: sf_
+          - name: LFMERGE_VERBOSE_PROGRESS
+            value: "true"
+          # TODO: Rename to LANGUAGE_DEPOT_TRUST_TOKEN
           - name: LD_TRUST_TOKEN
             valueFrom:
               secretKeyRef:
