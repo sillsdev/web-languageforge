@@ -1,6 +1,7 @@
 <?php
 
 namespace Api\Service;
+use Api\Model\Shared\Mapper\JsonEncoder;
 use Api\Model\Shared\Mapper\MongoStore;
 use Api\Model\Shared\Mapper\ArrayOf;
 use Api\Model\Shared\Command\UserCommands;
@@ -23,6 +24,7 @@ use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Shared\Mapper\IdReference;
 use Api\Model\Languageforge\Lexicon\Command\LexEntryDecoder;
 use Api\Model\Languageforge\Lexicon\Command\LexProjectCommands;
+use Api\Model\Languageforge\Lexicon\Command\LexUploadCommands;
 // use MongoDB\Client;
 
 use Api\Library\Shared\Website;
@@ -158,6 +160,20 @@ class TestControl
         MongoStore::dropDB($projectModel->databaseName());
         $projectModel->write();
         return $projectModel->id->asString();
+    }
+
+    public function add_audio_visual_file_to_project($projectCode, $tmpFilePath)
+    {
+        $project = ProjectModel::getByProjectCode($projectCode);
+        $response = LexUploadCommands::uploadAudioFile($project->id->asString(), 'audio', $tmpFilePath);
+        return JsonEncoder::encode($response);
+    }
+
+    public function add_picture_file_to_project($projectCode, $tmpFilePath)
+    {
+        $project = ProjectModel::getByProjectCode($projectCode);
+        $response = LexUploadCommands::uploadImageFile($project->id->asString(), 'sense-image', $tmpFilePath);
+        return JsonEncoder::encode($response);
     }
 
     public function add_user_to_project($projectCode, $username, $role = null)
