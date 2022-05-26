@@ -32,6 +32,11 @@ export function initTestProject(request: APIRequestContext,
   return testControl(request, 'init_test_project', [projectCode, projectName, ownerUsername, memberUsernames]);
 }
 
+export function addWritingSystemToProject(request: APIRequestContext, projectCode: string, languageTag: string, abbr = '', name = '')
+{
+  return testControl(request, 'add_writing_system_to_project', [projectCode, languageTag, abbr, name]);
+}
+
 // Name is addUser because that's what our PHP function is named, but it can also update roles of existing users
 export function addUserToProject(request: APIRequestContext, projectCode: string, username: string, role?: string) {
   return testControl(request, 'add_user_to_project', [projectCode, username, role]);

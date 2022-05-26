@@ -162,6 +162,12 @@ class TestControl
         return $projectModel->id->asString();
     }
 
+    public function add_writing_system_to_project($projectCode, $langTag, $abbr = '', $name = '')
+    {
+        $project = ProjectModel::getByProjectCode($projectCode);
+        return $project->addInputSystem($langTag, $abbr, $name);
+    }
+
     public function add_audio_visual_file_to_project($projectCode, $tmpFilePath)
     {
         $project = ProjectModel::getByProjectCode($projectCode);
