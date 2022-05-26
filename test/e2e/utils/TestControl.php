@@ -169,7 +169,9 @@ class TestControl
     public function add_writing_system_to_project($projectCode, $langTag, $abbr = '', $name = '')
     {
         $project = ProjectModel::getByProjectCode($projectCode);
-        return $project->addInputSystem($langTag, $abbr, $name);
+        $project->addInputSystem($langTag, $abbr, $name);
+        $project->write();
+        return $langTag;
     }
 
     public function add_audio_visual_file_to_project($projectCode, $tmpFilePath)
@@ -201,8 +203,7 @@ class TestControl
 
         // move uploaded file from tmp location to assets
         $filename = FileUtilities::replaceSpecialCharacters(\basename($tmpFilePath));
-        $filenamePrefix = date("YmdHis");
-        $filePath = LexUploadCommands::mediaFilePath($folderPath, $filenamePrefix, $filename);
+        $filePath = $folderPath . DIRECTORY_SEPARATOR . $filename;
         $moveOk = copy($tmpFilePath, $filePath);
         // Do NOT delete $tmpFilePath as we're doing E2E tests and probably want to keep the original around
 
@@ -213,7 +214,7 @@ class TestControl
             $assetsPath = $project->getAssetsRelativePath();
             $data->path = $mediaType == 'audio' ? $project->getAudioFolderPath($assetsPath) : $project->getImageFolderPath($assetsPath);
             // NOTE: $data->fileName needs capital N so it will match what the real upload(Audio/Image)File functions return
-            $data->fileName = $filenamePrefix . '_' . $filename;
+            $data->fileName = $filename;
             $response->result = true;
         } else {
             $data = new ErrorResult();

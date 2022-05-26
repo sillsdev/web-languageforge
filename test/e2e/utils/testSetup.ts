@@ -46,7 +46,7 @@ async function copyFileToSharedDir(filename: string): Promise<string> {
   const commonDir = await findTestCommonDir();
   if (commonDir) {
     const srcPath = path.resolve(commonDir, filename);
-    const sharedDir = path.resolve(commonDir, '..', 'shared-files');
+    const sharedDir = path.resolve(commonDir, '..', 'e2e', 'shared-files');
     const serverDir = '/tmp/e2e-shared-files';
     const destPath = path.join(sharedDir, filename);
     const serverPath = path.join(serverDir, filename);
