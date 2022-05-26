@@ -40,7 +40,7 @@ export function addUserToProject(request: APIRequestContext, projectCode: string
 // Returns absolute path to new temporary location
 async function copyFileToTmpDir(filename: string): Promise<string> {
   const tmpDir = await mkdtemp(path.join(os.tmpdir(), 'e2e-upload-'));
-  const destPath = path.join(tmpDir, filename);
+  const destPath = path.join(tmpDir, path.basename(filename));
   await copyFile(filename, destPath);
   return destPath;
 }
