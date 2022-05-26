@@ -165,15 +165,55 @@ class TestControl
     public function add_audio_visual_file_to_project($projectCode, $tmpFilePath)
     {
         $project = ProjectModel::getByProjectCode($projectCode);
-        $response = LexUploadCommands::uploadAudioFile($project->id->asString(), 'audio', $tmpFilePath);
+        $response = TestControl::uploadMediaFile($project, 'audio', $tmpFilePath);
         return JsonEncoder::encode($response);
     }
 
     public function add_picture_file_to_project($projectCode, $tmpFilePath)
     {
         $project = ProjectModel::getByProjectCode($projectCode);
-        $response = LexUploadCommands::uploadImageFile($project->id->asString(), 'sense-image', $tmpFilePath);
+        $response = TestControl::uploadMediaFile($project, 'sense-image', $tmpFilePath);
         return JsonEncoder::encode($response);
+    }
+
+    public static function uploadMediaFile($project, $mediaType, $tmpFilePath)
+    {
+        if ($mediaType != 'audio' && $mediaType != 'sense-image') {
+            throw new \Exception("Unsupported upload type.");
+        }
+        if (! $tmpFilePath) {
+            throw new \Exception("No file given.");
+        }
+
+        // make the folders if they don't exist
+        $project->createAssetsFolders();
+        $folderPath = $mediaType == 'audio' ? $project->getAudioFolderPath() : $project->getImageFolderPath();
+
+        // move uploaded file from tmp location to assets
+        $filename = FileUtilities::replaceSpecialCharacters(\basename($tmpFilePath));
+        $filenamePrefix = date("YmdHis");
+        $filePath = LexUploadCommands::mediaFilePath($folderPath, $filenamePrefix, $filename);
+        $moveOk = copy($tmpFilePath, $filePath);
+        // Do NOT delete $tmpFilePath as we're doing E2E tests and probably want to keep the original around
+
+        // construct server response
+        $response = new UploadResponse();
+        if ($moveOk && $tmpFilePath) {
+            $data = new MediaResult();
+            $assetsPath = $project->getAssetsRelativePath();
+            $data->path = $mediaType == 'audio' ? $project->getAudioFolderPath($assetsPath) : $project->getImageFolderPath($assetsPath);
+            // NOTE: $data->fileName needs capital N so it will match what the real upload(Audio/Image)File functions return
+            $data->fileName = $filenamePrefix . '_' . $filename;
+            $response->result = true;
+        } else {
+            $data = new ErrorResult();
+            $data->errorType = 'UserMessage';
+            $data->errorMessage = "$filename could not be saved to the right location. Contact your Site Administrator.";
+            $response->result = false;
+        }
+
+        $response->data = $data;
+        return $response;
     }
 
     public function add_user_to_project($projectCode, $username, $role = null)
