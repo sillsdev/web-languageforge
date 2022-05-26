@@ -5,6 +5,9 @@ use Api\Model\Shared\Mapper\JsonEncoder;
 use Api\Model\Shared\Mapper\MongoStore;
 use Api\Model\Shared\Mapper\ArrayOf;
 use Api\Model\Shared\Command\UserCommands;
+use Api\Model\Shared\Command\ErrorResult;
+use Api\Model\Shared\Command\MediaResult;
+use Api\Model\Shared\Command\UploadResponse;
 use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\UserModel;
 use Api\Model\Shared\UserModelWithPassword;
@@ -25,6 +28,7 @@ use Api\Model\Shared\Mapper\IdReference;
 use Api\Model\Languageforge\Lexicon\Command\LexEntryDecoder;
 use Api\Model\Languageforge\Lexicon\Command\LexProjectCommands;
 use Api\Model\Languageforge\Lexicon\Command\LexUploadCommands;
+use Palaso\Utilities\FileUtilities;
 // use MongoDB\Client;
 
 use Api\Library\Shared\Website;
