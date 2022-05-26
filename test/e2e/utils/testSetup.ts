@@ -1,7 +1,6 @@
 import { testControl } from './jsonrpc';
-import { mkdtemp, copyFile } from 'fs/promises';
+import { copyFile } from 'fs/promises';
 import { existsSync } from 'fs';
-import * as os from 'os';
 import * as path from 'path';
 import { cwd } from 'process';
 import { APIRequestContext } from '@playwright/test';
@@ -42,12 +41,20 @@ export function addUserToProject(request: APIRequestContext, projectCode: string
   return testControl(request, 'add_user_to_project', [projectCode, username, role]);
 }
 
-// Returns absolute path to new temporary location
-async function copyFileToTmpDir(filename: string): Promise<string> {
-  const tmpDir = await mkdtemp(path.join(os.tmpdir(), 'e2e-upload-'));
-  const destPath = path.join(tmpDir, path.basename(filename));
-  await copyFile(filename, destPath);
-  return destPath;
+// Returns absolute path to file location *inside* the container
+async function copyFileToSharedDir(filename: string): Promise<string> {
+  const commonDir = await findTestCommonDir();
+  if (commonDir) {
+    const srcPath = path.resolve(commonDir, filename);
+    const sharedDir = path.resolve(commonDir, '..', 'shared-files');
+    const serverDir = '/tmp/e2e-shared-files';
+    const destPath = path.join(sharedDir, filename);
+    const serverPath = path.join(serverDir, filename);
+    await copyFile(srcPath, destPath);
+    return serverPath;
+  } else {
+    throw new Error('Dir test/common not found; E2E tests should be run from inside Git repo');
+  }
 }
 
 async function findTestCommonDir() {
@@ -64,23 +71,13 @@ async function findTestCommonDir() {
 }
 
 export async function addPictureFileToProject(request: APIRequestContext, projectCode: string, filename: string) {
-  const commonDir = await findTestCommonDir();
-  if (commonDir) {
-    const tmpFile = await copyFileToTmpDir(path.resolve(commonDir, filename));
-    return testControl(request, 'add_picture_file_to_project', [projectCode, tmpFile]);
-  } else {
-    throw new Error('Dir test/common not found; E2E tests should be run from inside Git repo');
-  }
+  const destPath = await copyFileToSharedDir(filename);
+  return testControl(request, 'add_picture_file_to_project', [projectCode, destPath]);
 }
 
 export async function addAudioVisualFileToProject(request: APIRequestContext, projectCode: string, filename: string) {
-  const commonDir = await findTestCommonDir();
-  if (commonDir) {
-    const tmpFile = await copyFileToTmpDir(path.resolve(commonDir, filename));
-    return testControl(request, 'add_audio_visual_file_to_project', [projectCode, tmpFile]);
-  } else {
-    throw new Error('Dir test/common not found; E2E tests should be run from inside Git repo');
-  }
+  const destPath = await copyFileToSharedDir(filename);
+  return testControl(request, 'add_audio_visual_file_to_project', [projectCode, destPath]);
 }
 
 export function addCustomField(request: APIRequestContext,
