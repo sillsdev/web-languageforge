@@ -8,6 +8,29 @@ type LexAppToolbar = {
   toggleExtraFieldsButton: Locator
 };
 
+type AudioPlayer = {
+  togglePlaybackAnchorSelector: string,
+  playIconSelector: string,
+  dropdownToggleSelector: string,
+  uploadButtonSelector: string,
+  downloadButtonSelector: string
+};
+
+type Dropbox = {
+  dragoverFieldSelector: string,
+  audioCancelButtonSelector: string,
+  pictureCancelButtonSelector: string
+};
+
+type UploadType =
+    'Audio' |
+    'Picture'
+;
+
+type AudioDropdownMenu = {
+  uploadReplacementButtonSelector: string
+}
+
 export class EditorPage {
   readonly page: Page;
   readonly projectId: string;
@@ -24,6 +47,14 @@ export class EditorPage {
 
   readonly compactEntryListContainer: Locator;
   readonly compactEntryListItem: Locator;
+
+  readonly audioPlayer: AudioPlayer;
+
+  readonly dropbox: Dropbox;
+
+  readonly audioDropdownMenu: AudioDropdownMenu;
+
+  readonly addPictureButtonSelector: string;
 
   readonly url: string;
 
@@ -48,11 +79,33 @@ export class EditorPage {
     this.compactEntryListContainer = this.page.locator('#compactEntryListContainer');
     this.compactEntryListItem = this.compactEntryListContainer.locator('.lexiconListItemCompact');
 
-    this.url = `/app/lexicon/${projectId}/#!/editor/entry/${firstEntryId}`;
+    this.audioPlayer = {
+      togglePlaybackAnchorSelector: '[ng-click="$ctrl.togglePlayback()"]',
+      playIconSelector: 'i.fa-play',
+      dropdownToggleSelector: 'a.dropdown-toggle',
+      uploadButtonSelector: 'button.upload-audio',
+      downloadButtonSelector: 'a.buttonAppend'
+    };
+
+    this.dropbox = {
+      dragoverFieldSelector: '.drop-box',
+      audioCancelButtonSelector: '#audioAddCancel',
+      pictureCancelButtonSelector: '#addCancel'
+    };
+
+    this.audioDropdownMenu = {
+      uploadReplacementButtonSelector: 'a >> text=Upload a replacement'
+    };
+
+    this.addPictureButtonSelector = 'a >> text=Add Picture';
+
+    this.url = `/app/lexicon/${projectId}/#!/editor/entry/`;
   }
 
-  async goto() {
-    await this.page.goto(this.url);
+  async goto(entryId: string = this.firstEntryId) {
+    await this.page.goto(this.url + entryId);
+
+    await this.page.reload();
     // JeanneSonTODO: wait for an element on the page to be visible
     await this.page.waitForTimeout(3000);
   }
@@ -61,8 +114,12 @@ export class EditorPage {
     await this.lexAppToolbar.backToListButton.click();
   }
 
-  async getTextarea(card: Locator, label: string): Promise<Locator> {
-    return card.locator(`label:has-text("${label}") >> xpath=.. >> textarea`);
+  async getTextarea(card: Locator, field: string, ws: string): Promise<Locator> {
+    return card.locator(`label:has-text("${field}") >> xpath=.. >> div.input-group:has(span.wsid:has-text("${ws}")) >> textarea`);
+  }
+
+  async getSoundplayer(card: Locator, field: string, ws: string): Promise<Locator> {
+    return card.locator(`label:has-text("${field}") >> xpath=.. >> div.input-group:has(span.wsid:has-text("${ws}")) >> dc-audio`);
   }
 
   async getPicturesOuterDiv(card: Locator): Promise<Locator> {
@@ -85,16 +142,18 @@ export class EditorPage {
     return (await caption.count() == 1 ? caption : undefined);
   }
 
-  getAddPictureButton(card: Locator): Locator {
-    return card.locator('a >> text=Add Picture');
-  }
+  getCancelDropboxButton(card: Locator, uploadType: UploadType): Locator {
+    switch (uploadType) {
+      case 'Audio':
+        return card.locator(this.dropbox.audioCancelButtonSelector);
 
-  getDropbox(card: Locator): Locator {
-    return card.locator('.drop-box');
-  }
+      case 'Picture':
+        return card.locator(this.dropbox.pictureCancelButtonSelector);
 
-  getCancelAddingPicture(card: Locator): Locator {
-    return card.locator('[title="Cancel Adding Picture"]');
+      default:
+        console.log('Warning: invalid upload type, something went wrong');
+        return undefined;
+    }
   }
 
 }
