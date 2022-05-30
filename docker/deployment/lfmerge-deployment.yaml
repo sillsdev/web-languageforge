@@ -119,8 +119,7 @@ spec:
             value: sf_
           - name: LFMERGE_VERBOSE_PROGRESS
             value: "true"
-          # TODO: Rename to LANGUAGE_DEPOT_TRUST_TOKEN
-          - name: LD_TRUST_TOKEN
+          - name: LANGUAGE_DEPOT_TRUST_TOKEN
             valueFrom:
               secretKeyRef:
                 key: LD_TRUST_TOKEN
