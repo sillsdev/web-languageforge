@@ -69,6 +69,16 @@ class MapperModel extends ObjectForEncoding
     }
 
     /**
+     * @param string $property
+     * @param string $value
+     * @return boolean
+     */
+    public function readByPropertyInsensitive($property, $value)
+    {
+        return $this->_mapper->readByPropertyInsensitive($this, $property, $value);
+    }
+
+    /**
      * @param array $properties
      * @return boolean
      */

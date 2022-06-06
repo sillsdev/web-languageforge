@@ -261,6 +261,47 @@ class MongoMapper
 
     /**
      * @param mixed $model
+     * @param string $property
+     * @param string $value
+     * @return bool true on document found, false otherwise
+     * Note that unlike the read() method, readByProperty() does NOT throw an exception if no document is found
+     *
+     */
+    public function readByPropertyInsensitive($model, $property, $value)
+    {
+        CodeGuard::checkTypeAndThrow($value, 'string');
+        $escaped = \preg_quote($value);
+        return $this->readByPropertyRegex($model, $property, $escaped, 'i');
+    }
+
+    /**
+     * @param mixed $model
+     * @param string $property
+     * @param string $value
+     * @param string $options
+     * @return bool true on document found, false otherwise
+     * Note that unlike the read() method, readByProperty() does NOT throw an exception if no document is found
+     *
+     */
+    public function readByPropertyRegex($model, $property, $value, $options = '')
+    {
+        CodeGuard::checkTypeAndThrow($property, 'string');
+        CodeGuard::checkTypeAndThrow($value, 'string');
+        CodeGuard::checkTypeAndThrow($options, 'string');
+        $regex = array('$regex' => $value);
+        if ($options) {
+            $regex['$options'] = $options;
+        }
+        $data = $this->_collection->findOne(array($property => $regex));
+        if ($data != NULL) {
+            MongoDecoder::decode($model, $data, (string) $data['_id']);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @param mixed $model
      * @param array  $properties
      * @return bool
      */

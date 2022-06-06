@@ -313,7 +313,12 @@ class UserModel extends MapperModel
      */
     public function readByEmail($email)
     {
-        return $this->readByProperty('email', $email);
+        // Try case-sensitive match first in case it matters (could happen)
+        $found = $this->readByProperty('email', $email);
+        if (! $found) {
+            // RFC 5321, section 2.4, recommends case-insensitive matching on email addresses
+            return $this->readByPropertyInsensitive('email', $email);
+        }
     }
 
     /**
