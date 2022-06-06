@@ -313,7 +313,7 @@ class UserModel extends MapperModel
      */
     public function readByEmail($email)
     {
-        return $this->readByProperty('email', $email);
+        return $this->readByProperty('email', strtolower($email));
     }
 
     /**
