@@ -10,9 +10,4 @@
 
 			max-w-none;
 	}
-
-	/* this was needed to override prose's effects on a's...  */
-	ul.menu li a {
-		text-decoration: none;
-	}
 }

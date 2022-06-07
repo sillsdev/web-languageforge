@@ -1,10 +1,6 @@
 <script>
 	import Error from '$lib/error/Error.svelte'
-	import HamburgerIcon from '$lib/icons/HamburgerIcon.svelte'
 	import Progress from '$lib/progress/Progress.svelte'
-	import { createEventDispatcher } from 'svelte'
-
-	const dispatch = createEventDispatcher()
 </script>
 
 <!-- https://daisyui.com/components/navbar -->
@@ -13,11 +9,9 @@
 		Language  Forge
 	</span>
 
-	<div class=navbar-end>
-		<button on:click={() => dispatch('menuopen')} class='btn btn-primary btn-circle'>
-			<HamburgerIcon />
-		</button>
-	</div>
+	<a href=/app rel=external class='navbar-end mr-4 text-primary-content text-xs md:text-sm'>
+		back to my projects
+	</a>
 </header>
 
 <Error />
