@@ -51,6 +51,11 @@ jobs:
           echo ::set-output name=TAG_APP::${{ inputs.image-tag-app }}
           echo ::set-output name=TAG_PROXY::${{ inputs.image-tag-proxy }}
           echo ::set-output name=TAG_NEXT_APP::${{ inputs.image-tag-next-app }}
+          echo ::set-output name=LFMERGE_NAMESPACE::ghcr.io/sillsdev/lfmerge
+          # Get LfMerge tag from Dockerfile, fallback to "latest" as default if that fails
+          TAG_LFMERGE=$(head -n 1 lfmerge/Dockerfile | cut -d: -f2)
+          TAG_LFMERGE=${TAG_LFMERGE:-latest}
+          echo ::set-output name=TAG_LFMERGE::${TAG_LFMERGE}
       -
         uses: actions/setup-node@v2
         with:
@@ -98,6 +103,7 @@ jobs:
       IMAGE_APP: ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG_APP }}
       IMAGE_PROXY: ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG_PROXY }}
       IMAGE_NEXT_APP: ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG_NEXT_APP }}
+      IMAGE_LFMERGE: ${{ steps.image.outputs.LFMERGE_NAMESPACE }}:${{ steps.image.outputs.TAG_LFMERGE }}
 
   deploy:
     runs-on: [self-hosted, languageforge]
@@ -112,3 +118,4 @@ jobs:
           kubectl --context ${{ secrets.kube-context }} set image deployment/app app=${{ needs.integrate.outputs.IMAGE_APP }}
           kubectl --context ${{ secrets.kube-context }} set image deployment/next-proxy next-proxy=${{ needs.integrate.outputs.IMAGE_PROXY }}
           kubectl --context ${{ secrets.kube-context }} set image deployment/next-app next-app=${{ needs.integrate.outputs.IMAGE_NEXT_APP }}
+          kubectl --context ${{ secrets.kube-context }} set image deployment/lfmerge lfmerge=${{ needs.integrate.outputs.IMAGE_LFMERGE }}

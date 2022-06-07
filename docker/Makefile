@@ -49,7 +49,7 @@ unit-tests-ci:
 .PHONY: build
 build:
 	npm install
-	docker-compose build mail app ld-api next-proxy next-app
+	docker-compose build mail app lfmerge ld-api next-proxy next-app
 
 .PHONY: scan
 # https://docs.docker.com/engine/scan

@@ -158,6 +158,31 @@ class TestControl
         return $projectModel->id->asString();
     }
 
+    public function add_user_to_project($projectCode, $username, $role = null)
+    {
+        if (! $role) {
+            $role = ProjectRoles::CONTRIBUTOR;
+        }
+        if ($role === 'manager') {
+            // Make allowances for a common mistake in role name
+            $role = ProjectRoles::MANAGER;
+        }
+
+        $user = new UserModel();
+        if (! $user->readByUserName($username)) {
+            return false;
+        }
+
+        $project = ProjectModel::getByProjectCode($projectCode);
+        if (! $project) {
+            return false;
+        }
+
+        $project->addUser($user->id->asString(), $role);
+        $project->write();
+        return true;
+    }
+
     public function add_custom_field(string $projectCode, string $customFieldName, string $parentField = 'entry', string $customFieldType = 'MultiString', $extraOptions = null)
     {
         error_log('add_custom_field');
