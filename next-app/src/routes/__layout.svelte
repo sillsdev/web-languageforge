@@ -29,7 +29,8 @@
 	<div class=drawer-content>
 		<Header on:menuopen={open} />
 
-		<main class=px-6>
+		<!-- https://tailwindcss.com/docs/typography-plugin -->
+		<main class='prose max-w-none px-6'>
 			<slot />
 		</main>
 	</div>
