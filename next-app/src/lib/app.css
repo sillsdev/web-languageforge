@@ -3,4 +3,16 @@
 @tailwind utilities;
 
 @layer base {
+	body {
+		@apply
+			/* https://tailwindcss.com/docs/typography-plugin */
+			prose
+
+			max-w-none;
+	}
+
+	/* this was needed to override prose's effects on a's...  */
+	ul.menu li a {
+		text-decoration: none;
+	}
 }
