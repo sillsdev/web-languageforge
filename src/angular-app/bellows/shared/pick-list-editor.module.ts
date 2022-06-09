@@ -10,7 +10,7 @@ export class PickListEditorController implements angular.IController {
   items: Item[];
   defaultKey: string;
 
-  showDefault: boolean = this.defaultKey != null;
+  get showDefault(): boolean { return this.defaultKey != null; }
   newValue: string;
 
   private isDeletable: { [key: string]: boolean } = {};
