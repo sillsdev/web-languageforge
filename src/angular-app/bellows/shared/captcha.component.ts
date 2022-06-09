@@ -5,7 +5,7 @@ import {CaptchaItem} from './model/captcha.model';
 export class CaptchaController implements angular.IController {
   puiItems: CaptchaItem[];
   puiExpectedItemName: string;
-  puiSelected: string;
+  puiSelected: string = '';
 
   record = {
     selected: this.puiSelected
