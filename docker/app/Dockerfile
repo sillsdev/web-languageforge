@@ -53,7 +53,6 @@ RUN apt-get remove -y gnupg2
 RUN mv $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini
 # had to add /wait into prod image so the prod image could be run through E2E tests.
 COPY --from=sillsdev/web-languageforge:wait-latest /wait /wait
-RUN apt-get update && apt-get -y install tini && rm -rf /var/lib/apt/lists/*
 
 # DEVELOPMENT IMAGE
 FROM sillsdev/web-languageforge:base-php AS development-app
@@ -62,7 +61,6 @@ COPY docker/app/docker-php-ext-xdebug.ini /usr/local/etc/php/conf.d
 RUN mv $PHP_INI_DIR/php.ini-development $PHP_INI_DIR/php.ini
 COPY --from=sillsdev/web-languageforge:wait-latest /wait /wait
 COPY docker/app/run-with-wait.sh /run-with-wait.sh
-RUN apt-get update && apt-get -y install tini && rm -rf /var/lib/apt/lists/*
 
 FROM ${ENVIRONMENT}-app AS languageforge-app
 ARG BUILD_VERSION=${BUILD_VERSION:-'9.9.9'}
