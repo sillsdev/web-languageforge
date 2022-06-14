@@ -19,7 +19,7 @@ export type RelativeTimeFilterFunction = (timestamp?: string, timeFormat?: strin
 
 export function RelativeTimeFilter(): RelativeTimeFilterFunction {
   return (timestamp?: string, timeFormat?: string): string => {
-    const date = parseISO(timestamp);
+    const date = new Date(timestamp);
     const dateNow = new Date();
     if (isValid(date) && isValid(dateNow)) {
       return formatDistance(date, dateNow, { addSuffix: true });
