@@ -163,6 +163,14 @@ class TestControl
         MongoStore::dropAllCollections($projectModel->databaseName());
         MongoStore::dropDB($projectModel->databaseName());
         $projectModel->write();
+        // Now we know projectModel id, so now user models can be updated with membership
+        foreach ($memberUsernames as $username) {
+            $user = new UserModel();
+            if ($user->readByUserName($username)) {
+                $user->addProject($projectModel->id->asString());
+                $user->write();
+            }
+        }
         return $projectModel->id->asString();
     }
 
@@ -249,8 +257,8 @@ class TestControl
 
         $project->addUser($user->id->asString(), $role);
         $user->addProject($project->id->asString());
-        $user->write();
         $project->write();
+        $user->write();
         return true;
     }
 
