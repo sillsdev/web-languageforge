@@ -78,4 +78,5 @@ clean:
 clean-powerwash: clean
 	docker system prune -f --volumes
 	docker rmi -f `docker images -q "lf-*"`
+	docker image rm sillsdev/web-languageforge:base-php
 	docker builder prune -f
