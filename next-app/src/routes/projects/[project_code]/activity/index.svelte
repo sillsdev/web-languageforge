@@ -20,7 +20,7 @@
 </svelte:head>
 
 <PageHeader>
-	Activity for {project.id}
+	Activity for {project.code}
 </PageHeader>
 
 <!-- https://daisyui.com/components/table -->
