@@ -1,13 +1,26 @@
+import { page } from '$app/stores'
 import { throwError } from '$lib/error'
 import { sf } from '$lib/fetch/server'
 
-export async function get({ request }) {
+// TODO: spin things up locally and build some data for use on the activity page.
+// TODO: then dump it into a file and see if it can be reloaded
+// TODO: if that works, that will help with development
+// TODO: next, build out the api to simply convert the activity into an array
+// TODO: next, start to peel off the individual properties
+// username | new | updated entries | updated fields | [details](/projects/activity/{id})
+export async function get({ params, request }) {
+	const project = {
+		id: params.project_id,
+	}
+
 	const activities = [
 		{
 			id: 1,
+			username: 'johndoe',
 		},
 		{
-			id: 1,
+			id: 2,
+			username: 'janedoe',
 		},
 	]
 
@@ -46,6 +59,7 @@ export async function get({ request }) {
 
 	return {
 		body: {
+			project,
 			activities,
 		},
 	}
