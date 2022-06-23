@@ -1,42 +1,48 @@
 import { sf } from '$lib/fetch/server'
 
-export async function get({ params, request }) {
-	let activities = []
+export async function get({ params : { project_code }, request: { headers } }) {
+	const cookie = headers.get('cookie')
 
-	const cookie = request.headers.get('cookie')
+	const { id, projectName: name, projectCode: code } = await getProjectInfo(project_code, cookie)
 
-	const { id, projectName, projectCode } = await sf({
-		name: 'project_read_by_code',
-		args: [params.project_code],
-		cookie,
-	})
-	// src/Api/Model/Shared/Dto/ActivityListDto.php
-	// const { activity } = await sf({
-	// 	name: 'activity_list_dto_for_project',
-		// src/Api/Model/Shared/Dto/ActivityListDto.php.__construct
-	// 	args: [
-	// 		params.project_code,
-	// 		{
-	// 			// endDate: ,
-	// 			// limit: ,
-	// 			// skip:
-	// 		}
-	// 	],
-	// 	cookie,
-	// })
+	const { activity } = await getActivities(project_code, cookie)
 
-	// activities = activity.map(transform)
+	const activities = activity.map(transform)
 
 	return {
 		body: {
 			project: {
 				id,
-				code: projectCode,
-				name: projectName,
+				code,
+				name,
 			},
-			// activities,
+			activities,
 		},
 	}
+}
+
+async function getProjectInfo(project_code, cookie) {
+	return await sf({
+		name: 'project_read_by_code',
+		args: [project_code],
+		cookie,
+	})
+}
+
+function getActivities(project_code, cookie) {
+	return sf({
+		// src/Api/Model/Shared/Dto/ActivityListDto.php
+		name: 'activity_list_dto_for_project',
+		args: [ // src/Api/Model/Shared/Dto/ActivityListDto.php.__construct
+			project_code,
+			{
+				// endDate: ,
+				// limit: ,
+				// skip:
+			}
+		],
+		cookie,
+	})
 }
 
 function transform({id, action, date, content}) {
