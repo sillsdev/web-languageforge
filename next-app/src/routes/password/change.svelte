@@ -16,7 +16,7 @@
 	let new_password_confirm = ''
 
 	async function change_password() {
-		await UPDATE('/password.json', {
+		await UPDATE('/password', {
 			password: new_password,
 			password_confirm: new_password_confirm
 		})
