@@ -425,7 +425,7 @@ class Sf
         if ($user->isMemberOfProject($projectModel->id->asString())) {
             return ActivityListDto::getActivityForOneProject($projectModel, $this->userId, $filterParams);
         }
-        throw new UserUnauthorizedException("User $this->userId is not a member of project $projectId");
+        throw new UserUnauthorizedException("User $this->userId is not a member of project $projectCode");
     }
 
     public function activity_list_dto_for_lexical_entry($entryId, $filterParams = [])
