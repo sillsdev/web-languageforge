@@ -4,13 +4,12 @@
 
 1. start the app
 1. create all the data you want through the app
-1. `make dump clean` to create a `dump` file in this directory
+1. `make dump clean` to create a `dump` folder in this directory
 1. `tar -cf <name-representative-of-data>.tar dump`, e.g., `tar -cf activity.tar dump`, and decide whether to commit this or not for others to use.
 
 ## Load a dump
 
-1. start the app
-1. `tar -xf <name-representative-of-data>.tar` and rename to `dump` if needed
+1. `tar -xf <name-representative-of-data>.tar` and rename to `dump`
 1. `make restore clean` to load the `dump` directory
 
 # Common mongo commands
