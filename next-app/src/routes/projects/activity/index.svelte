@@ -14,4 +14,6 @@
 
 {#each activities as activity}
 	<pre>{JSON.stringify(activity, null, 2)}</pre>
+{:else}
+	<p>No activity yet</p>
 {/each}
