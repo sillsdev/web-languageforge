@@ -23,7 +23,7 @@
 	<h2>Migrated capabilities</h2>
 	<ol>
 		<li><a href=/password/change sveltekit:prefetch>Change password</a></li>
-		<li><a href=/projects/abc-123/activity sveltekit:prefetch>Project activity</a></li>
+		<li><a href=/projects/abc-123 sveltekit:prefetch>Project landing page</a></li>
 	</ol>
 </section>
 
