@@ -1,6 +1,7 @@
 <script>
 	export let activities
 
+	// mappings in src/Api/Model/Shared/ActivityModel.php
 	const action_display = {
 		'add_entry': 'Add',
 		'update_entry': 'Update',
