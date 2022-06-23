@@ -28,7 +28,7 @@
 			<tr>
 				<td>{activity.user}</td>
 				<td>{new Date(activity.date).toLocaleString()}</td>
-				<td>{action_display[activity.action]}</td>
+				<td>{action_display[activity.action] || activity.action}</td>
 				<td>{activity.entry || '—'}</td>
 				<td>{toNames(activity.fields) || '—'}</td>
 			</tr>
