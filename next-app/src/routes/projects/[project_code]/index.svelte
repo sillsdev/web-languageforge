@@ -21,10 +21,10 @@
 	<title>Project Home</title>
 </svelte:head>
 
-<PageHeader class='flex justify-between'>
+<PageHeader class='flex justify-between items-center'>
 	{ project.name }
 
-	<a rel=external href={ `/app/lexicon/${ project.id }` } class='btn btn-primary no-underline'>
+	<a rel=external href={ `/app/lexicon/${ project.id }` } class='btn btn-primary no-underline btn-xs sm:btn-md'>
 		work on this project
 	</a>
 </PageHeader>
@@ -33,8 +33,8 @@
 <Activity { activities } />
 
 {#if only_showing_subset}
-	<footer class='flex justify-center'>
-		<Button on:click={ load_all_activities } class='btn-outline btn-sm'>
+	<footer class='flex justify-center mt-2'>
+		<Button on:click={ load_all_activities } class='btn-outline btn-xs sm:btn-sm'>
 			show all
 		</Button>
 	</footer>
