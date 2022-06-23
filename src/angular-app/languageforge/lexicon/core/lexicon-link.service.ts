@@ -5,7 +5,8 @@ export class LexiconLinkService {
   constructor(private sessionService: SessionService) { }
 
   projectUrl(): string {
-    return '/app/lexicon/' + this.getProjectId() + '/#!/';
+	const project = this.sessionService.project()
+    return `/projects/${project.projectCode}`
   }
 
   projectView(view: string): string {

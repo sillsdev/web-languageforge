@@ -58,6 +58,7 @@ class SessionCommands
                 $sessionData['project'] = [];
                 $sessionData['project']['id'] = (string) $projectId;
                 $sessionData['project']['projectName'] = $project->projectName;
+                $sessionData['project']['projectCode'] = $project->projectCode;
                 if ($project->isArchived) {
                     $sessionData['project']['projectName'] .= " [ARCHIVED]";
                 }
