@@ -16,20 +16,20 @@ export async function get({ params, request }) {
 
 		// src/Api/Model/Shared/Dto/ActivityListDto.php
 		const { activity } = await sf({
-			name: 'activity_list_dto',
+			name: 'activity_list_dto_for_project',
 			// src/Api/Model/Shared/Dto/ActivityListDto.php.__construct
-			// args: [{
-				// startDate: ,
+			args: [{
+				projectId: project.id,
 				// endDate: ,
 				// limit: ,
 				// skip:
-			// }],
+			}],
 			cookie,
 		})
-
+console.log(activity)
 		activities = Object
 			.values(activity)
-			.filter(({ content }) => content.project === project.id)
+			// .filter(({ content }) => content.project === project.id)
 			.filter(({ action }) => action !== 'add_user_to_project')
 			.map(transform)
 			//TODO: limit to 25? seems too arbitrary, I'm inclined to grab last two weeks worth
