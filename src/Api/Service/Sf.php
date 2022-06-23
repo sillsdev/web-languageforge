@@ -471,6 +471,16 @@ class Sf
         return ProjectCommands::readProject($id);
     }
 
+	public function project_read_by_code($projectCode)
+    {
+        $projectModel = ProjectModel::getByProjectCode($projectCode);
+        $user = new UserModel($this->userId);
+        if ($user->isMemberOfProject($projectModel->id->asString())) {
+            return $this->project_read($projectModel->id->asString());
+        }
+        throw new UserUnauthorizedException("User $this->userId is not a member of project $projectCode");
+    }
+
     public function project_settings()
     {
         return ProjectSettingsDto::encode($this->projectId, $this->userId);
