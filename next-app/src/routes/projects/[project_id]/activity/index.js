@@ -14,14 +14,16 @@ export async function get({ params, request }) {
 	try {
 		const cookie = request.headers.get('cookie')
 
+		// src/Api/Model/Shared/Dto/ActivityListDto.php
 		const { activity } = await sf({
 			name: 'activity_list_dto',
-			args: [{
-				startDate: null, // TODO: is this working?
-				endDate: null, // TODO: is this working?
-				limit: 10, // TODO: is this working?
-				skip: 0
-			}],
+			// src/Api/Model/Shared/Dto/ActivityListDto.php.__construct
+			// args: [{
+				// startDate: ,
+				// endDate: ,
+				// limit: ,
+				// skip:
+			// }],
 			cookie,
 		})
 
@@ -30,6 +32,7 @@ export async function get({ params, request }) {
 			.filter(({ content }) => content.project === project.id)
 			.filter(({ action }) => action !== 'add_user_to_project')
 			.map(transform)
+			//TODO: limit to 25? seems too arbitrary, I'm inclined to grab last two weeks worth
 	} catch (error) {
 		return {
 			status: error.code,
