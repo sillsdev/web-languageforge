@@ -24,7 +24,7 @@ export async function get({ params, request }) {
 			}],
 			cookie,
 		})
-// console.log(project.id, activity)
+
 		activities = Object
 			.values(activity)
 			.filter(({ content }) => content.project === project.id)
@@ -52,6 +52,6 @@ function transform({ id, action, date, content}) {
 		date,
 		user: content.user,
 		entry: content.entry || '',
-		num_fields: content.changes?.length || 0,
+		fields: content.changes || [],
 	}
 }

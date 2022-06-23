@@ -3,11 +3,15 @@
 
 	export let project
 	export let activities = []
+
 	const action_display = {
 		'add_entry': 'Add',
 		'update_entry': 'Update',
 	}
 
+	function toNames(fields = []) {
+		return fields.map(field => field.fieldName).join(', ')
+	}
 </script>
 
 <svelte:head>
@@ -18,7 +22,8 @@
 	Activity for {project.id}
 </PageHeader>
 
-<table>
+<!-- https://daisyui.com/components/table -->
+<table class='table table-zebra'>
 	<thead>
 		<tr>
 			<th>user</th>
@@ -28,15 +33,17 @@
 			<th>number of fields</th>
 		</tr>
 	</thead>
-	{#each activities as activity}
-		<tr>
-			<td>{activity.user}</td>
-			<td>{new Date(activity.date).toLocaleString()}</td>
-			<td>{action_display[activity.action]}</td>
-			<td>{activity.entry}</td>
-			<td>{activity.num_fields || `—`}</td>
-		</tr>
-	{:else}
-		<tr><td>No activity yet</td></tr>
-	{/each}
+	<tbody>
+		{#each activities as activity}
+			<tr>
+				<td>{activity.user}</td>
+				<td>{new Date(activity.date).toLocaleString()}</td>
+				<td>{action_display[activity.action]}</td>
+				<td>{activity.entry}</td>
+				<td>{toNames(activity.fields)}</td>
+			</tr>
+		{:else}
+			<tr><td>No activity yet</td></tr>
+		{/each}
+	</tbody>
 </table>
