@@ -28,7 +28,7 @@ export class LexiconProjectService {
         href: '/app/projects',
         label: 'My Projects'
       }, {
-        href: this.linkService.projectUrl(),
+        href: `/projects/${session.project<LexiconProject>().projectCode}`,
         label: session.project<LexiconProject>().projectName
       }, {
         href: this.linkService.projectView(view),
