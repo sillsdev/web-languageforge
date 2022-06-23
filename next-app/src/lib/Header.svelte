@@ -14,7 +14,7 @@
 	</span>
 
 	<div class=navbar-end>
-		<button on:click={() => dispatch('menuopen')} class='btn btn-primary btn-circle'>
+		<button on:click={ () => dispatch('menuopen') } class='btn btn-primary btn-circle'>
 			<HamburgerIcon />
 		</button>
 	</div>

@@ -7,7 +7,7 @@ export async function UPDATE(url, body) { return await customFetch('put'   , url
 export async function DELETE(url      ) { return await customFetch('delete', url      ) }
 
 // https://developer.mozilla.org/en-US/docs/Web/API/FormData/FormData
-export const upload = async formData => await CREATE('post', formData)
+// export const upload = async formData => await CREATE('post', formData)
 
 // https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch#Supplying_request_options
 async function customFetch(method, url, body) {

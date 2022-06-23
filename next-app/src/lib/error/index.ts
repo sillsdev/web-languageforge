@@ -2,7 +2,7 @@ import { browser } from '$app/env'
 import { writable } from 'svelte/store'
 
 export const error = writable({})
-export const throwError = (message = '', code = 0) => { throw set({code, message}) }
+export const throwError = (message = '', code = 0) => { throw set({ code, message }) }
 export const dismiss = () => set({})
 
 if (browser) {
@@ -21,7 +21,7 @@ function set(someError) {
     message = someError.message === undefined ? '' : someError.message
   }
 
-  error.set({code, message})
+  error.set({ code, message })
 
-  return {code, message}
+  return { code, message }
 }
