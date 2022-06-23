@@ -12,8 +12,8 @@ export class ActivityPage {
     this.activitiesList = page.locator('.activity-content');
   }
 
-  async goto() {
-    await this.page.goto(ActivityPage.url);
+  async goto(projectCode: string) {
+    await this.page.goto(ActivityPage.url + '/' + projectCode);
     await expect(this.pageName).toBeVisible();
   }
 }
