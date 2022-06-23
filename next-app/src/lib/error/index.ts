@@ -1,4 +1,4 @@
-import { browser } from '$app/env';
+import { browser } from '$app/env'
 import { writable } from 'svelte/store'
 
 export const error = writable({})
@@ -10,7 +10,7 @@ if (browser) {
 	window.addEventListener('error', event => set(event.error))
 
 	// https://developer.mozilla.org/en-US/docs/Web/API/PromiseRejectionEvent
-	window.onunhandledrejection = event => set(event.reason)
+	window.onunhandledrejection = (event : PromiseRejectionEvent) => set(event.reason)
 }
 
 function set(someError) {
