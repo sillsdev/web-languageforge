@@ -10,11 +10,12 @@ export async function get({ params: { project_code }, request: { headers } }) {
 	}
 }
 
+// src/Api/Model/Shared/Dto/ActivityListDto.php
+// src/Api/Model/Shared/Dto/ActivityListDto.php->ActivityListModel.__construct
 export async function get_activities({ project_code, cookie, start_date, end_date }) {
-	const { activity } = await sf({
-		// src/Api/Model/Shared/Dto/ActivityListDto.php
+	const args = {
 		name: 'activity_list_dto_for_project',
-		args: [ // src/Api/Model/Shared/Dto/ActivityListDto.php->ActivityListModel.__construct
+		args: [
 			project_code,
 			{
 				startDate: start_date && start_date.toLocaleDateString(),
@@ -22,7 +23,9 @@ export async function get_activities({ project_code, cookie, start_date, end_dat
 			}
 		],
 		cookie,
-	})
+	}
+
+	const { activity } = await sf(args)
 
 	return activity.map(transform)
 }
