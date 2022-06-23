@@ -13,11 +13,12 @@ export default {
 			// https://kit.svelte.dev/docs/configuration#prerender
 			onError: ({ path, status }) => {
 				const externalLinks = [
-					'/auth/login',
 					'/app',
+					'/auth/login',
+					'/projects',
 				]
 
-				if (externalLinks.includes(path)) {
+				if (externalLinks.some(link => path.startsWith(link))) {
 					// :-( https://github.com/sveltejs/kit/issues/3402
 					console.warn(yellow(`${status} on ${path}: skipping since it's an external link`))
 				} else {
