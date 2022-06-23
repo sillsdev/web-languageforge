@@ -418,11 +418,11 @@ class Sf
         return ActivityListDto::getActivityForUser($this->website->domain, $this->userId, $filterParams);
     }
 
-    public function activity_list_dto_for_project($projectId, $filterParams = [])
+    public function activity_list_dto_for_project($projectCode, $filterParams = [])
     {
-        $projectModel = ProjectModel::getById($projectId);
+        $projectModel = ProjectModel::getByProjectCode($projectCode);
         $user = new UserModel($this->userId);
-        if ($user->isMemberOfProject($projectId)) {
+        if ($user->isMemberOfProject($projectModel->id->asString())) {
             return ActivityListDto::getActivityForOneProject($projectModel, $this->userId, $filterParams);
         }
         throw new UserUnauthorizedException("User $this->userId is not a member of project $projectId");
