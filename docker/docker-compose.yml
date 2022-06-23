@@ -54,7 +54,7 @@ services:
       - FACEBOOK_CLIENT_SECRET=bogus-development-token
       - REMEMBER_ME_SECRET=bogus-development-key
       - LANGUAGE_DEPOT_API_TOKEN=bogus-development-token
-    command: sh -c "/wait && apache2-foreground"
+    command: ["/run-with-wait.sh"]
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
@@ -310,6 +310,7 @@ services:
     depends_on:
       - db
       - mail
+      - ld-api
     ports:
       - 3238:80
     environment:

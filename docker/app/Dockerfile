@@ -60,6 +60,7 @@ RUN install-php-extensions xdebug
 COPY docker/app/docker-php-ext-xdebug.ini /usr/local/etc/php/conf.d
 RUN mv $PHP_INI_DIR/php.ini-development $PHP_INI_DIR/php.ini
 COPY --from=sillsdev/web-languageforge:wait-latest /wait /wait
+COPY docker/app/run-with-wait.sh /run-with-wait.sh
 
 FROM ${ENVIRONMENT}-app AS languageforge-app
 ARG BUILD_VERSION=${BUILD_VERSION:-'9.9.9'}
@@ -82,6 +83,7 @@ COPY docker/app/symfony-exceptions.patch /
 RUN patch -p4 -i /symfony-exceptions.patch
 
 RUN echo "${BUILD_VERSION}" > /var/www/html/build-version.txt \
- && sed -i /var/www/html/version.php -e "s/^\\(define('VERSION', '\\).*;\$/\\1${BUILD_VERSION}'\\);/"
+    && sed -i /var/www/html/version.php -e "s/^\\(define('VERSION', '\\).*;\$/\\1${BUILD_VERSION}'\\);/"
 
+ENTRYPOINT [ "tini", "-g", "--" ]
 CMD [ "apache2-foreground" ]

@@ -3,11 +3,4 @@
 @tailwind utilities;
 
 @layer base {
-	body {
-		@apply
-			/* https://tailwindcss.com/docs/typography-plugin */
-			prose
-
-			max-w-none;
-	}
 }
