@@ -1,128 +1,44 @@
-# Journal
+# Creating and utilizing any test data
+
+## Create a dump
+
+1. start the app
+1. create all the data you want through the app
+1. `make dump clean` to create a `dump` file in this directory
+1. `tar -cf <name-representative-of-data>.tar dump`, e.g., `tar -cf activity.tar dump`, and decide whether to commit this or not for others to use.
+
+## Load a dump
+
+1. start the app
+1. `tar -xf <name-representative-of-data>.tar` and rename to `dump` if needed
+1. `make restore clean` to load the `dump` directory
+
+# Common mongo commands
 
 > https://www.mongodb.com/docs/v4.4/mongo
 
 `mongo` within `db` container
 
 > https://www.mongodb.com/docs/manual/reference/mongo-shell/#command-helpers
+
 `show dbs`
+
 `use scriptureforge`
+
 `show collections`
+
 `exit`
 
 > https://www.mongodb.com/docs/manual/reference/mongo-shell/#queries
 
 `db.users.find()`
 
-signed up:
->	johndoe
->	jd@example.org
->	languageforge
+# Test data
 
-created non s/r project:
->	project-1
->	```
->	> show collections
->	projects
->	userrelation
->	users
->	```
+## Activity
 
-created entry:
->	> db.projects.count()
->	1
->	> db.userrelation.count()
->	1
->	> db.users.count()
->	2
-
-added `admin` user to `project-1` as tech support:
->	> db.userrelation.count()
->	2
-
-
-```
-# du -k /data
-4       /data/configdb
-307204  /data/db/journal
-152     /data/db/diagnostic.data
-308148  /data/db
-308156  /data
-```
-
-```
-# ls -l /usr/bin/mongo*
--rwxr-xr-x 1 root root 38342112 Jan 24 23:59 /usr/bin/mongo
--rwxr-xr-x 1 root root 60519496 Jan 24 23:59 /usr/bin/mongod
--rwxr-xr-x 1 root root 15906632 Jan 24 23:59 /usr/bin/mongodump
--rwxr-xr-x 1 root root 15483784 Jan 24 23:59 /usr/bin/mongoexport
--rwxr-xr-x 1 root root 15381840 Jan 24 23:59 /usr/bin/mongofiles
--rwxr-xr-x 1 root root 15641032 Jan 24 23:59 /usr/bin/mongoimport
--rwxr-xr-x 1 root root 15967648 Jan 24 23:59 /usr/bin/mongorestore
--rwxr-xr-x 1 root root 36377912 Jan 24 23:59 /usr/bin/mongos
--rwxr-xr-x 1 root root 15652056 Jan 24 23:59 /usr/bin/mongostat
--rwxr-xr-x 1 root root 15296648 Jan 24 23:59 /usr/bin/mongotop
-```
-
-```
-# mongodump
-2022-04-28T19:13:49.826+0000    writing admin.system.version to
-2022-04-28T19:13:49.827+0000    done dumping admin.system.version (1 document)
-2022-04-28T19:13:49.827+0000    writing sf_project-1.activity to
-2022-04-28T19:13:49.827+0000    writing scriptureforge.users to
-2022-04-28T19:13:49.827+0000    writing scriptureforge.userrelation to
-2022-04-28T19:13:49.828+0000    writing scriptureforge.projects to
-2022-04-28T19:13:49.829+0000    done dumping scriptureforge.users (2 documents)
-2022-04-28T19:13:49.829+0000    writing sf_project-1.optionlists to
-2022-04-28T19:13:49.829+0000    done dumping sf_project-1.activity (4 documents)
-2022-04-28T19:13:49.829+0000    writing sf_project-1.lexicon to
-2022-04-28T19:13:49.830+0000    done dumping sf_project-1.lexicon (1 document)
-2022-04-28T19:13:49.830+0000    done dumping sf_project-1.optionlists (1 document)
-2022-04-28T19:13:49.831+0000    done dumping scriptureforge.userrelation (2 documents)
-2022-04-28T19:13:49.831+0000    done dumping scriptureforge.projects (1 document)
-
-# ls -ltr
-...
-drwxr-xr-x   4 root root   4096 Mar  1 03:28 data
-...
-drwxr-xr-x   5 root root   4096 Apr 28 19:13 dump
-
-# du -k /dump
-48      /dump/scriptureforge
-28      /dump/sf_project-1
-12      /dump/admin
-92      /dump
-
-# ls -lR /dump
-/dump:
-total 12
-drwxr-xr-x 2 root root 4096 Apr 28 19:13 admin
-drwxr-xr-x 2 root root 4096 Apr 28 19:13 scriptureforge
-drwxr-xr-x 2 root root 4096 Apr 28 19:13 sf_project-1
-
-/dump/admin:
-total 8
--rw-r--r-- 1 root root  59 Apr 28 19:13 system.version.bson
--rw-r--r-- 1 root root 134 Apr 28 19:13 system.version.metadata.json
-
-/dump/scriptureforge:
-total 44
--rw-r--r-- 1 root root 21835 Apr 28 19:13 projects.bson
--rw-r--r-- 1 root root   137 Apr 28 19:13 projects.metadata.json
--rw-r--r-- 1 root root   445 Apr 28 19:13 userrelation.bson
--rw-r--r-- 1 root root   141 Apr 28 19:13 userrelation.metadata.json
--rw-r--r-- 1 root root  1068 Apr 28 19:13 users.bson
--rw-r--r-- 1 root root   134 Apr 28 19:13 users.metadata.json
-
-/dump/sf_project-1:
-total 24
--rw-r--r-- 1 root root 1357 Apr 28 19:13 activity.bson
--rw-r--r-- 1 root root  135 Apr 28 19:13 activity.metadata.json
--rw-r--r-- 1 root root  447 Apr 28 19:13 lexicon.bson
--rw-r--r-- 1 root root  322 Apr 28 19:13 lexicon.metadata.json
--rw-r--r-- 1 root root  662 Apr 28 19:13 optionlists.bson
--rw-r--r-- 1 root root  225 Apr 28 19:13 optionlists.metadata.json
-```
-
-# `make dump clean`
-# `make restore clean`
+| username | email               | password      | project     |
+| -------- | ------------------- | ------------- | ----------- |
+| admin    | admin@example.com   | password      | all         |
+| johndoe  | jd@example.org      | languageforge | project-1   |
+| janedoe  | janedoe@example.org | languageforge | project-2   |
