@@ -33,5 +33,9 @@
 <Activity { activities } />
 
 {#if only_showing_subset}
-	<footer class='flex justify-center'><Button on:click={ load_all_activities }>show all</Button></footer>
+	<footer class='flex justify-center'>
+		<Button on:click={ load_all_activities } outlined small>
+			show all
+		</Button>
+	</footer>
 {/if}
