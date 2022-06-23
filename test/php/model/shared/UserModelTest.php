@@ -160,14 +160,16 @@ class UserModelTest extends TestCase
                     'ownerRef' => $userId,
                     'id' => $p1,
                     'appName' => 'sfchecks',
-                    'siteName' => $environ->website->domain
+                    'siteName' => $environ->website->domain,
+                    'projectCode' => 'p1Code'
                 ],
                 [
                     'projectName' => 'p2',
                     'ownerRef' => $userId,
                     'id' => $p2,
                     'appName' => 'sfchecks',
-                    'siteName' => $environ->website->domain
+                    'siteName' => $environ->website->domain,
+                    'projectCode' => 'p2Code'
                 ]
             ],
             $result->entries
