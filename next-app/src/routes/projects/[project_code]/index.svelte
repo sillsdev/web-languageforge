@@ -12,6 +12,10 @@
 
 <PageHeader class='flex justify-between'>
 	{ project.name }
+
+	<a rel=external href={`/app/lexicon/${ project.id }`} class='btn btn-primary no-underline'>
+		work on this project
+	</a>
 </PageHeader>
 
 <h2>Activity</h2>
