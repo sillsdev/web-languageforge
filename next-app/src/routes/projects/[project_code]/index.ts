@@ -1,6 +1,6 @@
 import { sf } from '$lib/fetch/server'
 
-export async function get({ params : { project_code }, request: { headers } }) {
+export async function get({ params: { project_code }, request: { headers }, url: { searchParams } }) {
 	const cookie = headers.get('cookie')
 
 	const { id, projectName: name, projectCode: code } = await getProjectInfo(project_code, cookie)
