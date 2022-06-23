@@ -34,7 +34,7 @@
 
 {#if only_showing_subset}
 	<footer class='flex justify-center'>
-		<Button on:click={ load_all_activities } outlined small>
+		<Button on:click={ load_all_activities } class='btn-outline btn-sm'>
 			show all
 		</Button>
 	</footer>
