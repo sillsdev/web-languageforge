@@ -30,19 +30,28 @@ async function getProjectInfo(project_code, cookie) {
 }
 
 function getActivities(project_code, cookie) {
+	const today = new Date()
+	const thirty_days_ago = daysAgo(30)
+
 	return sf({
 		// src/Api/Model/Shared/Dto/ActivityListDto.php
 		name: 'activity_list_dto_for_project',
-		args: [ // src/Api/Model/Shared/Dto/ActivityListDto.php.__construct
+		args: [ // src/Api/Model/Shared/Dto/ActivityListDto.php->ActivityListModel.__construct
 			project_code,
 			{
-				// endDate: ,
-				// limit: ,
-				// skip:
+				startDate: thirty_days_ago.toLocaleDateString(),
+				endDate: today.toLocaleDateString(),
 			}
 		],
 		cookie,
 	})
+}
+
+function daysAgo(num_days) {
+	const today = new Date();
+	const daysAgo = new Date(today.setDate(today.getDate() - num_days))
+
+	return daysAgo
 }
 
 function transform({id, action, date, content}) {
