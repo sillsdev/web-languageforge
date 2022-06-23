@@ -11,8 +11,10 @@
 		path *vite* # when running next-app in dev mode, this is needed.
 		path /src/lib* # when running next-app in dev mode, this is needed.
 		path /_app/*
+		# ref for existing: /src/index.php
 		path /app/changepassword
 		path /password*
+		path /projects*
 	}
 	route @next_app_paths {
 		rewrite /app/changepassword /password/change
