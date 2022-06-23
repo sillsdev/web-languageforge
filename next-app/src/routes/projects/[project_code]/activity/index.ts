@@ -34,7 +34,7 @@ export async function get({ params, request }) {
 	}
 }
 
-function transform({ id, action, date, content}) {
+function transform({id, action, date, content}) {
 	return {
 		id,
 		action,
