@@ -9,43 +9,27 @@ export async function get({ params, request }) {
 		id: params.project_id,
 	}
 
-	const activities = [
-		{
-			id: 1,
-			username: 'johndoe',
-		},
-		{
-			id: 2,
-			username: 'janedoe',
-		},
-	]
+	let activities = []
 
 	try {
-		// const { password, password_confirm } = await request.json()
+		const cookie = request.headers.get('cookie')
 
-		// if (! password) {
-		// 	throwError('Password is required', 400)
-		// }
-		// if (password !== password_confirm) {
-		// 	throwError('Passwords do not match', 400)
-		// }
-
-		// const cookie = request.headers.get('cookie')
-
-		// const { userId } = await sf({
-		// 	name: 'session_getSessionData',
-		// 	cookie,
-		// })
-
-		// if (! userId) {
-		// 	throwError('User unknown', 404)
-		// }
-
-		// await sf({
-		// 	name: 'change_password',
-		// 	args: [userId, password],
-		// 	cookie,
-		// })
+		const { activity } = await sf({
+			name: 'activity_list_dto',
+			args: [{
+				startDate: null, // TODO: is this working?
+				endDate: null, // TODO: is this working?
+				limit: 10, // TODO: is this working?
+				skip: 0
+			}],
+			cookie,
+		})
+// console.log(project.id, activity)
+		activities = Object
+			.values(activity)
+			.filter(({ content }) => content.project === project.id)
+			.filter(({ action }) => action !== 'add_user_to_project')
+			.map(transform)
 	} catch (error) {
 		return {
 			status: error.code,
@@ -58,5 +42,16 @@ export async function get({ params, request }) {
 			project,
 			activities,
 		},
+	}
+}
+
+function transform({ id, action, date, content}) {
+	return {
+		id,
+		action,
+		date,
+		user: content.user,
+		entry: content.entry || '',
+		num_fields: content.changes?.length || 0,
 	}
 }
