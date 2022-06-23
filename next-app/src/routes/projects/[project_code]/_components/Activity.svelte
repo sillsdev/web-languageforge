@@ -36,8 +36,8 @@
 </script>
 
 <!-- https://daisyui.com/components/table -->
-<div class='overflow-x-auto mb-8'> <!-- moved the mb from the table to the div so the h-scrollbar isn't too close to the table's next sibling -->
-	<table class='table table-zebra mb-0'>
+<div class='overflow-x-auto'>
+	<table class='table table-zebra m-0'>
 		<thead>
 			<tr>
 				<td>user</td>
