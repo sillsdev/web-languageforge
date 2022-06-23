@@ -310,6 +310,7 @@ services:
     depends_on:
       - db
       - mail
+      - ld-api
     ports:
       - 3238:80
     environment:
