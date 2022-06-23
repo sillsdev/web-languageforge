@@ -136,6 +136,7 @@ class RightsHelper
 
             case 'message_send':
             case 'project_read':
+            case 'project_read_by_code':
             case 'project_settings':
             case 'project_updateSettings':
             case 'project_readSettings':
