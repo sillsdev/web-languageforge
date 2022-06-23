@@ -27,7 +27,7 @@
 		return a.date === b.date ? a.user === b.user ? des(a.time, b.time) : asc(a.user, b.user) : des(a.date, b.date)
 	}
 
-	const asc = (a, b) => a < b ? -1 : 1
+	const asc = (a, b) => a > b ? 1 : -1
 	const des = (a, b) => a < b ? 1 : -1
 
 	function toNames(fields = []) {
@@ -50,7 +50,7 @@
 		{#each sorted_activities as activity}
 			<tr>
 				<td>{ activity.user }</td>
-				<td>{ activity.date }</td>
+				<td>{ activity.date } { activity.time }</td>
 				<td>{ action_display[activity.action] || activity.action }</td>
 				<td>{ activity.entry || '—' }</td>
 				<td>{ activity.fields || '—' }</td>
