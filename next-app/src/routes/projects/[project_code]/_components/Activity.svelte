@@ -36,27 +36,29 @@
 </script>
 
 <!-- https://daisyui.com/components/table -->
-<table class='table table-zebra'>
-	<thead>
-		<tr>
-			<th>user</th>
-			<th>date</th>
-			<th>action</th>
-			<th>entry</th>
-			<th>fields</th>
-		</tr>
-	</thead>
-	<tbody>
-		{#each sorted_activities as activity}
+<div class=overflow-x-auto>
+	<table class='table table-zebra'>
+		<thead>
 			<tr>
-				<td>{ activity.user }</td>
-				<td>{ activity.date }</td>
-				<td>{ action_display[activity.action] || activity.action }</td>
-				<td>{ activity.entry || '—' }</td>
-				<td>{ activity.fields || '—' }</td>
+				<td>user</td>
+				<th>date</th>
+				<th>action</th>
+				<th>entry</th>
+				<th>fields</th>
 			</tr>
-		{:else}
-			<tr><td>No activity yet</td></tr>
-		{/each}
-	</tbody>
-</table>
+		</thead>
+		<tbody>
+			{#each sorted_activities as activity}
+				<tr>
+					<td>{ activity.user }</td>
+					<td>{ activity.date }</td>
+					<td>{ action_display[activity.action] || activity.action }</td>
+					<td>{ activity.entry || '—' }</td>
+					<td>{ activity.fields || '—' }</td>
+				</tr>
+			{:else}
+				<tr><td>No activity yet</td></tr>
+			{/each}
+		</tbody>
+	</table>
+</div>
