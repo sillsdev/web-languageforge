@@ -18,8 +18,8 @@ export async function get_activities({ project_code, cookie, start_date, end_dat
 		args: [
 			project_code,
 			{
-				startDate: start_date && start_date.toLocaleDateString(),
-				endDate: end_date && end_date.toLocaleDateString(),
+				startDate: start_date,
+				endDate: end_date,
 			}
 		],
 		cookie,
