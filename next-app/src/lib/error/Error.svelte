@@ -13,12 +13,12 @@
 
 {#if $error.message}
 	<!-- https://daisyui.com/components/alert -->
-	<aside bind:this={errContainer} class='alert alert-error shadow-lg w-auto absolute top-0 z-10'>
+	<aside bind:this={ errContainer } class='alert alert-error shadow-lg w-auto absolute top-0 z-10'>
 		<ErrorIcon />
 
-		<span>{$error.message}</span>
+		<span>{ $error.message }</span>
 
-		<button on:click={dismiss} class='btn btn-ghost'>
+		<button on:click={ dismiss } class='btn btn-ghost'>
 			Dismiss
 		</button>
 	</aside>

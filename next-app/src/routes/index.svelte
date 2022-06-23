@@ -29,8 +29,8 @@
 
 <section>
 	<h2>Progress indicator</h2>
-	<Button on:click={() => start('index.svelte')}>start progress</Button>
-	<Button on:click={() => stop('index.svelte')}>stop progress</Button>
+	<Button on:click={ () => start('index.svelte') }>start progress</Button>
+	<Button on:click={ () => stop('index.svelte') }>stop progress</Button>
 </section>
 
 <section>
@@ -62,5 +62,5 @@
 	<button class='btn' disabled>disabled</button>
 
 	<h3>Light/Dark mode</h3>
-	<input type=checkbox bind:checked={dark_mode} class='toggle toggle-primary toggle-lg'>
+	<input type=checkbox bind:checked={ dark_mode } class='toggle toggle-primary toggle-lg'>
 </section>

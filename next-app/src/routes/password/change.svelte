@@ -34,9 +34,9 @@
 		Change your password
 	</PageHeader>
 
-	<Form on:submit={change_password}>
-		<Input label='New password:' type=password bind:value={new_password} required autofocus />
-		<Input label='Confirm new password:' type=password bind:value={new_password_confirm} required />
+	<Form on:submit={ change_password }>
+		<Input label='New password:' type=password bind:value={ new_password } required autofocus />
+		<Input label='Confirm new password:' type=password bind:value={ new_password_confirm } required />
 
 		<Button>Change my password</Button>
 	</Form>
