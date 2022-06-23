@@ -45,7 +45,7 @@ class ProjectList_UserModel extends MapperListModel
     public function readUserProjects($userId)
     {
         $query = array('users.' . $userId => array('$exists' => true), 'siteName' => array('$in' => array($this->_site)), 'isArchived' => array('$ne' => true));
-        $fields = array('projectName', 'appName', 'siteName', 'ownerRef');
+        $fields = array('projectName', 'projectCode', 'appName', 'siteName', 'ownerRef');
 
         $this->_mapper->readList($this, $query, $fields);
 
