@@ -50,7 +50,7 @@
 		{#each sorted_activities as activity}
 			<tr>
 				<td>{ activity.user }</td>
-				<td>{ activity.date } { activity.time }</td>
+				<td>{ activity.date }</td>
 				<td>{ action_display[activity.action] || activity.action }</td>
 				<td>{ activity.entry || '—' }</td>
 				<td>{ activity.fields || '—' }</td>
