@@ -9,6 +9,6 @@
 	<title>Project Home</title>
 </svelte:head>
 
-<PageHeader>
+<PageHeader class='flex justify-between'>
 	{ project.name }
 </PageHeader>
