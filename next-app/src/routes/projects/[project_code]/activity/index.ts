@@ -1,5 +1,5 @@
-import { page } from '$app/stores'
-import { throwError } from '$lib/error'
+// import { page } from '$app/stores'
+// import { throwError } from '$lib/error'
 import { sf } from '$lib/fetch/server'
 
 // TODO: next, build out the api to simply convert the activity into an array
