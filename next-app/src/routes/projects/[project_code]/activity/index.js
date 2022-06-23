@@ -6,7 +6,7 @@ import { sf } from '$lib/fetch/server'
 // TODO: next, start to peel off the individual properties
 export async function get({ params, request }) {
 	const project = {
-		id: params.project_id,
+		id: params.project_code,
 	}
 
 	let activities = []
@@ -18,8 +18,8 @@ export async function get({ params, request }) {
 		const { activity } = await sf({
 			name: 'activity_list_dto_for_project',
 			// src/Api/Model/Shared/Dto/ActivityListDto.php.__construct
-			args: [{
-				projectId: project.id,
+			args: [project.id,
+      {
 				// endDate: ,
 				// limit: ,
 				// skip:
@@ -27,10 +27,8 @@ export async function get({ params, request }) {
 			cookie,
 		})
 console.log(activity)
-		activities = Object
-			.values(activity)
+		activities = activity
 			// .filter(({ content }) => content.project === project.id)
-			.filter(({ action }) => action !== 'add_user_to_project')
 			.map(transform)
 			//TODO: limit to 25? seems too arbitrary, I'm inclined to grab last two weeks worth
 	} catch (error) {

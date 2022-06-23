@@ -7,6 +7,7 @@
 	const action_display = {
 		'add_entry': 'Add',
 		'update_entry': 'Update',
+		'add_user_to_project': 'Joined',
 	}
 
 	function toNames(fields = []) {
