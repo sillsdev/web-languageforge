@@ -1,7 +1,9 @@
 <script>
 	import PageHeader from '$lib/PageHeader.svelte'
 
+	export let project
 	export let activities = []
+
 </script>
 
 <svelte:head>
@@ -9,7 +11,7 @@
 </svelte:head>
 
 <PageHeader>
-	Activity across all of your projects
+	Activity for {project.id}
 </PageHeader>
 
 {#each activities as activity}
