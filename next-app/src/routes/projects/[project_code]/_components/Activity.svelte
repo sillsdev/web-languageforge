@@ -1,8 +1,5 @@
 <script>
-	import PageHeader from '$lib/PageHeader.svelte'
-
-	export let project
-	export let activities = []
+	export let activities
 
 	const action_display = {
 		'add_entry': 'Add',
@@ -15,14 +12,6 @@
 	}
 </script>
 
-<svelte:head>
-	<title>Project activity</title>
-</svelte:head>
-
-<PageHeader>
-	Activity for {project.code}
-</PageHeader>
-
 <!-- https://daisyui.com/components/table -->
 <table class='table table-zebra'>
 	<thead>
@@ -31,7 +20,7 @@
 			<th>date</th>
 			<th>action</th>
 			<th>entry</th>
-			<th>number of fields</th>
+			<th>fields</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -40,8 +29,8 @@
 				<td>{activity.user}</td>
 				<td>{new Date(activity.date).toLocaleString()}</td>
 				<td>{action_display[activity.action]}</td>
-				<td>{activity.entry}</td>
-				<td>{toNames(activity.fields)}</td>
+				<td>{activity.entry || '—'}</td>
+				<td>{toNames(activity.fields) || '—'}</td>
 			</tr>
 		{:else}
 			<tr><td>No activity yet</td></tr>
