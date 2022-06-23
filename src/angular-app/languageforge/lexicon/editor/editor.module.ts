@@ -1,7 +1,6 @@
 import * as angular from 'angular';
 import uiRouter from 'angular-ui-router';
 
-import {ActivityAppModule} from '../../../bellows/apps/activity/activity-app.module';
 import {CoreModule} from '../../../bellows/core/core.module';
 import {NoticeModule} from '../../../bellows/core/notice/notice.module';
 import {TypeAheadModule} from '../../../bellows/shared/type-ahead.module';
@@ -15,7 +14,6 @@ export const LexiconEditorModule = angular
   .module('lexiconEditorModule', [
     'ui.bootstrap',
     uiRouter,
-    ActivityAppModule,
     CoreModule,
     NoticeModule,
     PuiUtilityModule,
