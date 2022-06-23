@@ -1,7 +1,6 @@
 import { throwError } from '$lib/error'
 import { sf } from '$lib/fetch/server'
 
-/** @type {import('./index.json').RequestHandler} */
 export async function put({ request }) {
 	try {
 		const { password, password_confirm } = await request.json()
