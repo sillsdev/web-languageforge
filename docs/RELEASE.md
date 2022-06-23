@@ -6,7 +6,7 @@ This guide describes our Release and Deployment processes.
 
 The Language Forge project is under active development and as a project team we value shipping early and shipping often.  In the past we have used a form of semantic versioning for our version names, however moving forward our releases will be [publicized on our community support site](https://community.software.sil.org/c/language-forge/20) as the YYYY-MM release. We will publish a summary of changes on our community site, once a month for all releases/changes that occurred during the prior month.
 
-Releases are tagged in Git using the naming convention `vYYYYMMDD` and Docker images as `YYYYMMDD` (omitting the preceding `v`).  In the event that we release twice in a single day, the release shall be named `YYYYMMDDb`, containing a distinguishing trailing letter.
+Releases are tagged in Git using the naming convention `vYYYY-MM-DD` and Docker images as `YYYY-MM-DD` (omitting the preceding `v`).  In the event that we release twice in a single day, the release shall be named `YYYY-MM-DDb`, containing a distinguishing trailing letter.
 ## Application deployment ##
 
 Language Forge is built to run in a containerized environment.  Kubernetes is our chosen runtime platform for production.  Deployments are automated under the right circumstances using GitHub Actions.
@@ -29,7 +29,7 @@ Production deployments can be manually run with `VERSION_APP=<some-docker-tag-or
 
 Current workflow:
 1. merge from `develop` into `master`
-1. "Draft a new release" on https://github.com/sillsdev/web-languageforge/releases with a `v#.#.#` tag format
+1. "Draft a new release" on https://github.com/sillsdev/web-languageforge/releases with a `vYYYY-MM-DD` tag format
 1. "Publish" the new release
 1. this will kick off the GHA (`.github/workflows/production.yml`) to build, test and publish the necessary images to Docker Hub (https://hub.docker.com/r/sillsdev/web-languageforge/tags) and deploy this code to the production environment at https://languageforge.org
 
