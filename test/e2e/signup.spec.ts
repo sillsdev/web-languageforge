@@ -123,7 +123,10 @@ test.describe('E2E Signup app', () => {
 
   test('Redirects to projects page if already logged in', async ({ memberTab }) => {
     const signupPage = new SignupPage(memberTab);
-    await signupPage.page.goto(SignupPage.url);
+    await Promise.all([
+      signupPage.page.waitForNavigation({waitUntil: "networkidle"}),
+      signupPage.page.goto(SignupPage.url),
+    ]);
     expect(signupPage.page.url()).toContain('/app/projects');
   });
 });

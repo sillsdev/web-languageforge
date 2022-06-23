@@ -4,12 +4,7 @@ import { ProjectSettingsPage } from './pages/project-settings.page';
 import { initTestProject, addUserToProject } from './utils/testSetup';
 import { ProjectsPage } from './pages/projects.page';
 
-
-export type Project = {
-  name: string,
-  code: string,
-  id: string
-}
+import { Project } from './utils/types';
 
 test.describe('E2E Project Settings app', () => {
   let projectSettingsPageManager: ProjectSettingsPage;

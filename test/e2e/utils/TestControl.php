@@ -137,7 +137,7 @@ class TestControl
 
         $db = MongoStore::connect(DATABASE);
         $coll = $db->selectCollection('projects');
-        $coll->deleteOne([ 'projectCode' => $projectCode ]);
+        $coll->deleteMany([ 'projectCode' => $projectCode ]);
         $projectModel = new ProjectModel();
         $projectModel->projectName = $projectName;
         $projectModel->projectCode = $projectCode;
@@ -150,6 +150,8 @@ class TestControl
             if ($user->readByUserName($username)) {
                 $userId = $user->id->asString();
                 $projectModel->addUser($userId, ProjectRoles::CONTRIBUTOR);
+                $user->addProject($projectModel->id->asString());
+                $user->write();
             }
         }
         MongoStore::dropAllCollections($projectModel->databaseName());
@@ -179,6 +181,8 @@ class TestControl
         }
 
         $project->addUser($user->id->asString(), $role);
+        $user->addProject($project->id->asString());
+        $user->write();
         $project->write();
         return true;
     }
