@@ -1,19 +1,25 @@
+import { get_activities } from './activities'
 import { sf } from '$lib/fetch/server'
 
-export async function get({ params: { project_code }, request: { headers }, url: { searchParams } }) {
-	const cookie = headers.get('cookie')
+export async function get({ params: { project_code }, request: { headers }}) {
+	const args = {
+		project_code,
+		cookie: headers.get('cookie'),
+	}
 
-	const { id, projectName: name, projectCode: code } = await getProjectInfo(project_code, cookie)
+	const { id, projectName: name } = await get_project_info(args)
 
-	const { activity } = await getActivities(project_code, cookie)
-
-	const activities = activity.map(transform)
+	const last_30_days = {
+		start_date: daysAgo(30),
+		end_date: new Date(),
+	}
+	const activities = await get_activities({ ...last_30_days, ...args })
 
 	return {
 		body: {
 			project: {
 				id,
-				code,
+				code: project_code,
 				name,
 			},
 			activities,
@@ -21,28 +27,10 @@ export async function get({ params: { project_code }, request: { headers }, url:
 	}
 }
 
-async function getProjectInfo(project_code, cookie) {
+async function get_project_info({ project_code, cookie }) {
 	return await sf({
 		name: 'project_read_by_code',
-		args: [project_code],
-		cookie,
-	})
-}
-
-function getActivities(project_code, cookie) {
-	const today = new Date()
-	const thirty_days_ago = daysAgo(30)
-
-	return sf({
-		// src/Api/Model/Shared/Dto/ActivityListDto.php
-		name: 'activity_list_dto_for_project',
-		args: [ // src/Api/Model/Shared/Dto/ActivityListDto.php->ActivityListModel.__construct
-			project_code,
-			{
-				startDate: thirty_days_ago.toLocaleDateString(),
-				endDate: today.toLocaleDateString(),
-			}
-		],
+		args: [ project_code ],
 		cookie,
 	})
 }
@@ -52,15 +40,4 @@ function daysAgo(num_days) {
 	const daysAgo = new Date(today.setDate(today.getDate() - num_days))
 
 	return daysAgo
-}
-
-function transform({id, action, date, content}) {
-	return {
-		id,
-		action,
-		date,
-		user: content.user,
-		entry: content.entry || '',
-		fields: content.changes || [],
-	}
 }
