@@ -57,7 +57,7 @@
 					<td>{ activity.fields || '—' }</td>
 				</tr>
 			{:else}
-				<tr><td>No activity yet</td></tr>
+				<tr><td>No activity</td></tr>
 			{/each}
 		</tbody>
 	</table>
