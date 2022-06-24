@@ -33,7 +33,7 @@ export class ConfigurationPage {
   }
 
   async getTable(tableTitle: string): Promise<Locator> {
-    return this.page.locator(`tbody:has(th:has-text("${tableTitle}"))`);
+    return this.page.locator(`table:has(th:has-text("${tableTitle}"))`);
   }
 
   async getRow(tableLocator: Locator, rowTitle: string): Promise<Locator> {
@@ -47,7 +47,7 @@ export class ConfigurationPage {
     const table: Locator = await this.getTable(tableTitle);
     const row: Locator = await this.getRow(table, rowTitle);
     const columnIndex = await this.getChildPosition(table.locator('tr').first(), 'th', columnTitle);
-    return row.locator('td').nth(columnIndex).locator('input');
+    return row.locator('css=td,th').nth(columnIndex).locator('input');
   }
 
   async getFieldSpecificButton(tableTitle: string, rowTitle: string): Promise<Locator> {
@@ -68,11 +68,12 @@ export class ConfigurationPage {
 
   async getChildPosition(parentLocator: Locator, childElementType: string, innerText: string): Promise<number> {
     const children = parentLocator.locator(childElementType);
-    for (let i=0; i <= await children.count(); i++) {
+    for (let i=0; i < await children.count(); i++) {
       if (await children.nth(i).innerText() == innerText) {
         return i;
       }
     }
+    console.log(`Warning: there is no element with text ${innerText} with the parent ${parentLocator}.`);
     return undefined;
   }
 }

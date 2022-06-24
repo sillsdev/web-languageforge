@@ -8,9 +8,10 @@ import { test } from './utils/fixtures';
 
 import { EditorPage } from './pages/editor.page';
 import { ConfirmModalElement } from './components/confirm-modal.component';
+import { NoticeElement } from './components/notice.component';
 
 import { Project } from './utils/types';
-import { addAudioVisualFileToProject, addLexEntry, addPictureFileToProject, addWritingSystemToProject, initTestProject } from './utils/testSetup';
+import { addAudioVisualFileToProject, addLexEntry, addPictureFileToProject, addUserToProject, addWritingSystemToProject, initTestProject } from './utils/testSetup';
 
 test.describe('Lexicon E2E Entry Editor and Entries List', () => {
   const constants = require('./testConstants.json');
@@ -25,17 +26,19 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
   };
   let lexEntriesIds: string[] = [];
 
-  test.beforeAll(async ({ request, manager, managerTab, member }) => {
+  test.beforeAll(async ({ request, manager, managerTab, member, member2 }) => {
     // TODO: change initTestProject to allow adding more writing systems to the test project
     project.id = await initTestProject(request, project.code, project.name, manager.username, [member.username]);
+    await addUserToProject(request, project.code, member2.username, "observer");
     await addWritingSystemToProject(request, project.code, 'th-fonipa', 'tipa');
     await addWritingSystemToProject(request, project.code, 'th-Zxxx-x-audio', 'taud');
-    // TOASK: why does the following line not work
+
     await addPictureFileToProject(request, project.code, constants.testEntry1.senses[0].pictures[0].fileName);
     await addAudioVisualFileToProject(request, project.code, constants.testEntry1.lexeme['th-Zxxx-x-audio'].value);
     // put in data
     lexEntriesIds.push(await addLexEntry(request, project.code, constants.testEntry1));
     lexEntriesIds.push(await addLexEntry(request, project.code, constants.testEntry2));
+    lexEntriesIds.push(await addLexEntry(request, project.code, constants.testMultipleMeaningEntry1));
     editorPageManager = new EditorPage(managerTab, project.id, lexEntriesIds[0]);
   });
 
@@ -89,7 +92,7 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
 
     // left side bar entries list
     test('Editor page has correct entry count in left side bar entries list', async () => {
-      expect(editorPageManager.compactEntryListItem).toHaveCount(lexEntriesIds.length);
+      await expect(editorPageManager.compactEntryListItem).toHaveCount(lexEntriesIds.length);
     });
 
     test('Entry 1: edit page has correct definition, part of speech', async () => {
@@ -215,6 +218,7 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
       picture = await editorPageManager.getPicture(editorPageManager.senseCard, constants.testEntry1.senses[0].pictures[0].fileName);
       expect(picture).toBeUndefined();
       expect(await editorPageManager.getPicturesOuterDiv(editorPageManager.senseCard)).not.toBeVisible();
+      // JeanneSonTODO: potentially put this in a function
       if ((await editorPageManager.lexAppToolbar.toggleExtraFieldsButton.innerText()).includes('Show Extra Fields')) {
         await editorPageManager.lexAppToolbar.toggleExtraFieldsButton.click();
       }
@@ -233,55 +237,10 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
         await (await editorPageManager.configurationPage.getFieldSpecificCheckbox('Entry Fields', 'Word', 'IPA')).check();
         await (await editorPageManager.configurationPage.getFieldSpecificCheckbox('Entry Fields', 'Word', 'Voice')).check();
         await editorPageManager.configurationPage.applyButton.click();
+        // the follow line of code is not needed as the outer describe block executes this in the beforeEach
         // await editorPageManager.goto();
       });
 
-      test('Audio input system is present, playable and has "more" control (manager)', async () => {
-        const audio: Locator = await editorPageManager.getSoundplayer(editorPageManager.entryCard, 'Word', 'taud');
-        await expect(audio).toBeVisible();
-        await expect(audio.locator(editorPageManager.audioPlayer.playIconSelector)).toBeVisible();
-        // check if this audio player is the only one in this card
-        await expect(editorPageManager.entryCard.locator(editorPageManager.audioPlayer.playIconSelector + ' >> visible=true')).toHaveCount(1);
-        await expect(audio.locator(editorPageManager.audioPlayer.togglePlaybackAnchorSelector)).toBeEnabled();
-        await expect(audio.locator(editorPageManager.audioPlayer.dropdownToggleSelector)).toBeVisible();
-        await expect(audio.locator(editorPageManager.audioPlayer.dropdownToggleSelector)).toBeEnabled();
-        await expect(audio.locator(editorPageManager.audioPlayer.uploadButtonSelector)).not.toBeVisible();
-        // this button is only visible when user is observer and has only the right to download
-        await expect(audio.locator(editorPageManager.audioPlayer.downloadButtonSelector)).not.toBeVisible();
-      });
-
-      test('File upload drop box is displayed when Upload is clicked & not displayed if upload cancelled', async () => {
-        const audio: Locator = await editorPageManager.getSoundplayer(editorPageManager.entryCard, 'Word', 'taud');
-        const dropbox = editorPageManager.entryCard.locator(editorPageManager.dropbox.dragoverFieldSelector);
-        await expect(dropbox).not.toBeVisible();
-
-        const cancelAddingAudio = editorPageManager.getCancelDropboxButton(editorPageManager.entryCard, 'Audio');
-        await expect(cancelAddingAudio).not.toBeVisible();
-
-        await audio.locator(editorPageManager.audioPlayer.dropdownToggleSelector).click();
-        await editorPageManager.entryCard.locator(editorPageManager.audioDropdownMenu.uploadReplacementButtonSelector).click();
-        await expect(audio.locator(editorPageManager.audioPlayer.dropdownToggleSelector)).not.toBeVisible();
-        await expect(dropbox).toBeVisible();
-
-        await expect(cancelAddingAudio).toBeVisible();
-        await cancelAddingAudio.click();
-        await expect(audio.locator(editorPageManager.audioPlayer.dropdownToggleSelector)).toBeVisible();
-        await expect(dropbox).not.toBeVisible();
-        await expect(cancelAddingAudio).not.toBeVisible();
-      });
-
-      // JeanneSonTODO: test for navigation to other entries with left entry bar
-
-      test('Word 2 (without audio): audio input system is not playable but has "upload" button (manager)', async () => {
-        await editorPageManager.goto(lexEntriesIds[1]);
-        await expect(editorPageManager.entryCard.locator(editorPageManager.audioPlayer.playIconSelector)).not.toBeVisible();
-
-        const audio: Locator = await editorPageManager.getSoundplayer(editorPageManager.entryCard, 'Word', 'taud');
-        await expect(audio.locator(editorPageManager.audioPlayer.dropdownToggleSelector)).not.toBeVisible();
-        await expect(audio.locator(editorPageManager.audioPlayer.uploadButtonSelector)).toBeVisible();
-        await expect(audio.locator(editorPageManager.audioPlayer.uploadButtonSelector)).toBeEnabled();
-        await expect(audio.locator(editorPageManager.audioPlayer.downloadButtonSelector)).not.toBeVisible();
-      });
 
       test.describe('Member', () => {
         let editorPageMember: EditorPage;
@@ -308,410 +267,432 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
 
         test('Word 2 (without audio): audio input system is not playable but has "upload" button (member)', async () => {
           await editorPageMember.goto(lexEntriesIds[1]);
-          // expect<any>(await editorPage.edit.audio.playerIcons(lexemeLabel).first().isPresent()).toBe(false);
-          // expect<any>(await editorPage.edit.audio.players(lexemeLabel).first().isPresent()).toBe(false);
-          // expect<any>(await editorPage.edit.audio.moreControls(lexemeLabel).first().isDisplayed()).toBe(false);
-          // expect<any>(await editorPage.edit.audio.uploadButtons(lexemeLabel).first().isDisplayed()).toBe(true);
-          // expect<any>(await editorPage.edit.audio.uploadButtons(lexemeLabel).first().isEnabled()).toBe(true);
-          // expect<any>(await editorPage.edit.audio.downloadButtons(lexemeLabel).first().isDisplayed()).toBe(false);
+          const audio: Locator = await editorPageMember.getSoundplayer(editorPageMember.entryCard, 'Word', 'taud');
+          await expect(editorPageMember.entryCard.locator(editorPageMember.audioPlayer.playIconSelector + ' >> visible=true')).toHaveCount(0);
+          await expect(audio.locator(editorPageMember.audioPlayer.togglePlaybackAnchorSelector)).not.toBeVisible();
+          await expect(audio.locator(editorPageMember.audioPlayer.dropdownToggleSelector)).toBeEnabled();
+          await expect(audio.locator(editorPageMember.audioPlayer.uploadButtonSelector)).toBeVisible();
+          await expect(audio.locator(editorPageMember.audioPlayer.uploadButtonSelector)).toBeEnabled();
+          await expect(audio.locator(editorPageMember.audioPlayer.downloadButtonSelector)).not.toBeVisible();
         });
       });
 
+      test.describe('Observer', () => {
+        let editorPageObserver: EditorPage;
 
-      //   test('login as observer, click on first word', async () => {
-      //     // await loginPage.loginAsObserver();
-      //     // await projectsPage.get();
-      //     // await projectsPage.clickOnProject(constants.testProjectName);
-      //     // await editorPage.edit.toListLink.click();
-      //     // await editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
-      //   });
+        test.beforeAll(async ({ member2Tab }) => {
+          editorPageObserver = new EditorPage(member2Tab, project.id, lexEntriesIds[0]);
+        });
 
-      //   test('audio Input System is playable but does not have "more" control (observer)', async () => {
-      //     // expect<any>(await editorPage.edit.audio.playerIcons(lexemeLabel).count()).toEqual(1);
-      //     // expect<any>(await editorPage.edit.audio.playerIcons(lexemeLabel).first().isDisplayed()).toBe(true);
-      //     // expect<any>(await editorPage.edit.audio.playerIcons(lexemeLabel).first().getAttribute('class')).toContain('fa-play');
-      //     // expect<any>(await editorPage.edit.audio.players(lexemeLabel).first().isDisplayed()).toBe(true);
-      //     // expect<any>(await editorPage.edit.audio.players(lexemeLabel).first().isEnabled()).toBe(true);
-      //     // expect<any>(await editorPage.edit.audio.moreControls(lexemeLabel).first().isDisplayed()).toBe(false);
-      //     // expect<any>(await editorPage.edit.audio.uploadButtons(lexemeLabel).first().isDisplayed()).toBe(false);
-      //     // expect<any>(await editorPage.edit.audio.downloadButtons(lexemeLabel).first().isDisplayed()).toBe(true);
-      //   });
+        test('Audio Input System is playable but does not have "more" control (observer)', async () => {
+          await editorPageObserver.goto();
+          const audio: Locator = await editorPageObserver.getSoundplayer(editorPageObserver.entryCard, 'Word', 'taud');
+          await expect(audio.locator(editorPageObserver.audioPlayer.playIconSelector)).toBeVisible();
+          // check if this audio player is the only one in this card
+          await expect(editorPageObserver.entryCard.locator(editorPageObserver.audioPlayer.playIconSelector + ' >> visible=true')).toHaveCount(1);
+          await expect(audio.locator(editorPageObserver.audioPlayer.togglePlaybackAnchorSelector)).toBeVisible();
+          await expect(audio.locator(editorPageObserver.audioPlayer.togglePlaybackAnchorSelector)).toBeEnabled();
+          await expect(audio.locator(editorPageObserver.audioPlayer.dropdownToggleSelector)).not.toBeVisible();
+          await expect(audio.locator(editorPageObserver.audioPlayer.uploadButtonSelector)).not.toBeVisible();
+          await expect(audio.locator(editorPageObserver.audioPlayer.downloadButtonSelector)).toBeVisible();
+        });
 
-      //   test('click on second word (found by definition)', async () => {
-      //     // await editorPage.edit.findEntryByDefinition(constants.testEntry2.senses[0].definition.en.value).click();
-      //   });
+        test('Word 2 (without audio): audio input system is not playable and does not have "upload" button (observer)', async () => {
+          await editorPageObserver.goto(lexEntriesIds[1]);
+          const audio: Locator = await editorPageObserver.getSoundplayer(editorPageObserver.entryCard, 'Word', 'taud');
+          await expect(editorPageObserver.entryCard.locator(editorPageObserver.audioPlayer.playIconSelector + ' >> visible=true')).toHaveCount(0);
+          await expect(audio.locator(editorPageObserver.audioPlayer.togglePlaybackAnchorSelector)).not.toBeVisible();
+          await expect(audio.locator(editorPageObserver.audioPlayer.dropdownToggleSelector)).not.toBeVisible();
+          await expect(audio.locator(editorPageObserver.audioPlayer.uploadButtonSelector)).not.toBeVisible();
+          await expect(audio.locator(editorPageObserver.audioPlayer.downloadButtonSelector)).not.toBeVisible();
+        });
+      });
 
-      //   test('word 2: audio Input System is not playable and does not have "upload" button (observer)',
-      //     async () => {
-      //       // expect<any>(await editorPage.edit.audio.playerIcons(lexemeLabel).first().isPresent()).toBe(false);
-      //       // expect<any>(await editorPage.edit.audio.players(lexemeLabel).first().isPresent()).toBe(false);
-      //       // expect<any>(await editorPage.edit.audio.moreControls(lexemeLabel).first().isDisplayed()).toBe(false);
-      //       // expect<any>(await editorPage.edit.audio.uploadButtons(lexemeLabel).first().isDisplayed()).toBe(false);
-      //       // expect<any>(await editorPage.edit.audio.downloadButtons(lexemeLabel).first().isDisplayed()).toBe(false);
-      //     });
+      test.describe('Manager', () => {
+        let audio: Locator;
+        test.beforeAll(async () => {
+          audio = await editorPageManager.getSoundplayer(editorPageManager.entryCard, 'Word', 'taud');
+        })
 
-      //   test('login as manager, click on first word', async () => {
-      //     // await loginPage.loginAsManager();
-      //     // await projectsPage.get();
-      //     // await projectsPage.clickOnProject(constants.testProjectName);
-      //     // await editorPage.edit.toListLink.click();
-      //     // await editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
-      //   });
+        test('Audio input system is present, playable and has "more" control (manager)', async () => {
+          await expect(audio).toBeVisible();
+          await expect(audio.locator(editorPageManager.audioPlayer.playIconSelector)).toBeVisible();
+          // check if this audio player is the only one in this card
+          await expect(editorPageManager.entryCard.locator(editorPageManager.audioPlayer.playIconSelector + ' >> visible=true')).toHaveCount(1);
+          await expect(audio.locator(editorPageManager.audioPlayer.togglePlaybackAnchorSelector)).toBeEnabled();
+          await expect(audio.locator(editorPageManager.audioPlayer.dropdownToggleSelector)).toBeVisible();
+          await expect(audio.locator(editorPageManager.audioPlayer.dropdownToggleSelector)).toBeEnabled();
+          await expect(audio.locator(editorPageManager.audioPlayer.uploadButtonSelector)).not.toBeVisible();
+          // this button is only visible when user is observer and has only the right to download
+          await expect(audio.locator(editorPageManager.audioPlayer.downloadButtonSelector)).not.toBeVisible();
+        });
 
-      //   test('can delete audio Input System', async () => {
-      //     // expect<any>(await editorPage.edit.audio.moreControls(lexemeLabel).first().isDisplayed()).toBe(true);
-      //     // await editorPage.edit.audio.moreControls(lexemeLabel).first().click();
-      //     // await editorPage.edit.audio.moreDelete(lexemeLabel, 0).click();
-      //     // await Utils.clickModalButton('Delete Audio');
-      //     // expect<any>(await editorPage.edit.audio.uploadButtons(lexemeLabel).first().isDisplayed()).toBe(true);
-      //   });
+        test('File upload drop box is displayed when Upload is clicked & not displayed if upload cancelled (manager)', async () => {
+          const dropbox = editorPageManager.entryCard.locator(editorPageManager.dropbox.dragoverFieldSelector);
+          await expect(dropbox).not.toBeVisible();
 
-      //   test('file upload drop box is displayed when Upload is clicked', async () => {
-      //     // expect<any>(await editorPage.edit.audio.uploadButtons(lexemeLabel).first().isDisplayed()).toBe(true);
-      //     // expect<any>(await editorPage.edit.audio.uploadDropBoxes(lexemeLabel).first().isDisplayed()).toBe(false);
-      //     // expect<any>(await editorPage.edit.audio.uploadCancelButtons(lexemeLabel).first().isDisplayed()).toBe(false);
-      //     // await editorPage.edit.audio.uploadButtons(lexemeLabel).first().click();
-      //     // expect<any>(await editorPage.edit.audio.uploadButtons(lexemeLabel).first().isDisplayed()).toBe(false);
-      //     // expect<any>(await editorPage.edit.audio.uploadDropBoxes(lexemeLabel).first().isDisplayed()).toBe(true);
-      //   });
+          const cancelAddingAudio = editorPageManager.getCancelDropboxButton(editorPageManager.entryCard, 'Audio');
+          await expect(cancelAddingAudio).not.toBeVisible();
 
-      //   test('file upload drop box is not displayed when Cancel Uploading Audio is clicked', async () => {
-      //     // expect<any>(await editorPage.edit.audio.uploadCancelButtons(lexemeLabel).first().isDisplayed()).toBe(true);
-      //     // await editorPage.edit.audio.uploadCancelButtons(lexemeLabel).first().click();
-      //     // expect<any>(await editorPage.edit.audio.uploadButtons(lexemeLabel).first().isDisplayed()).toBe(true);
-      //     // expect<any>(await editorPage.edit.audio.uploadDropBoxes(lexemeLabel).first().isDisplayed()).toBe(false);
-      //     // expect<any>(await editorPage.edit.audio.uploadCancelButtons(lexemeLabel).first().isDisplayed()).toBe(false);
-      //   });
+          await audio.locator(editorPageManager.audioPlayer.dropdownToggleSelector).click();
+          await editorPageManager.entryCard.locator(editorPageManager.audioDropdownMenu.uploadReplacementButtonSelector).click();
+          await expect(audio.locator(editorPageManager.audioPlayer.dropdownToggleSelector)).not.toBeVisible();
+          await expect(dropbox).toBeVisible();
 
-      //   test.describe('Mock file upload', async () => {
+          await expect(cancelAddingAudio).toBeVisible();
+          await cancelAddingAudio.click();
+          await expect(audio.locator(editorPageManager.audioPlayer.dropdownToggleSelector)).toBeVisible();
+          await expect(dropbox).not.toBeVisible();
+          await expect(cancelAddingAudio).not.toBeVisible();
+        });
 
-      //     test('can\'t upload a non-audio file', async () => {
-      //       // expect<any>(await editorPage.noticeList.count()).toBe(0);
-      //       // await editorPage.edit.audio.uploadButtons(lexemeLabel).first().click();
-      //       // await editorPage.edit.audio.control(lexemeLabel, 0).mockUpload.enableButton.click();
-      //       // expect(await editorPage.edit.audio.control(lexemeLabel, 0).mockUpload.fileNameInput.isDisplayed()).toBe(true);
-      //       // await editorPage.edit.audio.control(lexemeLabel, 0).mockUpload.fileNameInput
-      //       //   .sendKeys(constants.testMockPngUploadFile.name);
-      //       // await editorPage.edit.audio.control(lexemeLabel, 0).mockUpload.fileSizeInput
-      //       //   .sendKeys(constants.testMockPngUploadFile.size);
-      //       // await editorPage.edit.audio.control(lexemeLabel, 0).mockUpload.uploadButton.click();
-      //       // expect<any>(await editorPage.noticeList.count()).toBe(1);
-      //       // expect<any>(await editorPage.noticeList.first().getText()).toContain(constants.testMockPngUploadFile.name +
-      //       //     ' is not an allowed audio file. Ensure the file is');
-      //       // expect<any>(await editorPage.edit.audio.uploadDropBoxes(lexemeLabel).first().isDisplayed()).toBe(true);
-      //       // await editorPage.edit.audio.control(lexemeLabel, 0).mockUpload.fileNameInput.clear();
-      //       // await editorPage.edit.audio.control(lexemeLabel, 0).mockUpload.fileSizeInput.clear();
-      //       // await editorPage.firstNoticeCloseButton.click();
-      //     });
+        // JeanneSonTODO: test for navigation to other entries with left entry bar
 
-      //     test('can upload an audio file', async () => {
-      //       // expect<any>(await editorPage.noticeList.count()).toBe(0);
-      //       // await editorPage.edit.audio.control(lexemeLabel, 0).mockUpload.fileNameInput
-      //       //   .sendKeys(constants.testMockMp3UploadFile.name);
-      //       // await editorPage.edit.audio.control(lexemeLabel, 0).mockUpload.fileSizeInput
-      //       //   .sendKeys(constants.testMockMp3UploadFile.size);
-      //       // await editorPage.edit.audio.control(lexemeLabel, 0).mockUpload.uploadButton.click();
-      //       // await editorPage.edit.audio.control(lexemeLabel, 0).mockUpload.enableButton.click();
-      //       // expect<any>(await editorPage.noticeList.count()).toBe(1);
-      //       // expect<any>(await editorPage.noticeList.first().getText()).toContain('File uploaded successfully');
-      //       // expect<any>(await editorPage.edit.audio.playerIcons(lexemeLabel).first().isDisplayed()).toBe(true);
-      //       // expect<any>(await editorPage.edit.audio.playerIcons(lexemeLabel).first().getAttribute('class')).toContain('fa-play');
-      //       // expect<any>(await editorPage.edit.audio.players(lexemeLabel).first().isDisplayed()).toBe(true);
-      //       // expect<any>(await editorPage.edit.audio.players(lexemeLabel).first().isEnabled()).toBe(true);
-      //       // expect<any>(await editorPage.edit.audio.moreControls(lexemeLabel).first().isDisplayed()).toBe(true);
-      //     });
+        test('Word 2 (without audio): audio input system is not playable but has "upload" button (manager)', async () => {
+          await editorPageManager.goto(lexEntriesIds[1]);
+          await expect(editorPageManager.entryCard.locator(editorPageManager.audioPlayer.playIconSelector)).not.toBeVisible();
 
-      //   });
+          await expect(audio.locator(editorPageManager.audioPlayer.dropdownToggleSelector)).not.toBeVisible();
+          await expect(audio.locator(editorPageManager.audioPlayer.uploadButtonSelector)).toBeVisible();
+          await expect(audio.locator(editorPageManager.audioPlayer.uploadButtonSelector)).toBeEnabled();
+          await expect(audio.locator(editorPageManager.audioPlayer.downloadButtonSelector)).not.toBeVisible();
+        });
 
-      //   test('click on second word (found by definition)', async () => {
-      //     // await editorPage.edit.findEntryByDefinition(constants.testEntry2.senses[0].definition.en.value).click();
-      //   });
+        test('Can delete audio input system (manager)', async () => {
+          // there is a beforeEach above so we are now on the right page
+          await audio.locator(editorPageManager.audioPlayer.dropdownToggleSelector).click();
+          await audio.locator(editorPageManager.audioDropdownMenu.deleteAudioButtonSelector).click();
+          const confirmModal = new ConfirmModalElement(editorPageManager.page);
+          await confirmModal.confirmButton.click();
+          await expect(audio.locator(editorPageManager.audioPlayer.uploadButtonSelector)).toBeVisible();
+        });
 
-      //   test('word 2: edit page has correct definition, part of speech', async () => {
-      //     // expect<any>(await editorUtil.getFieldValues('Definition')).toEqual([
-      //     //   { en: constants.testEntry2.senses[0].definition.en.value }
-      //     // ]);
-      //     // expect<any>(await editorUtil.getFieldValues('Part of Speech')).toEqual([
-      //     //   editorUtil.expandPartOfSpeech(constants.testEntry2.senses[0].partOfSpeech.value)
-      //     // ]);
-      //   });
+        test('Can\'t upload a non-audio file & can upload audio file', async () => {
+          // to be independent from the audio deletion test above, go to entry 2 (has no audio)
+          await editorPageManager.goto(lexEntriesIds[1]);
+          const noticeElement = new NoticeElement(editorPageManager.page);
+          expect(noticeElement.notice).toHaveCount(0);
 
-      //   test('setup: click on word with multiple definitions (found by lexeme)', async () => {
-      //     // await editorPage.edit.toListLink.click();
-      //     // await editorPage.browse.clickEntryByLexeme(constants.testMultipleMeaningEntry1.lexeme.th.value);
+          // Can't upload a non-audio file
+          await audio.locator(editorPageManager.audioPlayer.uploadButtonSelector).click();
 
-      //     // // fix problem with protractor not scrolling to element before click
-      //     // await browser.driver.executeScript('arguments[0].scrollIntoView();',
-      //     //   editorPage.edit.senses.first().getWebElement());
-      //     // await editorPage.edit.senses.first().click();
-      //   });
+          // Note that Promise.all prevents a race condition between clicking and waiting for the file chooser.
+          const [fileChooser] = await Promise.all([
+            // It is important to call waitForEvent before click to set up waiting.
+            editorPageManager.page.waitForEvent('filechooser'),
+            editorPageManager.page.locator(editorPageManager.dropbox.browseButtonSelector).click(),
+          ]);
+          await fileChooser.setFiles('test/e2e/shared-files/' + constants.testMockPngUploadFile.name);
 
-      //   test('dictionary citation reflects example sentences and translations', async () => {
-      //     // expect(await editorPage.edit.renderedDiv.getText()).toContain(
-      //     //   constants.testMultipleMeaningEntry1.senses[0].examples[0].sentence.th.value);
-      //     // expect(await editorPage.edit.renderedDiv.getText()).toContain(
-      //     //   constants.testMultipleMeaningEntry1.senses[0].examples[0].translation.en.value);
-      //     // expect(await editorPage.edit.renderedDiv.getText()).toContain(
-      //     //   constants.testMultipleMeaningEntry1.senses[0].examples[1].sentence.th.value);
-      //     // expect(await editorPage.edit.renderedDiv.getText()).toContain(
-      //     //   constants.testMultipleMeaningEntry1.senses[0].examples[1].translation.en.value);
-      //     // expect(await editorPage.edit.renderedDiv.getText()).toContain(
-      //     //   constants.testMultipleMeaningEntry1.senses[1].examples[0].sentence.th.value);
-      //     // expect(await editorPage.edit.renderedDiv.getText()).toContain(
-      //     //   constants.testMultipleMeaningEntry1.senses[1].examples[0].translation.en.value);
-      //     // expect(await editorPage.edit.renderedDiv.getText()).toContain(
-      //     //   constants.testMultipleMeaningEntry1.senses[1].examples[1].sentence.th.value);
-      //     // expect(await editorPage.edit.renderedDiv.getText()).toContain(
-      //     //   constants.testMultipleMeaningEntry1.senses[1].examples[1].translation.en.value);
-      //   });
+          expect(noticeElement.notice).toHaveCount(1);
+          await expect(noticeElement.notice).toBeVisible();
+          await expect(noticeElement.notice).toContainText(constants.testMockPngUploadFile.name + ' is not an allowed audio file. Ensure the file is');
+          const dropbox = editorPageManager.entryCard.locator(editorPageManager.dropbox.dragoverFieldSelector);
+          await expect(dropbox).toBeVisible();
+          await noticeElement.closeButton.click();
+          expect(noticeElement.notice).toHaveCount(0);
 
-      //   test('word with multiple definitions: edit page has correct definitions, parts of speech',
-      //     async () => {
-      //       // expect<any>(await editorUtil.getFieldValues('Definition')).toEqual([
-      //       //   { en: constants.testMultipleMeaningEntry1.senses[0].definition.en.value },
-      //       //   { en: constants.testMultipleMeaningEntry1.senses[1].definition.en.value }
-      //       // ]);
-      //       // expect<any>(await editorUtil.getFieldValues('Part of Speech')).toEqual([
-      //       //   editorUtil.expandPartOfSpeech(constants.testMultipleMeaningEntry1.senses[0].partOfSpeech.value),
-      //       //   editorUtil.expandPartOfSpeech(constants.testMultipleMeaningEntry1.senses[1].partOfSpeech.value)
-      //       // ]);
-      //     });
+          // Can upload audio file
+          // TOASK: better way instead of naming fileChooser2
+          const [fileChooser2] = await Promise.all([
+            editorPageManager.page.waitForEvent('filechooser'),
+            editorPageManager.page.locator(editorPageManager.dropbox.browseButtonSelector).click(),
+          ]);
+          await fileChooser2.setFiles('test/e2e/shared-files/' + constants.testMockMp3UploadFile.name);
+          expect(noticeElement.notice).toHaveCount(1);
+          await expect(noticeElement.notice).toBeVisible();
+          await expect(noticeElement.notice).toContainText('File uploaded successfully');
+          await expect(editorPageManager.entryCard.locator(editorPageManager.audioPlayer.playIconSelector + ' >> visible=true')).toHaveCount(1);
+          await expect(audio.locator(editorPageManager.audioPlayer.togglePlaybackAnchorSelector)).toBeEnabled();
+          await expect(audio.locator(editorPageManager.audioPlayer.dropdownToggleSelector)).toBeVisible();
+        });
 
-      //   test('word with multiple meanings: edit page has correct example sentences, translations', async () => {
-      //     // expect<any>(await editorUtil.getFieldValues('Sentence')).toEqual([
-      //     //   { th: constants.testMultipleMeaningEntry1.senses[0].examples[0].sentence.th.value },
-      //     //   { th: constants.testMultipleMeaningEntry1.senses[0].examples[1].sentence.th.value },
-      //     //   { th: constants.testMultipleMeaningEntry1.senses[1].examples[0].sentence.th.value },
-      //     //   { th: constants.testMultipleMeaningEntry1.senses[1].examples[1].sentence.th.value }
-      //     // ]);
-      //     // expect<any>(await editorUtil.getFieldValues('Translation')).toEqual([
-      //     //   { en: constants.testMultipleMeaningEntry1.senses[0].examples[0].translation.en.value },
-      //     //   { en: constants.testMultipleMeaningEntry1.senses[0].examples[1].translation.en.value },
-      //     //   { en: constants.testMultipleMeaningEntry1.senses[1].examples[0].translation.en.value },
-      //     //   { en: constants.testMultipleMeaningEntry1.senses[1].examples[1].translation.en.value }
-      //     // ]);
-      //   });
 
-      //   test('while Show Hidden Fields has not been clicked, hidden fields are hidden if they are empty', async () => {
-      //     // expect<any>(await editorPage.edit.getFields('Semantics Note').count()).toBe(0);
-      //     // expect<any>(await editorPage.edit.getOneField('General Note').isPresent()).toBe(true);
-      //     // await editorPage.edit.showHiddenFields();
-      //     // expect<any>(await editorPage.edit.getOneField('Semantics Note').isPresent()).toBe(true);
-      //     // expect<any>(await editorPage.edit.getOneField('General Note').isPresent()).toBe(true);
-      //   });
+        // JeanneSonTODO: convert to navigation test
+        //   test('click on second word (found by definition)', async () => {
+        //     // await editorPage.edit.findEntryByDefinition(constants.testEntry2.senses[0].definition.en.value).click();
+        //   });
 
-      //   test('word with multiple meanings: edit page has correct general notes, sources', async () => {
-      //     // expect<any>(await editorUtil.getFieldValues('General Note')).toEqual([
-      //     //   { en: constants.testMultipleMeaningEntry1.senses[0].generalNote.en.value },
-      //     //   { en: constants.testMultipleMeaningEntry1.senses[1].generalNote.en.value }
-      //     // ]);
+        test('Word 2: edit page has correct definition, part of speech', async () => {
+          await editorPageManager.goto(lexEntriesIds[1]);
+          expect(await (await editorPageManager.getTextarea(editorPageManager.senseCard, 'Definition', 'en')).inputValue()).toEqual(constants.testEntry2.senses[0].definition.en.value);
 
-      //     // // First item is empty Etymology Source, now that View Settings all default to visible. IJH
-      //     // expect<any>(await editorUtil.getFieldValues('Source')).toEqual([
-      //     //   { en: constants.testMultipleMeaningEntry1.senses[0].source.en.value },
-      //     //   { en: constants.testMultipleMeaningEntry1.senses[1].source.en.value }
-      //     // ]);
-      //   });
+          // JeanneSonTODO: when part of speech is fixed, uncomment and fix test
+          // expect(await editorPageManager.getSelectedValueFromSelectDropdown(editorPageManager.senseCard, 'Part of Speech'))
+          //   .toEqual(constants.testEntry2.senses[0].partOfSpeech.value);
+        });
 
-      //   test('senses can be reordered and deleted', async () => {
-      //     // await editorPage.edit.sense.actionMenus.first().click();
-      //     // await editorPage.edit.sense.moveDown.first().click();
-      //     // expect<any>(await editorUtil.getFieldValues('Definition')).toEqual([
-      //     //   { en: constants.testMultipleMeaningEntry1.senses[1].definition.en.value },
-      //     //   { en: constants.testMultipleMeaningEntry1.senses[0].definition.en.value }
-      //     // ]);
-      //   });
+        test('Dictionary citation reflects example sentences and translations', async () => {
+          await editorPageManager.goto(lexEntriesIds[2]);
 
-      //   test('back to browse page, create new word', async () => {
-      //     // await editorPage.edit.toListLink.click();
-      //     // await editorPage.browse.newWordBtn.click();
-      //   });
+          await expect(editorPageManager.renderedDivs).toContainText(
+            [
+              constants.testMultipleMeaningEntry1.senses[0].examples[0].sentence.th.value,
+              constants.testMultipleMeaningEntry1.senses[0].examples[0].translation.en.value,
+              constants.testMultipleMeaningEntry1.senses[0].examples[1].sentence.th.value,
+              constants.testMultipleMeaningEntry1.senses[0].examples[1].translation.en.value,
+              constants.testMultipleMeaningEntry1.senses[1].examples[0].sentence.th.value,
+              constants.testMultipleMeaningEntry1.senses[1].examples[0].translation.en.value,
+              constants.testMultipleMeaningEntry1.senses[1].examples[1].sentence.th.value,
+              constants.testMultipleMeaningEntry1.senses[1].examples[1].translation.en.value,
+            ]);
+        });
 
-      //   test('check that word count is still correct', async () => {
-      //     // expect(await editorPage.edit.entriesList.count()).toEqual(await editorPage.edit.getEntryCount());
-      //     // expect<any>(await editorPage.edit.getEntryCount()).toEqual(4);
-      //   });
+        test('Word with multiple definitions: edit page has correct definitions, parts of speech',
+          async () => {
+            await editorPageManager.goto(lexEntriesIds[2]);
+            expect(await (await editorPageManager.getTextarea(
+              editorPageManager.senseCard.first(), 'Definition', 'en'))
+              .inputValue()).toEqual(constants.testMultipleMeaningEntry1.senses[0].definition.en.value);
+            expect(await (await editorPageManager.getTextarea(
+              editorPageManager.senseCard.nth(1), 'Definition', 'en'))
+              .inputValue()).toEqual(constants.testMultipleMeaningEntry1.senses[1].definition.en.value);
 
-      //   test('modify new word', async () => {
-      //     // const word = constants.testEntry3.lexeme.th.value;
-      //     // const definition = constants.testEntry3.senses[0].definition.en.value;
-      //     // await editorPage.edit.getMultiTextInputs(lexemeLabel).first().sendKeys(word);
-      //     // await editorPage.edit.getMultiTextInputs('Definition').first().sendKeys(definition);
-      //     // await Utils.clickDropdownByValue(await editorPage.edit.getOneField('Part of Speech').element(by.css('select')),
-      //     //   new RegExp('Noun \\(n\\)'));
-      //     //   await Utils.scrollTop();
-      //   });
+            // JeanneSonTODO: when part of speech is fixed, uncomment and fix test
+            // expect(await editorPageManager.getSelectedValueFromSelectDropdown(editorPageManager.senseCard.nth(0), 'Part of Speech'))
+            //   .toEqual(constants.testMultipleMeaningEntry1.senses[0].partOfSpeech.value);
+            // expect(await editorPageManager.getSelectedValueFromSelectDropdown(editorPageManager.senseCard.nth(1), 'Part of Speech'))
+            //   .toEqual(constants.testMultipleMeaningEntry1.senses[1].partOfSpeech.value);
+          });
 
-      //   test('autosaves changes', async () => {
-      //     // await browser.refresh();
-      //     // await browser.wait(ExpectedConditions.visibilityOf(await editorPage.edit.fields.last()));
-      //     // await editorPage.edit.getMultiTextInputs(lexemeLabel).first().getAttribute('value').then(async text => {
-      //     //   await editorPage.edit.getMultiTextInputs(lexemeLabel).first().sendKeys('a');
-      //     //   await browser.refresh();
-      //     //   await browser.wait(ExpectedConditions.visibilityOf(await editorPage.edit.fields.last()));
-      //     //   expect<any>(await editorPage.edit.getMultiTextInputs(lexemeLabel).first().getAttribute('value')).toEqual(text + 'a');
-      //     //   await editorPage.edit.getMultiTextInputs(lexemeLabel).first().sendKeys(protractor.Key.BACK_SPACE);
-      //     // });
-      //   });
+        test('Word with multiple meanings: edit page has correct example sentences, translations', async () => {
+          await editorPageManager.goto(lexEntriesIds[2]);
 
-      //   test('new word is visible in edit page', async () => {
-      //     // await editorPage.edit.search.input.sendKeys(constants.testEntry3.senses[0].definition.en.value);
-      //     // expect<any>(await editorPage.edit.search.getMatchCount()).toBe(1);
-      //     // await editorPage.edit.search.clearBtn.click();
-      //   });
+          expect(await (await editorPageManager.getTextarea(
+            editorPageManager.senseCard.first().locator(editorPageManager.exampleCardSelector + ' >> nth=0'), 'Sentence', 'th'))
+            .inputValue()).toEqual(constants.testMultipleMeaningEntry1.senses[0].examples[0].sentence.th.value);
+          expect(await (await editorPageManager.getTextarea(
+            editorPageManager.senseCard.first().locator(editorPageManager.exampleCardSelector + ' >> nth=0'), 'Translation', 'en'))
+            .inputValue()).toEqual(constants.testMultipleMeaningEntry1.senses[0].examples[0].translation.en.value);
+          expect(await (await editorPageManager.getTextarea(
+            editorPageManager.senseCard.first().locator(editorPageManager.exampleCardSelector + ' >> nth=1'), 'Sentence', 'th'))
+            .inputValue()).toEqual(constants.testMultipleMeaningEntry1.senses[0].examples[1].sentence.th.value);
+          expect(await (await editorPageManager.getTextarea(
+            editorPageManager.senseCard.first().locator(editorPageManager.exampleCardSelector + ' >> nth=1'), 'Translation', 'en'))
+            .inputValue()).toEqual(constants.testMultipleMeaningEntry1.senses[0].examples[1].translation.en.value);
+          expect(await (await editorPageManager.getTextarea(
+            editorPageManager.senseCard.nth(1).locator(editorPageManager.exampleCardSelector + ' >> nth=0'), 'Sentence', 'th'))
+            .inputValue()).toEqual(constants.testMultipleMeaningEntry1.senses[1].examples[0].sentence.th.value);
+          expect(await (await editorPageManager.getTextarea(
+            editorPageManager.senseCard.nth(1).locator(editorPageManager.exampleCardSelector + ' >> nth=0'), 'Translation', 'en'))
+            .inputValue()).toEqual(constants.testMultipleMeaningEntry1.senses[1].examples[0].translation.en.value);
+          expect(await (await editorPageManager.getTextarea(
+            editorPageManager.senseCard.nth(1).locator(editorPageManager.exampleCardSelector + ' >> nth=1'), 'Sentence', 'th'))
+            .inputValue()).toEqual(constants.testMultipleMeaningEntry1.senses[1].examples[1].sentence.th.value);
+          expect(await (await editorPageManager.getTextarea(
+            editorPageManager.senseCard.nth(1).locator(editorPageManager.exampleCardSelector + ' >> nth=1'), 'Translation', 'en'))
+            .inputValue()).toEqual(constants.testMultipleMeaningEntry1.senses[1].examples[1].translation.en.value);
+        });
 
-      //   test('check that Semantic Domain field is visible (for view settings test later)', async () => {
-      //     // await browser.wait(ExpectedConditions.visibilityOf(await editorPage.edit.fields.last()));
-      //     // expect(await editorPage.edit.getOneField('Semantic Domain').isPresent()).toBeTruthy();
-      //   });
+        test('While Show Hidden Fields has not been clicked, hidden fields are hidden if they are empty', async () => {
+          await editorPageManager.goto(lexEntriesIds[2]);
+          expect(await editorPageManager.getTextarea(
+            editorPageManager.senseCard.nth(0), 'Semantics Note', 'en')).toHaveCount(0);
+          expect(await editorPageManager.getTextarea(
+            editorPageManager.senseCard.nth(0), 'General Note', 'en')).toBeVisible();
+          if ((await editorPageManager.lexAppToolbar.toggleExtraFieldsButton.innerText()).includes('Show Extra Fields')) {
+            await editorPageManager.lexAppToolbar.toggleExtraFieldsButton.click();
+          }
+          expect(await editorPageManager.getTextarea(
+            editorPageManager.senseCard.nth(0), 'Semantics Note', 'en')).toBeVisible();
+          expect(await editorPageManager.getTextarea(
+            editorPageManager.senseCard.nth(0), 'General Note', 'en')).toBeVisible();
+        });
 
-      //   test.describe('Configuration check', async () => {
+        test('Word with multiple meanings: edit page has correct general notes, sources', async () => {
+          await editorPageManager.goto(lexEntriesIds[2]);
+          expect(await (await editorPageManager.getTextarea(
+            editorPageManager.senseCard.nth(0), 'General Note', 'en'))
+            .inputValue()).toEqual(constants.testMultipleMeaningEntry1.senses[0].generalNote.en.value);
+          expect(await (await editorPageManager.getTextarea(
+            editorPageManager.senseCard.nth(1), 'General Note', 'en'))
+            .inputValue()).toEqual(constants.testMultipleMeaningEntry1.senses[1].generalNote.en.value);
+          if ((await editorPageManager.lexAppToolbar.toggleExtraFieldsButton.innerText()).includes('Show Extra Fields')) {
+            await editorPageManager.lexAppToolbar.toggleExtraFieldsButton.click();
+          }
+          expect(await (await editorPageManager.getTextarea(
+            editorPageManager.senseCard.nth(0), 'Source', 'en'))
+            .inputValue()).toEqual(constants.testMultipleMeaningEntry1.senses[0].source.en.value);
+          expect(await (await editorPageManager.getTextarea(
+            editorPageManager.senseCard.nth(1), 'Source', 'en'))
+            .inputValue()).toEqual(constants.testMultipleMeaningEntry1.senses[1].source.en.value);
+        });
 
-      //     // const ipaRowLabel = /^Thai \(IPA\)$/;
-      //     // const thaiAudioRowLabel = 'Thai Voice (Voice)';
-      //     // const englishRowLabel = 'English';
+        test('Senses can be reordered and deleted', async () => {
+          await editorPageManager.goto(lexEntriesIds[2]);
+          await editorPageManager.senseCard.first().locator(editorPageManager.actionMenu.toggleMenuButtonSelector).first().click();
+          await editorPageManager.senseCard.first().locator(editorPageManager.actionMenu.moveDownButtonSelector).first().click();
+          expect(await (await editorPageManager.getTextarea(
+            editorPageManager.senseCard.first(), 'Definition', 'en'))
+            .inputValue()).toEqual(constants.testMultipleMeaningEntry1.senses[1].definition.en.value);
+          expect(await (await editorPageManager.getTextarea(
+            editorPageManager.senseCard.nth(1), 'Definition', 'en'))
+            .inputValue()).toEqual(constants.testMultipleMeaningEntry1.senses[0].definition.en.value);
+        });
 
-      //     // test('Word has only "th", "tipa" and "taud" visible', async () => {
-      //     //   expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).count()).toBeGreaterThanOrEqual(3);
-      //     //   expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).get(0).getText()).toEqual('th');
-      //     //   expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).get(1).getText()).toEqual('tipa');
-      //     //   expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).get(2).getText()).toEqual('taud');
-      //     //   expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).count()).toEqual(3);
-      //     // });
+        test('Back to browse page, create new word, check word count, modify new word, autosaves changes, new word visible in editor and list', async () => {
+          await editorPageManager.entriesListPage.goto();
+          await editorPageManager.entriesListPage.createNewWordButton.click();
+          // clicking on new word button automatically takes user to entry editor
+          const entryCount = lexEntriesIds.length + 1;
 
-      //     // test('make "en" input system visible for "Word" field', async () => {
-      //     //   await configPage.get();
-      //     //   await configPage.tabs.unified.click();
-      //     //   await configPage.unifiedPane.fieldSpecificButton(lexemeLabel).click();
-      //     //   await util.setCheckbox(
-      //     //     configPage.unifiedPane.entry.fieldSpecificInputSystemCheckbox(lexemeLabel, englishRowLabel), true);
-      //     //   await configPage.applyButton.click();
-      //     //   await Utils.clickBreadcrumb(constants.testProjectName);
-      //     //   await editorPage.edit.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
-      //     // });
+          await expect(editorPageManager.compactEntryListItem).toHaveCount(entryCount);
 
-      //     // test('Word has "th", "tipa", "taud" and "en" visible', async () => {
-      //     //   expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).count()).toBeGreaterThanOrEqual(4);
-      //     //   expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).get(0).getText()).toEqual('th');
-      //     //   expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).get(1).getText()).toEqual('tipa');
-      //     //   expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).get(2).getText()).toEqual('taud');
-      //     //   expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).get(3).getText()).toEqual('en');
-      //     //   expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).count()).toEqual(4);
-      //     // });
+          await editorPageManager.entriesListPage.goto();
+          expect(await editorPageManager.entriesListPage.getTotalNumberOfEntries()).toEqual(entryCount.toString());
 
-      //     // test('make "en" input system invisible for "Word" field', async () => {
-      //     //   await configPage.get();
-      //     //   await configPage.tabs.unified.click();
-      //     //   await configPage.unifiedPane.fieldSpecificButton(lexemeLabel).click();
-      //     //   await util.setCheckbox(
-      //     //     configPage.unifiedPane.entry.fieldSpecificInputSystemCheckbox(lexemeLabel, englishRowLabel), false);
-      //     //   await configPage.applyButton.click();
-      //     //   await Utils.clickBreadcrumb(constants.testProjectName);
-      //     //   await editorPage.edit.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
-      //     // });
+          // go back to editor
+          await editorPageManager.page.goBack();
+          await (await editorPageManager.getTextarea(editorPageManager.entryCard, 'Word', 'th'))
+            .fill(constants.testEntry3.lexeme.th.value);
+          await (await editorPageManager.getTextarea(editorPageManager.senseCard, 'Definition', 'en'))
+            .fill(constants.testEntry3.senses[0].definition.en.value);
 
-      //     // test('Word has only "th", "tipa" and "taud" visible again', async () => {
-      //     //   expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).count()).toBeGreaterThanOrEqual(3);
-      //     //   expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).get(0).getText()).toEqual('th');
-      //     //   expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).get(1).getText()).toEqual('tipa');
-      //     //   expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).get(2).getText()).toEqual('taud');
-      //     //   expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).count()).toEqual(3);
-      //     // });
+          // JeanneSonTODO: when the partOfSpeech bug is fixed, fix this code
+          // await editorPageManager.getDropdown(editorPageManager.senseCard, 'Part of Speech');
+          // await Utils.clickDropdownByValue(await editorPage.edit.getOneField('Part of Speech').element(by.css('select')),
+          //   new RegExp('Noun \\(n\\)'));
+          //   await Utils.scrollTop();
 
-      //     // test('make "taud" input system invisible for "Word" field and "tipa" invisible for manager role', async () => {
-      //     //   await configPage.get();
-      //     //   await configPage.tabs.unified.click();
+          // Autosaves changes
+          await editorPageManager.page.waitForURL(url => !url.hash.includes('editor/entry/_new_'));
+          await editorPageManager.page.reload();
 
-      //     //   // Ensure field-specific input systems for Word are visible
-      //     //   const wordChevron = await configPage.unifiedPane.fieldSpecificIcon(lexemeLabel).getAttribute('class');
-      //     //   if (wordChevron.includes('fa-chevron-down')) {
-      //     //     await configPage.unifiedPane.fieldSpecificButton(lexemeLabel).click();
-      //     //   }
+          const alreadyThere: string = await (await editorPageManager.getTextarea(editorPageManager.entryCard, 'Word', 'th')).inputValue();
+          await (await editorPageManager.getTextarea(editorPageManager.entryCard, 'Word', 'th'))
+            .fill(alreadyThere + 'a');
+          await editorPageManager.page.reload();
+          expect(await (await editorPageManager.getTextarea(editorPageManager.entryCard, 'Word', 'th')).inputValue()).toEqual(constants.testEntry3.lexeme.th.value + 'a');
+          await (await editorPageManager.getTextarea(editorPageManager.entryCard, 'Word', 'th'))
+            .fill(constants.testEntry3.lexeme.th.value);
 
-      //     //   // Alternately, just do it regardless
-      //     //   // await configPage.unifiedPane.fieldSpecificButton(lexemeLabel).click();
-      //     //   await util.setCheckbox(
-      //     //     configPage.unifiedPane.entry.fieldSpecificInputSystemCheckbox(lexemeLabel, thaiAudioRowLabel), false);
-      //     //   await util.setCheckbox(configPage.unifiedPane.managerCheckbox(ipaRowLabel), false);
+          // New word is visible in edit page
+          await editorPageManager.search.searchInput.fill(constants.testEntry3.senses[0].definition.en.value);
+          await expect(editorPageManager.search.matchCount).toContainText(/1(?= \/)/);
 
-      //     //   await configPage.applyButton.click();
-      //     //   await Utils.clickBreadcrumb(constants.testProjectName);
-      //     // });
+          // new word is visible in list page
+          await editorPageManager.entriesListPage.goto();
+          await editorPageManager.entriesListPage.filterInput.fill(constants.testEntry3.senses[0].definition.en.value);
+          await expect(editorPageManager.entriesListPage.matchCount).toContainText(/1(?= \/)/);
+          await editorPageManager.entriesListPage.filterInputClearButton.click();
 
-      //     // test('Word has only "th" visible', async () => {
-      //     //   expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).count()).toBeGreaterThanOrEqual(1);
-      //     //   expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).get(0).getText()).toEqual('th');
-      //     //   expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).count()).toEqual(1);
-      //     // });
+          // word count is still correct in browse page
+          expect(await editorPageManager.entriesListPage.getTotalNumberOfEntries()).toEqual(entryCount.toString());
 
-      //     // test('restore visibility of "taud" for "Word" field', async () => {
-      //     //   await configPage.get();
-      //     //   await configPage.tabs.unified.click();
-      //     //   // Ensure field-specific input systems for Word are visible
-      //     //   const wordChevron = await configPage.unifiedPane.fieldSpecificIcon(lexemeLabel).getAttribute('class');
-      //     //   if (wordChevron.includes('fa-chevron-down')) {
-      //     //     await configPage.unifiedPane.fieldSpecificButton(lexemeLabel).click();
-      //     //   }
-      //     //   // await configPage.unifiedPane.fieldSpecificButton(lexemeLabel).click();
-      //     //   await util.setCheckbox(
-      //     //     configPage.unifiedPane.entry.fieldSpecificInputSystemCheckbox(lexemeLabel, thaiAudioRowLabel), true);
-      //     //   await configPage.applyButton.click();
-      //     //   await Utils.clickBreadcrumb(constants.testProjectName);
-      //     //   await editorPage.edit.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
-      //     // });
+          // remove new word to restore original word count
+          await editorPageManager.entriesListPage.clickOnEntry(constants.testEntry3.lexeme.th.value);
+          await editorPageManager.entryCard.first().locator(editorPageManager.actionMenu.toggleMenuButtonSelector).first().click();
+          await editorPageManager.entryCard.first().locator(editorPageManager.actionMenu.deleteCardButtonSelector).first().click();
 
-      //     // test('Word has only "th" and "taud" visible for manager role', async () => {
-      //     //   expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).count()).toBeGreaterThanOrEqual(2);
-      //     //   expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).get(0).getText()).toEqual('th');
-      //     //   expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).get(1).getText()).toEqual('taud');
-      //     //   expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).count()).toEqual(2);
-      //     // });
+          const confirmModal = new ConfirmModalElement(editorPageManager.page);
+          await confirmModal.confirmButton.click();
 
-      //     // test('restore visibility of "tipa" input system for manager role', async () => {
-      //     //   await configPage.get();
-      //     //   await configPage.tabs.unified.click();
-      //     //   await util.setCheckbox(configPage.unifiedPane.managerCheckbox(ipaRowLabel), true);
-      //     //   await configPage.applyButton.click();
-      //     //   await Utils.clickBreadcrumb(constants.testProjectName);
-      //     //   await editorPage.edit.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
-      //     // });
+          await expect(editorPageManager.compactEntryListItem).toHaveCount(lexEntriesIds.length);
 
-      //     // test('Word has "th", "tipa" and "taud" visible again for manager role', async () => {
-      //     //   expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).count()).toBeGreaterThanOrEqual(3);
-      //     //   expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).get(0).getText()).toEqual('th');
-      //     //   expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).get(1).getText()).toEqual('tipa');
-      //     //   expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).get(2).getText()).toEqual('taud');
-      //     //   expect<any>(await editorPage.edit.getMultiTextInputSystems(lexemeLabel).count()).toEqual(3);
-      //     // });
+          // previous entry is selected after delete
+          expect(await (await editorPageManager.getTextarea(editorPageManager.entryCard, 'Word', 'th'))
+            .inputValue()).toEqual(constants.testEntry1.lexeme.th.value);
+        });
 
-      //   });
+        test('Check that Semantic Domain field is visible (for view settings test later)', async () => {
+          // check if label is present
+          await expect(await editorPageManager.getLabel(editorPageManager.senseCard.first(), 'Semantic Domain')).not.toHaveCount(0);
+        });
+      });
 
-      //   test('new word is visible in browse page', async () => {
-      //     // await editorPage.edit.toListLink.click();
-      //     // await editorPage.browse.search.input.sendKeys(constants.testEntry3.senses[0].definition.en.value);
-      //     // expect<any>(await editorPage.browse.search.getMatchCount()).toBe(1);
-      //     // await editorPage.browse.search.clearBtn.click();
-      //   });
-
-      //   test('check that word count is still correct in browse page', async () => {
-      //     // expect(await editorPage.browse.entriesList.count()).toEqual(await editorPage.browse.getEntryCount());
-      //     // expect<any>(await editorPage.browse.getEntryCount()).toBe(4);
-      //   });
-
-      //   test('remove new word to restore original word count', async () => {
-      //     // await editorPage.browse.clickEntryByLexeme(constants.testEntry3.lexeme.th.value);
-      //     // await editorPage.edit.actionMenu.click();
-      //     // await editorPage.edit.deleteMenuItem.click();
-      //     // await browser.waitForAngular();
-      //     // await browser.wait(ExpectedConditions.visibilityOf(await editorPage.modal.modalBodyText));
-      //     // await Utils.clickModalButton('Delete Entry');
-      //     // await browser.waitForAngular();
-      //     // expect<any>(await editorPage.edit.getEntryCount()).toBe(3);
-      //   });
-
-      //   test('previous entry is selected after delete', async () => {
-      //     // expect(await editorPage.edit.getFirstLexeme()).toEqual(constants.testEntry1.lexeme.th.value);
-      //   });
     });
+
+    test.describe('Configuration check', async () => {
+
+      test.beforeAll(async () => {
+        // copied from above from audio tests, because also needed here
+        // JeanneSonTODO: eventually put this code somewhere else and in only once in this file
+
+        // in the Protractor tests, the row label 'Thai Voice (Voice)' was used. Here, we only
+        // require the row label to contain the substring 'Voice' as the label was changed to 'ภาษาไทย (Voice)'
+        await editorPageManager.configurationPage.goto();
+        await (await editorPageManager.configurationPage.getFieldSpecificButton('Entry Fields', 'Word')).click();
+        await (await editorPageManager.configurationPage.getFieldSpecificCheckbox('Entry Fields', 'Word', 'IPA')).check();
+        await (await editorPageManager.configurationPage.getFieldSpecificCheckbox('Entry Fields', 'Word', 'Voice')).check();
+        await editorPageManager.configurationPage.applyButton.click();
+
+
+        // the follow line of code is not needed as the outer describe block executes this in the beforeEach
+        // await editorPageManager.goto();
+      });
+
+      test('Can change configuration to make a writing system visible or invisible', async () => {
+
+        // word has only "th", "tipa" and "taud" visible
+        expect(await editorPageManager.getNumberOfElementsWithSameLabel(editorPageManager.entryCard, 'Word')).toEqual(3);
+        await expect(await editorPageManager.getTextarea(editorPageManager.entryCard, 'Word', 'th')).toBeVisible();
+        await expect(await editorPageManager.getTextarea(editorPageManager.entryCard, 'Word', 'tipa')).toBeVisible();
+        await expect(await editorPageManager.getSoundplayer(editorPageManager.entryCard, 'Word', 'taud')).toBeVisible();
+
+        // make "en" input system visible for "Word" field
+        await editorPageManager.configurationPage.goto();
+        await (await editorPageManager.configurationPage.getFieldSpecificButton('Entry Fields', 'Word')).click();
+        await (await editorPageManager.configurationPage.getFieldSpecificCheckbox('Entry Fields', 'Word', 'English')).check();
+        await editorPageManager.configurationPage.applyButton.click();
+
+        // check if "en" is visible
+        await editorPageManager.goto();
+        expect(await editorPageManager.getNumberOfElementsWithSameLabel(editorPageManager.entryCard, 'Word')).toEqual(4);
+        await expect(await editorPageManager.getTextarea(editorPageManager.entryCard, 'Word', 'en')).toBeVisible();
+
+        // make "en" input system invisible for "Word" field
+        await editorPageManager.configurationPage.goto();
+        await (await editorPageManager.configurationPage.getFieldSpecificButton('Entry Fields', 'Word')).click();
+        await (await editorPageManager.configurationPage.getFieldSpecificCheckbox('Entry Fields', 'Word', 'English')).uncheck();
+        await editorPageManager.configurationPage.applyButton.click();
+
+
+        // check if "en" is invisible
+        await editorPageManager.goto();
+        expect(await editorPageManager.getNumberOfElementsWithSameLabel(editorPageManager.entryCard, 'Word')).toEqual(3);
+        await expect(await editorPageManager.getTextarea(editorPageManager.entryCard, 'Word', 'en')).not.toBeVisible();
+      });
+
+
+      test('Make "taud" input system invisible for "Word" field and "tipa" invisible for manager role, then ensure it worked and change it back', async () => {
+        // TOASK: the fact that the tipa is invisible for the manager but not for other users is not reflected in the tests
+        await editorPageManager.configurationPage.goto();
+        await (await editorPageManager.configurationPage.getFieldSpecificButton('Entry Fields', 'Word')).click();
+        // Make "taud" input system invisible for "Word" field....
+        await (await editorPageManager.configurationPage.getFieldSpecificCheckbox('Entry Fields', 'Word', '(Voice)')).uncheck();
+        // ....and "tipa" invisible for manager role
+        await (await editorPageManager.configurationPage.getCheckbox('Input Systems', 'IPA', 'Manager')).uncheck();
+        await editorPageManager.configurationPage.applyButton.click();
+
+        // Word then only has "th" visible
+        await editorPageManager.goto();
+        expect(await editorPageManager.getNumberOfElementsWithSameLabel(editorPageManager.entryCard, 'Word')).toEqual(1);
+        await expect(await editorPageManager.getTextarea(editorPageManager.entryCard, 'Word', 'th')).toBeVisible();
+
+        // restore visibility of "taud" for "Word" field
+        await editorPageManager.configurationPage.goto();
+        await (await editorPageManager.configurationPage.getFieldSpecificButton('Entry Fields', 'Word')).click();
+        await (await editorPageManager.configurationPage.getFieldSpecificCheckbox('Entry Fields', 'Word', '(Voice)')).check();
+        await editorPageManager.configurationPage.applyButton.click();
+
+        // Word has only "th" and "taud" visible for manager role
+        await editorPageManager.goto();
+        expect(await editorPageManager.getNumberOfElementsWithSameLabel(editorPageManager.entryCard, 'Word')).toEqual(2);
+        await expect(await editorPageManager.getTextarea(editorPageManager.entryCard, 'Word', 'th')).toBeVisible();
+        await expect(await editorPageManager.getSoundplayer(editorPageManager.entryCard, 'Word', 'taud')).toBeVisible();
+
+        // restore visibility of "tipa" input system for manager role
+        await editorPageManager.configurationPage.goto();
+        await (await editorPageManager.configurationPage.getCheckbox('Input Systems', 'IPA', 'Manager')).check();
+        await editorPageManager.configurationPage.applyButton.click();
+
+        // Word has "th", "tipa" and "taud" visible again for manager role
+        await editorPageManager.goto();
+        expect(await editorPageManager.getNumberOfElementsWithSameLabel(editorPageManager.entryCard, 'Word')).toEqual(3);
+        await expect(await editorPageManager.getTextarea(editorPageManager.entryCard, 'Word', 'tipa')).toBeVisible();
+      });
+
+    });
+
   });
 });

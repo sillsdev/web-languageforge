@@ -8,6 +8,19 @@ type LexAppToolbar = {
   toggleExtraFieldsButton: Locator
 };
 
+// JeanneSonTODO: search/filter is also used in entries list so extract this
+type Search = {
+  searchInput: Locator,
+  matchCount: Locator
+}
+
+type ActionMenu = {
+  toggleMenuButtonSelector: string,
+  deleteCardButtonSelector: string,
+  moveDownButtonSelector: string,
+  moveUpButtonSelector: string
+}
+
 type AudioPlayer = {
   togglePlaybackAnchorSelector: string,
   playIconSelector: string,
@@ -19,7 +32,8 @@ type AudioPlayer = {
 type Dropbox = {
   dragoverFieldSelector: string,
   audioCancelButtonSelector: string,
-  pictureCancelButtonSelector: string
+  pictureCancelButtonSelector: string,
+  browseButtonSelector: string
 };
 
 type UploadType =
@@ -28,7 +42,8 @@ type UploadType =
 ;
 
 type AudioDropdownMenu = {
-  uploadReplacementButtonSelector: string
+  uploadReplacementButtonSelector: string,
+  deleteAudioButtonSelector: string
 }
 
 export class EditorPage {
@@ -42,8 +57,13 @@ export class EditorPage {
   readonly lexAppToolbar: LexAppToolbar;
   readonly renderedDivs: Locator;
 
+  readonly search: Search;
+
   readonly entryCard: Locator;
   readonly senseCard: Locator;
+  readonly exampleCardSelector: string;
+
+  readonly actionMenu: ActionMenu;
 
   readonly compactEntryListContainer: Locator;
   readonly compactEntryListItem: Locator;
@@ -73,8 +93,21 @@ export class EditorPage {
     };
     this.renderedDivs = this.page.locator('.dc-rendered-entryContainer');
 
+    this.search = {
+      searchInput: this.page.locator('#editor-entry-search-entries'),
+      matchCount: this.page.locator('#totalNumberOfEntries >> span')
+    }
+
     this.entryCard = this.page.locator('.entry-card');
     this.senseCard = this.page.locator('[data-ng-repeat="sense in $ctrl.model.senses"]');
+    this.exampleCardSelector = '.dc-example';
+
+    this.actionMenu = {
+      toggleMenuButtonSelector: '.ellipsis-menu-toggle',
+      deleteCardButtonSelector: '.dropdown-item:has-text("Delete")',
+      moveDownButtonSelector: '.dropdown-item:has-text("Move Down")',
+      moveUpButtonSelector: '.dropdown-item:has-text("Move Up")'
+    };
 
     this.compactEntryListContainer = this.page.locator('#compactEntryListContainer');
     this.compactEntryListItem = this.compactEntryListContainer.locator('.lexiconListItemCompact');
@@ -90,11 +123,13 @@ export class EditorPage {
     this.dropbox = {
       dragoverFieldSelector: '.drop-box',
       audioCancelButtonSelector: '#audioAddCancel',
-      pictureCancelButtonSelector: '#addCancel'
+      pictureCancelButtonSelector: '#addCancel',
+      browseButtonSelector: '#browseButton'
     };
 
     this.audioDropdownMenu = {
-      uploadReplacementButtonSelector: 'a >> text=Upload a replacement'
+      uploadReplacementButtonSelector: 'a >> text=Upload a replacement',
+      deleteAudioButtonSelector: 'a >> text=Delete'
     };
 
     this.addPictureButtonSelector = 'a >> text=Add Picture';
@@ -114,8 +149,24 @@ export class EditorPage {
     await this.lexAppToolbar.backToListButton.click();
   }
 
+  async getLabel(card: Locator, label: string): Promise<Locator> {
+    return card.locator(`label:has-text("${label}")`).first();
+  }
+
+  async getNumberOfElementsWithSameLabel(card: Locator, label: string): Promise<number> {
+    return card.locator(`label:has-text("${label}")`).count();
+  }
+
   async getTextarea(card: Locator, field: string, ws: string): Promise<Locator> {
     return card.locator(`label:has-text("${field}") >> xpath=.. >> div.input-group:has(span.wsid:has-text("${ws}")) >> textarea`);
+  }
+
+  async getDropdown(card: Locator, field: string): Promise<Locator> {
+    return card.locator(`label:has-text("${field}") >> xpath=.. >> select`);
+  }
+
+  async getSelectedValueFromSelectDropdown(card: Locator, field: string): Promise<string> {
+    return card.locator(`label:has-text("${field}") >> xpath=.. >> select >> [selected="selected"]`).innerText();
   }
 
   async getSoundplayer(card: Locator, field: string, ws: string): Promise<Locator> {

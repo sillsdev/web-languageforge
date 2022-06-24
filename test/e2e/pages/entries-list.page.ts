@@ -10,6 +10,8 @@ export class EntriesListPage {
   readonly filterInputClearButton: Locator;
   readonly matchCount: Locator;
 
+  readonly createNewWordButton: Locator;
+
   readonly url: string;
 
   constructor(page: Page, projectId: string) {
@@ -21,6 +23,8 @@ export class EntriesListPage {
     this.filterInput = this.page.locator('[placeholder="Filter Entries"]');
     this.filterInputClearButton = this.page.locator('.clear-search-button');
     this.matchCount = this.page.locator('#totalNumberOfEntries >> span');
+
+    this.createNewWordButton = this.page.locator('#newWord');
 
     this.url = `/app/lexicon/${this.projectId}/#!/editor/list`;
   }
