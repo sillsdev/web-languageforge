@@ -20,7 +20,7 @@
 	}
 </script>
 
-<svelte:window on:keydown={closeOnEscape} />
+<svelte:window on:keydown={ closeOnEscape } />
 
 <!-- https://daisyui.com/components/drawer -->
 <div class='drawer drawer-end'>
