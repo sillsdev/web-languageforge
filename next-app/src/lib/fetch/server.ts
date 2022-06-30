@@ -27,7 +27,7 @@ export async function sf(rpc) {
 		throwError(results.error.message, 500)
 	}
 
-	if (! results.result) {
+	if (results.result === undefined) {
 		throwError('Badly formed response, missing result', 500)
 	}
 
