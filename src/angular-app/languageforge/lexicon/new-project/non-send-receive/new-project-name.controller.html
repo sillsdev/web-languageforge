@@ -3,8 +3,8 @@
         <div class="col-12 col-lg-8">
             <div class="text-center">
                 <h3 class="no-space-break">Choose a project name</h3>
-                <div class="alert alert-danger" role="alert">
-                    Creating a non-send/receive project in Language Forge is no longer recommended because of the lack of an export path.
+                <div class="alert alert-danger" role="alert" style='position: relative'>
+					Creating a non-send/receive project in Language Forge is no longer recommended because of the lack of an export path.
                     Instead, create a new project from Language Depot to enable Send/Receive with FieldWorks. Data can then be exported through FieldWorks.
                 </div>
             </div>
@@ -17,7 +17,6 @@
                                 <input class="form-control" type="text" id="project-name"
                                        data-ng-model="$ctrl.npnNewProject.projectName"
                                        data-ng-blur="$ctrl.npnCheckProjectCode()"
-                                       data-pui-auto-focus="true"
                                        maxlength="50"
                                        required placeholder="eg: My Dictionary"
                                        data-idle-validate="$ctrl.npnCheckProjectCode()"
