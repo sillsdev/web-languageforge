@@ -6,8 +6,10 @@
 	// mappings in src/Api/Model/Shared/ActivityModel.php
 	const action_display = {
 		'add_entry': 'Add',
+		'add_lex_comment': 'Comment',
+		'add_lex_reply': 'Reply',
+		'add_user_to_project': 'Join',
 		'update_entry': 'Update',
-		'add_user_to_project': 'Joined',
 	}
 
 	function transform(_activities) {
