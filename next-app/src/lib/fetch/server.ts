@@ -35,7 +35,7 @@ export async function sf(rpc) {
 }
 
 async function customFetch(url, method, body, cookie) {
-	let response = {}
+	let response = {} as Response
 
 	try {
 		// https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch#Supplying_request_options

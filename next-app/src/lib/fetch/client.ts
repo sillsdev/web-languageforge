@@ -1,4 +1,4 @@
-import { throwError } from '$lib/error'
+import { throwError, type Error } from '$lib/error'
 import { start, stop } from '$lib/progress'
 
 export async function CREATE(url, body) { return await customFetch('post'  , url, body) }
@@ -10,8 +10,8 @@ export async function DELETE(url      ) { return await customFetch('delete', url
 // export const upload = async formData => await CREATE('post', formData)
 
 // https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch#Supplying_request_options
-async function customFetch(method, url, body) {
-	const headers = {
+async function customFetch(method, url, body?) {
+	const headers: Record<string,string> = {
 		'content-type': 'application/json',
 	}
 
@@ -23,7 +23,7 @@ async function customFetch(method, url, body) {
 		body = JSON.stringify(body)
 	}
 
-	let response = {}
+	let response = {} as Response
 	try {
 		start(url)
 
@@ -39,7 +39,7 @@ async function customFetch(method, url, body) {
 		//	the host is refusing connections
 		//	client is offline, i.e., airplane mode or something
 		//	CORS preflight failures
-		throwError(e)
+		throwError((e as Response).statusText, (e as Response).status)
 	} finally {
 		stop(url)
 	}

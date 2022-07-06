@@ -1,7 +1,8 @@
 import { browser } from '$app/env'
 import { writable } from 'svelte/store'
 
-export const error = writable({})
+export interface Error { code?: number, message?: string }
+export const error = writable({} as Error)
 export const throwError = (message = '', code = 0) => { throw set({ code, message }) }
 export const dismiss = () => set({})
 
@@ -23,5 +24,5 @@ function set(someError) {
 
   error.set({ code, message })
 
-  return { code, message }
+  return { code, message } as Error
 }

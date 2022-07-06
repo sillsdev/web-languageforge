@@ -3,7 +3,7 @@ import { sf } from '$lib/fetch/server'
 export async function get({ params: { project_code }, request: { headers } }) {
 	const cookie = headers.get('cookie')
 
-	const activities = await get_activities({ project_code, cookie })
+	const activities = await get_activities({ project_code, cookie, start_date: undefined, end_date: undefined })
 
 	return {
 		body: activities,

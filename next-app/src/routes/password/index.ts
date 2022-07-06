@@ -1,4 +1,4 @@
-import { throwError } from '$lib/error'
+import { throwError, type Error } from '$lib/error'
 import { sf } from '$lib/fetch/server'
 
 export async function put({ request }) {
@@ -30,7 +30,7 @@ export async function put({ request }) {
 		})
 	} catch (error) {
 		return {
-			status: error.code,
+			status: (error as Error).code,
 			body: error,
 		}
 	}

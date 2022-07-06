@@ -2,7 +2,7 @@ import { writable } from 'svelte/store'
 
 export const loading = writable(false)
 
-const pending = []
+const pending: any[] = []
 
 export const start = id => {
   loading.set(true)
