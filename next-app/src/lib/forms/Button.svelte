@@ -1,11 +1,9 @@
 <script>
 	export let danger = false
-	let classes = ''
-	export { classes as class }
 </script>
 
 <!-- https://daisyui.com/components/button -->
-<button on:click class:danger class='btn btn-primary { classes }'>
+<button on:click class:danger class='btn btn-primary { $$props.class }'>
 	<slot />
 </button>
 
