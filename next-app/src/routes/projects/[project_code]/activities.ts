@@ -20,6 +20,7 @@ export async function get_activities({ project_code, cookie, start_date, end_dat
 			{
 				startDate: start_date,
 				endDate: end_date,
+				limit: 50,
 			}
 		],
 		cookie,
