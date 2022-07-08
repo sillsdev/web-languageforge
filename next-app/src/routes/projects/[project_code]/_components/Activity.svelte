@@ -5,11 +5,19 @@
 
 	// mappings in src/Api/Model/Shared/ActivityModel.php
 	const action_display = {
-		'add_entry': 'Add',
-		'add_lex_comment': 'Comment',
-		'add_lex_reply': 'Reply',
-		'add_user_to_project': 'Join',
-		'update_entry': 'Update',
+		'add_entry': 'Added entry',
+		'add_lex_comment': 'Added comment',
+		'add_lex_reply': 'Replied',
+		'add_user_to_project': 'Joined',
+		'delete_entry': 'Deleted entry',
+		'delete_lex_comment': 'Deleted comment',
+		'delete_lex_reply': 'Deleted reply',
+		'lexCommentDecreaseScore': 'Un-liked',
+		'lexCommentIncreaseScore': 'Liked',
+		'update_entry': 'Updated entry',
+		'update_lex_comment': 'Updated comment',
+		'update_lex_comment_status': 'Updated status',
+		'update_lex_reply': 'Updated reply'
 	}
 
 	function transform(_activities) {
