@@ -27,7 +27,7 @@
 			return {
 				...activity,
 				date_locale: date.toLocaleDateString(),
-				date_utc: date.toUTCString(),
+				date_iso: date.toISOString(),
 				time: date.getTime(),
 				fields: toNames(activity.fields),
 		 	}
@@ -35,9 +35,9 @@
 	}
 
 	function byDateThenUser(a, b) {
-		return a.date_utc === b.date_utc ? a.user === b.user ? des(a.time, b.time)
+		return a.date_iso === b.date_iso ? a.user === b.user ? des(a.time, b.time)
 															 : asc(a.user, b.user)
-		                                 : des(a.date_utc, b.date_utc)
+		                                 : des(a.date_iso, b.date_iso)
 	}
 
 	const asc = (a, b) => a > b ? 1 : -1
