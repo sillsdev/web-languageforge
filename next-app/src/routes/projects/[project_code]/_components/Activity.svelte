@@ -26,7 +26,8 @@
 
 			return {
 				...activity,
-				date: date.toLocaleDateString(),
+				date_locale: date.toLocaleDateString(),
+				date_utc: date.toUTCString(),
 				time: date.getTime(),
 				fields: toNames(activity.fields),
 		 	}
@@ -34,7 +35,9 @@
 	}
 
 	function byDateThenUser(a, b) {
-		return a.date === b.date ? a.user === b.user ? des(a.time, b.time) : asc(a.user, b.user) : des(a.date, b.date)
+		return a.date_utc === b.date_utc ? a.user === b.user ? des(a.time, b.time)
+															 : asc(a.user, b.user)
+		                                 : des(a.date_utc, b.date_utc)
 	}
 
 	const asc = (a, b) => a > b ? 1 : -1
@@ -61,7 +64,7 @@
 			{#each sorted_activities as activity}
 				<tr>
 					<td>{ activity.user }</td>
-					<td>{ activity.date }</td>
+					<td>{ activity.date_locale }</td>
 					<td>{ action_display[activity.action] || activity.action }</td>
 					<td>{ activity.entry || '—' }</td>
 					<td>{ activity.fields || '—' }</td>
