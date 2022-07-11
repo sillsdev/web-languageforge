@@ -423,7 +423,13 @@ class Sf
         return ActivityListDto::getActivityForUser($this->website->domain, $this->userId, $filterParams);
     }
 
-    public function activity_list_dto_for_project($projectCode, $filterParams = [])
+	public function activity_list_dto_for_current_project($filterParams = [])
+    {
+        $projectModel = ProjectModel::getById($this->projectId);
+        return ActivityListDto::getActivityForOneProject($projectModel, $this->userId, $filterParams);
+    }
+
+	public function activity_list_dto_for_project($projectCode, $filterParams = [])
     {
         $projectModel = ProjectModel::getByProjectCode($projectCode);
         $user = new UserModel($this->userId);
