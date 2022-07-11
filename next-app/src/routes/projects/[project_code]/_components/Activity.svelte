@@ -27,7 +27,7 @@
 			return {
 				...activity,
 				date_locale: date.toLocaleDateString(),
-				date_iso: date.toISOString(),
+				date_iso: date.toISOString().split('T')[0],
 				time: date.getTime(),
 				fields: toNames(activity.fields),
 		 	}
