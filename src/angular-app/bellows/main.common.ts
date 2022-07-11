@@ -11,6 +11,7 @@ import './core/service-worker-registration.js';
 
 import './polyfills.browser';
 
+import './apps/activity/activity-app.module';
 import './apps/changepassword/change-password-app.module';
 import './apps/projects/projects-app.module';
 import './apps/public/forgot_password/forgot-password-app.module';

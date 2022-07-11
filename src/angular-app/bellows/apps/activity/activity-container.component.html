@@ -1,0 +1,350 @@
+<div id="activity-app" class="content container right-panel-container" data-ng-cloak data-ng-class="{'entry-view': $ctrl.entryId}">
+    <div class="activity-header">
+        <div class="activity-filter-options">
+            <!--suppress HtmlFormInputWithoutLabel -->
+            <select id="filter_by_user" class="custom-select" data-ng-model="$ctrl.filterUser" data-ng-change="$ctrl.triggerFilter()"
+                data-ng-options="item as item.username for item in $ctrl.filterUsers">
+                <option value="">All Users</option>
+            </select>
+            <!--suppress HtmlFormInputWithoutLabel -->
+            <select id="filter_by_type" class="custom-select" data-ng-model="$ctrl.filterType" data-ng-change="$ctrl.triggerFilter()"
+                data-ng-options="item as item.label for item in $ctrl.activityTypes">
+                <option value="">All Events</option>
+            </select>
+<!--             <div id="activity-filter-calendar">
+                <button class="form-control" data-ng-click="$ctrl.filterDateOpen = !$ctrl.filterDateOpen">
+                    <span>{{$ctrl.filterDate}}</span>
+                    <i class="fa fa-calendar"></i></button>
+                <div id="activity-calendar-view" ng-class="{nigel : $ctrl.filterDateOpen}" data-ng-show="$ctrl.filterDateOpen">
+                    <div>
+                        <div>
+                            <label for="filterStartDate">Filter From</label>
+                            <input class="form-control" id="filterStartDate"
+                                   data-moment-picker
+                                   data-format="YYYY-MM-DD"
+                                   data-min-view="year"
+                                   data-max-view="month"
+                                   data-start-view="month"
+                                   data-set-on-select="true"
+                                   data-ng-model="$ctrl.filterStartDate"
+                                   data-change="$ctrl.filterByDate()"
+                                   data-max-date="$ctrl.filterDateMax"
+                                   data-autoclose="false"
+                                   data-inline="true"
+                                   data-today="true">
+                        </div>
+                        <div>
+                            <label for="filterEndDate">Filter To</label>
+                            <input class="form-control" id="filterEndDate"
+                                   data-moment-picker
+                                   data-format="YYYY-MM-DD"
+                                   data-min-view="year"
+                                   data-max-view="month"
+                                   data-start-view="month"
+                                   data-set-on-select="true"
+                                   data-ng-model="$ctrl.filterEndDate"
+                                   data-change="$ctrl.filterByDate()"
+                                   data-min-date="$ctrl.filterDateMin"
+                                   data-max-date="$ctrl.filterDateToday"
+                                   data-inline="true"
+                                   data-today="true">
+                        </div>
+                    </div>
+                    <button class="btn btn-sm brn-default" data-ng-click="$ctrl.filterDateOpen = !$ctrl.filterDateOpen">Close <i class="fa fa-times"></i></button>
+                </div>
+            </div> -->
+        </div>
+    </div>
+    <div class="activity-groups right-panel-container">
+        <div data-ng-show="$ctrl.activityGroups.length > 0" data-ng-repeat="activityGroup in $ctrl.activityGroups">
+            <div class="activity-group" data-ng-show="activityGroup.userGroups.length > 0">
+                <h2>{{activityGroup.name}}</h2>
+                <div>
+                    <div class="activity-user-group" data-ng-repeat="userGroup in activityGroup.userGroups">
+                        <div data-ng-show="userGroup.activities.length > 0">
+                            <div class="activity-group-meta" data-ng-click="$ctrl.clickUserGroup(userGroup)">
+                                <div class="meta-avatar">
+                                    <img data-ng-src="{{$ctrl.getAvatarUrl(userGroup.user.avatar_ref)}}">
+                                </div>
+                                <div class="meta-summary">
+                                    <div class="meta-time">
+                                        {{userGroup.date | date:activityGroup.dateFormat}}
+                                    </div>
+                                    <span class="activity-username">{{userGroup.user.username}}</span> <span class="activity-summary">{{userGroup.getSummaryDescription($ctrl.entryId)}}</span>
+                                    <span class="activity-unread" ng-show="userGroup.unread > 0"> - {{userGroup.unread}} new activit{{userGroup.unread > 1 ? 'ies' : 'y'}}</span>
+                                </div>
+                                <div class="meta-toggle">
+                                    <i class="fa fa-angle-down" data-ng-class="{'fa-rotate-180': userGroup.showActivities}"></i>
+                                </div>
+                                <div class="meta-time">
+                                    {{userGroup.date | date:activityGroup.dateFormat}}
+                                </div>
+                            </div>
+                            <div class="activity-container" data-ng-class="{showActivities: userGroup.showActivities}">
+                                <div class="activity-row" data-ng-repeat="item in userGroup.activities">
+                                    <div data-ng-class="{unread: $ctrl.isUnread(item.id)}">
+                                        <div class="activity-icon">
+                                            <i class="fa fa-{{item.icon}}"></i>
+                                        </div>
+                                        <div class="activity-content">
+                                            <div class="activity-date">
+                                                {{item.date | date:activityGroup.dateFormat}}
+                                            </div>
+                                            <ng-switch on="item.action + '-' + item.type">
+
+                                                <div data-ng-switch-when="message-global">
+                                                    {{item.content.message}}
+                                                </div>
+
+                                                <div data-ng-switch-when="add_comment-project">
+                                                    Responded to <span class="notranslate">{{item.userRefRelated.username}}</span>'s answer to
+                                                    &ldquo;<a class="notranslate" href="{{item.questionHref}}">{{item.content.question}}</a>&rdquo;
+                                                    on <a class="notranslate" href="{{item.textHref}}">{{item.content.text}}</a>
+                                                    <span ng-show="$ctrl.showProjectName">in <a class="notranslate" href="{{item.projectHref}}">{{item.content.project}}</a></span>
+                                                    <div class="activity-reply">
+                                                        <div class="activity-reply-meta">
+                                                            <img data-ng-src="{{$ctrl.getAvatarUrl(item.userRefRelated.avatar_ref)}}">
+                                                            <span>{{item.userRefRelated.username}}</span>
+                                                        </div>
+                                                        <div class="activity-reply-content">
+                                                            <i class="fa fa-quote-left"></i>
+                                                            <div data-ng-bind-html="item.content.answer"></div>
+                                                            <i class="fa fa-quote-right"></i>
+                                                        </div>
+                                                    </div>
+                                                    <p class="indented notranslate">{{item.content.comment}}</p>
+                                                </div>
+
+                                                <div data-ng-switch-when="update_comment-project">
+                                                    Updated their comment on <span class="notranslate">{{item.userRefRelated.username}}</span>'s
+                                                    answer to &ldquo;<a href="{{item.questionHref}}">{{item.content.question}}</a>&rdquo;
+                                                    on <a href="{{item.textHref}}">{{item.content.text}}</a>
+                                                    <span ng-show="$ctrl.showProjectName">in <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
+                                                   <div class="activity-comment">
+                                                        <i class="fa fa-quote-left"></i>
+                                                        <div data-ng-bind-html="item.content.answer"></div>
+                                                        <i class="fa fa-quote-right"></i>
+                                                    </div>
+                                                    <p class="indented notranslate">{{item.content.comment}}</p>
+                                                </div>
+
+                                                <div data-ng-switch-when="add_question-project">
+                                                    Has a new question
+                                                    on <a href="{{item.textHref}}">{{item.content.text}}</a>
+                                                    <span ng-show="$ctrl.showProjectName">in <a href="{{item.projectHref}}">{{item.content.project}}</a> project</span>
+                                                    <p class="indented">&ldquo;<a href="{{item.questionHref}}">{{item.content.question}}</a>&rdquo;</p>
+                                                </div>
+
+                                                <div data-ng-switch-when="add_user_to_project-project">
+                                                    Is now a member of
+                                                    <a href="{{item.projectHref}}">{{item.content.project}}</a>
+                                                </div>
+
+                                                <div data-ng-switch-when="add_text-project">
+                                                    The <a href="{{item.projectHref}}">{{item.content.project}}</a> project has added
+                                                    <a href="{{item.textHref}}">{{item.content.text}}</a> for checking
+                                                </div>
+
+                                                <div data-ng-switch-when="add_answer-project">
+                                                    Answered
+                                                    &ldquo;<a href="{{item.questionHref}}">{{item.content.question}}</a>&rdquo;
+                                                    on <a href="{{item.textHref}}">{{item.content.text}}</a>
+                                                    <span ng-show="$ctrl.showProjectName">in <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
+                                                    <p class="indented" data-ng-bind-html="item.content.answer"></p>
+                                                </div>
+
+                                                <div data-ng-switch-when="update_answer-project">
+                                                    Updated their answer to
+                                                    &ldquo;<a href="{{item.questionHref}}">{{item.content.question}}</a>&rdquo;
+                                                    on <a href="{{item.textHref}}">{{item.content.text}}</a>
+                                                    <span ng-show="$ctrl.showProjectName">in <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
+                                                    <div data-ng-bind-html="item.content.answer"></div>
+                                                </div>
+
+                                                <div data-ng-switch-when="increase_score-project">
+                                                    +1'd your answer to
+                                                    &ldquo;<a href="{{item.questionHref}}">{{item.content.question}}</a>&rdquo;
+                                                    on <a href="{{item.textHref}}">{{item.content.text}}</a>
+                                                    <span ng-show="$ctrl.showProjectName">in <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
+                                                </div>
+
+                                                <div data-ng-switch-when="lexCommentIncreaseScore-project">
+                                                    <span class="activity-action">Liked a comment on</span> <span class="activity-label notranslate">{{item.getLabel()}}</span>
+                                                    <span class="activity-entry" ng-show="$ctrl.showEntryName">in entry <a href="{{item.entryHref}}" class="notranslate">{{item.content.entry}}</a></span>
+                                                    <span class="activity-project" ng-show="$ctrl.showProjectName">for project <a href="{{item.projectHref}}" class="notranslate">{{item.content.project}}</a></span>
+                                                    <div class="activity-comment">
+                                                        <i class="fa fa-quote-left"></i>
+                                                        <div data-ng-bind-html="item.content.lexComment"></div>
+                                                        <i class="fa fa-quote-right"></i>
+                                                    </div>
+                                                </div>
+
+                                                <div data-ng-switch-when="update_lex_comment-project">
+                                                   <span class="activity-action">Updated the comment on</span> <span class="activity-label notranslate">{{item.getLabel()}}</span>
+                                                    <span class="activity-entry" ng-show="$ctrl.showEntryName">in entry <a href="{{item.entryHref}}" class="notranslate">{{item.content.entry}}</a></span>
+                                                    <span class="activity-project" ng-show="$ctrl.showProjectName">for project <a href="{{item.projectHref}}" class="notranslate">{{item.content.project}}</a></span>
+                                                    <div class="activity-comment">
+                                                        <i class="fa fa-quote-left"></i>
+                                                        <div data-ng-bind-html="item.content.lexComment"></div>
+                                                        <i class="fa fa-quote-right"></i>
+                                                    </div>
+                                                </div>
+
+                                                <div data-ng-switch-when="delete_lex_comment-project">
+                                                    <span class="activity-action">Deleted a comment on</span> <span class="activity-label notranslate">{{item.getLabel()}}</span>
+                                                    <span class="activity-entry" ng-show="$ctrl.showEntryName">in entry <a href="{{item.entryHref}}" class="notranslate">{{item.content.entry}}</a></span>
+                                                    <span class="activity-project" ng-show="$ctrl.showProjectName">for project <a href="{{item.projectHref}}" class="notranslate">{{item.content.project}}</a></span>
+                                                    <div class="activity-comment">
+                                                        <i class="fa fa-quote-left"></i>
+                                                        <div data-ng-bind-html="item.content.lexComment"></div>
+                                                        <i class="fa fa-quote-right"></i>
+                                                    </div>
+                                                </div>
+
+                                                <div data-ng-switch-when="add_entry-project">
+                                                    <span class="activity-action">Created the entry</span>
+                                                    <span class="activity-entry" ng-show="$ctrl.showEntryName"><a href="{{item.entryHref}}" class="notranslate">{{item.content.entry}}</a></span>
+                                                    <span class="activity-project" ng-show="$ctrl.showProjectName">in <a href="{{item.projectHref}}" class="notranslate">{{item.content.project}}</a></span>
+                                                </div>
+
+                                                <div data-ng-switch-when="update_entry-project">
+                                                    <ng-switch on="item.changes.changeType">
+                                                        <div data-ng-switch-when="added_field">
+                                                            <span class="activity-action">Added</span> <span class="activity-label notranslate">{{item.getLabel()}}</span>
+                                                            <span class="activity-entry" ng-show="$ctrl.showEntryName">in entry <a href="{{item.entryHref}}" class="notranslate">{{item.content.entry}}</a></span>
+                                                            <span class="activity-project" ng-show="$ctrl.showProjectName">for project <a href="{{item.projectHref}}" class="notranslate">{{item.content.project}}</a></span>
+                                                        </div>
+                                                        <div data-ng-switch-when="moved_field">
+                                                            <span class="activity-action">Moved</span> <span class="activity-label notranslate">{{item.getLabel()}}</span>
+                                                            <span class="activity-entry" ng-show="$ctrl.showEntryName">in entry <a href="{{item.entryHref}}" class="notranslate">{{item.content.entry}}</a></span>
+                                                            <span class="activity-project" ng-show="$ctrl.showProjectName">for project <a href="{{item.projectHref}}" class="notranslate">{{item.content.project}}</a></span>
+                                                        </div>
+                                                        <div data-ng-switch-default>
+                                                            <ng-switch on="item.getOldValue()">
+                                                                <div data-ng-switch-when="">
+                                                                    <span class="activity-action">Added</span>
+                                                                    <span class="activity-values"><span class="activity-value activity-value-new notranslate">{{item.getNewValue()}}</span> to </span>
+                                                                    <span class="activity-label notranslate">{{item.getLabel()}}</span>
+                                                                    <span class="activity-entry" ng-show="$ctrl.showEntryName">in entry <a href="{{item.entryHref}}" class="notranslate">{{item.content.entry}}</a></span>
+                                                                    <span class="activity-project" ng-show="$ctrl.showProjectName">for project <a href="{{item.projectHref}}" class="notranslate">{{item.content.project}}</a></span>
+                                                                </div>
+                                                                <div data-ng-switch-default>
+                                                                    <span class="activity-action">Updated</span> <span class="activity-label notranslate">{{item.getLabel()}}</span>
+                                                                    <span class="activity-entry" ng-show="$ctrl.showEntryName">in entry <a href="{{item.entryHref}}" class="notranslate">{{item.content.entry}}</a></span>
+                                                                    <span class="activity-values">from <span class="activity-value activity-values-old notranslate">{{item.getOldValue()}}</span> to <span class="activity-value activity-value-new notranslate">{{item.getNewValue()}}</span></span>
+                                                                    <span class="activity-project" ng-show="$ctrl.showProjectName">for project <a href="{{item.projectHref}}" class="notranslate">{{item.content.project}}</a></span>
+                                                                </div>
+                                                            </ng-switch>
+                                                        </div>
+                                                    </ng-switch>
+                                                </div>
+
+                                                <div data-ng-switch-when="delete_entry-project">
+                                                    <span class="activity-action">Deleted the entry</span>
+                                                    <span class="activity-entry notranslate" ng-show="$ctrl.showEntryName">{{item.content.entry}}</span>
+                                                    <span class="activity-project" ng-show="$ctrl.showProjectName">in <a href="{{item.projectHref}}" class="notranslate">{{item.content.project}}</a></span>
+                                                </div>
+
+                                                <div data-ng-switch-when="add_lex_comment-project">
+                                                    <span class="activity-action">Commented on</span> <span class="activity-label notranslate">{{item.getLabel()}}</span>
+                                                    <span class="activity-entry" ng-show="$ctrl.showEntryName">in entry <a href="{{item.entryHref}}" class="notranslate">{{item.content.entry}}</a></span>
+                                                    <span class="activity-project" ng-show="$ctrl.showProjectName">for project <a href="{{item.projectHref}}" class="notranslate">{{item.content.project}}</a></span>
+                                                    <div class="activity-comment">
+                                                        <i class="fa fa-quote-left"></i>
+                                                        <div data-ng-bind-html="item.content.lexComment"></div>
+                                                        <i class="fa fa-quote-right"></i>
+                                                    </div>
+                                                </div>
+
+                                                <div data-ng-switch-when="add_lex_reply-project">
+                                                    <span class="activity-action">Replied to a comment on</span> <span class="activity-label notranslate">{{item.getLabel()}}</span>
+                                                    <span class="activity-entry" ng-show="$ctrl.showEntryName">in entry <a href="{{item.entryHref}}" class="notranslate">{{item.content.entry}}</a></span>
+                                                    <span class="activity-project" ng-show="$ctrl.showProjectName">for project <a href="{{item.projectHref}}" class="notranslate">{{item.content.project}}</a></span>
+                                                    <div class="activity-reply">
+                                                        <div class="activity-reply-meta">
+                                                            <img data-ng-src="{{$ctrl.getAvatarUrl(item.userRefRelated.avatar_ref)}}">
+                                                            <span>{{item.userRefRelated.username}}</span>
+                                                        </div>
+                                                        <div class="activity-reply-content">
+                                                            <i class="fa fa-quote-left"></i>
+                                                            <div data-ng-bind-html="item.content.lexComment"></div>
+                                                            <i class="fa fa-quote-right"></i>
+                                                        </div>
+                                                    </div>
+                                                    <p class="indented notranslate">{{item.content.lexReply}}</p>
+                                                </div>
+
+                                                <div data-ng-switch-when="update_lex_reply-project">
+                                                   <span class="activity-action">Updated a reply comment on</span> <span class="activity-label notranslate">{{item.getLabel()}}</span>
+                                                    <span class="activity-entry" ng-show="$ctrl.showEntryName">in entry <a href="{{item.entryHref}}" class="notranslate">{{item.content.entry}}</a></span>
+                                                    <span class="activity-project" ng-show="$ctrl.showProjectName">for project <a href="{{item.projectHref}}" class="notranslate">{{item.content.project}}</a></span>
+                                                    <div class="activity-reply">
+                                                        <div class="activity-reply-meta">
+                                                            <img data-ng-src="{{$ctrl.getAvatarUrl(item.userRefRelated.avatar_ref)}}">
+                                                            <span>{{item.userRefRelated.username}}</span>
+                                                        </div>
+                                                        <div class="activity-reply-content">
+                                                            <i class="fa fa-quote-left"></i>
+                                                            <div data-ng-bind-html="item.content.lexComment"></div>
+                                                            <i class="fa fa-quote-right"></i>
+                                                        </div>
+                                                    </div>
+                                                    <p class="indented notranslate">{{item.content.lexReply}}</p>
+                                                </div>
+
+                                                <div data-ng-switch-when="delete_lex_reply-project">
+                                                    <span class="activity-action">Deleted a reply to a comment on</span> <span class="activity-label notranslate">{{item.getLabel()}}</span>
+                                                    <span class="activity-entry" ng-show="$ctrl.showEntryName">in entry <a href="{{item.entryHref}}" class="notranslate">{{item.content.entry}}</a></span>
+                                                    <span class="activity-project" ng-show="$ctrl.showProjectName">for project <a href="{{item.projectHref}}" class="notranslate">{{item.content.project}}</a></span>
+                                                    <div class="activity-reply">
+                                                        <div class="activity-reply-meta">
+                                                            <img data-ng-src="{{$ctrl.getAvatarUrl(item.userRefRelated.avatar_ref)}}">
+                                                            <span>{{item.userRefRelated.username}}</span>
+                                                        </div>
+                                                        <div class="activity-reply-content">
+                                                            <i class="fa fa-quote-left"></i>
+                                                            <div data-ng-bind-html="item.content.lexComment"></div>
+                                                            <i class="fa fa-quote-right"></i>
+                                                        </div>
+                                                    </div>
+                                                    <p class="indented notranslate">{{item.content.lexReply}}</p>
+                                                </div>
+
+                                                <div data-ng-switch-when="update_lex_comment_status-project">
+                                                    <span class="activity-action">Comment status on</span> <span class="activity-label notranslate">{{item.getLabel()}}</span>
+                                                    <span class="activity-values">changed to <span class="activity-value activity-value-new notranslate">{{item.content.lexCommentStatus}}</span></span>
+                                                    <span class="activity-entry" ng-show="$ctrl.showEntryName">in entry <a href="{{item.entryHref}}" class="notranslate">{{item.content.entry}}</a></span>
+                                                    <span class="activity-project" ng-show="$ctrl.showProjectName">for project <a href="{{item.projectHref}}" class="notranslate">{{item.content.project}}</a></span>
+                                                    <div class="activity-comment">
+                                                        <i class="fa fa-quote-left"></i>
+                                                        <div data-ng-bind-html="item.content.lexComment"></div>
+                                                        <i class="fa fa-quote-right"></i>
+                                                    </div>
+                                                </div>
+
+                                                <div data-ng-switch-default>
+                                                    The <strong class="notranslate">{{item.action + '-' + item.type}}</strong> activity type is unimplemented
+                                                </div>
+
+                                            </ng-switch>
+                                        </div>
+                                        <div class="activity-date">
+                                            {{item.date | date:activityGroup.dateFormat}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="activity-show-more">
+        <span data-ng-click="$ctrl.loadMoreActivities()">
+            Show More
+            <i class="fa fa-spinner fa-spin" data-ng-show="$ctrl.loadingFeed"></i>
+            <i class="fa fa-angle-down" data-ng-hide="$ctrl.loadingFeed"></i>
+        </span>
+    </div>
+</div>

@@ -1,6 +1,7 @@
 import * as angular from 'angular';
 import { diff } from 'deep-diff';
 
+import { ActivityService } from '../../../bellows/core/api/activity.service';
 import { ApplicationHeaderService } from '../../../bellows/core/application-header.service';
 import { ModalService } from '../../../bellows/core/modal/modal.service';
 import { NoticeService } from '../../../bellows/core/notice/notice.service';
@@ -71,6 +72,7 @@ export class LexiconEditorController implements angular.IController {
   getEntryCommentCount = this.commentService.getEntryCommentCount.bind(this.commentService);
   getSortableValue = this.editorService.getSortableValue;
   visibleEntries = this.editorService.visibleEntries;
+  unreadCount = this.activityService.unreadCount;
   getMeaningForDisplay = this.editorService.getMeaningForDisplay;
 
   private pristineEntry: LexEntry = new LexEntry();
@@ -80,6 +82,7 @@ export class LexiconEditorController implements angular.IController {
     '$q', '$scope',
     '$state',
     '$window',
+    'activityService',
     'applicationHeaderService',
     'modalService', 'silNoticeService',
     'sessionService', 'semanticDomainsService',
@@ -97,7 +100,8 @@ export class LexiconEditorController implements angular.IController {
     private readonly $scope: angular.IScope,
     private readonly $state: angular.ui.IStateService,
     private readonly $window: angular.IWindowService,
-	private readonly applicationHeaderService: ApplicationHeaderService,
+    private readonly activityService: ActivityService,
+    private readonly applicationHeaderService: ApplicationHeaderService,
     private readonly modal: ModalService,
     private readonly notice: NoticeService,
     private readonly sessionService: SessionService,
@@ -426,6 +430,7 @@ export class LexiconEditorController implements angular.IController {
 
         // refresh data will add the new entry to the entries list
         this.editorService.refreshEditorData().then(() => {
+          this.activityService.markRefreshRequired();
           if (entry && isNewEntry) {
             this.setCurrentEntry(this.entries[this.editorService.getIndexInList(entry.id, this.entries)]);
             this.editorService.removeEntryFromLists(newEntryTempId);
@@ -724,6 +729,12 @@ export class LexiconEditorController implements angular.IController {
 
   showCommentsPanel = (): void => {
     this.showRightPanel('#lexAppCommentView');
+  }
+
+  showActivityFeed = (): void => {
+    // Ideally this would automatically happen when activity is added but not possible yet
+    this.activityService.markRefreshRequired();
+    this.showRightPanel('#lexAppActivityFeed');
   }
 
   showRightPanel(element: string): void {
