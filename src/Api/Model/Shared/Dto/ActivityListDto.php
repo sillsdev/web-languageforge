@@ -30,6 +30,15 @@ class ActivityListDto
     const DELETED_FIELD = 'deleted_field';
 
     /**
+     * @param Website $site
+     * @return array
+     */
+    public static function getActivityTypes($site)
+    {
+        return ActivityModel::getActivityTypesForSiteBase($site->base);
+    }
+
+    /**
      * @param ProjectModel $projectModel
      * @param array $filterParams
      * @return array - the DTO array

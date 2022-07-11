@@ -413,6 +413,11 @@ class Sf
     // ---------------------------------------------------------------
     // Activity Log
     // ---------------------------------------------------------------
+    public function valid_activity_types_dto()
+    {
+        return ActivityListDto::getActivityTypes($this->website);
+    }
+
     public function activity_list_dto($filterParams = [])
     {
         return ActivityListDto::getActivityForUser($this->website->domain, $this->userId, $filterParams);
