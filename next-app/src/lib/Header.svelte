@@ -1,6 +1,6 @@
 <script>
 	import Error from '$lib/error/Error.svelte'
-	import HamburgerIcon from '$lib/icons/HamburgerIcon.svelte'
+	import { HamburgerIcon } from '$lib/icons'
 	import Progress from '$lib/progress/Progress.svelte'
 	import { createEventDispatcher } from 'svelte'
 

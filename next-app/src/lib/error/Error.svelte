@@ -1,7 +1,7 @@
 <script>
 	import { beforeNavigate } from '$app/navigation'
 	import { error, dismiss } from '$lib/error'
-	import ErrorIcon from '$lib/icons/ErrorIcon.svelte'
+	import { ErrorIcon } from '$lib/icons'
 // TODO: need to figure out why the error alert flashes when there's a backend failure, e.g. hit http://localhost/projects/bogus-project-code/activity to reproduce
 	let errContainer = null
 
