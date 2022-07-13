@@ -8,14 +8,14 @@ export async function get({ project_code, cookie }) {
 		cookie,
 	})
 
-	const results = await sf({ //TODO: deconstruct this once all data is worked out
+	const { entries, comments } = await sf({
 		name: 'lex_stats',
 		args: [ project_code ],
 		cookie,
 	})
 
-	const entries = results.entries
 	const entries_with_picture = entries.filter(has_picture)
+	const unresolved_comments = comments.filter(({ status }) => status !== 'resolved')
 
 	return {
 		id,
@@ -24,7 +24,7 @@ export async function get({ project_code, cookie }) {
 		num_entries: entries.length,
 		num_entries_with_audio: 1234,
 		num_entries_with_pictures: entries_with_picture.length,
-		num_unresolved_comments: 1234,
+		num_unresolved_comments: unresolved_comments.length,
 		num_users: Object.keys(users).length,
 	}
 }
