@@ -17,31 +17,32 @@
 	export let activities
 
 	let only_showing_subset = true
-	const stats = [
+
+	$: stats = [
 		{
 			title: 'Users',
-			value: Number(1234).toLocaleString(),
+			value: Number(project.num_users).toLocaleString(),
 			icon: PeopleIcon,
 		},
 		{
 			title: 'Entries',
-			value: Number(1234).toLocaleString(),
+			value: Number(project.num_entries).toLocaleString(),
 			icon: NotesIcon,
 		},
 		{
-			title: 'Unresolved comments',
-			value: Number(1234).toLocaleString(),
-			icon: MessageAlertIcon,
+			title: 'Entries with audio',
+			value: Number(project.num_entries_with_audio).toLocaleString(),
+			icon: VoiceIcon,
 		},
 		{
 			title: 'Entries with pictures',
-			value: Number(1234).toLocaleString(),
+			value: Number(project.num_entries_with_pictures).toLocaleString(),
 			icon: ImagesIcon,
 		},
 		{
-			title: 'Entries with audio',
-			value: Number(1234).toLocaleString(),
-			icon: VoiceIcon,
+			title: 'Unresolved comments',
+			value: Number(project.num_unresolved_comments).toLocaleString(),
+			icon: MessageAlertIcon,
 		},
 	]
 

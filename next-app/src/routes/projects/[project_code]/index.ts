@@ -1,5 +1,5 @@
 import { get_activities } from './activities'
-import { sf } from '$lib/fetch/server'
+import { get as get_project_info } from './meta'
 
 export async function get({ params: { project_code }, request: { headers }}) {
 	const args = {
@@ -7,7 +7,7 @@ export async function get({ params: { project_code }, request: { headers }}) {
 		cookie: headers.get('cookie'),
 	}
 
-	const { id, projectName: name } = await get_project_info(args)
+	const project = await get_project_info(args)
 
 	const last_30_days = {
 		start_date: daysAgo(30),
@@ -17,22 +17,10 @@ export async function get({ params: { project_code }, request: { headers }}) {
 
 	return {
 		body: {
-			project: {
-				id,
-				code: project_code,
-				name,
-			},
+			project,
 			activities,
 		},
 	}
-}
-
-async function get_project_info({ project_code, cookie }) {
-	return await sf({
-		name: 'project_read_by_code',
-		args: [ project_code ],
-		cookie,
-	})
 }
 
 function daysAgo(num_days) {
