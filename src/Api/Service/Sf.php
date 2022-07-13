@@ -546,6 +546,18 @@ class Sf
         return LexProjectDto::encode($this->projectId);
     }
 
+	public function lex_stats($projectCode)
+	{
+		$projectModel = ProjectModel::getByProjectCode($projectCode);
+        $user = new UserModel($this->userId);
+
+        if ($user->isMemberOfProject($projectModel->id->asString())) {
+            return LexDbeDto::encode($projectModel->id->asString(), $this->userId);
+        }
+
+        throw new UserUnauthorizedException("User $this->userId is not a member of project $projectCode");
+	}
+
     public function lex_dbeDtoFull($browserId, $offset)
     {
         $sessionLabel = 'lexDbeFetch_' . $browserId;

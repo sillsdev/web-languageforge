@@ -238,6 +238,7 @@ class RightsHelper
 
             case 'lex_dbeDtoFull':
             case 'lex_dbeDtoUpdatesOnly':
+            case 'lex_stats':
                 return $this->userHasProjectRight(Domain::ENTRIES + Operation::VIEW);
 
                 // case 'lex_entry_read':
