@@ -2,7 +2,7 @@ import { sf } from '$lib/fetch/server'
 
 export async function get({ project_code, cookie }) {
 	const { id, projectName: name, users } = await sf({
-		name: 'project_read_by_code',
+		name: 'project_read_by_code', // src/Api/Model/Shared/ProjectModel.php->getByProjectCode
 		args: [ project_code ],
 		cookie,
 	})
