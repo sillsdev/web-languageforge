@@ -15,6 +15,7 @@ export async function get({ project_code, cookie }) {
 	})
 
 	const entries = results.entries
+	const entries_with_picture = entries.filter(has_picture)
 
 	return {
 		id,
@@ -22,8 +23,12 @@ export async function get({ project_code, cookie }) {
 		name,
 		num_entries: entries.length,
 		num_entries_with_audio: 1234,
-		num_entries_with_pictures: 1234,
+		num_entries_with_pictures: entries_with_picture.length,
 		num_unresolved_comments: 1234,
 		num_users: Object.keys(users).length,
 	}
+}
+
+function has_picture(entry) {
+	return entry.senses.some(sense => sense.pictures)
 }
