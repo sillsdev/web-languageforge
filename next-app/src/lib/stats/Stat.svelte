@@ -5,7 +5,7 @@
 </script>
 
 <!-- https://daisyui.com/components/stat/ -->
-<div class='stat place-items-center px-8'>
+<div class='stat place-items-center'>
 	<dt class=stat-title>{ title }</dt>
 	<dd class='stat-value text-primary'>{ value }</dd>
 
