@@ -30,10 +30,10 @@ function has_picture(entry) {
 }
 
 function has_audio(anEntry) {
-	const is_audio = name => name.endsWith('-audio') // naming convention imposed by src/angular-app/languageforge/lexicon/settings/configuration/input-system-view.model.ts L81
+	const is_audio = writing_system => writing_system.endsWith('-audio') // naming convention imposed by src/angular-app/languageforge/lexicon/settings/configuration/input-system-view.model.ts L81
 
 	// examples of possible locations where audio may be found in the entry's data:
-	// 1.  Within an "entry"
+	// 1.  Fields within an "entry"
 	// {
 	// 		lexeme: {
 	//			'...-audio': '...'
@@ -42,21 +42,23 @@ function has_audio(anEntry) {
 	//			'...-audio': '...'
 	//		}
 	// }
-	const in_entry = entry => Object.keys(entry).some(property => Object.keys(entry[property]).some(is_audio))
+	const in_fields = fields => Object.keys(fields).some(name => Object.keys(fields[name]).some(is_audio))
 
-	// 2.  Within a "meaning"
+	// 2.  Fields within a "meaning"
 	// {
+	//		lexeme: '...',
+	//		pronunciation: '...',
 	//		senses: [{
 	//			'...': {
-	//				'...-audio'
+	//				'...-audio': '...'
 	//			}
 	// 		}]
 	// }
-	const in_meaning = senses => senses.some(sense => Object.keys(sense).some(property => Object.keys(sense[property]).some(is_audio)))
+	const in_meaning = senses => senses.some(in_fields)
 
 	const { senses, ...entry } = anEntry
 
-	return in_entry(entry) || in_meaning(senses)
+	return in_fields(entry) || in_meaning(senses)
 	// TODO: (audio can be found in lots of places other than lexeme) need to look at: https://github.com/sillsdev/web-languageforge/blob/develop/src/angular-app/bellows/core/offline/editor-data.service.ts#L523
 	// ref code shows additional logic for "examples".... do I need more logic?, can audio be in a different location than the two I've got so far?
 }
