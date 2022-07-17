@@ -29,8 +29,9 @@ function has_picture(entry) {
 	return entry.senses.some(sense => sense.pictures)
 }
 
+// audio can be found in lots of places other than lexeme, ref impl used: https://github.com/sillsdev/web-languageforge/blob/develop/src/angular-app/bellows/core/offline/editor-data.service.ts#L523
 function has_audio(anEntry) {
-	const is_audio = writing_system => writing_system.endsWith('-audio') // naming convention imposed by src/angular-app/languageforge/lexicon/settings/configuration/input-system-view.model.ts L81
+	const contains_audio = writing_system => writing_system.endsWith('-audio') // naming convention imposed by src/angular-app/languageforge/lexicon/settings/configuration/input-system-view.model.ts L81
 
 	// examples of possible locations where audio may be found in the entry's data:
 	// 1.  Fields within an "entry"
@@ -42,7 +43,7 @@ function has_audio(anEntry) {
 	//			'...-audio': '...'
 	//		}
 	// }
-	const in_fields = fields => Object.keys(fields).some(name => Object.keys(fields[name]).some(is_audio))
+	const in_fields = fields => Object.keys(fields).some(name => Object.keys(fields[name]).some(contains_audio))
 
 	// 2.  Fields within a "meaning"
 	// {
@@ -54,11 +55,26 @@ function has_audio(anEntry) {
 	//			}
 	// 		}]
 	// }
-	const in_meaning = senses => senses.some(in_fields)
+	const in_meaning = (senses = []) => senses.some(in_fields)
+
+	// 3.  Fields within a "meaning"'s example:
+	// {
+	//		lexeme: '...',
+	//		pronunciation: '...',
+	//		senses: [{
+	//			examples: {
+	//				sentence: {
+	//					'...-audio': '...'
+	//				},
+	//				'...': {
+	//					'...-audio': '...'
+	//				}
+	//			}
+	// 		}]
+	// }
+	const in_example = senses => senses.some(sense => in_meaning(sense.examples))
 
 	const { senses, ...entry } = anEntry
 
-	return in_fields(entry) || in_meaning(senses)
-	// TODO: (audio can be found in lots of places other than lexeme) need to look at: https://github.com/sillsdev/web-languageforge/blob/develop/src/angular-app/bellows/core/offline/editor-data.service.ts#L523
-	// ref code shows additional logic for "examples".... do I need more logic?, can audio be in a different location than the two I've got so far?
+	return in_fields(entry) || in_meaning(senses) || in_example(senses)
 }
