@@ -66,6 +66,16 @@ spec:
         app: lfmerge
     spec:
       affinity:
+        # required to ensure this container makes it to a dedicated node (so it doesn't crash other containers when it blows up)
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - preference:
+              matchExpressions:
+              - key: dedicated
+                operator: In
+                values:
+                - lfmerge
+            weight: 1
         podAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
           - labelSelector:
@@ -75,6 +85,12 @@ spec:
                 values:
                 - app
             topologyKey: kubernetes.io/hostname
+      # required to ensure this container makes it to a dedicated node (so it doesn't crash other containers when it blows up)
+      tolerations:
+      - effect: NoSchedule
+        key: dedicated
+        operator: Equal
+        value: lfmerge
       volumes:
       - name: sendreceive-data
         persistentVolumeClaim:
