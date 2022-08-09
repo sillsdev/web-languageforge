@@ -268,7 +268,6 @@ class RightsHelper
 
             case 'sendReceive_updateSRProject':
             case 'sendReceive_receiveProject':
-            case 'sendReceive_commitProject':
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
 
                     // project management app
