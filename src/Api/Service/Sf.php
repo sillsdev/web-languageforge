@@ -654,12 +654,7 @@ class Sf
     public function sendReceive_receiveProject()
     {
         SendReceiveCommands::queueProjectForSync($this->projectId);
-        return SendReceiveCommands::startLFMergeIfRequired($this->projectId);
-    }
-
-    public function sendReceive_commitProject()
-    {
-        return SendReceiveCommands::startLFMergeIfRequired($this->projectId);
+        return true;
     }
 
     public function sendReceive_getProjectStatus()
@@ -667,6 +662,7 @@ class Sf
         return SendReceiveCommands::getProjectStatus($this->projectId);
     }
 
+    // TODO: Are we ever going to use these two functions? Evaluate, and remove if not needed. 2022-08 RM
     public function sendReceive_notification_receiveRequest($projectCode)
     {
         return SendReceiveCommands::notificationReceiveRequest($projectCode);
@@ -765,8 +761,6 @@ class Sf
             'get_captcha_data',
             'reset_password',
             'sendReceive_getUserProjects',
-            'sendReceive_notification_receiveRequest',
-            'sendReceive_notification_sendRequest',
             'user_register',
             'user_register_oauth',
             'user_calculate_username',
