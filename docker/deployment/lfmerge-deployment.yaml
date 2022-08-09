@@ -76,15 +76,6 @@ spec:
                 values:
                 - lfmerge
             weight: 1
-        podAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-              - key: app
-                operator: In
-                values:
-                - app
-            topologyKey: kubernetes.io/hostname
       # required to ensure this container makes it to a dedicated node (so it doesn't crash other containers when it blows up)
       tolerations:
       - effect: NoSchedule

@@ -65,23 +65,6 @@ spec:
       labels:
         app: app
     spec:
-      affinity:
-        # required to ensure this container makes it to lfmerge's dedicated node
-        nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - preference:
-              matchExpressions:
-              - key: dedicated
-                operator: In
-                values:
-                - lfmerge
-            weight: 1
-      # required to ensure this container makes it to lfmerge's dedicated node
-      tolerations:
-      - effect: NoSchedule
-        key: dedicated
-        operator: Equal
-        value: lfmerge
       volumes:
       - name: assets
         persistentVolumeClaim:
