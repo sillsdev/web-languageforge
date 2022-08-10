@@ -76,6 +76,16 @@ spec:
                 values:
                 - lfmerge
             weight: 1
+        # need to keep this on the same pod as the app since inotify only gets notification wwhen updates occur on the same kernal
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - app
+            topologyKey: kubernetes.io/hostname
       # required to ensure this container makes it to a dedicated node (so it doesn't crash other containers when it blows up)
       tolerations:
       - effect: NoSchedule
