@@ -15,23 +15,23 @@ Language Forge is built to run in a containerized environment.  Kubernetes is ou
 
 [qa.languageforge.org](https://qa.languageforge.org)
 
-Staging deployments can be manually run with `VERSION_APP=<some-docker-tag-or-semver> VERSION_PROXY=<some-docker-tag-or-semver> VERSION_NEXT_APP=<some-docker-tag-or-semver> VERSION_LFMERGE=<some-docker-tag-or-semver> make deploy-staging`.
-
 Current workflow:
 1. merge PR into or make commits on `develop` branch
 1. this will kick off the GHA (`.github/workflows/staging.yml`) to build, test and publish the necessary images to Docker Hub (https://hub.docker.com/r/sillsdev/web-languageforge/tags) and deploy this code to the staging environment at https://qa.languageforge.org
 
+Staging deployments can be manually run with `VERSION_APP=<some-docker-tag-or-semver> VERSION_PROXY=<some-docker-tag-or-semver> VERSION_NEXT_APP=<some-docker-tag-or-semver> VERSION_LFMERGE=<some-docker-tag-or-semver> make deploy-staging`.
+
 ### Production ###
 
 [languageforge.org](https://languageforge.org)
-
-Production deployments can be manually run with `VERSION_APP=<some-docker-tag-or-semver> VERSION_PROXY=<some-docker-tag-or-semver> VERSION_NEXT_APP=<some-docker-tag-or-semver> VERSION_LFMERGE=<some-docker-tag-or-semver> make deploy-prod`.
 
 Current workflow:
 1. merge from `develop` into `master`
 1. "Draft a new release" on https://github.com/sillsdev/web-languageforge/releases with a `vYYYY-MM-DD` tag format
 1. "Publish" the new release
 1. this will kick off the GHA (`.github/workflows/production.yml`) to build, test and publish the necessary images to Docker Hub (https://hub.docker.com/r/sillsdev/web-languageforge/tags) and deploy this code to the production environment at https://languageforge.org
+
+Production deployments can be manually run with `VERSION_APP=<some-docker-tag-or-semver> VERSION_PROXY=<some-docker-tag-or-semver> VERSION_NEXT_APP=<some-docker-tag-or-semver> VERSION_LFMERGE=<some-docker-tag-or-semver> make deploy-prod`.
 
 ### Revert ###
 Various tagged images are maintained in Docker Hub.  If you need to revert to a previous version, you can do so by running the deployments scripts with the appropriate permissions or utilizing the Kubernetes UI to change the image of a deployment at any time.

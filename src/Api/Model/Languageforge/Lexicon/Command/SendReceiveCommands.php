@@ -173,41 +173,6 @@ class SendReceiveCommands
     }
 
     /**
-     * @param string $projectId
-     * @param string $pidFilePath
-     * @param string $command
-     * @return bool true if process started or already running, otherwise false
-     * @throws ResourceNotAvailableException
-     * @throws \Exception
-     */
-    public static function startLFMergeIfRequired($projectId, $pidFilePath = null, $command = null)
-    {
-        $project = new LexProjectModel($projectId);
-        ProjectCommands::checkIfArchivedAndThrow($project);
-        if (!$project->hasSendReceive()) return false;
-
-        if (is_null($pidFilePath)) {
-            $pidFilePath = self::$lfmergePidFilePaths[0];
-            foreach (self::$lfmergePidFilePaths as $path) {
-                if (file_exists($path)) {
-                    $pidFilePath = $path;
-                    break;
-                }
-            }
-        }
-
-        if (self::isProcessRunningByPidFile($pidFilePath)) return true;
-
-        if (is_null($command)) $command = self::LFMERGE_EXE . ' -p ' . $project->projectCode;
-
-        if (!self::commandExists($command)) throw new \Exception('LFMerge is not installed. Contact the website administrator.');
-
-        $pid = self::runInBackground($command);
-
-        return self::isProcessRunningByPid($pid);
-    }
-
-    /**
      * Decode the state file for project status.  If the project is in a queue, override the state to PENDING
      * @param string $projectId
      * @param string $statePath
@@ -303,7 +268,7 @@ class SendReceiveCommands
             if (file_put_contents($notificationFilePath, '') === false) throw new \Exception('Cannot write to Send/Receive Receive Queue. Contact the website administrator.');
         }
 
-        return self::startLFMergeIfRequired($project->id->asString(), $pidFilePath, $command);
+        return true;
     }
 
     /**
@@ -333,7 +298,7 @@ class SendReceiveCommands
             if (file_put_contents($notificationFilePath, '') === false) throw new \Exception('Cannot write to Send/Receive Send Queue. Contact the website administrator.');
         }
 
-        return self::startLFMergeIfRequired($project->id->asString(), $pidFilePath, $command);
+        return true;
     }
 
     /**
@@ -385,51 +350,12 @@ class SendReceiveCommands
     }
 
     /**
-     * Taken from http://stackoverflow.com/questions/3111406/checking-if-process-still-running
-     * @param string $pidFilePath
-     * @return bool
-     */
-    public static function isProcessRunningByPidFile($pidFilePath)
-    {
-        if (!file_exists($pidFilePath) || !is_file($pidFilePath)) return false;
-        $pid = file_get_contents($pidFilePath);
-        return self::isProcessRunningByPid($pid);
-    }
-
-    /**
-     * Taken from http://stackoverflow.com/questions/3111406/checking-if-process-still-running
-     * @param string $pid
-     * @return bool
-     */
-    private static function isProcessRunningByPid($pid)
-    {
-        return posix_kill(intval($pid), 0);
-    }
-
-    /**
      * @param string $command
      * @return bool
      */
     private static function commandExists($command)
     {
         return !!`which $command`;
-    }
-
-    /**
-     * Taken from https://nsaunders.wordpress.com/2007/01/12/running-a-background-process-in-php/
-     * @param string $command
-     * @param int $priority
-     * @return string $pid
-     */
-    private static function runInBackground($command, $priority = 0)
-    {
-        if ($priority) {
-            $pid = shell_exec("nohup nice -n $priority $command > /dev/null 2> /dev/null & echo $!");
-        } else {
-            $pid = shell_exec("nohup $command > /dev/null 2> /dev/null & echo $!");
-//            $pid = shell_exec("nohup $command > /tmp/LfMergeOut.log 2> /tmp/LfMergeErr.log & echo $!");
-        }
-        return $pid;
     }
 
     /**
