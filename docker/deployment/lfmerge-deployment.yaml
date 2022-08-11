@@ -76,7 +76,7 @@ spec:
                 values:
                 - lfmerge
             weight: 1
-        # need to keep this on the same pod as the app since inotify only gets notification wwhen updates occur on the same kernal
+        # need to keep this on the same pod as the app since inotify only gets notification when updates occur on the same kernel
         podAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
           - labelSelector:
