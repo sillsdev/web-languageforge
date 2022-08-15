@@ -1,6 +1,6 @@
 import { sf } from '$lib/fetch/server'
 
-export async function get({ params: { project_code }, request: { headers } }) {
+export async function GET({ params: { project_code }, request: { headers } }) {
 	const cookie = headers.get('cookie')
 
 	const activities = await get_activities({ project_code, cookie })

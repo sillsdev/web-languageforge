@@ -1,7 +1,7 @@
 import { get_activities } from './activities'
 import { get as get_project_info } from './meta'
 
-export async function get({ params: { project_code }, request: { headers }}) {
+export async function GET({ params: { project_code }, request: { headers }}) {
 	const args = {
 		project_code,
 		cookie: headers.get('cookie'),

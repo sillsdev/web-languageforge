@@ -1,7 +1,7 @@
 import { throwError } from '$lib/error'
 import { sf } from '$lib/fetch/server'
 
-export async function put({ request }) {
+export async function PUT({ request }) {
 	try {
 		const { password, password_confirm } = await request.json()
 
