@@ -104,3 +104,8 @@ Found in `$lib/fetch/client.js`.  This wrapper exports some of the most common t
 
 Found in `$lib/fetch/server.js`.  This wrapper exports some of the most common types of fetches, handles errors consistently and abides by the legacy app's `/api/sf` contract.
 
+### FAQ's
+
+#### Why are we using `$$props.class` when Svelte docs suggest against it?
+
+This a very well-known and conventional way of getting all you need from the element without the extra boilerplate code required to expose an explicit API for each [Attribute](https://developer.mozilla.org/en-US/docs/Web/API/Element/attributes) or "properties" as referred to by Svelte (https://svelte.dev/docs#template-syntax-attributes-and-props).  See https://github.com/sillsdev/web-languageforge/pull/1416/files#r894114808 for further rationale and comparison of alternative which is considered unnecessarily verbose and not as maintainable.
