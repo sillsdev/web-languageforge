@@ -1,3 +1,4 @@
+import { json } from '@sveltejs/kit';
 import { throwError } from '$lib/error'
 import { sf } from '$lib/fetch/server'
 
@@ -29,11 +30,10 @@ export async function PUT({ request }) {
 			cookie,
 		})
 	} catch (error) {
-		return {
-			status: error.code,
-			body: error,
-		}
+		return json(error, {
+			status: error.code
+		})
 	}
 
-	return {}
+	return json({})
 }

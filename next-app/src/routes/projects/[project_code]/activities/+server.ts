@@ -1,13 +1,13 @@
+import { json } from '@sveltejs/kit'
 import { sf } from '$lib/fetch/server'
 
 export async function GET({ params: { project_code }, request: { headers } }) {
+console.log('GET: ', project_code)
 	const cookie = headers.get('cookie')
 
 	const activities = await get_activities({ project_code, cookie })
 
-	return {
-		body: activities,
-	}
+	return json(activities)
 }
 
 // src/Api/Model/Shared/Dto/ActivityListDto.php

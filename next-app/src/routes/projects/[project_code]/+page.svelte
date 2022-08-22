@@ -1,6 +1,6 @@
 <script>
 	import { page } from '$app/stores'
-	import Activity from './_components/Activity.svelte'
+	import Activity from './Activity.svelte'
 	import { GET } from '$lib/fetch/client'
 	import {
 		ImagesIcon,
@@ -13,11 +13,12 @@
 	import PageHeader from '$lib/PageHeader.svelte'
 	import Stats from '$lib/stats'
 
-	export let project
-	export let activities
+	export let data;
 
 	let only_showing_subset = true
 
+	$: project = data.project
+	$: activities = data.activities
 	$: stats = [
 		{
 			title: 'Users',

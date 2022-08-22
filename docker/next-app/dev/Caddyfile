@@ -6,11 +6,12 @@
 
 :80 {
 	@next_app_paths {
-		path *svelte* # when running next-app in dev mode, this is needed.
-		path *node_modules* # when running next-app in dev mode, this is needed.
-		path *vite* # when running next-app in dev mode, this is needed.
-		path /src/lib* # when running next-app in dev mode, this is needed.
-		path /_app/*
+		# when running next-app in dev mode, these are needed.
+		path /.svelte-kit/*
+		path *node_modules*
+		path /@vite/*
+		path /src/*
+
 		# ref for existing: /src/index.php
 		path /app/changepassword
 		path /password*
