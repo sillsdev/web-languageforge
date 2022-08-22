@@ -15,11 +15,7 @@ if (browser) {
 
 function set(someError) {
   const code = someError.code || 0
-
-  let message = ''
-  if (typeof someError === 'object') {
-    message = someError.message === undefined ? '' : someError.message
-  }
+  const message = someError?.message || ''
 
   error.set({ code, message })
 
