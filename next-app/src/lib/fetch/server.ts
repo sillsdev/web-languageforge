@@ -1,4 +1,4 @@
-import { error } from '@sveltejs/kit'
+import { throwError } from '$lib/error'
 
 /**
  *
@@ -24,12 +24,12 @@ export async function sf(rpc) {
 	const results = await customFetch(`${process.env.API_HOST}/api/sf`, 'post', body, cookie)
 
 	if (results.error) {
-		throw error(500, results.error.message)
+		throwError(results.error.message, 500)
 	}
 
 	if (results.result === undefined) {
 		console.log('fetch/server.ts.sf missing results.result: ', {results})
-		throw error(500, 'Badly formed response, missing result')
+		throwError('Badly formed response, missing result', 500)
 	}
 
 	return results.result
@@ -55,12 +55,12 @@ async function customFetch(url, method, body, cookie) {
 		//	request made with a bad host, e.g., //httpbin
 		//	the host is refusing connections
 		console.log(`fetch/server.ts.customFetch caught error on ${url}=>${bodyAsJSON}: `, e)
-		throw error(500, 'NETWORK ERROR')
+		throwError('NETWORK ERROR', 500)
 	}
 
 	if (! response.ok) {
 		console.log('fetch/server.ts.customFetch response !ok: ', await response.text())
-		throw error(response.status, response.statusText)
+		throwError(response.statusText, response.status)
 	}
 
 	return await response.json()

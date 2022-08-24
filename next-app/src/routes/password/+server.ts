@@ -1,14 +1,15 @@
-import { error, json } from '@sveltejs/kit'
+import { json } from '@sveltejs/kit'
+import { throwError } from '$lib/error'
 import { sf } from '$lib/fetch/server'
 
 export async function PUT({ request }) {
 	const { password, password_confirm } = await request.json()
 
 	if (! password) {
-		throw error(400, 'Password is requiired')
+		throwError('Password is required', 400)
 	}
 	if (password !== password_confirm) {
-		throw error(400, 'Passwords do not match')
+		throwError('Passwords do not match', 400)
 	}
 
 	const cookie = request.headers.get('cookie')
@@ -19,7 +20,7 @@ export async function PUT({ request }) {
 	})
 
 	if (! userId) {
-		throw error(404, 'User unknown')
+		throwError('User unknown', 404)
 	}
 
 	await sf({

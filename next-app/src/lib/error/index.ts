@@ -1,8 +1,15 @@
+import { error as serverError } from '@sveltejs/kit'
 import { browser } from '$app/env'
 import { writable } from 'svelte/store'
 
 export const error = writable()
-export const throwError = (message = '', code = 0) => { throw set({ code, message }) }
+
+export function throwError(message = '', code = 0) {
+	if (browser) throw set({ code, message })
+
+	throw serverError(code, message)
+}
+
 export const dismiss = set
 
 if (browser) {
