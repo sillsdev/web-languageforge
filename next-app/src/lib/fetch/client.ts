@@ -29,7 +29,6 @@ async function customFetch(method, url, body) {
 
 		response = await fetch(url, {
 			method,
-			// credentials: 'include', // ensures the response back from the api will be allowed to "set-cookie"
 			headers,
 			body,
 		})
