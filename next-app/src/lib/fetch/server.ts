@@ -1,4 +1,4 @@
-import { throwError } from '$lib/error'
+import { error } from '@sveltejs/kit'
 
 /**
  *
@@ -24,39 +24,43 @@ export async function sf(rpc) {
 	const results = await customFetch(`${process.env.API_HOST}/api/sf`, 'post', body, cookie)
 
 	if (results.error) {
-		throwError(results.error.message, 500)
+		throw error(500, results.error.message)
 	}
 
 	if (results.result === undefined) {
-		throwError('Badly formed response, missing result', 500)
+		console.log('fetch/server.ts.sf missing results.result: ', {results})
+		throw error(500, 'Badly formed response, missing result')
 	}
 
 	return results.result
 }
 
 async function customFetch(url, method, body, cookie) {
-	let response = {}
+	const bodyAsJSON = JSON.stringify(body)
+
+	let response : Response
 
 	try {
 		// https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch#Supplying_request_options
 		response = await fetch(url, {
 			method,
-			// credentials: 'include', // ensures the response back from the api will be allowed to "set-cookie"
 			headers: {
 				'content-type': 'application/json',
 				cookie,
 			},
-			body: JSON.stringify(body),
+			body: bodyAsJSON,
 		})
-	} catch {
+	} catch (e) {
 		// these only occur for network errors, like these:
 		//	request made with a bad host, e.g., //httpbin
 		//	the host is refusing connections
-		throwError('NETWORK ERROR', 500)
+		console.log(`fetch/server.ts.customFetch caught error on ${url}=>${bodyAsJSON}: `, e)
+		throw error(500, 'NETWORK ERROR')
 	}
 
 	if (! response.ok) {
-		throwError(response.statusText, response.status)
+		console.log('fetch/server.ts.customFetch response !ok: ', await response.text())
+		throw error(response.status, response.statusText)
 	}
 
 	return await response.json()

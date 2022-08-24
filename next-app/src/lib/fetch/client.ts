@@ -44,15 +44,13 @@ async function customFetch(method, url, body) {
 		stop(url)
 	}
 
-	const result = await response.json()
-
 	// reminder: fetch does not throw exceptions for non-200 responses (https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch)
 	if (! response.ok) {
 		const code = response.status
-		const message = result.message || response.statusText
+		const message = await response.text() || response.statusText
 
 		throwError(message, code)
 	}
 
-	return result
+	return await response.json()
 }
