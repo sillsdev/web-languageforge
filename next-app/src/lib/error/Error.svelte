@@ -6,7 +6,7 @@
 	beforeNavigate(dismiss)
 </script>
 
-{#if $error.message}
+{#if $error?.message}
 	<!-- https://daisyui.com/components/alert -->
 	<aside class='alert alert-error shadow-lg w-auto absolute top-0 z-10'>
 		<ErrorIcon />
