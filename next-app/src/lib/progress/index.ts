@@ -4,13 +4,13 @@ export const loading = writable(false)
 
 const pending = []
 
-export const start = id => {
+export function start(id) {
   loading.set(true)
 
   pending.push(id)
 }
 
-export const stop = id => {
+export function stop(id) {
   const i = pending.findIndex(anId => anId === id)
 
   if (i >= 0) {
