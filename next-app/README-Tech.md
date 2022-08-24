@@ -90,7 +90,7 @@ A backend layer is being utilized to insulate the UI from implemenation details 
 
 ### Common error handling
 
-In an effort to provide a common error experience for users and eliminate much of the biolerplate on devs, a central error handling implementation is provided in `$lib/error`.  It has both a shared API as well as a component for use in the app.  Central, generic hooks for client-side errors of all kinds have been implemented in the `$lib/error/index.js` but there are not similar hooks for _all_ error scenarios on the server-side which may result in more biolerplate for devs when it comes to error handling there.
+In an effort to provide a common error experience for users and eliminate much of the boilerplate on devs, a central error handling implementation is provided in `$lib/error`.  It has both a shared API as well as a component for use in the app.  Central, generic hooks for client-side errors of all kinds have been implemented in the `$lib/error/index.js` but there are not similar hooks for _all_ error scenarios on the server-side which may result in more boilerplate for devs when it comes to error handling there.
 
 ### Common fetch
 
