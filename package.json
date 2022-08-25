@@ -73,7 +73,7 @@
     "@types/offline-js": "^0.7.28",
     "@types/rangy": "0.0.30",
     "@types/webpack-env": "^1.16.0",
-    "ajv": "^6.10.0",
+    "ajv": "^8.11.0",
     "angular-mocks": "^1.8.2",
     "babel-core": "^6.26.3",
     "browserstack-local": "^1.4.0",
