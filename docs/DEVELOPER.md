@@ -32,6 +32,11 @@ Welcome!  We're glad that you are interested in helping develop Language Forge.
 >
 > NOTE: disabling cache on your device may not be trivial, you'll either need to wipe the site settings on your device's browser or you'll need to do it via USB debugging.
 
+### Running Playwright E2E Tests
+
+1. `make playwright-tests`
+2. Test results will appear in your terminal
+
 ### Running Protractor E2E Tests
 
 1. `make e2e-tests` (⚠️ these do not work on Apple Silicon at this time)
