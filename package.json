@@ -74,7 +74,6 @@
     "copy-webpack-plugin": "^8.1.0",
     "core-js": "^3.6.5",
     "css-loader": "^3.6.0",
-    "del": "^3.0.0",
     "es6-shim": "^0.35.1",
     "file-loader": "^5.1.0",
     "glob": "^7.1.2",
