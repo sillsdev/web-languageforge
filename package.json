@@ -87,7 +87,6 @@
     "path": "^0.12.7",
     "protractor": "^5.4.2",
     "raw-loader": "^0.5.1",
-    "remap-istanbul": "^0.13.0",
     "rimraf": "^3.0.2",
     "sass": "^1.39.0",
     "sass-loader": "^8.0.2",
