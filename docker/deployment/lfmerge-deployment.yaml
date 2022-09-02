@@ -66,16 +66,6 @@ spec:
         app: lfmerge
     spec:
       affinity:
-        # required to ensure this container makes it to a dedicated node (so it doesn't crash other containers when it blows up)
-        nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - preference:
-              matchExpressions:
-              - key: dedicated
-                operator: In
-                values:
-                - lfmerge
-            weight: 1
         # need to keep this on the same pod as the app since inotify only gets notification when updates occur on the same kernel
         podAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -86,12 +76,6 @@ spec:
                 values:
                 - app
             topologyKey: kubernetes.io/hostname
-      # required to ensure this container makes it to a dedicated node (so it doesn't crash other containers when it blows up)
-      tolerations:
-      - effect: NoSchedule
-        key: dedicated
-        operator: Equal
-        value: lfmerge
       volumes:
       - name: sendreceive-data
         persistentVolumeClaim:
@@ -99,6 +83,12 @@ spec:
       initContainers:
       - name: initialize-volume-ownership
         image: busybox:1.33
+        resources:
+          requests:
+            memory: 25Mi
+            cpu: 0.1
+          limits:
+            memory: 50Mi
         command:
           - 'sh'
           - '-c'
@@ -112,6 +102,13 @@ spec:
       - name: lfmerge
         image: ghcr.io/sillsdev/lfmerge:{{VERSION_LFMERGE}}
         imagePullPolicy: Always
+        # https://kubernetes.io/docs/concepts/configuration/manage-resources-containers
+        resources:
+          requests:
+            memory: 120Mi
+            cpu: 0.25
+          limits:
+            memory: 2.5Gi
         volumeMounts:
           - mountPath: /var/lib/languageforge/lexicon/sendreceive
             name: sendreceive-data
