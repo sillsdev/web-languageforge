@@ -11,7 +11,6 @@
   ],
   "require": {
     "guzzlehttp/guzzle": "~6.0",
-    "ircmaxell/password-compat": "^1.0",
     "litipk/php-jiffy": "^1.4",
     "league/oauth2-client": "^2.2",
     "league/oauth2-google": "^2.0",
