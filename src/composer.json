@@ -10,7 +10,6 @@
     }
   ],
   "require": {
-    "aptoma/twig-markdown": "^3.0",
     "guzzlehttp/guzzle": "~6.0",
     "ircmaxell/password-compat": "^1.0",
     "litipk/php-jiffy": "^1.4",
