@@ -426,17 +426,14 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
         test('Dictionary citation reflects example sentences and translations', async () => {
           await editorPageManager.goto(lexEntriesIds[2]);
 
-          await expect(editorPageManager.renderedDivs).toContainText(
-            [
-              constants.testMultipleMeaningEntry1.senses[0].examples[0].sentence.th.value,
-              constants.testMultipleMeaningEntry1.senses[0].examples[0].translation.en.value,
-              constants.testMultipleMeaningEntry1.senses[0].examples[1].sentence.th.value,
-              constants.testMultipleMeaningEntry1.senses[0].examples[1].translation.en.value,
-              constants.testMultipleMeaningEntry1.senses[1].examples[0].sentence.th.value,
-              constants.testMultipleMeaningEntry1.senses[1].examples[0].translation.en.value,
-              constants.testMultipleMeaningEntry1.senses[1].examples[1].sentence.th.value,
-              constants.testMultipleMeaningEntry1.senses[1].examples[1].translation.en.value,
-            ]);
+          await expect(editorPageManager.renderedDivs).toContainText([constants.testMultipleMeaningEntry1.senses[0].examples[0].sentence.th.value, constants.testMultipleMeaningEntry1.senses[0].examples[0].sentence.th.value]);
+          await expect(editorPageManager.renderedDivs).toContainText([constants.testMultipleMeaningEntry1.senses[0].examples[0].translation.en.value, constants.testMultipleMeaningEntry1.senses[0].examples[0].translation.en.value]);
+          await expect(editorPageManager.renderedDivs).toContainText([constants.testMultipleMeaningEntry1.senses[0].examples[1].sentence.th.value, constants.testMultipleMeaningEntry1.senses[0].examples[1].sentence.th.value]);
+          await expect(editorPageManager.renderedDivs).toContainText([constants.testMultipleMeaningEntry1.senses[0].examples[1].translation.en.value, constants.testMultipleMeaningEntry1.senses[0].examples[1].translation.en.value]);
+          await expect(editorPageManager.renderedDivs).toContainText([constants.testMultipleMeaningEntry1.senses[1].examples[0].sentence.th.value, constants.testMultipleMeaningEntry1.senses[1].examples[0].sentence.th.value]);
+          await expect(editorPageManager.renderedDivs).toContainText([constants.testMultipleMeaningEntry1.senses[1].examples[0].translation.en.value, constants.testMultipleMeaningEntry1.senses[1].examples[0].translation.en.value]);
+          await expect(editorPageManager.renderedDivs).toContainText([constants.testMultipleMeaningEntry1.senses[1].examples[1].sentence.th.value, constants.testMultipleMeaningEntry1.senses[1].examples[1].sentence.th.value]);
+          await expect(editorPageManager.renderedDivs).toContainText([constants.testMultipleMeaningEntry1.senses[1].examples[1].translation.en.value, constants.testMultipleMeaningEntry1.senses[1].examples[1].translation.en.value]);
         });
 
         test('Word with multiple definitions: edit page has correct definitions, parts of speech', async () => {
