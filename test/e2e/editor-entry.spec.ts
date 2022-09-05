@@ -347,7 +347,18 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
           await expect(cancelAddingAudio).not.toBeVisible();
         });
 
-        // TODO: test for navigation to other entries with left entry bar
+        test('Navigate to other entries with left entry bar', async () => {
+          await editorPageManager.goto(lexEntriesIds[1]);
+          await editorPageManager.page.locator('text=' + constants.testMultipleMeaningEntry1.senses[0].definition.en.value).click();
+
+          await editorPageManager.page.waitForURL(
+            new RegExp(`.*\/app\/lexicon\/${project.id}\/#!\/editor\/entry\/${lexEntriesIds[2]}.*`, 'gm')
+          );
+          expect(await (await editorPageManager.getTextarea(
+            editorPageManager.senseCard.first(), 'Definition', 'en')).inputValue()
+          ).toEqual(constants.testMultipleMeaningEntry1.senses[0].definition.en.value);
+          await editorPageManager.page.pause();
+        });
 
         test('Word 2 (without audio): audio input system is not playable but has "upload" button (manager)', async () => {
           await editorPageManager.goto(lexEntriesIds[1]);
