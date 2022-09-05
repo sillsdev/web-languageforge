@@ -139,12 +139,6 @@ $app->register(new Silex\Provider\TwigServiceProvider(), array(
     ),
 ));
 
-$app['twig'] = $app->share($app->extend('twig', function($twig, $app) {
-    $engine = new \Aptoma\Twig\Extension\MarkdownEngine\MichelfMarkdownEngine();
-    $twig->addExtension(new \Aptoma\Twig\Extension\MarkdownExtension($engine));
-    return $twig;
-}));
-
 /*--------------------------------------------------------------------
  * Authentication
  *--------------------------------------------------------------------
