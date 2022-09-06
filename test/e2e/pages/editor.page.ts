@@ -141,7 +141,7 @@ export class EditorPage {
     await this.page.goto(this.url + entryId);
 
     await this.page.reload();
-    // JeanneSonTODO: wait for an element on the page to be visible
+    // TODO: wait for an element on the page to be visible (navigation and loading pages are flaky)
     await this.page.waitForTimeout(3000);
   }
 

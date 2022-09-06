@@ -613,7 +613,10 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
 
     test.describe('Configuration check', async () => {
 
-      test.beforeAll(async () => {
+      let editorPageMember: EditorPage;
+      test.beforeAll(async ({ memberTab }) => {
+        editorPageMember = new EditorPage(memberTab, project.id, lexEntriesIds[0]);
+
         // copied from above from audio tests, because also needed here
         // TODO: eventually put this code somewhere else and in only one in this file
 
@@ -665,11 +668,16 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
         // Make "taud" input system invisible for "Word" field....
         await (await editorPageManager.configurationPage.getFieldSpecificCheckbox('Entry Fields', lexemeLabel, '(Voice)')).uncheck();
         // ....and "tipa" invisible for manager role
-        // TODO: verify that contributor can still see the input system
         await (await editorPageManager.configurationPage.getCheckbox('Input Systems', 'IPA', 'Manager')).uncheck();
         await editorPageManager.configurationPage.applyButton.click();
 
-        // Word then only has "th" visible
+        // verify that contributor can still see "tipa"
+        await editorPageMember.goto();
+        expect(await editorPageMember.getNumberOfElementsWithSameLabel(editorPageMember.entryCard, lexemeLabel)).toEqual(2);
+        await expect(await editorPageMember.getTextarea(editorPageMember.entryCard, lexemeLabel, 'th')).toBeVisible();
+        await expect(await editorPageMember.getTextarea(editorPageMember.entryCard, lexemeLabel, 'tipa')).toBeVisible();
+
+        // Word then only has "th" visible for manager role
         await editorPageManager.goto();
         expect(await editorPageManager.getNumberOfElementsWithSameLabel(editorPageManager.entryCard, lexemeLabel)).toEqual(1);
         await expect(await editorPageManager.getTextarea(editorPageManager.entryCard, lexemeLabel, 'th')).toBeVisible();
