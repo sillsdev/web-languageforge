@@ -26,7 +26,7 @@ export async function get({ project_code, cookie }) {
 }
 
 function has_picture(entry) {
-	return entry.senses.some(sense => sense.pictures)
+	return entry.senses?.some(sense => sense.pictures)
 }
 
 // audio can be found in lots of places other than lexeme, ref impl used: https://github.com/sillsdev/web-languageforge/blob/develop/src/angular-app/bellows/core/offline/editor-data.service.ts#L523
@@ -45,7 +45,7 @@ function has_audio(anEntry) {
 	// }
 	const in_fields = fields => Object.keys(fields).some(name => Object.keys(fields[name]).some(contains_audio))
 
-	// 2.  Fields within a "meaning"
+	// 2.  Fields within a "meaning" (note: senses may not be present)
 	// {
 	//		lexeme: '...',
 	//		pronunciation: '...',
@@ -57,7 +57,7 @@ function has_audio(anEntry) {
 	// }
 	const in_meaning = (senses = []) => senses.some(in_fields)
 
-	// 3.  Fields within a "meaning"'s example:
+	// 3.  Fields within a "meaning"'s example (note: senses may not be present)
 	// {
 	//		lexeme: '...',
 	//		pronunciation: '...',
@@ -72,7 +72,7 @@ function has_audio(anEntry) {
 	//			}
 	// 		}]
 	// }
-	const in_example = senses => senses.some(sense => in_meaning(sense.examples))
+	const in_example = (senses = []) => senses.some(sense => in_meaning(sense.examples))
 
 	const { senses, ...entry } = anEntry
 
