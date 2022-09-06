@@ -170,8 +170,6 @@ $app['security.access_rules'] = array(
     array('^/upload', 'ROLE_user'),
     array('^/script', 'ROLE_system_admin'),
 );
-// BCrypt needs PHP 5.5 on server, so instead have added "composer require ircmaxell/password-compat". IJH 2015-09
-// Removed ircmaxell/password-compat LHM 2022-09
 $app['security.encoder.digest'] = $app->share(function() {
     return new \Symfony\Component\Security\Core\Encoder\BCryptPasswordEncoder(BCRYPT_COST);
 });
