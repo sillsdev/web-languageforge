@@ -1,7 +1,7 @@
 import { expect } from '@playwright/test';
 import { test } from './utils/fixtures';
 import { LoginPage } from './pages/login.page';
-import { PageHeader } from './pages/page-header.page';
+import { PageHeader } from './components/page-header.component';
 import { ForgotPasswordPage } from './pages/forgot-password.page';
 
 test.describe('Interface Language picker (LF only so far)', () => {

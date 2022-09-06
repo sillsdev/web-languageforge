@@ -3,7 +3,7 @@ import { test } from './utils/fixtures';
 import { ChangePasswordPage } from './pages/change-password.page';
 import { changePassword } from './utils/testSetup';
 import { LoginPage } from './pages/login.page';
-import { PageHeader } from './pages/page-header.page';
+import { PageHeader } from './components/page-header.component';
 
 test.describe('E2E Change Password app', () => {
   const newPassword = '12345678';
