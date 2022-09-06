@@ -28,17 +28,19 @@ export class ConfigurationPage {
 
   async goto() {
     await this.page.goto(this.url);
-    // JeanneSonTODO: wait for an element on the page to be visible
+    // TODO: wait for an element on the page to be visible (navigation and loading pages are flaky)
     // await this.page.waitForTimeout(3000);
   }
 
   async getTable(tableTitle: string): Promise<Locator> {
+    // note that at the moment, all tables are in one huge <table>
     return this.page.locator(`table:has(th:has-text("${tableTitle}"))`);
   }
 
   async getRow(tableLocator: Locator, rowTitle: string): Promise<Locator> {
     const row: Locator = tableLocator.locator(`tr:has-text("${rowTitle}"):not(:has-text("Input Systems for")) >> visible=true`);
     // if two rows within the same table have the same name, a warning is logged to the console
+    //  note: this warning is always logged in the test "Makw taud input system.." of file editor-entry.spec.ts because of the messy table layout
     if (await row.count() > 1) console.log(`Warning: more than 1 row was located with the row title ${rowTitle}. Proceeding with the first row.`);
     return row.first();
   }
