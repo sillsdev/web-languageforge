@@ -12,8 +12,8 @@ dev: start
 .PHONY: playwright-tests
 playwright-tests:
 
-    # stop any containers that are currently running
-	docker-compose down
+    # stop any containers that are running
+	docker compose down
 
     # delete any cached session storage state files if the service isn't running
 	docker compose ps app-for-playwright > /dev/null 2>&1 || rm -f ../*-storageState.json
