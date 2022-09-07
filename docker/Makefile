@@ -81,5 +81,5 @@ clean-volumes:
 
 .PHONY: clean-powerwash
 clean-powerwash: clean-volumes
-	docker compose down --rmi all
-	docker system prune -af
+	docker rmi -f `docker images -q "lf-*"`
+	docker builder prune -f
