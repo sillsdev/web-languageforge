@@ -39,6 +39,13 @@ spec:
       - name: next-app
         image: sillsdev/web-languageforge:{{VERSION}}
         imagePullPolicy: Always
+        # https://kubernetes.io/docs/concepts/configuration/manage-resources-containers
+        resources:
+          requests:
+            memory: 16Mi
+            cpu: 0.1
+          limits:
+            memory: 20Mi
         env:
           - name: API_HOST
             value: http://app

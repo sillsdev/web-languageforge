@@ -50,6 +50,13 @@ spec:
       containers:
       - name: db
         image: mongo:4.0
+        # https://kubernetes.io/docs/concepts/configuration/manage-resources-containers
+        resources:
+          requests:
+            memory: 260Mi
+            cpu: 0.1
+          limits:
+            memory: 400Mi
         volumeMounts:
         - mountPath: /data/db
           name: data

@@ -65,7 +65,14 @@ spec:
       containers:
       - name: next-proxy
         image: sillsdev/web-languageforge:{{VERSION}}
+        # https://kubernetes.io/docs/concepts/configuration/manage-resources-containers
         imagePullPolicy: Always
+        resources:
+          requests:
+            memory: 12Mi
+            cpu: 0.1
+          limits:
+            memory: 20Mi
         env:
           - name: LEGACY_APP
             value: app:80

@@ -65,23 +65,6 @@ spec:
       labels:
         app: app
     spec:
-      affinity:
-        # required to ensure this container makes it to lfmerge's dedicated node
-        nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - preference:
-              matchExpressions:
-              - key: dedicated
-                operator: In
-                values:
-                - lfmerge
-            weight: 1
-      # required to ensure this container makes it to lfmerge's dedicated node
-      tolerations:
-      - effect: NoSchedule
-        key: dedicated
-        operator: Equal
-        value: lfmerge
       volumes:
       - name: assets
         persistentVolumeClaim:
@@ -92,6 +75,11 @@ spec:
       initContainers:
       - name: initialize-volume-ownership
         image: busybox:1.33
+        resources:
+          requests:
+            memory: 25Mi
+          limits:
+            memory: 50Mi
         command:
           - 'sh'
           - '-c'
@@ -107,6 +95,13 @@ spec:
       - name: app
         image: sillsdev/web-languageforge:{{VERSION}}
         imagePullPolicy: Always
+        # https://kubernetes.io/docs/concepts/configuration/manage-resources-containers
+        resources:
+          requests:
+            memory: 110Mi
+            cpu: 0.1
+          limits:
+            memory: 200Mi
         volumeMounts:
           - mountPath: /var/www/html/assets
             name: assets
