@@ -18,6 +18,7 @@ class LexUploadCommands
         ".lift"
     );
 
+
     /**
      * Upload an audio file
      *
@@ -53,9 +54,11 @@ class LexUploadCommands
         $allowedTypes = array(
             "application/octet-stream",
 
-            // allow m4a audio uploads, which curiously has a mime type of video/mp4
+            // allow m4a audio uploads, which curiously has a mime type of video/mp4, audio/m4a, audio/mp4, or audio/x-m4a
             "video/mp4",
-
+            "audio/m4a",
+            "audio/mp4",
+            "audio/x-m4a",
             "audio/mpeg",
             "audio/x-mpeg",
             "audio/mp3",
@@ -66,27 +69,70 @@ class LexUploadCommands
             "audio/x-mpg",
             "audio/x-mpegaudio",
             "audio/x-wav",
-            "audio/wav"
+            "audio/wav",
+            "audio/flac",
+            "audio/x-flac",
+            "audio/ogg",
+            "audio/webm",
+            // allow Google Chrome to handle MediaRecorder recordings as video/webm MimeType
+            "video/webm"
         );
         $allowedExtensions = array(
             ".mp3",
             ".mpa",
             ".mpg",
             ".m4a",
-            ".wav"
+            ".wav",
+            ".ogg",
+            ".flac",
+            ".webm",
         );
 
         $response = new UploadResponse();
+
         if (in_array(strtolower($fileType), $allowedTypes) && in_array(strtolower($fileExt), $allowedExtensions)) {
 
             // make the folders if they don't exist
             $project->createAssetsFolders();
             $folderPath = $project->getAudioFolderPath();
 
-            // move uploaded file from tmp location to assets
+            // move uploaded/recorded file from tmp location to assets
             $filePath = self::mediaFilePath($folderPath, $fileNamePrefix, $fileName);
             $moveOk = copy($tmpFilePath, $filePath);
-            @unlink($tmpFilePath);
+
+            // convert audio file to mp3 or wav format if necessary
+            // FLEx only supports mp3 or wav format as of 2022-09
+
+            if (strcmp(strtolower($fileExt), ".mp3") !== 0 && strcmp(strtolower($fileExt), ".wav") !== 0) {
+                //First, find the duration of the file
+                $sanitizedTmpFilePath = escapeshellarg($tmpFilePath);
+                $ffprobeCommand = `ffprobe -i $sanitizedTmpFilePath -show_entries format=duration -v quiet -of csv="p=0" 2> /dev/null`;
+                $audioDuration = floatval($ffprobeCommand);
+
+                // Convert to .wav if the result will be less than 1 MB at 165Kb/s (recording is shorter than 6 seconds)
+                // and .mp3 otherwise (recording is longer than 6 seconds)
+                $extensionlessTmpFilePath = substr($sanitizedTmpFilePath, 0, strrpos($sanitizedTmpFilePath, strtolower($fileExt)));
+                $extensionlessFileName = substr($fileName, 0, strrpos($fileName, strtolower($fileExt)));
+
+                if($audioDuration < 6){
+                    `ffmpeg -i $sanitizedTmpFilePath -b:a 165K -maxrate 165K -bufsize 80K $extensionlessTmpFilePath.wav 2> /dev/null')`;
+                    `mv $sanitizedTmpFilePath $extensionlessTmpFilePath.wav 2> /dev/null`;
+                    $fileName = $extensionlessFileName . '.wav';
+                    $tmpFilePath = $extensionlessTmpFilePath. '.wav';
+                }
+                else{
+                    `ffmpeg -i $sanitizedTmpFilePath -b:a 165K -maxrate 165K -bufsize 80K $extensionlessTmpFilePath.mp3 2> /dev/null')`;
+                    `mv $sanitizedTmpFilePath $extensionlessTmpFilePath.mp3 2> /dev/null`;
+                    $fileName = $extensionlessFileName . '.mp3';
+                    $tmpFilePath = $extensionlessTmpFilePath . '.mp3';
+                }
+
+
+                // move uploaded file from tmp location to assets
+                $filePath = self::mediaFilePath($folderPath, $fileNamePrefix, $fileName);
+                $moveOk = copy($tmpFilePath, $filePath);
+                @unlink($tmpFilePath);
+            }
 
             // construct server response
             if ($moveOk && $tmpFilePath) {
@@ -95,10 +141,11 @@ class LexUploadCommands
                 $data->fileName = $fileNamePrefix . '_' . $fileName;
                 $response->result = true;
 
-                if (array_key_exists('previousFilename', $_POST)) {
-                    $previousFilename = $_POST['previousFilename'];
-                    self::deleteMediaFile($projectId, $mediaType, $previousFilename);
-                }
+                //Uncomment to ensure that only one format for each audio file is stored in the assets. We want to keep up to two formats right now (09-2022): the original and if needed, a FLEx-compatible one
+                // if (array_key_exists('previousFilename', $_POST)) {
+                //     $previousFilename = $_POST['previousFilename'];
+                //     self::deleteMediaFile($projectId, $mediaType, $previousFilename);
+                // }
             } else {
                 $data = new ErrorResult();
                 $data->errorType = 'UserMessage';
