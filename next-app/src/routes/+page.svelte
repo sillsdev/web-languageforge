@@ -1,5 +1,5 @@
 <script>
-	import { browser } from '$app/env'
+	import { browser } from '$app/environment'
 	import { throwError } from '$lib/error'
 	import { GET } from '$lib/fetch/client'
 	import { Button } from '$lib/forms'

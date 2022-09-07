@@ -1,5 +1,5 @@
 import { error as serverError } from '@sveltejs/kit'
-import { browser } from '$app/env'
+import { browser } from '$app/environment'
 import { writable } from 'svelte/store'
 
 export const error = writable()
