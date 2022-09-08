@@ -54,8 +54,9 @@ class Validate extends Base
         // Add the user based on the invite token if they are logged in, otherwise redirect to login
         if ($this->isLoggedIn($app))
         {
-            ProjectCommands::useInviteToken(SilexSessionHelper::getUserId($app), $projectId);
-            return $app->redirect('/app/lexicon/' . $projectId);
+            $project = ProjectCommands::useInviteToken(SilexSessionHelper::getUserId($app), $projectId);
+
+			return $app->redirect("/projects/$project->projectCode");
         } else
         {
             $app['session']->set('inviteToken', $inviteToken);

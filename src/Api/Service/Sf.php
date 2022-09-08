@@ -423,10 +423,20 @@ class Sf
         return ActivityListDto::getActivityForUser($this->website->domain, $this->userId, $filterParams);
     }
 
-    public function activity_list_dto_for_current_project($filterParams = [])
+	public function activity_list_dto_for_current_project($filterParams = [])
     {
         $projectModel = ProjectModel::getById($this->projectId);
         return ActivityListDto::getActivityForOneProject($projectModel, $this->userId, $filterParams);
+    }
+
+	public function activity_list_dto_for_project($projectCode, $filterParams = [])
+    {
+        $projectModel = ProjectModel::getByProjectCode($projectCode);
+        $user = new UserModel($this->userId);
+        if ($user->isMemberOfProject($projectModel->id->asString())) {
+            return ActivityListDto::getActivityForOneProject($projectModel, $this->userId, $filterParams);
+        }
+        throw new UserUnauthorizedException("User $this->userId is not a member of project $projectCode");
     }
 
     public function activity_list_dto_for_lexical_entry($entryId, $filterParams = [])
@@ -470,6 +480,16 @@ class Sf
     public function project_read($id)
     {
         return ProjectCommands::readProject($id);
+    }
+
+	public function project_read_by_code($projectCode)
+    {
+        $projectModel = ProjectModel::getByProjectCode($projectCode);
+        $user = new UserModel($this->userId);
+        if ($user->isMemberOfProject($projectModel->id->asString())) {
+            return $this->project_read($projectModel->id->asString());
+        }
+        throw new UserUnauthorizedException("User $this->userId is not a member of project $projectCode");
     }
 
     public function project_settings()
@@ -525,6 +545,18 @@ class Sf
     {
         return LexProjectDto::encode($this->projectId);
     }
+
+	public function lex_stats($projectCode)
+	{
+		$projectModel = ProjectModel::getByProjectCode($projectCode);
+        $user = new UserModel($this->userId);
+
+        if ($user->isMemberOfProject($projectModel->id->asString())) {
+            return LexDbeDto::encode($projectModel->id->asString(), $this->userId);
+        }
+
+        throw new UserUnauthorizedException("User $this->userId is not a member of project $projectCode");
+	}
 
     public function lex_dbeDtoFull($browserId, $offset)
     {

@@ -67,12 +67,6 @@ test.describe('E2E Page Traversal', () => {
     await expect(changePasswordPage.submitButton).toBeDisabled();
   });
 
-  test('Explore activity page (admin)', async () => {
-    await activityPage.goto();
-
-    await activityPage.activitiesList.count();
-  });
-
   test('Explore project page (admin)', async () => {
     await projectsPage.goto();
 

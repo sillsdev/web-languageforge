@@ -3,7 +3,7 @@
 </script>
 
 <!-- https://daisyui.com/components/button -->
-<button on:click class:danger class='btn btn-primary'>
+<button on:click class:danger class='btn btn-primary { $$props.class }'>
 	<slot />
 </button>
 

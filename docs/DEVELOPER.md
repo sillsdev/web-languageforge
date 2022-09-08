@@ -133,7 +133,7 @@ After a minute or two, your source or test changes should be applied and you sho
 ### Running dev
 
 1. `make dev` will start the legacy app in development mode, i.e. changes to source code will immediately be reflected in the locally running app.
-1. `make next-dev` will start the next app in development mode, i.e. changes to source code will immediately be reflected in the locally running app.
+1. `make next-dev` will start the next app in development mode, i.e. changes to source code will immediately be reflected in the locally running app.  Access non-ssl: http://localhost
 > TODO: There is a desire to consolidate these into a single use case, `make dev`.
 
 ### Visual Studio Code ###

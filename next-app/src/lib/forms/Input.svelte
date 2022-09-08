@@ -27,10 +27,10 @@
 </script>
 
 <!-- https://daisyui.com/components/input -->
-<label for={id} class=label>
+<label for={ id } class=label>
 	<span class='label-text'>
-		{label}
+		{ label }
 	</span>
 </label>
 
-<input {id} use:typeWorkaround bind:value {required} bind:this={input} class='input input-bordered' />
+<input { id } use:typeWorkaround bind:value { required } bind:this={ input } class='input input-bordered' />

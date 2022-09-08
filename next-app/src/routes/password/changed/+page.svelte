@@ -1,7 +1,3 @@
-<script context=module>
-	export const prerender = true
-</script>
-
 <script>
 	import PageHeader from '$lib/PageHeader.svelte'
 	import { onMount } from 'svelte'
