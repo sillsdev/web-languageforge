@@ -4,7 +4,7 @@ import { LoginPage } from './pages/login.page';
 import { PageHeader } from './components/page-header.component';
 import { ForgotPasswordPage } from './pages/forgot-password.page';
 
-test.describe('Interface Language picker (LF only so far)', () => {
+test.describe('Interface Language picker', () => {
   let loginPage: LoginPage;
   let pageHeader: PageHeader;
   let forgotPasswordPage: ForgotPasswordPage;
