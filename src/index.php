@@ -139,12 +139,6 @@ $app->register(new Silex\Provider\TwigServiceProvider(), array(
     ),
 ));
 
-$app['twig'] = $app->share($app->extend('twig', function($twig, $app) {
-    $engine = new \Aptoma\Twig\Extension\MarkdownEngine\MichelfMarkdownEngine();
-    $twig->addExtension(new \Aptoma\Twig\Extension\MarkdownExtension($engine));
-    return $twig;
-}));
-
 /*--------------------------------------------------------------------
  * Authentication
  *--------------------------------------------------------------------
@@ -176,7 +170,6 @@ $app['security.access_rules'] = array(
     array('^/upload', 'ROLE_user'),
     array('^/script', 'ROLE_system_admin'),
 );
-// BCrypt needs PHP 5.5 on server, so instead have added "composer require ircmaxell/password-compat". IJH 2015-09
 $app['security.encoder.digest'] = $app->share(function() {
     return new \Symfony\Component\Security\Core\Encoder\BCryptPasswordEncoder(BCRYPT_COST);
 });
