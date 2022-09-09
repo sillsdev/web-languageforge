@@ -74,12 +74,8 @@ clean:
 	docker compose down
 	docker system prune -f
 
-.PHONY: clean-volumes
-clean-volumes:
-	docker compose down -v
-	docker system prune -f --volumes
-
 .PHONY: clean-powerwash
-clean-powerwash: clean-volumes
+clean-powerwash: clean
+	docker system prune -f --volumes
 	docker rmi -f `docker images -q "lf-*"`
 	docker builder prune -f
