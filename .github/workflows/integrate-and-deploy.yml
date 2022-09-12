@@ -74,13 +74,13 @@ jobs:
       -
         name: Unit Tests
         run: make unit-tests-ci
-      -
-        name: E2E Tests
-        working-directory: .
-        run: |
-          docker-compose -f docker/docker-compose.yml up -d app-for-playwright
-          npx playwright install
-          npx playwright test
+      # -
+      #   name: E2E Tests
+      #   working-directory: .
+      #   run: |
+      #     docker-compose -f docker/docker-compose.yml up -d app-for-playwright
+      #     npx playwright install
+      #     npx playwright test
       -
         name: Log in to Docker Hub
         uses: docker/login-action@v1
