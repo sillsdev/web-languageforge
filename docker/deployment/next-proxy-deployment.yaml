@@ -69,10 +69,10 @@ spec:
         imagePullPolicy: Always
         resources:
           requests:
-            memory: 12Mi
+            memory: 25Mi
             cpu: 0.1
           limits:
-            memory: 20Mi
+            memory: 75Mi
         env:
           - name: LEGACY_APP
             value: app:80
