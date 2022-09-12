@@ -47,7 +47,7 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
     });
 
     test('Entries list has correct number of entries', async () => {
-      expect(await editorPageManager.entriesListPage.getTotalNumberOfEntries()).toEqual(lexEntriesIds.length.toString());
+      await editorPageManager.entriesListPage.expectTotalNumberOfEntries(lexEntriesIds.length);
     });
 
     test('Search function works correctly', async () => {
@@ -396,13 +396,13 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
           ]);
           await fileChooser.setFiles('test/e2e/shared-files/' + constants.testMockPngUploadFile.name);
 
-          expect(noticeElement.notice).toHaveCount(1);
+          await expect(noticeElement.notice).toHaveCount(1);
           await expect(noticeElement.notice).toBeVisible();
           await expect(noticeElement.notice).toContainText(constants.testMockPngUploadFile.name + ' is not an allowed audio file. Ensure the file is');
           const dropbox = editorPageManager.entryCard.locator(editorPageManager.dropbox.dragoverFieldSelector);
           await expect(dropbox).toBeVisible();
           await noticeElement.closeButton.click();
-          expect(noticeElement.notice).toHaveCount(0);
+          await expect(noticeElement.notice).toHaveCount(0);
 
           // Can upload audio file
           const [fileChooser2] = await Promise.all([
@@ -410,7 +410,7 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
             editorPageManager.page.locator(editorPageManager.dropbox.browseButtonSelector).click(),
           ]);
           await fileChooser2.setFiles('test/e2e/shared-files/' + constants.testMockMp3UploadFile.name);
-          expect(noticeElement.notice).toHaveCount(1);
+          await expect(noticeElement.notice).toHaveCount(1);
           await expect(noticeElement.notice).toBeVisible();
           await expect(noticeElement.notice).toContainText('File uploaded successfully');
           await expect(editorPageManager.entryCard.locator(editorPageManager.audioPlayer.playIconSelector + ' >> visible=true')).toHaveCount(1);
@@ -546,7 +546,7 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
           await expect(editorPageManager.compactEntryListItem).toHaveCount(entryCount);
 
           await editorPageManager.entriesListPage.goto();
-          expect(await editorPageManager.entriesListPage.getTotalNumberOfEntries()).toEqual(entryCount.toString());
+          await editorPageManager.entriesListPage.expectTotalNumberOfEntries(entryCount);
 
           // go back to editor
           await editorPageManager.page.goBack();
@@ -584,7 +584,7 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
           await editorPageManager.entriesListPage.filterInputClearButton.click();
 
           // word count is still correct in browse page
-          expect(await editorPageManager.entriesListPage.getTotalNumberOfEntries()).toEqual(entryCount.toString());
+          await editorPageManager.entriesListPage.expectTotalNumberOfEntries(entryCount);
 
           // remove new word to restore original word count
           await editorPageManager.entriesListPage.clickOnEntry(constants.testEntry3.lexeme.th.value);

@@ -71,7 +71,7 @@ test.describe('E2E Project Settings app', () => {
   test('Manager can delete if owner', async () => {
     await projectSettingsPageManager.projectsPage.goto();
     const nProjects = await projectSettingsPageManager.projectsPage.countProjects();
-    await projectSettingsPageManager.gotoProjectSettingsDirectly(project4.id, project4.name);
+    await projectSettingsPageManager.gotoProjectSettingsDirectly(project4.id, project4.name); // TODO: fix this flaky line
     expect(await projectSettingsPageManager.countNotices()).toBe(0);
 
     await projectSettingsPageManager.deleteTab.tabTitle.click();
