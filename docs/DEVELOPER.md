@@ -127,8 +127,7 @@ After a minute or two, your source or test changes should be applied and you sho
 ### Cleanup
 
 1. `make clean` is the most common, it shuts down and cleans up running containers
-1. less commonly, if you need to blow away shared artifacts from previous runs, simply `make clean-volumes`
-1. rarely needed but for a "start from scratch" environment, `make clean-powerwash`.
+1. `make clean-powerwash` for those times when you want to "start from scratch" again, i.e., blow away your database, shared assets and built images
 
 ### Running dev
 
