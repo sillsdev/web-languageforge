@@ -47,14 +47,14 @@ jobs:
         run: |
           npm ci
           docker-compose build app
-      # -
-      #   name: Playwright E2E Tests
-      #   working-directory: .
-      #   # see https://playwright.dev/docs/ci#github-actions
-      #   run: |
-      #     docker-compose -f docker/docker-compose.yml up -d app-for-playwright
-      #     npx playwright install
-      #     npx playwright test
+      -
+        name: Playwright E2E Tests
+        working-directory: .
+        # see https://playwright.dev/docs/ci#github-actions
+        run: |
+          docker-compose -f docker/docker-compose.yml up -d app-for-playwright
+          npx playwright install
+          npx playwright test
 
   # protractor-tests:
   #   runs-on: ubuntu-latest
