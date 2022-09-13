@@ -558,6 +558,18 @@ class Sf
         throw new UserUnauthorizedException("User $this->userId is not a member of project $projectCode");
 	}
 
+	public function lex_stats_all($projectCode)
+	{
+		$projectModel = ProjectModel::getByProjectCode($projectCode);
+        $user = new UserModel($this->userId);
+
+        if ($user->isMemberOfProject($projectModel->id->asString())) {
+            return LexDbeDto::encode($projectModel->id->asString(), $this->userId, 1);
+        }
+
+        throw new UserUnauthorizedException("User $this->userId is not a member of project $projectCode");
+	}
+
     public function lex_dbeDtoFull($browserId, $offset)
     {
         $sessionLabel = 'lexDbeFetch_' . $browserId;
