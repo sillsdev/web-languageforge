@@ -20,7 +20,7 @@ export class EntriesListPage {
 
     this.totalNumberOfEntries = this.page.locator('#totalNumberOfEntries');
 
-    this.filterInput = this.page.locator('[placeholder="Filter Entries"]');
+    this.filterInput = this.page.locator('[placeholder="Search"]');
     this.filterInputClearButton = this.page.locator('.clear-search-button');
     this.matchCount = this.page.locator('#totalNumberOfEntries >> span');
 
