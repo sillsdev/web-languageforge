@@ -53,7 +53,7 @@ jobs:
         # see https://playwright.dev/docs/ci#github-actions
         run: |
           docker-compose -f docker/docker-compose.yml up -d app-for-playwright
-          npx playwright install
+          npx playwright install chromium
           npx playwright test
 
   # protractor-tests:

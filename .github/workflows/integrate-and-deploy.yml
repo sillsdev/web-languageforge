@@ -79,7 +79,7 @@ jobs:
       #   working-directory: .
       #   run: |
       #     docker-compose -f docker/docker-compose.yml up -d app-for-playwright
-      #     npx playwright install
+      #     npx playwright install chromium
       #     npx playwright test
       -
         name: Log in to Docker Hub
