@@ -329,6 +329,7 @@ services:
       - "host.docker.internal:host-gateway"
     volumes:
       - ../test/e2e/utils/TestControl.php:/var/www/src/Api/Service/TestControl.php
+      - ../test/e2e/shared-files:/tmp/e2e-shared-files
 
   test-php:
     build:

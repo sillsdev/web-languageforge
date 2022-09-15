@@ -1,9 +1,13 @@
 <?php
 
 namespace Api\Service;
+use Api\Model\Shared\Mapper\JsonEncoder;
 use Api\Model\Shared\Mapper\MongoStore;
 use Api\Model\Shared\Mapper\ArrayOf;
 use Api\Model\Shared\Command\UserCommands;
+use Api\Model\Shared\Command\ErrorResult;
+use Api\Model\Shared\Command\MediaResult;
+use Api\Model\Shared\Command\UploadResponse;
 use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\UserModel;
 use Api\Model\Shared\UserModelWithPassword;
@@ -23,6 +27,8 @@ use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Shared\Mapper\IdReference;
 use Api\Model\Languageforge\Lexicon\Command\LexEntryDecoder;
 use Api\Model\Languageforge\Lexicon\Command\LexProjectCommands;
+use Api\Model\Languageforge\Lexicon\Command\LexUploadCommands;
+use Palaso\Utilities\FileUtilities;
 // use MongoDB\Client;
 
 use Api\Library\Shared\Website;
@@ -157,7 +163,76 @@ class TestControl
         MongoStore::dropAllCollections($projectModel->databaseName());
         MongoStore::dropDB($projectModel->databaseName());
         $projectModel->write();
+        // Now we know projectModel id, so now user models can be updated with membership
+        foreach ($memberUsernames as $username) {
+            $user = new UserModel();
+            if ($user->readByUserName($username)) {
+                $user->addProject($projectModel->id->asString());
+                $user->write();
+            }
+        }
         return $projectModel->id->asString();
+    }
+
+    public function add_writing_system_to_project($projectCode, $langTag, $abbr = '', $name = '')
+    {
+        $project = ProjectModel::getByProjectCode($projectCode);
+        $project->addInputSystem($langTag, $abbr, $name);
+        $project->write();
+        return $langTag;
+    }
+
+    public function add_audio_visual_file_to_project($projectCode, $tmpFilePath)
+    {
+        $project = ProjectModel::getByProjectCode($projectCode);
+        $response = TestControl::uploadMediaFile($project, 'audio', $tmpFilePath);
+        return JsonEncoder::encode($response);
+    }
+
+    public function add_picture_file_to_project($projectCode, $tmpFilePath)
+    {
+        $project = ProjectModel::getByProjectCode($projectCode);
+        $response = TestControl::uploadMediaFile($project, 'sense-image', $tmpFilePath);
+        return JsonEncoder::encode($response);
+    }
+
+    public static function uploadMediaFile($project, $mediaType, $tmpFilePath)
+    {
+        if ($mediaType != 'audio' && $mediaType != 'sense-image') {
+            throw new \Exception("Unsupported upload type.");
+        }
+        if (! $tmpFilePath) {
+            throw new \Exception("No file given.");
+        }
+
+        // make the folders if they don't exist
+        $project->createAssetsFolders();
+        $folderPath = $mediaType == 'audio' ? $project->getAudioFolderPath() : $project->getImageFolderPath();
+
+        // move uploaded file from tmp location to assets
+        $filename = FileUtilities::replaceSpecialCharacters(\basename($tmpFilePath));
+        $filePath = $folderPath . DIRECTORY_SEPARATOR . $filename;
+        $moveOk = copy($tmpFilePath, $filePath);
+        // Do NOT delete $tmpFilePath as we're doing E2E tests and probably want to keep the original around
+
+        // construct server response
+        $response = new UploadResponse();
+        if ($moveOk && $tmpFilePath) {
+            $data = new MediaResult();
+            $assetsPath = $project->getAssetsRelativePath();
+            $data->path = $mediaType == 'audio' ? $project->getAudioFolderPath($assetsPath) : $project->getImageFolderPath($assetsPath);
+            // NOTE: $data->fileName needs capital N so it will match what the real upload(Audio/Image)File functions return
+            $data->fileName = $filename;
+            $response->result = true;
+        } else {
+            $data = new ErrorResult();
+            $data->errorType = 'UserMessage';
+            $data->errorMessage = "$filename could not be saved to the right location. Contact your Site Administrator.";
+            $response->result = false;
+        }
+
+        $response->data = $data;
+        return $response;
     }
 
     public function add_user_to_project($projectCode, $username, $role = null)
@@ -182,8 +257,8 @@ class TestControl
 
         $project->addUser($user->id->asString(), $role);
         $user->addProject($project->id->asString());
-        $user->write();
         $project->write();
+        $user->write();
         return true;
     }
 

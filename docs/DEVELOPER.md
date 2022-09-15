@@ -4,11 +4,11 @@ Welcome!  We're glad that you are interested in helping develop Language Forge.
 
 ## Development Environment Quick Start ##
 
-1. Install [Docker](https://www.docker.com/get-started) (Linux users will need some additional steps, please visit https://docs.docker.com/compose/install for info on installing the engine and compose)
-1. Install [Make](https://www.gnu.org/software/make/).  This is actually optional but simplifies things a bit.
-1. Install [Node 16.14.0](https://nodejs.org/en/download/).  We recommend using a Node version manager e.g. [nvm](https://github.com/nvm-sh/nvm#installation-and-update)
-1. Clone the repo:  `git clone https://github.com/sillsdev/web-languageforge`
-1. `cd web-languageforge/docker`
+1. Install [Docker](https://www.docker.com/get-started). Linux users will need some additional steps: Please visit https://docs.docker.com/compose/install for info on installing the engine and compose. Windows users, use Ubuntu and follow these instructions -- https://docs.docker.com/engine/install/ubuntu/ -- and then, to permit specific users (and not just "sudo") to contact the Docker daemon, run `sudo usermod -aG docker $yourUsername` and `sudo chmod 666 /var/run/docker.sock`.
+3. Install [Make](https://www.gnu.org/software/make/).  This is actually optional but simplifies things a bit.
+4. Install [Node 16.14.0](https://nodejs.org/en/download/).  We recommend using a Node version manager e.g. [nvm](https://github.com/nvm-sh/nvm#installation-and-update)
+5. Clone the repo:  `git clone https://github.com/sillsdev/web-languageforge`
+6. `cd web-languageforge/docker`
 
 ### Running the App Locally
 
@@ -31,6 +31,11 @@ Welcome!  We're glad that you are interested in helping develop Language Forge.
 > then hit `http://192.168.161.99` from your phone or other device on the same network.
 >
 > NOTE: disabling cache on your device may not be trivial, you'll either need to wipe the site settings on your device's browser or you'll need to do it via USB debugging.
+
+### Running Playwright E2E Tests
+
+1. `make playwright-tests`
+2. Test results will appear in your terminal
 
 ### Running Protractor E2E Tests
 

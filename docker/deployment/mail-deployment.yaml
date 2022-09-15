@@ -32,6 +32,13 @@ spec:
       containers:
       - name: mail
         image: juanluisbaptiste/postfix:1.0.0
+        # https://kubernetes.io/docs/concepts/configuration/manage-resources-containers
+        resources:
+          requests:
+            memory: 30Mi
+            cpu: 0.1
+          limits:
+            memory: 100Mi
         env:
           - name: SERVER_HOSTNAME
             value: {{SERVER_HOSTNAME}}
