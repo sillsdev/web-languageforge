@@ -15,7 +15,8 @@
     "webpack:dev:watch": "webpack -w --config webpack-dev.config.js",
     "webpack:prd": "webpack --config webpack-prd.config.js",
     "compile-test-e2e": "tsc -p test/app",
-    "test-e2e": "protractor test/app/protractorConf.js"
+    "test-e2e": "protractor test/app/protractorConf.js",
+    "test-playwright": "cd docker && make playwright-tests"
   },
   "license": "MIT",
   "repository": {
