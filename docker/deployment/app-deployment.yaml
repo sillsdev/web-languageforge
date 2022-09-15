@@ -101,7 +101,7 @@ spec:
             memory: 110Mi
             cpu: 0.1
           limits:
-            memory: 200Mi
+            memory: 500Mi
         volumeMounts:
           - mountPath: /var/www/html/assets
             name: assets
