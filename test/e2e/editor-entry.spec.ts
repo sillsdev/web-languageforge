@@ -46,6 +46,11 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
         await editorPageManager.page.reload();
     });
 
+    test('test fail', async () => {
+      await editorPageManager.entriesListPage.getTotalNumberOfEntries();
+      expect(1).toBe(2);
+    });
+
     test('Entries list has correct number of entries', async () => {
       expect(await editorPageManager.entriesListPage.getTotalNumberOfEntries()).toEqual(lexEntriesIds.length.toString());
     });

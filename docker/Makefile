@@ -12,6 +12,9 @@ dev: start
 .PHONY: playwright-tests
 playwright-tests:
 
+    # delete old test storage files
+	cd .. && rm -f *-*-storageState.json
+
     # stop any containers that are running
 	docker compose down
 
@@ -23,7 +26,7 @@ playwright-tests:
     # wait until the app-for-playwright service is serving up HTTP before continuing
 	until curl localhost:3238 > /dev/null 2>&1; do sleep 1; done
 
-	cd .. && npx playwright install chromium && npx playwright test
+	cd .. && npx playwright install chromium && npx playwright test $(params)
 
 .PHONY: e2e-tests
 e2e-tests:
