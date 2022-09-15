@@ -8,6 +8,7 @@ Welcome!  We're glad that you are interested in helping develop Language Forge.
 3. Install [Make](https://www.gnu.org/software/make/).  This is actually optional but simplifies things a bit.
 4. Install [Node 16.14.0](https://nodejs.org/en/download/).  We recommend using a Node version manager e.g. [nvm](https://github.com/nvm-sh/nvm#installation-and-update)
 5. Clone the repo:  `git clone https://github.com/sillsdev/web-languageforge`
+5. Clone the repo: `git clone -c core.symlinks=true https://github.com/sillsdev/web-languageforge`. Windows "Developer Mode" must be enabled before cloning to a Windows file system (NTFS/FAT) or the symbolic links won't be created.
 6. `cd web-languageforge/docker`
 
 ### Running the App Locally
