@@ -4,10 +4,12 @@ Welcome!  We're glad that you are interested in helping develop Language Forge.
 
 ## Development Environment Quick Start ##
 
-1. Install [Docker](https://www.docker.com/get-started). Linux users will need some additional steps: Please visit https://docs.docker.com/compose/install for info on installing the engine and compose. Windows users, use Ubuntu and follow these instructions -- https://docs.docker.com/engine/install/ubuntu/ -- and then, to permit specific users (and not just "sudo") to contact the Docker daemon, run `sudo usermod -aG docker $yourUsername` and `sudo chmod 666 /var/run/docker.sock`.
-3. Install [Make](https://www.gnu.org/software/make/).  This is actually optional but simplifies things a bit.
-4. Install [Node 16.14.0](https://nodejs.org/en/download/).  We recommend using a Node version manager e.g. [nvm](https://github.com/nvm-sh/nvm#installation-and-update)
-5. Clone the repo:  `git clone https://github.com/sillsdev/web-languageforge`
+1. Install [Docker](https://www.docker.com/get-started).
+    1. Linux users will need some additional steps: Please visit https://docs.docker.com/compose/install for info on installing the engine and compose.
+    2. Windows users, use Ubuntu (WSL) and follow the instructions at https://docs.docker.com/engine/install/ubuntu/. Then permit your user (and not just "sudo") to contact the Docker daemon by running `sudo usermod -aG docker $yourUsername` and `sudo chmod 666 /var/run/docker.sock`. Optionally configure docker to start on boot with `printf '[boot]\ncommand="service docker start"\n' | sudo tee /etc/wsl.conf` (assuming `/etc/wsl.conf` is currently unused).
+3. Install [Make](https://www.gnu.org/software/make/): `sudo apt install make`.  This is actually optional but simplifies things a bit.
+4. Install [Node 16.14.0](https://nodejs.org/en/download/).  We recommend using a Node version manager e.g. [nvm](https://github.com/nvm-sh/nvm#installation-and-update).
+5. Clone the repo: `git clone -c core.symlinks=true https://github.com/sillsdev/web-languageforge`. Windows "Developer Mode" must be enabled before cloning to a Windows file system (NTFS/FAT) or the symbolic links won't be created.
 6. `cd web-languageforge/docker`
 
 ### Running the App Locally
@@ -154,7 +156,7 @@ To debug the Language Forge application locally, follow these steps:
 - In VS Code, set a breakpoint on a line of code that should be executed
 - Click on the `Run and Debug` area of VS Code, then click the green play icon next to `XDebug` in the configuration dropdown.
 
-![XDebug](readme_images/xdebug1.png "Debugging with XDebug")]
+![XDebug](../readme_images/xdebug1.png "Debugging with XDebug")]
 
 - The VSCode status bar will turn orange when XDebug is active
 - open the application in your web browser (`https://localhost`) and use the application such that you execute the code where you have a breakpoint set
@@ -173,7 +175,7 @@ To debug the PHP tests, follow these steps:
 - In VS Code, set a breakpoint on a line of code in one of the PHP tests (in the `test/php` folder)
 - Click on the `Run and Debug` area of VS Code, then click the green play icon next to `XDebug` in the configuration dropdown.
 
-![XDebug](readme_images/xdebug1.png "Debugging with XDebug")]
+![XDebug](../readme_images/xdebug1.png) "Debugging with XDebug")
 
 - The VSCode status bar will turn orange when XDebug is active
 - run `make unit-tests` in the terminal
