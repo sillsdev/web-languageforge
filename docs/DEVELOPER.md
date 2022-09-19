@@ -6,7 +6,7 @@ Welcome!  We're glad that you are interested in helping develop Language Forge.
 
 1. Install [Docker](https://www.docker.com/get-started).
     1. Linux users will need some additional steps: Please visit https://docs.docker.com/compose/install for info on installing the engine and compose.
-    2. Windows users, use Ubuntu (WSL) and follow the instructions at https://docs.docker.com/engine/install/ubuntu/. Then permit your user (and not just "sudo") to contact the Docker daemon by running `sudo usermod -aG docker $yourUsername` and `sudo chmod 666 /var/run/docker.sock`.
+    2. Windows users, use Ubuntu (WSL) and follow the instructions at https://docs.docker.com/engine/install/ubuntu/. Then permit your user (and not just "sudo") to contact the Docker daemon by running `sudo usermod -aG docker $yourUsername` and `sudo chmod 666 /var/run/docker.sock`. Optionally configure docker to start on boot with `printf '[boot]\ncommand="service docker start"\n' | sudo tee /etc/wsl.conf` (assuming `/etc/wsl.conf` is currently unused).
 3. Install [Make](https://www.gnu.org/software/make/): `sudo apt install make`.  This is actually optional but simplifies things a bit.
 4. Install [Node 16.14.0](https://nodejs.org/en/download/).  We recommend using a Node version manager e.g. [nvm](https://github.com/nvm-sh/nvm#installation-and-update).
 5. Clone the repo: `git clone -c core.symlinks=true https://github.com/sillsdev/web-languageforge`. Windows "Developer Mode" must be enabled before cloning to a Windows file system (NTFS/FAT) or the symbolic links won't be created.
