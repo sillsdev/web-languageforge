@@ -32,8 +32,10 @@ export default async function globalSetup(config: FullConfig) {
     const browser = await projectBrowser.launch();
     const context = await browser.newContext({ baseURL });
     for (const user of usersToCreate) {
-      createUser(context.request, user);
+      await createUser(context.request, user);
     }
+    await context.close();
+
     // Now log in as each user and ensure there's a storage state saved
     const sessionLifetime = 365 * 24 * 60 * 60 * 1000;  // 1 year, in milliseconds
     const now = new Date();
@@ -48,6 +50,7 @@ export default async function globalSetup(config: FullConfig) {
       const page = await context.newPage();
       await loginAs(page, user);
       await context.storageState({ path });
+      await context.close();
     }
   }
 }
