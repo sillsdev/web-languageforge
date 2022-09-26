@@ -63,14 +63,11 @@ jobs:
           # https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows#usage-limits-and-eviction-policy
           key: 'playwright-${{ steps.playwright-version.outputs.version }}'
 
-      -
-        name: Playwright E2E Tests
+      - name: Playwright E2E Tests
         working-directory: .
         # see https://playwright.dev/docs/ci#github-actions
-        run: |
-          docker-compose -f docker/docker-compose.yml up -d app-for-playwright
-          npx playwright install chromium
-          npx playwright test
+        run: npm run make playwright-tests
+
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v2
