@@ -4,15 +4,19 @@ export class SoundController implements angular.IController {
   puiUrl: string;
 
   audioElement = document.createElement('audio');
+
   playing = false;
 
   private isUserMovingSlider: boolean = false;
   private slider: HTMLInputElement;
 
   static $inject = ['$scope', '$element'];
-  constructor(private $scope: angular.IScope, private $element: angular.IRootElementService) { }
+
+  constructor(private $scope: angular.IScope, private $element: angular.IRootElementService) {}
 
   $onInit(): void {
+
+
     this.slider = this.$element.find('.seek-slider').get(0) as HTMLInputElement;
 
     this.audioElement.addEventListener('ended', () => {
@@ -21,13 +25,9 @@ export class SoundController implements angular.IController {
           this.togglePlayback();
         }
 
-        this.audioElement.currentTime = 0;
       });
     });
 
-    this.audioElement.addEventListener('loadedmetadata', () => {
-      this.$scope.$digest();
-    });
 
     const previousFormattedTime: string = null;
     this.audioElement.addEventListener('timeupdate', () => {
@@ -65,21 +65,37 @@ export class SoundController implements angular.IController {
   }
 
   $onDestroy(): void {
-    this.audioElement.pause();
+    if (!this.audioElement.paused){
+      this.audioElement.pause();
+    }
   }
 
   iconClass(): string {
     return this.playing ? 'fa-pause' : 'fa-play';
   }
 
+
+  async playAudio() {
+    try{
+      let loadedAudioPlayer = await this.audioElement.play();
+      return loadedAudioPlayer;
+    } catch (e) {
+
+    }
+  }
+
   togglePlayback(): void {
     this.playing = !this.playing;
 
     if (this.playing) {
-      this.audioElement.play();
+      this.audioElement.currentTime = 0;
+      this.playAudio();
     } else {
-      this.audioElement.pause();
+      if(!this.audioElement.paused){
+        this.audioElement.pause();
+      }
     }
+
   }
 
   currentTimeInSeconds(): number {
