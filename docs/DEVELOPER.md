@@ -220,3 +220,43 @@ Other useful resources:
 - [x] [What is best practice to create an AngularJS 1.5 component in Typescript? - Stack Overflow](https://stackoverflow.com/questions/35451652/what-is-best-practice-to-create-an-angularjs-1-5-component-in-typescript)
 - [x] [Don't Panic: Using ui-router as a Component Router](http://dontpanic.42.nl/2016/07/using-ui-router-as-component-router.html)
 - [x] [Lifecycle hooks in Angular 1.5](https://toddmotto.com/angular-1-5-lifecycle-hooks#onchanges)
+
+A [tutorial on YouTube is available showing how to use XDebug and VSCode](https://www.youtube.com/watch?v=nKh5DHViKlA) to debug the LF back-end application.
+
+### PHP Tests Debugging ###
+
+To debug the PHP tests, follow these steps:
+- uncomment the 3 lines in the docker-compose.yml file related to XDebug under the service section `test-php`:
+```
+       - XDEBUG_MODE=develop,debug
+     extra_hosts:
+       - "host.docker.internal:host-gateway
+```
+- In VS Code, set a breakpoint on a line of code in one of the PHP tests (in the `test/php` folder)
+- Click on the `Run and Debug` area of VS Code, then click the green play icon next to `XDebug` in the configuration dropdown.
+
+![XDebug](../readme_images/xdebug1.png) "Debugging with XDebug")
+
+- The VSCode status bar will turn orange when XDebug is active
+- run `make unit-tests` in the terminal
+- VSCode will stop the unit test execution when the breakpoint is hit
+
+A [tutorial on YouTube is available showing how to use XDebug and VSCode](https://www.youtube.com/watch?v=SxIORImpxrQ) to debug the PHP Tests.
+
+Additional considerations:
+
+If you encounter errors such as VSCode cannot find a file in the path "vendor", these source files are not available to VSCode as they are running inside Docker.  If you want to debug vendor libraries (not required), you will have to use Composer to download dependencies and put them in your source tree.
+
+## Mobile device testing on a local branch ##
+
+Testing functionality of a local branch is straightforward in the localhost on a desktop or laptop. However, on a mobile device without an IDE running in it, you must "tunnel" to localhost from a URL that any device can access. `ngrok` facilitates this connection. 
+
+[Here](https://gist.github.com/SalahHamza/799cac56b8c2cd20e6bfeb8886f18455) are instructions for installing ngrok on WSL (Linux Subsystem for Windows).
+[Here](https://ngrok.com/download) are instructions for installing ngrok on Windows, Mac OS, Linux, or Docker.
+
+Once ngrok is installed, run:
+`./ngrok http http://localhost`
+in a bash terminal. The same command with https://localhost may not work, so be careful to try http://localhost in particular.
+
+ngrok will return two URLS, one http and one https, that contain what is being served in localhost. Test on another device using one or both of these URLS.
+
