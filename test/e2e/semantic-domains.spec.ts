@@ -5,6 +5,8 @@ import { ProjectsPage } from './pages/projects.page';
 
 import { Project } from './utils/types';
 
+import { addLexEntry, initTestProject } from './utils/testSetup';
+
 
 import constants from './testConstants.json';
 
@@ -19,11 +21,20 @@ import constants from './testConstants.json';
 
 test.describe('Lexicon E2E Semantic Domains Lazy Load', () => {
   let projectsPageManager: ProjectsPage;
+  let editorPage: EditorPage;
   const project: Project = {
     name: 'semantic_domainsprojects_spec_ts Project 04',
     code: 'p04_projects_spec_ts__project_04',
     id: ''
   };
+
+  test.beforeAll(async ({ request, managerTab, member, manager, admin,  }) => {
+    projectsPageManager = new ProjectsPage(managerTab);
+    editorPage = new EditorPage(managerTab);
+    project.id = await initTestProject(request, project.code, project.name, manager.username, [admin.username]);
+    await addLexEntry(request, constants.testProjectCode, constants.testEntry1);
+
+  });
   /*
   const editorPage   = new EditorPage();
   const header = new PageHeader();
@@ -34,6 +45,12 @@ test.describe('Lexicon E2E Semantic Domains Lazy Load', () => {
   const semanticDomain1dot1English = constants.testEntry1.senses[0].semanticDomain.values[0] + ' Sky';
   const semanticDomain1dot1Thai = constants.testEntry1.senses[0].semanticDomain.values[0] + ' ท้องฟ้า';
 
+  */
+  test.only('Should be using English Semantic Domain for manager', async () => {
+    await projectsPageManager.goto();
+    await projectsPageManager.page.pause();
+  });
+ /*
   test('should be using English Semantic Domain for manager', async () => {
     await loginPage.loginAsManager();
     await projectsPage.get();
