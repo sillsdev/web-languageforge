@@ -117,16 +117,16 @@ test.describe('E2E Signup app', () => {
     await signupPage.signupButton.click();
 
     // Verify new user logged in and redirected to projects page
-    await signupPage.page.waitForNavigation({waitUntil: "networkidle"});
+    await signupPage.page.waitForURL("**/app/projects");
     expect(signupPage.page.url()).toContain('/app/projects');
   });
 
   test('Redirects to projects page if already logged in', async ({ memberTab }) => {
-    const signupPage = new SignupPage(memberTab);
+    const signupPageMember = new SignupPage(memberTab);
     await Promise.all([
-      signupPage.page.waitForNavigation({waitUntil: "networkidle"}),
-      signupPage.page.goto(SignupPage.url),
+      signupPageMember.page.waitForURL("**/app/projects"),
+      signupPageMember.page.goto(SignupPage.url),
     ]);
-    expect(signupPage.page.url()).toContain('/app/projects');
+    expect(signupPageMember.page.url()).toContain('/app/projects');
   });
 });
