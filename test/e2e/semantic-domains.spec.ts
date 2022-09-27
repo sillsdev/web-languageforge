@@ -5,177 +5,145 @@ import { ProjectsPage } from './pages/projects.page';
 
 import { Project } from './utils/types';
 
-import { addLexEntry, initTestProject } from './utils/testSetup';
+import { addLexEntry, addPictureFileToProject, initTestProject } from './utils/testSetup';
 
 
 import constants from './testConstants.json';
-
-// import {browser, ExpectedConditions} from 'protractor';
-
-// import {BellowsLoginPage} from '../../../bellows/shared/login.page';
-// import {PageHeader} from '../../../bellows/shared/page-header.element';
-// import {ProjectsPage} from '../../../bellows/shared/projects.page';
-// import {Utils} from '../../../bellows/shared/utils';
-// import {EditorPage} from '../shared/editor.page';
-// import {ProjectSettingsPage} from '../shared/project-settings.page';
+import { EditorPage } from './pages/editor.page';
+import { PageHeader } from './components/page-header.component';
+import { ProjectSettingsPage } from './pages/project-settings.page';
+import { expectOptionSelectedInSelectElement } from './utils/playwright-helpers';
 
 test.describe('Lexicon E2E Semantic Domains Lazy Load', () => {
   let projectsPageManager: ProjectsPage;
   let editorPage: EditorPage;
+  let pageHeader: PageHeader;
   const project: Project = {
     name: 'semantic_domainsprojects_spec_ts Project 04',
     code: 'p04_projects_spec_ts__project_04',
     id: ''
   };
-
-  test.beforeAll(async ({ request, managerTab, member, manager, admin,  }) => {
-    projectsPageManager = new ProjectsPage(managerTab);
-    editorPage = new EditorPage(managerTab);
-    project.id = await initTestProject(request, project.code, project.name, manager.username, [admin.username]);
-    await addLexEntry(request, constants.testProjectCode, constants.testEntry1);
-
-  });
-  /*
-  const editorPage   = new EditorPage();
-  const header = new PageHeader();
-  const loginPage = new BellowsLoginPage();
-  const projectsPage = new ProjectsPage();
-  const projectSettingsPage = new ProjectSettingsPage();
-
+  const lexemeLabel = 'Word';
   const semanticDomain1dot1English = constants.testEntry1.senses[0].semanticDomain.values[0] + ' Sky';
   const semanticDomain1dot1Thai = constants.testEntry1.senses[0].semanticDomain.values[0] + ' ท้องฟ้า';
 
-  */
-  test.only('Should be using English Semantic Domain for manager', async () => {
-    await projectsPageManager.goto();
-    await projectsPageManager.page.pause();
-  });
- /*
-  test('should be using English Semantic Domain for manager', async () => {
-    await loginPage.loginAsManager();
-    await projectsPage.get();
-    await projectsPage.clickOnProject(constants.testProjectName);
-    await editorPage.edit.toListLink.click();
-    await editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
-    await browser.wait(ExpectedConditions.visibilityOf(await editorPage.edit.fields.last()), Utils.conditionTimeout);
-    expect<any>(await editorPage.edit.getFirstLexeme()).toEqual(constants.testEntry1.lexeme.th.value);
-    expect<any>(await editorPage.edit.semanticDomain.values.first().getText()).toEqual(semanticDomain1dot1English);
-    expect<any>(await header.language.button.getText()).toEqual('English');
+  test.beforeAll(async ({ request, managerTab, member, manager, admin, }) => {
+    project.id = await initTestProject(request, project.code, project.name, manager.username, [admin.username]);
+    await addPictureFileToProject(request, project.code, constants.testEntry1.senses[0].pictures[0].fileName);
+    const lexEntryId = await addLexEntry(request, project.code, constants.testEntry1);
+    projectsPageManager = new ProjectsPage(managerTab);
+    editorPage = new EditorPage(managerTab, project.id, lexEntryId);
+    pageHeader = new PageHeader(editorPage.page);
   });
 
-  test('can change Project default language to Thai', async () => {
-    await projectSettingsPage.getByLink();
-    expect<any>(await projectSettingsPage.tabs.project.isDisplayed()).toBe(true);
-    expect<any>(await projectSettingsPage.projectTab.saveButton.isDisplayed()).toBe(true);
-    expect<any>(await projectSettingsPage.projectTab.defaultLanguageSelect.isDisplayed()).toBe(true);
-    expect<any>(await projectSettingsPage.projectTab.defaultLanguageSelected.getText()).toContain('English');
-    await projectSettingsPage.projectTab.defaultLanguageSelect.sendKeys('ภาษาไทย');
+  test('Should be using English Semantic Domain for manager', async () => {
+    await editorPage.goto();
+    expect(await (await editorPage.getTextarea(editorPage.entryCard, lexemeLabel, 'th')).inputValue()).toEqual(constants.testEntry1.lexeme.th.value);
+    await expect(editorPage.senseCard.locator(editorPage.semanticDomainSelector).first()).toHaveText(semanticDomain1dot1English);
+    await expect(pageHeader.languageDropdownButton).toHaveText('English');
+  });
+
+  test('Can change Project default language to Thai & back and forth', async () => {
+    // as this test is pretty long, the default test timeout is not sufficient
+    test.setTimeout(60000);
+
+    // can change Project default language to Thai
+    const projectSettingsPage = new ProjectSettingsPage(editorPage.page);
+    await projectSettingsPage.gotoProjectSettingsDirectly(project.id, project.name);
+    await expect(projectSettingsPage.projectTab.tabTitle).toBeVisible();
+    await expect(projectSettingsPage.projectTab.saveButton).toBeVisible();
+    await expect(projectSettingsPage.projectTab.defaultInterfaceLanguageInput).toBeVisible();
+    await expect(projectSettingsPage.projectTab.defaultInterfaceLanguageInput.locator('option[selected="selected"]')).toHaveText('English');
+    await projectSettingsPage.projectTab.defaultInterfaceLanguageInput.selectOption({ label: 'ภาษาไทย - semantic domain only' });
+
     await projectSettingsPage.projectTab.saveButton.click();
-    expect<any>(await projectSettingsPage.projectTab.defaultLanguageSelected.getText()).toContain('ภาษาไทย');
-    expect<any>(await header.language.button.getText()).toEqual('ภาษาไทย');
-  });
+    await expectOptionSelectedInSelectElement(projectSettingsPage.projectTab.defaultInterfaceLanguageInput, 'ภาษาไทย');
+    await expect(pageHeader.languageDropdownButton).toHaveText('ภาษาไทย');
 
-  test('should be using Thai Semantic Domain', async () => {
-    await Utils.clickBreadcrumb(constants.testProjectName);
-    await editorPage.edit.toListLink.click();
-    await editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
-    await browser.wait(ExpectedConditions.visibilityOf(await editorPage.edit.fields.last()), Utils.conditionTimeout);
-    expect<any>(await editorPage.edit.semanticDomain.values.first().getText()).toEqual(semanticDomain1dot1Thai);
-  });
+    // should be using Thai semantic domain
+    await editorPage.goto();
+    await expect(editorPage.senseCard.locator(editorPage.semanticDomainSelector).first()).toHaveText(semanticDomain1dot1Thai);
 
-  test('can change Project default language back to English', async () => {
-    await projectSettingsPage.getByLink();
-    expect<any>(await projectSettingsPage.projectTab.defaultLanguageSelected.getText()).toContain('ภาษาไทย');
-    await projectSettingsPage.projectTab.defaultLanguageSelect.sendKeys('English');
+    // can change Project default language back to English
+    await projectSettingsPage.gotoProjectSettingsDirectly(project.id, project.name);
+    // all the visibility checks and timeouts were added because the selectOption was flaky
+    // with the timeouts, it does not fail (0 out of 18 times)
+    await expect(projectSettingsPage.projectTab.tabTitle).toBeVisible();
+    await expect(projectSettingsPage.projectTab.saveButton).toBeVisible();
+    await expect(projectSettingsPage.projectTab.defaultInterfaceLanguageInput).toBeVisible();
+    await expect(projectSettingsPage.projectTab.defaultInterfaceLanguageInput.locator('option[selected="selected"]')).toHaveText('ภาษาไทย - semantic domain only');
+    await projectSettingsPage.page.waitForTimeout(1000);
+    await projectSettingsPage.projectTab.defaultInterfaceLanguageInput.selectOption({ label: 'English' });
+    await projectSettingsPage.page.waitForTimeout(2000);
     await projectSettingsPage.projectTab.saveButton.click();
-    expect<any>(await projectSettingsPage.projectTab.defaultLanguageSelected.getText()).toContain('English');
-    expect<any>(await header.language.button.getText()).toEqual('English');
-  });
+    await expectOptionSelectedInSelectElement(projectSettingsPage.projectTab.defaultInterfaceLanguageInput, 'English');
+    await expect(pageHeader.languageDropdownButton).toHaveText('English');
 
-  test('should be using English Semantic Domain', async () => {
-    await Utils.clickBreadcrumb(constants.testProjectName);
-    await editorPage.edit.toListLink.click();
-    await editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
-    await browser.wait(ExpectedConditions.visibilityOf(await editorPage.edit.fields.last()), Utils.conditionTimeout);
-    expect<any>(await editorPage.edit.semanticDomain.values.first().getText()).toEqual(semanticDomain1dot1English);
-  });
+    // should be using English Semantic Domain
+    await editorPage.goto();
+    await expect(editorPage.senseCard.locator(editorPage.semanticDomainSelector).first()).toHaveText(semanticDomain1dot1English);
 
-  test('can change Project default language back to Thai', async () => {
-    await browser.refresh();
-    await browser.wait(ExpectedConditions.visibilityOf(editorPage.edit.entryCountElem), Utils.conditionTimeout);
-    await projectSettingsPage.getByLink();
-    expect<any>(await projectSettingsPage.projectTab.defaultLanguageSelected.getText()).toContain('English');
-    await projectSettingsPage.projectTab.defaultLanguageSelect.sendKeys('ภาษาไทย');
+    // can change Project default language back to Thai
+    await projectSettingsPage.gotoProjectSettingsDirectly(project.id, project.name);
+    await expect(projectSettingsPage.projectTab.defaultInterfaceLanguageInput.locator('option[selected="selected"]')).toHaveText('English');
+    await projectSettingsPage.page.waitForTimeout(1000);
+    await projectSettingsPage.projectTab.defaultInterfaceLanguageInput.selectOption({ label: 'ภาษาไทย - semantic domain only' });
+    await projectSettingsPage.page.waitForTimeout(2000);
     await projectSettingsPage.projectTab.saveButton.click();
-    expect<any>(await projectSettingsPage.projectTab.defaultLanguageSelected.getText()).toContain('ภาษาไทย');
-  });
+    await expectOptionSelectedInSelectElement(projectSettingsPage.projectTab.defaultInterfaceLanguageInput, 'ภาษาไทย');
 
-  test('should be using Thai Semantic Domain after refresh', async () => {
-    await Utils.clickBreadcrumb(constants.testProjectName);
-    await editorPage.edit.toListLink.click();
-    await editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
-    expect<any>(await editorPage.edit.semanticDomain.values.first().getText()).toEqual(semanticDomain1dot1Thai);
-    expect<any>(await editorPage.edit.entryCountElem.isDisplayed()).toBe(true);
-    await browser.refresh();
-    await browser.wait(ExpectedConditions.visibilityOf(editorPage.edit.entryCountElem), Utils.conditionTimeout);
-    expect<any>(await editorPage.edit.semanticDomain.values.first().getText()).toEqual(semanticDomain1dot1Thai);
-  });
+    // should be using Thai Semantic Domain after refresh
+    await editorPage.goto();
+    await expect(editorPage.senseCard.locator(editorPage.semanticDomainSelector).first()).toHaveText(semanticDomain1dot1Thai);
+    // browser refresh
+    await editorPage.page.reload();
+    await expect(editorPage.senseCard.locator(editorPage.semanticDomainSelector).first()).toHaveText(semanticDomain1dot1Thai);
 
-  test('can change user interface language', async () => {
-    expect<any>(await header.language.button.getText()).toEqual('ภาษาไทย');
-    await header.language.button.click();
-    await header.language.findItem('English').click();
-    expect<any>(await header.language.button.getText()).toEqual('English');
-  });
+    // can change user interface language
+    await expect(pageHeader.languageDropdownButton).toHaveText('ภาษาไทย');
+    await pageHeader.languageDropdownButton.click();
+    await pageHeader.languageDropdownItem.filter({ hasText: 'English' }).click();
+    await expect(pageHeader.languageDropdownButton).toHaveText('English');
 
-  test('should still have Thai for Project default language', async () => {
-    await projectSettingsPage.getByLink();
-    expect<any>(await projectSettingsPage.projectTab.defaultLanguageSelected.getText()).toContain('ภาษาไทย');
-  });
+    // should still have Thai for Project default language
+    await projectSettingsPage.gotoProjectSettingsDirectly(project.id, project.name);
+    await expect(projectSettingsPage.projectTab.defaultInterfaceLanguageInput.locator('option[selected="selected"]')).toHaveText('ภาษาไทย - semantic domain only');
 
-  test('should be using English Semantic Domain', async () => {
-    await Utils.clickBreadcrumb(constants.testProjectName);
-    await editorPage.edit.toListLink.click();
-    await editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
-    await browser.wait(ExpectedConditions.visibilityOf(await editorPage.edit.fields.last()), Utils.conditionTimeout);
-    expect<any>(await editorPage.edit.semanticDomain.values.first().getText()).toEqual(semanticDomain1dot1English);
-  });
+    // should be using English Semantic Domain
+    await editorPage.goto();
+    await expect(editorPage.senseCard.locator(editorPage.semanticDomainSelector).first()).toHaveText(semanticDomain1dot1English);
 
-  test('should be using English Semantic Domain after refresh', async () => {
-    expect<any>(await editorPage.edit.entryCountElem.isDisplayed()).toBe(true);
-    await browser.refresh();
-    await browser.wait(ExpectedConditions.visibilityOf(editorPage.edit.entryCountElem), Utils.conditionTimeout);
-    expect<any>(await editorPage.edit.semanticDomain.values.first().getText()).toEqual(semanticDomain1dot1English);
-  });
+    // should be using English Semantic Domain after refresh
+    // browser refresh
+    await editorPage.page.reload();
+    await expect(editorPage.senseCard.locator(editorPage.semanticDomainSelector).first()).toHaveText(semanticDomain1dot1English);
 
-  test('should still have Thai for Project default language', async () => {
-    await projectSettingsPage.getByLink();
-    expect<any>(await projectSettingsPage.projectTab.defaultLanguageSelected.getText()).toContain('ภาษาไทย');
-  });
+    // should still have Thai for Project default language
+    await projectSettingsPage.gotoProjectSettingsDirectly(project.id, project.name);
+    await expect(projectSettingsPage.projectTab.defaultInterfaceLanguageInput.locator('option[selected="selected"]')).toHaveText('ภาษาไทย - semantic domain only');
 
-  test('can change user interface language to English', async () => {
-    expect<any>(await projectSettingsPage.projectTab.defaultLanguageSelected.getText()).toContain('ภาษาไทย');
-    await header.language.button.click();
-    await header.language.findItem('English').click();
-    expect<any>(await header.language.button.getText()).toEqual('English');
-  });
+    // can change user interface language to English
+    await pageHeader.languageDropdownButton.click();
+    await pageHeader.languageDropdownItem.filter({ hasText: 'English' }).click();
 
-  test('can change Project default language to match interface language twice', async () => {
-    await projectSettingsPage.projectTab.defaultLanguageSelect.sendKeys('English');
+    // can change Project default language to match interface language twice
+    await projectSettingsPage.page.waitForTimeout(1000);
+    await projectSettingsPage.projectTab.defaultInterfaceLanguageInput.selectOption({ label: 'English' });
+    await projectSettingsPage.page.waitForTimeout(2000);
     await projectSettingsPage.projectTab.saveButton.click();
-    expect<any>(await projectSettingsPage.projectTab.defaultLanguageSelected.getText()).toContain('English');
-    expect<any>(await header.language.button.getText()).toEqual('English');
+    await expectOptionSelectedInSelectElement(projectSettingsPage.projectTab.defaultInterfaceLanguageInput, 'English');
+    await expect(pageHeader.languageDropdownButton).toHaveText('English');
 
-    await projectSettingsPage.projectTab.defaultLanguageSelect.sendKeys('ภาษาไทย');
+    await projectSettingsPage.page.waitForTimeout(1000);
+    await projectSettingsPage.projectTab.defaultInterfaceLanguageInput.selectOption({ label: 'ภาษาไทย - semantic domain only' });
+    await projectSettingsPage.page.waitForTimeout(2000);
     await projectSettingsPage.projectTab.saveButton.click();
-    expect<any>(await projectSettingsPage.projectTab.defaultLanguageSelected.getText()).toContain('ภาษาไทย');
-    expect<any>(await header.language.button.getText()).toEqual('ภาษาไทย');
-  });
+    await expectOptionSelectedInSelectElement(projectSettingsPage.projectTab.defaultInterfaceLanguageInput, 'ภาษาไทย');
+    await expect(pageHeader.languageDropdownButton).toHaveText('ภาษาไทย');
 
-  test('can change user interface language to back English', async () => {
-    await header.language.button.click();
-    await header.language.findItem('English').click();
-    expect<any>(await header.language.button.getText()).toEqual('English');
+    // can change user interface language to back English
+    await pageHeader.languageDropdownButton.click();
+    await pageHeader.languageDropdownItem.filter({ hasText: 'English' }).click();
+    await expect(pageHeader.languageDropdownButton).toHaveText('English');
   });
-*/
 });

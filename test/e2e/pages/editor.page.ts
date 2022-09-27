@@ -62,6 +62,7 @@ export class EditorPage {
   readonly entryCard: Locator;
   readonly senseCard: Locator;
   readonly exampleCardSelector: string;
+  readonly semanticDomainSelector: string;
 
   readonly actionMenu: ActionMenu;
 
@@ -101,6 +102,7 @@ export class EditorPage {
     this.entryCard = this.page.locator('.entry-card');
     this.senseCard = this.page.locator('[data-ng-repeat="sense in $ctrl.model.senses"]');
     this.exampleCardSelector = '.dc-example';
+    this.semanticDomainSelector = '.dc-semanticdomain-value';
 
     this.actionMenu = {
       toggleMenuButtonSelector: '.ellipsis-menu-toggle',
