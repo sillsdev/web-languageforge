@@ -61,11 +61,11 @@ jobs:
                 }
               }
             }' -f org=$ORGANIZATION > project_data.json
-            
+
           echo 'PROJECT_ID='$(jq '.data.organization.projectNext.id' project_data.json) >> $GITHUB_ENV
           echo 'FIELD_ID='$(jq '.data.organization.projectNext.fields.nodes[] | select(.name== "ProductOwner") | .id' project_data.json) >> $GITHUB_ENV
-          echo 'TRIAGE_ID='$(jq '.data.organization.projectNext.fields.nodes[] | select(.name== "ProductOwner") | .settings | fromjson.options[] | select(.name=="Triage") | .id' project_data.json) >> $GITHUB_ENV
-        
+          echo 'INCOMING_ID='$(jq '.data.organization.projectNext.fields.nodes[] | select(.name== "ProductOwner") | .settings | fromjson.options[] | select(.name=="Incoming") | .id' project_data.json) >> $GITHUB_ENV
+
       - name: Add issue to project
         if: env.IN_PROJECT == 0
         env:
@@ -105,5 +105,5 @@ jobs:
                   id
                 }
               }
-            }' -f project=$PROJECT_ID -f item=$ITEM_ID -f field=$FIELD_ID -f field_value=${{ env.TRIAGE_ID }}
-            
+            }' -f project=$PROJECT_ID -f item=$ITEM_ID -f field=$FIELD_ID -f field_value=${{ env.INCOMING_ID }}
+
