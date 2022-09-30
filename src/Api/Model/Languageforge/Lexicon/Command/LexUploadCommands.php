@@ -105,8 +105,7 @@ class LexUploadCommands
 
             if (strcmp(strtolower($fileExt), ".mp3") !== 0 && strcmp(strtolower($fileExt), ".wav") !== 0) {
                 //First, find the duration of the file
-                $sanitizedTmpFilePath = escapeshellarg($tmpFilePath);
-                $ffprobeCommand = `ffprobe -i $sanitizedTmpFilePath -show_entries format=duration -v quiet -of csv="p=0" 2> /dev/null`;
+                $ffprobeCommand = `ffprobe -i $tmpFilePath -show_entries format=duration -v quiet -of csv="p=0" 2> /dev/null`;
                 $audioDuration = floatval($ffprobeCommand);
 
                 // Convert to .wav if the result will be less than 1 MB (recording is shorter than 5.6 seconds)
@@ -123,7 +122,7 @@ class LexUploadCommands
 
                 //unlink the original file as well, now that we've both stored it and made the converted copy
                 @unlink($tmpFilePath);
-                
+
             }
 
             // construct server response
