@@ -54,7 +54,9 @@ test.describe('Lexicon E2E Semantic Domains Lazy Load', () => {
     await expect(projectSettingsPage.projectTab.saveButton).toBeVisible();
     await expect(projectSettingsPage.projectTab.defaultInterfaceLanguageInput).toBeVisible();
     await expect(projectSettingsPage.projectTab.defaultInterfaceLanguageInput.locator('option[selected="selected"]')).toHaveText('English');
+    await projectSettingsPage.page.waitForTimeout(1000);
     await projectSettingsPage.projectTab.defaultInterfaceLanguageInput.selectOption({ label: 'ภาษาไทย - semantic domain only' });
+    await projectSettingsPage.page.waitForTimeout(2000);
 
     await projectSettingsPage.projectTab.saveButton.click();
     await expectOptionSelectedInSelectElement(projectSettingsPage.projectTab.defaultInterfaceLanguageInput, 'ภาษาไทย');
