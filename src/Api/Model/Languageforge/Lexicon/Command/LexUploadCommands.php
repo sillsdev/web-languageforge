@@ -96,7 +96,7 @@ class LexUploadCommands
             $project->createAssetsFolders();
             $folderPath = $project->getAudioFolderPath();
 
-            // move uploaded/recorded file from tmp location to assets
+            // move original uploaded/recorded file from tmp location to assets
             $filePath = self::mediaFilePath($folderPath, $fileNamePrefix, $fileName);
             $moveOk = copy($tmpFilePath, $filePath);
 
@@ -109,29 +109,21 @@ class LexUploadCommands
                 $ffprobeCommand = `ffprobe -i $sanitizedTmpFilePath -show_entries format=duration -v quiet -of csv="p=0" 2> /dev/null`;
                 $audioDuration = floatval($ffprobeCommand);
 
-                // Convert to .wav if the result will be less than 1 MB at 165Kb/s (recording is shorter than 6 seconds)
-                // and .mp3 otherwise (recording is longer than 6 seconds)
-                $extensionlessTmpFilePath = substr($sanitizedTmpFilePath, 0, strrpos($sanitizedTmpFilePath, strtolower($fileExt)));
+                // Convert to .wav if the result will be less than 1 MB (recording is shorter than 5.6 seconds)
+                // and .mp3 otherwise (recording is longer than 5.6 seconds)
                 $extensionlessFileName = substr($fileName, 0, strrpos($fileName, strtolower($fileExt)));
+                $convertedExtension = ($audioDuration < 5.6) ? 'wav' : 'mp3';
+                $ffmpegDestination = "$extensionlessFileName.$convertedExtension";
+                `ffmpeg -i $tmpFilePath $ffmpegDestination 2> /dev/null`;
+                $filePath = self::mediaFilePath($folderPath, $fileNamePrefix, $ffmpegDestination);
+                $moveOk = copy($ffmpegDestination, $filePath);
 
-                if($audioDuration < 6){
-                    `ffmpeg -i $sanitizedTmpFilePath -b:a 165K -maxrate 165K -bufsize 80K $extensionlessTmpFilePath.wav 2> /dev/null')`;
-                    `mv $sanitizedTmpFilePath $extensionlessTmpFilePath.wav 2> /dev/null`;
-                    $fileName = $extensionlessFileName . '.wav';
-                    $tmpFilePath = $extensionlessTmpFilePath. '.wav';
-                }
-                else{
-                    `ffmpeg -i $sanitizedTmpFilePath -b:a 165K -maxrate 165K -bufsize 80K $extensionlessTmpFilePath.mp3 2> /dev/null')`;
-                    `mv $sanitizedTmpFilePath $extensionlessTmpFilePath.mp3 2> /dev/null`;
-                    $fileName = $extensionlessFileName . '.mp3';
-                    $tmpFilePath = $extensionlessTmpFilePath . '.mp3';
-                }
+                //unlink the converted file from its temporary location
+                @unlink($ffmpegDestination);
 
-
-                // move uploaded file from tmp location to assets
-                $filePath = self::mediaFilePath($folderPath, $fileNamePrefix, $fileName);
-                $moveOk = copy($tmpFilePath, $filePath);
+                //unlink the original file as well, now that we've both stored it and made the converted copy
                 @unlink($tmpFilePath);
+                
             }
 
             // construct server response
