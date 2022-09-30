@@ -547,7 +547,7 @@ class LiftDecoder
         return false;
     }
 
-    /**
+     /**
      * Add node as a custom entry field
      *
      * @param \SimpleXMLElement $sxeNode
@@ -648,6 +648,7 @@ class LiftDecoder
 
         return $customFieldName;
     }
+
 
     /**
      * Parse custom field specs list and return keyed array
