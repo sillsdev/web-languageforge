@@ -80,6 +80,15 @@ export async function addAudioVisualFileToProject(request: APIRequestContext, pr
   return testControl(request, 'add_audio_visual_file_to_project', [projectCode, destPath]);
 }
 
+export function addCustomField(request: APIRequestContext,
+  projectCode: string,
+  fieldName: string,
+  parentField: 'entry' | 'senses' | 'examples',
+  fieldType: CustomFieldType = 'MultiString',
+  extraOptions: any = null) {
+return testControl(request, 'add_custom_field', [projectCode, fieldName, parentField, fieldType, extraOptions]);
+}
+
 export function getProjectJson(request: APIRequestContext,
                                projectCode: string) {
   return testControl(request, 'get_project_json', [projectCode]);

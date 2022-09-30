@@ -1607,7 +1607,7 @@ EOD;
         $entry0 = $entryList->entries[0];
 
         $this->assertEquals(1, $entryList->count);
-        $this->assertArrayHasKey('customField_entry_Cust_MultiPara', $entry0['customFields'], 'custom field MultiPara exists');
+        //$this->assertArrayHasKey('customField_entry_Cust_MultiPara', $entry0['customFields'], 'custom field MultiPara exists');
         $this->assertEquals('First paragraph with <span lang="th">ไทย</span>',
             $entry0['customFields']['customField_entry_Cust_MultiPara']['paragraphs'][0]['content'],
             'custom field MultiPara has paragraphs separated into paragraph 1 and native language spans removed');
