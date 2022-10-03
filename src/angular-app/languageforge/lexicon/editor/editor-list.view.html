@@ -25,7 +25,8 @@
                     <div class="col">
                         <div data-ng-hide="$ctrl.entries.length === 0" class="words-search">
                             <div class="filter-entries-wrapper">
-                                <input type="text" id="editor-list-search-entries" class="filter-entries" placeholder="Filter Entries"
+                                <span class="search-icon fa fa-search"></span>
+                                <input type="text" id="editor-list-search-entries" class="filter-entries" placeholder="Search"
                                        data-ng-change="$ctrl.filterAndSortEntries()" data-ng-model="$ctrl.entryListModifiers.filterBy.text"
                                        data-ng-model-options="{debounce: 200}"></input>
                                 <span class="fa fa-times clear-search-button" data-ng-show="$ctrl.entryListModifiers.filterBy.text" data-ng-click="$ctrl.clearSearchText()"></span>

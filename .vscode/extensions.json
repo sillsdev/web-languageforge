@@ -1,14 +1,15 @@
 {
-	// See http://go.microsoft.com/fwlink/?LinkId=827846
-	// for the documentation about the extensions.json format
-	"recommendations": [
-		"amodio.tsl-problem-matcher",
-		"msjsdiag.debugger-for-chrome",
-		"ms-vscode-remote.remote-containers",
-		"editorconfig.editorconfig",
-		"dbaeumer.vscode-eslint",
-		"xdebug.php-pack",
-		"svelte.svelte-vscode",
-		"bradlc.vscode-tailwindcss"
-	]
+  // See http://go.microsoft.com/fwlink/?LinkId=827846
+  // for the documentation about the extensions.json format
+  "recommendations": [
+    "amodio.tsl-problem-matcher",
+    "msjsdiag.debugger-for-chrome",
+    "ms-vscode-remote.remote-containers",
+    "editorconfig.editorconfig",
+    "dbaeumer.vscode-eslint",
+    "xdebug.php-pack",
+    "svelte.svelte-vscode",
+    "bradlc.vscode-tailwindcss",
+    "ms-playwright.playwright"
+  ]
 }

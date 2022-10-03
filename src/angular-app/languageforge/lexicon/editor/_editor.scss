@@ -692,11 +692,11 @@ dc-entry .card {
 .filter-entries {
   width: 100%;
   border: 0;
-  background: transparent;
+  background: white;
   border-radius: 0;
   font-size: 14px;
   line-height: 45px;
-  padding: 0 2.5em 0 1.5em;
+  padding: 0 2.5em 0 2.0em;
 }
 
 .filter-entries-wrapper {
@@ -706,6 +706,13 @@ dc-entry .card {
   .clear-search-button {
     top: 1em;
   }
+}
+
+.search-icon {
+  position: absolute;
+  top: 50%;
+  margin-left: 5px;
+  margin-top: -10px;
 }
 
 .options-active-icon {

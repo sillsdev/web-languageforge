@@ -23,7 +23,7 @@ playwright-tests:
     # wait until the app-for-playwright service is serving up HTTP before continuing
 	until curl localhost:3238 > /dev/null 2>&1; do sleep 1; done
 
-	cd .. && npx playwright install && npx playwright test
+	cd .. && npx playwright install chromium && npx playwright test $(params)
 
 .PHONY: e2e-tests
 e2e-tests:
@@ -74,11 +74,9 @@ clean:
 	docker compose down
 	docker system prune -f
 
-.PHONY: clean-volumes
-clean-volumes:
-	docker compose down -v
-	docker system prune -f --volumes
-
 .PHONY: clean-powerwash
-clean-powerwash: clean-volumes
-	docker compose down --rmi all
+clean-powerwash: clean
+	docker system prune -f --volumes
+	docker rmi -f `docker images -q "lf-*"`
+	docker image rm sillsdev/web-languageforge:base-php
+	docker builder prune -f

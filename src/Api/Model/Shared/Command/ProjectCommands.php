@@ -418,5 +418,7 @@ class ProjectCommands
             $user->addProject($projectId);
             $user->write();
         }
+
+		return $model;
     }
 }

@@ -17,6 +17,6 @@ jobs:
 
         # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idsecrets
         secrets:
-          kube-context: ${{ secrets.LTOPS_K8S_STAGING_CONTEXT }}
+          kube-context: ${{ secrets.K8S_STAGING_CONTEXT }}
           image-repo-username: ${{ secrets.DOCKERHUB_USERNAME }}
           image-repo-password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}

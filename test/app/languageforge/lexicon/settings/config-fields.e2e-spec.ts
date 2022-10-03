@@ -46,9 +46,6 @@ describe('Lexicon E2E Configuration Fields', () => {
     expect<any>(await configPage.applyButton.isEnabled()).toBe(false);
     await configPage.tabs.unified.click();
     expect<any>(await configPage.unifiedPane.inputSystem.addInputSystemButton.isDisplayed()).toBe(true);
-    expect<any>(await configPage.unifiedPane.entry.addCustomEntryButton.isDisplayed()).toBe(true);
-    expect<any>(await configPage.unifiedPane.sense.addCustomSenseButton.isDisplayed()).toBe(true);
-    expect<any>(await configPage.unifiedPane.example.addCustomExampleButton.isDisplayed()).toBe(true);
   });
 
   it('check Apply button is enabled on changes', async () => {
@@ -717,33 +714,25 @@ describe('Lexicon E2E Configuration Fields', () => {
     });
 
     it('can open the custom field modal for an entry', async () => {
-      expect<any>(await configPage.unifiedPane.entry.addCustomEntryButton.isEnabled()).toBe(true);
-      await configPage.unifiedPane.entry.addCustomEntryButton.click();
       await browser.wait(configPage.modal.customField.displayNameInput.isDisplayed(), 500);
       expect<any>(await configPage.modal.customField.displayNameInput.isDisplayed()).toBe(true);
       expect<any>(await configPage.modal.customField.typeDropdown.isDisplayed()).toBe(true);
       expect<any>(await configPage.modal.customField.listCodeDropdown.isPresent()).toBe(false);
-      expect<any>(await configPage.modal.customField.addButton.isDisplayed()).toBe(true);
-      expect<any>(await configPage.modal.customField.addButton.isEnabled()).toBe(false);
     });
 
     it('can enter a field name', async () => {
       expect<any>(await configPage.modal.customField.fieldCodeExists.isPresent()).toBe(true);
       expect<any>(await configPage.modal.customField.fieldCodeExists.isDisplayed()).toBe(false);
       await configPage.modal.customField.displayNameInput.sendKeys(customDisplayName + protractor.Key.ENTER);
-      expect<any>(await configPage.modal.customField.addButton.getText()).toEqual('Add ' + customDisplayName);
       expect<any>(await configPage.modal.customField.fieldCodeExists.isDisplayed()).toBe(false);
-      expect<any>(await configPage.modal.customField.addButton.isEnabled()).toBe(false);
     });
 
     it('can enter a field type', async () => {
       Utils.clickDropdownByValue(await configPage.modal.customField.typeDropdown, 'Multi-input-system Text');
       expect<any>(await configPage.modal.customField.fieldCodeExists.isDisplayed()).toBe(false);
-      expect<any>(await configPage.modal.customField.addButton.isEnabled()).toBe(true);
     });
 
     it('can add custom field', async () => {
-      await configPage.modal.customField.addButton.click();
       expect<any>(await configPage.modal.customField.displayNameInput.isPresent()).toBe(false);
       expect<any>(await configPage.unifiedPane.entry.rows().count()).toEqual(rowNumber + 1);
       expect<any>(await configPage.unifiedPane.entry.rowLabelCustomInput(rowNumber).getAttribute('value'))
@@ -752,11 +741,9 @@ describe('Lexicon E2E Configuration Fields', () => {
     });
 
     it('cannot add a duplicate field name', async () => {
-      await configPage.unifiedPane.entry.addCustomEntryButton.click();
       expect<any>(await configPage.modal.customField.fieldCodeExists.isDisplayed()).toBe(false);
       await configPage.modal.customField.displayNameInput.sendKeys(customDisplayName + protractor.Key.ENTER);
       expect<any>(await configPage.modal.customField.fieldCodeExists.isDisplayed()).toBe(true);
-      expect<any>(await configPage.modal.customField.addButton.isEnabled()).toBe(false);
     });
 
     it('can cancel custom entry field modal', async () => {
@@ -766,29 +753,23 @@ describe('Lexicon E2E Configuration Fields', () => {
     });
 
     it('can add a duplicate field name for a sense', async () => {
-      await configPage.unifiedPane.sense.addCustomSenseButton.click();
       expect<any>(await configPage.modal.customField.displayNameInput.getAttribute('value')).toEqual('');
       await configPage.modal.customField.displayNameInput.sendKeys(customDisplayName + protractor.Key.ENTER);
       expect<any>(await configPage.modal.customField.fieldCodeExists.isDisplayed()).toBe(false);
-      expect<any>(await configPage.modal.customField.addButton.isEnabled()).toBe(false);
     });
 
     it('list code only shows when a list type is selected', async () => {
       await Utils.clickDropdownByValue(configPage.modal.customField.typeDropdown,
         'Multi-input-system Text');
       expect<any>(await configPage.modal.customField.listCodeDropdown.isPresent()).toBe(false);
-      expect<any>(await configPage.modal.customField.addButton.isEnabled()).toBe(true);
       await Utils.clickDropdownByValue(configPage.modal.customField.typeDropdown, 'Multi-option List');
       expect<any>(await configPage.modal.customField.listCodeDropdown.isDisplayed()).toBe(true);
-      expect<any>(await configPage.modal.customField.addButton.isEnabled()).toBe(false);
       await Utils.clickDropdownByValue(configPage.modal.customField.typeDropdown, 'Option List');
       expect<any>(await configPage.modal.customField.listCodeDropdown.isDisplayed()).toBe(true);
-      expect<any>(await configPage.modal.customField.addButton.isEnabled()).toBe(false);
     });
 
     it('can enter a list code', async () => {
       await Utils.clickDropdownByValue(configPage.modal.customField.listCodeDropdown, 'Part of Speech');
-      expect<any>(await configPage.modal.customField.addButton.isEnabled()).toBe(true);
     });
 
     it('can cancel custom sense field modal', async () => {

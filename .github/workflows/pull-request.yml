@@ -47,14 +47,33 @@ jobs:
         run: |
           npm ci
           docker-compose build app
-      -
-        name: Playwright E2E Tests
+      - name: Get installed Playwright version
+        id: playwright-version
+        # https://github.com/microsoft/playwright/issues/7249#issuecomment-1201476980
+        run: echo -n "::set-output name=version::$(npm ls @playwright/test --json | jq --raw-output '.dependencies["@playwright/test"].version')"
+
+        # https://github.com/microsoft/playwright/issues/7249#issuecomment-1154603556
+      - name: Cache playwright browsers
+        uses: actions/cache@v3
+        id: playwright-cache
+        with:
+          path: '~/.cache/ms-playwright'
+          # Make each playwright version use its own cache in case it uses different browser versions
+          # Cache entries are deleted if not accessed for 7 days
+          # https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows#usage-limits-and-eviction-policy
+          key: 'playwright-${{ steps.playwright-version.outputs.version }}'
+
+      - name: Playwright E2E Tests
         working-directory: .
         # see https://playwright.dev/docs/ci#github-actions
-        run: |
-          docker-compose -f docker/docker-compose.yml up -d app-for-playwright
-          npx playwright install
-          npx playwright test
+        run: npm run make playwright-tests
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-results
+          path: test-results
 
   # protractor-tests:
   #   runs-on: ubuntu-latest

@@ -57,10 +57,8 @@
                             {% endif %}
                             {% for project in projects %}
                                 <a class="dropdown-item"
-                                   href="{{ '/app/'~project.appName~'/'~project.id }}">{{ project.projectName }}</a>
+                                   href="{{ '/projects/'~project.projectCode }}">{{ project.projectName }}</a>
                             {% endfor %}
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="/app/activity"><b>Activity for All Projects</b></a>
                         </div>
                     </li>
                     {% verbatim %}

@@ -20,14 +20,14 @@
 	}
 </script>
 
-<svelte:window on:keydown={closeOnEscape} />
+<svelte:window on:keydown={ closeOnEscape } />
 
 <!-- https://daisyui.com/components/drawer -->
 <div class='drawer drawer-end'>
-	<input type=checkbox checked={menu_toggle} class=drawer-toggle>
+	<input type=checkbox checked={ menu_toggle } class=drawer-toggle>
 
 	<div class=drawer-content>
-		<Header on:menuopen={open} />
+		<Header on:menuopen={ open } />
 
 		<!-- https://tailwindcss.com/docs/typography-plugin -->
 		<main class='prose max-w-none px-6'>
@@ -35,14 +35,14 @@
 		</main>
 	</div>
 
-	<div class=drawer-side on:click={close}>
+	<div class=drawer-side on:click={ close }>
 	  <div class=drawer-overlay></div>
 
 	  <!-- https://daisyui.com/components/menu  -->
 	  <ul class='menu p-4 bg-base-100'>
 		<li class=menu-title><span>User</span></li>
 		<li><a href=/app/userprofile rel=external>My profile</a></li>
-		<li><a href=/password/change  class:active={current_page.startsWith('/password/change')}>Change password</a></li>
+		<li><a href=/password/change  class:active={ current_page.startsWith('/password/change') }>Change password</a></li>
 		<li><a href=/app/siteadmin rel=external>Site administration</a></li>
 		<li><a href=/auth/logout rel=external>Logout</a></li>
 

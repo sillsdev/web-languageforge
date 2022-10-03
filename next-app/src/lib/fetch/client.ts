@@ -7,7 +7,7 @@ export async function UPDATE(url, body) { return await customFetch('put'   , url
 export async function DELETE(url      ) { return await customFetch('delete', url      ) }
 
 // https://developer.mozilla.org/en-US/docs/Web/API/FormData/FormData
-export const upload = async formData => await CREATE('post', formData)
+// export const upload = async formData => await CREATE('post', formData)
 
 // https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch#Supplying_request_options
 async function customFetch(method, url, body) {
@@ -29,7 +29,6 @@ async function customFetch(method, url, body) {
 
 		response = await fetch(url, {
 			method,
-			// credentials: 'include', // ensures the response back from the api will be allowed to "set-cookie"
 			headers,
 			body,
 		})
@@ -44,15 +43,13 @@ async function customFetch(method, url, body) {
 		stop(url)
 	}
 
-	const result = await response.json()
-
 	// reminder: fetch does not throw exceptions for non-200 responses (https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch)
 	if (! response.ok) {
 		const code = response.status
-		const message = result.message || response.statusText
+		const message = await response.text() || response.statusText
 
 		throwError(message, code)
 	}
 
-	return result
+	return await response.json()
 }

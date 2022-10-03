@@ -2,17 +2,52 @@
 
 Welcome!  We're glad that you are interested in helping develop Language Forge.
 
+  - [Development Environment Quick Start](#development-environment-quick-start)
+    - [Supported Development Environments](#supported-development-environments)
+    - [Project Setup](#project-setup)
+    - [Running the App Locally](#running-the-app-locally)
+  - [Tests](#tests)
+    - [Running Playwright E2E Tests](#running-playwright-e2e-tests)
+    - [Running Protractor E2E Tests](#running-protractor-e2e-tests)
+    - [Running Unit Tests](#running-unit-tests)
+  - [Other commands](#other-commands)
+    - [Cleanup](#cleanup)
+    - [Running dev](#running-dev)
+  - [Debugging](#debugging)
+    - [PHP Application Debugging](#php-application-debugging)
+    - [PHP Tests Debugging](#php-tests-debugging)
+    - [E2E Tests Debugging](#e2e-tests-debugging)
+  - [Style Guides](#style-guides)
+    - [PHP](#php)
+    - [JavaScript](#javascript)
+    - [Angular & TypeScript](#angular--typescript)
+
 ## Development Environment Quick Start ##
 
-1. Install [Docker](https://www.docker.com/get-started). Linux users will need some additional steps: Please visit https://docs.docker.com/compose/install for info on installing the engine and compose. Windows users, use Ubuntu and follow these instructions -- https://docs.docker.com/engine/install/ubuntu/ -- and then, to permit specific users (and not just "sudo") to contact the Docker daemon, run `sudo usermod -aG docker $yourUsername` and `sudo chmod 666 /var/run/docker.sock`.
-3. Install [Make](https://www.gnu.org/software/make/).  This is actually optional but simplifies things a bit.
-4. Install [Node 16.14.0](https://nodejs.org/en/download/).  We recommend using a Node version manager e.g. [nvm](https://github.com/nvm-sh/nvm#installation-and-update)
-5. Clone the repo:  `git clone https://github.com/sillsdev/web-languageforge`
-6. `cd web-languageforge/docker`
+### Supported Development Environments
+
+Development of Language Forge is supported using [VS Code](https://code.visualstudio.com/download) on either pure Linux or Windows using WSL ([`wsl --install`](https://learn.microsoft.com/en-us/windows/wsl/install)).
+
+On Windows, the project should be opened with the [Remote - WSL](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl) VS Code extension, so that all commands and extensions run on WSL.
+
+### Project Setup
+
+1. Install [Docker](https://www.docker.com/get-started).
+    1. Linux users will need some additional steps. Visit https://docs.docker.com/compose/install for info on installing the engine and compose.
+    2. Windows users, use Ubuntu (WSL) and follow the instructions at https://docs.docker.com/engine/install/ubuntu/. Then:
+        1. Start docker: `sudo service docker start`.
+        2. Permit your user (and not just "sudo") to contact the Docker daemon: `sudo usermod -aG docker yourUsername && sudo chmod 666 /var/run/docker.sock`.
+        3. (Optional) Configure docker to start on boot: `printf '[boot]\ncommand="service docker start"\n' | sudo tee /etc/wsl.conf` (assuming `/etc/wsl.conf` is currently unused).
+3. Install [Make](https://www.gnu.org/software/make/): `sudo apt install make`.
+4. Install [Node 16.14.0](https://nodejs.org/en/download/).  We recommend using [nvm](https://github.com/nvm-sh/nvm#installation-and-update).
+5. Clone the repo: `git clone https://github.com/sillsdev/web-languageforge`.
+    1. Windows users, be sure to clone the project to the WSL file system (to keep VS Code, Git and the file system in sync)
 
 ### Running the App Locally
 
-1. `make`
+> Note: `make` rules can be run directly from the `docker` directory or with `npm run make` from any project sub-directory.
+
+1. `npm run make` or `cd docker && make`
 1. Within any browser, navigate to https://localhost
 1. Continue through any certificate warnings
 1. You should see a landing page, click "Login"
@@ -31,6 +66,8 @@ Welcome!  We're glad that you are interested in helping develop Language Forge.
 > then hit `http://192.168.161.99` from your phone or other device on the same network.
 >
 > NOTE: disabling cache on your device may not be trivial, you'll either need to wipe the site settings on your device's browser or you'll need to do it via USB debugging.
+
+## Tests
 
 ### Running Playwright E2E Tests
 
@@ -69,33 +106,62 @@ To quickly re-run the tests without going through the `make build` process, you 
 1. `make unit-tests`
 1. Test results will appear in your terminal
 
-## Style Guides ##
+## Other Commands
 
-PHP code conforms to [PSR-2](http://www.php-fig.org/psr/psr-2/).
+### Cleanup
 
-- Add `php-cs-fixer` globally installed with *composer* (http://cs.sensiolabs.org/). Here is how to add it to **PhpStorm** (https://hackernoon.com/how-to-configure-phpstorm-to-use-php-cs-fixer-1844991e521f). Use it with the parameters `fix --verbose "$FileDir$/$FileName$"`.
+1. `make clean` is the most common, it shuts down and cleans up running containers
+1. `make clean-powerwash` for those times when you want to "start from scratch" again, i.e., blow away your database, shared assets and built images
 
-JavaScript code conforms to [AirBNB JS style guide](https://github.com/airbnb/javascript).
+### Running dev
 
-- Using PhpStorm with JSCS helps a lot with automating this (see the section below on PhpStorm [Coding Standard and Style](#coding-standard-and-style)).
+1. `make dev` will start the legacy app in development mode, i.e. changes to source code will immediately be reflected in the locally running app.
+1. `make next-dev` will start the next app in development mode, i.e. changes to source code will immediately be reflected in the locally running app.  Access non-ssl: http://localhost
+> TODO: There is a desire to consolidate these into a single use case, `make dev`.
 
-### AngularJS TypeScript Style Guide ###
+## Debugging ##
 
-Our front-end and E2E tests are written in [**TypeScript**](https://www.typescriptlang.org).
+> Launch configurations for Chrome and PHP debugging are defined in `.vscode/launch.json`.
 
-> Note: this repo is currently AngularJS (1.8) not Angular (2+).
+### PHP Application Debugging ###
 
-Our TypeScript follows the [Angular Style Guide](https://angular.io/guide/styleguide).
+To debug the Language Forge application locally, follow these steps:
+- run `make` or `make dev`
+- In VS Code, set a breakpoint on a line of code that should be executed
+- Click on the `Run and Debug` area of VS Code, then click the green play icon next to `XDebug` in the configuration dropdown.
 
-Other useful resources:
+![XDebug](../readme_images/xdebug1.png "Debugging with XDebug")]
 
-- [x] [angularjs-styleguide/typescript at master · toddmotto/angularjs-styleguide](https://github.com/toddmotto/angularjs-styleguide/tree/master/typescript#stateless-components)
-- [x] [AngularJS 1.x with TypeScript (or ES6) Best Practices by Martin McWhorter on CodePen](https://codepen.io/martinmcwhorter/post/angularjs-1-x-with-typescript-or-es6-best-practices)
-- [x] [What is best practice to create an AngularJS 1.5 component in Typescript? - Stack Overflow](https://stackoverflow.com/questions/35451652/what-is-best-practice-to-create-an-angularjs-1-5-component-in-typescript)
-- [x] [Don't Panic: Using ui-router as a Component Router](http://dontpanic.42.nl/2016/07/using-ui-router-as-component-router.html)
-- [x] [Lifecycle hooks in Angular 1.5](https://toddmotto.com/angular-1-5-lifecycle-hooks#onchanges)
+- The VSCode status bar will turn orange when XDebug is active
+- open the application in your web browser (`https://localhost`) and use the application such that you execute the code where you have a breakpoint set
 
-### Debugging E2E Tests
+A [tutorial on YouTube is available showing how to use XDebug and VSCode](https://www.youtube.com/watch?v=nKh5DHViKlA) to debug the LF back-end application.
+
+### PHP Tests Debugging ###
+
+To debug the PHP tests, follow these steps:
+- uncomment the 3 lines in the docker-compose.yml file related to XDebug under the service section `test-php`:
+```
+       - XDEBUG_MODE=develop,debug
+     extra_hosts:
+       - "host.docker.internal:host-gateway
+```
+- In VS Code, set a breakpoint on a line of code in one of the PHP tests (in the `test/php` folder)
+- Click on the `Run and Debug` area of VS Code, then click the green play icon next to `XDebug` in the configuration dropdown.
+
+![XDebug](../readme_images/xdebug1.png) "Debugging with XDebug")
+
+- The VSCode status bar will turn orange when XDebug is active
+- run `make unit-tests` in the terminal
+- VSCode will stop the unit test execution when the breakpoint is hit
+
+A [tutorial on YouTube is available showing how to use XDebug and VSCode](https://www.youtube.com/watch?v=SxIORImpxrQ) to debug the PHP Tests.
+
+Additional considerations:
+
+If you encounter errors such as VSCode cannot find a file in the path "vendor", these source files are not available to VSCode as they are running inside Docker.  If you want to debug vendor libraries (not required), you will have to use Composer to download dependencies and put them in your source tree.
+
+### E2E Tests Debugging
 
 You'll need the "Remote - Containers" extension (`ms-vscode-remote.remote-containers`) installed, and you'll need your version of Docker Compose to be at least 1.21. (The VS Code instructions say that the Ubuntu snap package for `docker-compose` is **not** supported, so if you don't have it installed already, go to https://github.com/docker/compose/releases and download an appropriate binary of the most recent release. On Linux, you should put that binary in `/usr/local/bin/docker-compose`, **not** in `/usr/bin`!)
 
@@ -124,64 +190,33 @@ If you edit files in the `src` or `data` folders of the test container, these ch
 
 After a minute or two, your source or test changes should be applied and you should see the result of your changes when you run the E2E tests again.
 
-### Cleanup
 
-1. `make clean` is the most common, it shuts down and cleans up running containers
-1. less commonly, if you need to blow away shared artifacts from previous runs, simply `make clean-volumes`
-1. rarely needed but for a "start from scratch" environment, `make clean-powerwash`.
+## Style Guides ##
 
-### Running dev
+### PHP 
 
-1. `make dev` will start the legacy app in development mode, i.e. changes to source code will immediately be reflected in the locally running app.
-1. `make next-dev` will start the next app in development mode, i.e. changes to source code will immediately be reflected in the locally running app.
-> TODO: There is a desire to consolidate these into a single use case, `make dev`.
+PHP code conforms to [PSR-2](http://www.php-fig.org/psr/psr-2/).
 
-### Visual Studio Code ###
+- Add `php-cs-fixer` globally installed with *composer* (http://cs.sensiolabs.org/). Here is how to add it to **PhpStorm** (https://hackernoon.com/how-to-configure-phpstorm-to-use-php-cs-fixer-1844991e521f). Use it with the parameters `fix --verbose "$FileDir$/$FileName$"`.
 
-Visual Studio Code is a simple, free, cross-platform code editor. You can download VS Code from [here](https://code.visualstudio.com/).
+### JavaScript
 
-The first time you open VS Code in the `web-languageforge` directory, it will recommend a list of extensions that are useful for developing Language Forge.  Install all recommended extensions for the best experience.
+JavaScript code conforms to [AirBNB JS style guide](https://github.com/airbnb/javascript).
 
-For Windows/WSL users, it is recommended to clone your repository to your Linux filesystem and open your repository folder with VS Code in WSL mode. Open the folder with VS Code, and run the Command "Reopen Folder in WSL." Using both VS Code and source code in the Windows filesystem could cause issues with code changes being reflected between the two filesystems.
+- Using PhpStorm with JSCS helps a lot with automating this (see the section below on PhpStorm [Coding Standard and Style](#coding-standard-and-style)).
 
-Chrome and PHP debugging have also been configured. Launch configurations are defined in the `.vscode/launch.json` file.
+### Angular & TypeScript ###
 
-## Debugging ##
+Our front-end and E2E tests are written in [**TypeScript**](https://www.typescriptlang.org).
 
-### PHP Application Debugging ###
+> Note: this repo is currently AngularJS (1.8) not Angular (2+).
 
-To debug the Language Forge application locally, follow these steps:
-- run `make` or `make dev`
-- In VS Code, set a breakpoint on a line of code that should be executed
-- Click on the `Run and Debug` area of VS Code, then click the green play icon next to `XDebug` in the configuration dropdown.
+Our TypeScript follows the [Angular Style Guide](https://angular.io/guide/styleguide).
 
-![XDebug](readme_images/xdebug1.png "Debugging with XDebug")]
+Other useful resources:
 
-- The VSCode status bar will turn orange when XDebug is active
-- open the application in your web browser (`https://localhost`) and use the application such that you execute the code where you have a breakpoint set
-
-A [tutorial on YouTube is available showing how to use XDebug and VSCode](https://www.youtube.com/watch?v=nKh5DHViKlA) to debug the LF back-end application.
-
-### PHP Tests Debugging ###
-
-To debug the PHP tests, follow these steps:
-- uncomment the 3 lines in the docker-compose.yml file related to XDebug under the service section `test-php`:
-```
-       - XDEBUG_MODE=develop,debug
-     extra_hosts:
-       - "host.docker.internal:host-gateway
-```
-- In VS Code, set a breakpoint on a line of code in one of the PHP tests (in the `test/php` folder)
-- Click on the `Run and Debug` area of VS Code, then click the green play icon next to `XDebug` in the configuration dropdown.
-
-![XDebug](readme_images/xdebug1.png "Debugging with XDebug")]
-
-- The VSCode status bar will turn orange when XDebug is active
-- run `make unit-tests` in the terminal
-- VSCode will stop the unit test execution when the breakpoint is hit
-
-A [tutorial on YouTube is available showing how to use XDebug and VSCode](https://www.youtube.com/watch?v=SxIORImpxrQ) to debug the PHP Tests.
-
-Additional considerations:
-
-If you encounter errors such as VSCode cannot find a file in the path "vendor", these source files are not available to VSCode as they are running inside Docker.  If you want to debug vendor libraries (not required), you will have to use Composer to download dependencies and put them in your source tree.
+- [x] [angularjs-styleguide/typescript at master · toddmotto/angularjs-styleguide](https://github.com/toddmotto/angularjs-styleguide/tree/master/typescript#stateless-components)
+- [x] [AngularJS 1.x with TypeScript (or ES6) Best Practices by Martin McWhorter on CodePen](https://codepen.io/martinmcwhorter/post/angularjs-1-x-with-typescript-or-es6-best-practices)
+- [x] [What is best practice to create an AngularJS 1.5 component in Typescript? - Stack Overflow](https://stackoverflow.com/questions/35451652/what-is-best-practice-to-create-an-angularjs-1-5-component-in-typescript)
+- [x] [Don't Panic: Using ui-router as a Component Router](http://dontpanic.42.nl/2016/07/using-ui-router-as-component-router.html)
+- [x] [Lifecycle hooks in Angular 1.5](https://toddmotto.com/angular-1-5-lifecycle-hooks#onchanges)

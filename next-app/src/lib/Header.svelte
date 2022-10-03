@@ -1,6 +1,6 @@
 <script>
 	import Error from '$lib/error/Error.svelte'
-	import HamburgerIcon from '$lib/icons/HamburgerIcon.svelte'
+	import { HamburgerIcon } from '$lib/icons'
 	import Progress from '$lib/progress/Progress.svelte'
 	import { createEventDispatcher } from 'svelte'
 
@@ -14,7 +14,7 @@
 	</span>
 
 	<div class=navbar-end>
-		<button on:click={() => dispatch('menuopen')} class='btn btn-primary btn-circle'>
+		<button on:click={ () => dispatch('menuopen') } class='btn btn-primary btn-circle'>
 			<HamburgerIcon />
 		</button>
 	</div>

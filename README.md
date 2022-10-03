@@ -23,6 +23,6 @@ We're glad you're here!  Read our [Contributing Guide](CONTRIBUTING.md) for how 
 
 ## Developers ##
 
-Please see our [Developer Guide](docs/DEVELOPER.md) for developer best practices and environment setup
+Please see our [Developer Guide](docs/DEVELOPER.md) for developer best practices and environment setup.
 
 For production deployment and release instructions, there is a separate [Production Deployment and Release Guide](docs/RELEASE.md).

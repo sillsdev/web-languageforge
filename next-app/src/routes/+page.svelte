@@ -1,9 +1,5 @@
-<script context=module>
-	export const prerender = true
-</script>
-
 <script>
-	import { browser } from '$app/env'
+	import { browser } from '$app/environment'
 	import { throwError } from '$lib/error'
 	import { GET } from '$lib/fetch/client'
 	import { Button } from '$lib/forms'
@@ -21,13 +17,16 @@
 
 <section>
 	<h2>Migrated capabilities</h2>
-	<a href=/password/change sveltekit:prefetch>Change password</a>
+	<ol>
+		<li><a href=/password/change sveltekit:prefetch>Change password</a></li>
+		<li><a href=/projects/abc-123 sveltekit:prefetch>Project landing page</a></li>
+	</ol>
 </section>
 
 <section>
 	<h2>Progress indicator</h2>
-	<Button on:click={() => start('index.svelte')}>start progress</Button>
-	<Button on:click={() => stop('index.svelte')}>stop progress</Button>
+	<Button on:click={ () => start('index.svelte') }>start progress</Button>
+	<Button on:click={ () => stop('index.svelte') }>stop progress</Button>
 </section>
 
 <section>
@@ -36,7 +35,7 @@
 	<h3>Client</h3>
 	<Button on:click={ () => globalThis.whatIsTheAirspeedVelocityOfAnUnladenSwallow() } danger>Cause run-time error</Button>
 	<Button on:click={ async () => await GET('//LFAPP') } danger>Cause network error</Button>
-	<Button on:click={ () => throwError("sorry, that's not a good password") } danger>Cause biz logic error</Button>
+	<Button on:click={ () => throwError("sorry, that's not a good password", 400) } danger>Cause biz logic error</Button>
 	<Button on:click={ async () => await GET('//httpbin.org/status/500') } danger>Cause backend error</Button>
 
 	<h3>Server</h3>
@@ -59,5 +58,5 @@
 	<button class='btn' disabled>disabled</button>
 
 	<h3>Light/Dark mode</h3>
-	<input type=checkbox bind:checked={dark_mode} class='toggle toggle-primary toggle-lg'>
+	<input type=checkbox bind:checked={ dark_mode } class='toggle toggle-primary toggle-lg'>
 </section>

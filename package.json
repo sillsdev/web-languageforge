@@ -15,7 +15,8 @@
     "webpack:dev:watch": "webpack -w --config webpack-dev.config.js",
     "webpack:prd": "webpack --config webpack-prd.config.js",
     "compile-test-e2e": "tsc -p test/app",
-    "test-e2e": "protractor test/app/protractorConf.js"
+    "test-e2e": "protractor test/app/protractorConf.js",
+    "make": "cd docker && make"
   },
   "license": "MIT",
   "repository": {
@@ -36,7 +37,6 @@
     "font-awesome": "^4.7.0",
     "intl-tel-input": "9.2.7",
     "jquery": "^3.6.0",
-    "lamejs": "^1.2.0",
     "localforage": "^1.7.1",
     "ng-drag-to-reorder": "^1.0.8",
     "ng-file-upload": "12.0.4",
@@ -44,10 +44,11 @@
     "npm-run-all": "^4.1.5",
     "oclazyload": "^1.1.0",
     "offline-js": "0.7.11",
+    "webm-fix-duration": "^1.0.1",
     "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
-    "@playwright/test": "^1.19.2",
+    "@playwright/test": "^1.25.2",
     "@types/angular": "1.8.1",
     "@types/angular-mocks": "^1.7.0",
     "@types/angular-route": "^1.7.1",
@@ -57,6 +58,7 @@
     "@types/bootstrap": "^3.3.35",
     "@types/core-js": "^0.9.42",
     "@types/deep-diff": "^1.0.1",
+    "@types/dom-mediacapture-record": "^1.0.11",
     "@types/intl-tel-input": "0.0.7",
     "@types/jasmine": "^2.8.4",
     "@types/jasminewd2": "^2.0.3",

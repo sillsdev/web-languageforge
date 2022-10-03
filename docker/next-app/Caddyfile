@@ -7,8 +7,10 @@
 :80 {
 	@next_app_paths {
 		path /_app/*
+		# ref for existing: /src/index.php
 		path /app/changepassword
 		path /password*
+		path /projects*
 	}
 	route @next_app_paths {
 		rewrite /app/changepassword /password/change

@@ -22,7 +22,6 @@ export class LexModals {
     fieldCodeExists: element(by.id('fieldCodeExists')),
     levelDropdown: element(by.id('level')),
     typeDropdown: element(by.id('type')),
-    listCodeDropdown: element(by.id('optionListCode')),
-    addButton: element(by.id('addCustomFieldButton'))
+    listCodeDropdown: element(by.id('optionListCode'))
   };
 }

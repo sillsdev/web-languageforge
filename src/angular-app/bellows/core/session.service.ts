@@ -138,6 +138,10 @@ export class SessionService {
     return this.api.projectId;
   }
 
+  project() {
+	return this.session.data.project;
+  }
+
   getSession(forceRefresh: boolean = false, callback?: SessionCallback): angular.IPromise<Session> {
     if (this.session.data && !forceRefresh) {
       if (callback) callback(this.session);
