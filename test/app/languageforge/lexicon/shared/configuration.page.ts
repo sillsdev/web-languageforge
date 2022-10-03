@@ -97,8 +97,7 @@ export class ConfigurationPage {
         const filtered = typeof inputSystemSelector === 'number' ? candidates.get(inputSystemSelector) :
           candidates.filter(elem => elem.getText().then(text => text.includes(inputSystemSelector))).first();
         return filtered.element(by.className('checkbox'));
-      },
-      addCustomEntryButton: this.activePane.element(by.id('add-custom-entry-btn'))
+      }
     },
     sense: {
       addGroupButton: this.activePane.element(by.id('add-group-sense-btn')),
@@ -137,8 +136,7 @@ export class ConfigurationPage {
         const filtered = typeof inputSystemSelector === 'number' ? candidates.get(inputSystemSelector) :
           candidates.filter(elem => elem.getText().then(text => text.includes(inputSystemSelector))).first();
         return filtered.element(by.className('checkbox'));
-      },
-      addCustomSenseButton: this.activePane.element(by.id('add-custom-sense-btn'))
+      }
     },
     example: {
       addGroupButton: this.activePane.element(by.id('add-group-example-btn')),
@@ -177,8 +175,7 @@ export class ConfigurationPage {
         const filtered = typeof inputSystemSelector === 'number' ? candidates.get(inputSystemSelector) :
           candidates.filter(elem => elem.getText().then(text => text.includes(inputSystemSelector))).first();
         return filtered.element(by.className('checkbox'));
-      },
-      addCustomExampleButton: this.activePane.element(by.id('add-custom-example-btn'))
+      }
     },
     hiddenIfEmptyCheckbox: (label: string|RegExp) => {
       return this.getRowByLabel(label).element(by.className('hidden-if-empty-checkbox'));

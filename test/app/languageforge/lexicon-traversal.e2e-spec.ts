@@ -33,9 +33,6 @@ describe('Lexicon E2E Page Traversal', () => {
       await configurationPage.tabs.unified.click();
       await configurationPage.unifiedPane.entry.addGroupButton.click();
       await browser.$('body').sendKeys(protractor.Key.ESCAPE);
-      await browser.wait(ExpectedConditions.elementToBeClickable(configurationPage.unifiedPane.entry.addCustomEntryButton),
-        constants.conditionTimeout);
-      await configurationPage.unifiedPane.entry.addCustomEntryButton.click();
       await browser.$('body').sendKeys(protractor.Key.ESCAPE);
       await browser.wait(ExpectedConditions.elementToBeClickable(configurationPage.unifiedPane.sense.addGroupButton),
         constants.conditionTimeout);
@@ -45,9 +42,6 @@ describe('Lexicon E2E Page Traversal', () => {
       await configurationPage.unifiedPane.fieldSpecificButton('Citation Form').click();
       await configurationPage.unifiedPane.sense.addGroupButton.click();
       await browser.$('body').sendKeys(protractor.Key.ESCAPE);
-      await browser.wait(ExpectedConditions.elementToBeClickable(configurationPage.unifiedPane.sense.addCustomSenseButton),
-        constants.conditionTimeout);
-      await configurationPage.unifiedPane.sense.addCustomSenseButton.click();
       await browser.$('body').sendKeys(protractor.Key.ESCAPE);
       await browser.wait(ExpectedConditions.elementToBeClickable(configurationPage.unifiedPane.example.addGroupButton),
         constants.conditionTimeout);
@@ -58,10 +52,6 @@ describe('Lexicon E2E Page Traversal', () => {
       await configurationPage.unifiedPane.fieldSpecificButton('Pictures').click();
       await configurationPage.unifiedPane.example.addGroupButton.click();
       await browser.$('body').sendKeys(protractor.Key.ESCAPE);
-      await browser.wait(
-        ExpectedConditions.elementToBeClickable(configurationPage.unifiedPane.example.addCustomExampleButton),
-        constants.conditionTimeout);
-      await configurationPage.unifiedPane.example.addCustomExampleButton.click();
       await browser.$('body').sendKeys(protractor.Key.ESCAPE);
       await browser.wait(ExpectedConditions.elementToBeClickable(configurationPage.tabs.unified), constants.conditionTimeout);
       await configurationPage.unifiedPane.hiddenIfEmptyCheckbox('Translation').click();
