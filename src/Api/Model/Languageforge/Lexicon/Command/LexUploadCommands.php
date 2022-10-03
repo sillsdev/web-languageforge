@@ -112,13 +112,13 @@ class LexUploadCommands
                 // and .mp3 otherwise (recording is longer than 5.6 seconds)
                 $extensionlessFileName = substr($fileName, 0, strrpos($fileName, strtolower($fileExt)));
                 $convertedExtension = ($audioDuration < 5.6) ? 'wav' : 'mp3';
-                $ffmpegDestination = "$extensionlessFileName.$convertedExtension";
-                `ffmpeg -i $tmpFilePath $ffmpegDestination 2> /dev/null`;
-                $filePath = self::mediaFilePath($folderPath, $fileNamePrefix, $ffmpegDestination);
-                $moveOk = copy($ffmpegDestination, $filePath);
+                $fileName = "$extensionlessFileName.$convertedExtension"; //$fileName ->> the converted file
+                `ffmpeg -i $tmpFilePath $fileName 2> /dev/null`; //original file is at the tmpFilePath. convert that file and save it to be $fileName
+                $filePath = self::mediaFilePath($folderPath, $fileNamePrefix, $fileName);
+                $moveOk = copy($fileName, $filePath);
 
                 //unlink the converted file from its temporary location
-                @unlink($ffmpegDestination);
+                @unlink($fileName);
 
                 //unlink the original file as well, now that we've both stored it and made the converted copy
                 @unlink($tmpFilePath);
@@ -129,7 +129,7 @@ class LexUploadCommands
             if ($moveOk && $tmpFilePath) {
                 $data = new MediaResult();
                 $data->path = $project->getAudioFolderPath($project->getAssetsRelativePath());
-                $data->fileName = $fileNamePrefix . '_' . $fileName;
+                $data->fileName = $fileNamePrefix . '_' . $fileName; //if the file has been converted, $fileName = converted file
                 $response->result = true;
 
                 //Uncomment to ensure that only one format for each audio file is stored in the assets. We want to keep up to two formats right now (09-2022): the original and if needed, a FLEx-compatible one
