@@ -65,7 +65,7 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
     test('Can click on first entry', async () => {
       await editorPageManager.entriesListPage.clickOnEntry(constants.testEntry1.lexeme.th.value);
       //await expect(editorPage.entryCard.entryName).toHaveValue(constants.testEntry1.lexeme.th.value);
-      await expect((await editorPageManager.getTextarea(editorPageManager.entryCard, lexemeLabel, 'th'))).toHaveValue(constants.testEntry1.lexeme.th.value);
+      await expect(editorPageManager.getTextarea(editorPageManager.entryCard, lexemeLabel, 'th')).toHaveValue(constants.testEntry1.lexeme.th.value);
     });
 
   });
@@ -93,8 +93,8 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
 
     test('Entry 1: edit page has correct definition, part of speech', async () => {
       await editorPageManager.goto();
-      await expect((await editorPageManager.getTextarea(
-        editorPageManager.senseCard, 'Definition', 'en')))
+      await expect(editorPageManager.getTextarea(
+        editorPageManager.senseCard, 'Definition', 'en'))
         .toHaveValue(constants.testEntry1.senses[0].definition.en.value);
       // TODO: when the partOfSpeech bug is fixed, we can uncomment the following line
       //expect(await editorPageManager.getSelectedValueFromSelectDropdown(editorPageManager.senseCard, 'Part of Speech'))
@@ -107,7 +107,7 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
       await (await editorPageManager.configurationPage.getCheckbox('Entry Fields', 'Citation Form', 'Hidden if Empty')).uncheck();
       await editorPageManager.configurationPage.applyButton.click();
       await editorPageManager.goto();
-      await expect(await editorPageManager.getTextarea(editorPageManager.entryCard, 'Citation Form', 'th')).toBeVisible();
+      await expect(editorPageManager.getTextarea(editorPageManager.entryCard, 'Citation Form', 'th')).toBeVisible();
     });
 
     test('Citation form field overrides lexeme form in dictionary citation view', async () => {
@@ -120,7 +120,7 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
       if ((await editorPageManager.lexAppToolbar.toggleExtraFieldsButton.innerText()).includes('Show Extra Fields')) {
         await editorPageManager.lexAppToolbar.toggleExtraFieldsButton.click();
       }
-      const citationFormInput = await editorPageManager.getTextarea(editorPageManager.entryCard, 'Citation Form', 'th');
+      const citationFormInput = editorPageManager.getTextarea(editorPageManager.entryCard, 'Citation Form', 'th');
       await citationFormInput.fill('citation form');
 
       await expect(editorPageManager.renderedDivs).toContainText(['citation form', 'citation form']);
@@ -219,15 +219,15 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
         await editorPageManager.goto();
         picture = await editorPageManager.getPicture(editorPageManager.senseCard, constants.testEntry1.senses[0].pictures[0].fileName);
         expect(picture).toBeUndefined();
-        expect(await editorPageManager.getPicturesOuterDiv(editorPageManager.senseCard)).not.toBeVisible();
+        expect(editorPageManager.getPicturesOuterDiv(editorPageManager.senseCard)).not.toBeVisible();
         // TODO: potentially put this in a function
         if ((await editorPageManager.lexAppToolbar.toggleExtraFieldsButton.innerText()).includes('Show Extra Fields')) {
           await editorPageManager.lexAppToolbar.toggleExtraFieldsButton.click();
         }
-        expect(await editorPageManager.getPicturesOuterDiv(editorPageManager.senseCard)).toBeVisible();
+        expect(editorPageManager.getPicturesOuterDiv(editorPageManager.senseCard)).toBeVisible();
         // hide extra fields
         await editorPageManager.lexAppToolbar.toggleExtraFieldsButton.click();
-        expect(await editorPageManager.getPicturesOuterDiv(editorPageManager.senseCard)).not.toBeVisible();
+        expect(editorPageManager.getPicturesOuterDiv(editorPageManager.senseCard)).not.toBeVisible();
         picture = await editorPageManager.getPicture(editorPageManager.senseCard, constants.testEntry1.senses[0].pictures[0].fileName);
         expect(picture).toBeUndefined();
       });
@@ -252,7 +252,7 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
 
         test('Audio input system is present, playable and has "more" control (member)', async () => {
           await editorPageMember.goto();
-          const audio: Locator = await editorPageMember.getSoundplayer(editorPageMember.entryCard, lexemeLabel, 'taud');
+          const audio: Locator = editorPageMember.getSoundplayer(editorPageMember.entryCard, lexemeLabel, 'taud');
           await expect(audio).toBeVisible();
           await expect(audio.locator(editorPageMember.audioPlayer.playIconSelector)).toBeVisible();
           // check if this audio player is the only one in this card
@@ -268,7 +268,7 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
 
         test('Word 2 (without audio): audio input system is not playable but has "upload" button (member)', async () => {
           await editorPageMember.goto(lexEntriesIds[1]);
-          const audio: Locator = await editorPageMember.getSoundplayer(editorPageMember.entryCard, lexemeLabel, 'taud');
+          const audio: Locator = editorPageMember.getSoundplayer(editorPageMember.entryCard, lexemeLabel, 'taud');
           await expect(editorPageMember.entryCard.locator(editorPageMember.audioPlayer.playIconSelector + ' >> visible=true')).toHaveCount(0);
           await expect(audio.locator(editorPageMember.audioPlayer.togglePlaybackAnchorSelector)).not.toBeVisible();
           await expect(audio.locator(editorPageMember.audioPlayer.dropdownToggleSelector)).toBeEnabled();
@@ -287,7 +287,7 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
 
         test('Audio Input System is playable but does not have "more" control (observer)', async () => {
           await editorPageObserver.goto();
-          const audio: Locator = await editorPageObserver.getSoundplayer(editorPageObserver.entryCard, lexemeLabel, 'taud');
+          const audio: Locator = editorPageObserver.getSoundplayer(editorPageObserver.entryCard, lexemeLabel, 'taud');
           await expect(audio.locator(editorPageObserver.audioPlayer.playIconSelector)).toBeVisible();
           // check if this audio player is the only one in this card
           await expect(editorPageObserver.entryCard.locator(editorPageObserver.audioPlayer.playIconSelector + ' >> visible=true')).toHaveCount(1);
@@ -300,7 +300,7 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
 
         test('Word 2 (without audio): audio input system is not playable and does not have "upload" button (observer)', async () => {
           await editorPageObserver.goto(lexEntriesIds[1]);
-          const audio: Locator = await editorPageObserver.getSoundplayer(editorPageObserver.entryCard, lexemeLabel, 'taud');
+          const audio: Locator = editorPageObserver.getSoundplayer(editorPageObserver.entryCard, lexemeLabel, 'taud');
           await expect(editorPageObserver.entryCard.locator(editorPageObserver.audioPlayer.playIconSelector + ' >> visible=true')).toHaveCount(0);
           await expect(audio.locator(editorPageObserver.audioPlayer.togglePlaybackAnchorSelector)).not.toBeVisible();
           await expect(audio.locator(editorPageObserver.audioPlayer.dropdownToggleSelector)).not.toBeVisible();
@@ -312,7 +312,7 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
       test.describe('Manager', () => {
         let audio: Locator;
         test.beforeAll(async () => {
-          audio = await editorPageManager.getSoundplayer(editorPageManager.entryCard, lexemeLabel, 'taud');
+          audio = editorPageManager.getSoundplayer(editorPageManager.entryCard, lexemeLabel, 'taud');
         })
 
         test('Audio input system is present, playable and has "more" control (manager)', async () => {
@@ -356,8 +356,8 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
           await editorPageManager.page.waitForURL(
             new RegExp(`.*\/app\/lexicon\/${project.id}\/#!\/editor\/entry\/${lexEntriesIds[2]}.*`, 'gm')
           );
-          await expect((await editorPageManager.getTextarea(
-            editorPageManager.senseCard.first(), 'Definition', 'en'))).toHaveValue(constants.testMultipleMeaningEntry1.senses[0].definition.en.value);
+          await expect(editorPageManager.getTextarea(
+            editorPageManager.senseCard.first(), 'Definition', 'en')).toHaveValue(constants.testMultipleMeaningEntry1.senses[0].definition.en.value);
         });
 
         test('Word 2 (without audio): audio input system is not playable but has "upload" button (manager)', async () => {
@@ -427,8 +427,8 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
 
         test('Word 2: edit page has correct definition, part of speech', async () => {
           await editorPageManager.goto(lexEntriesIds[1]);
-          await expect((await editorPageManager.getTextarea(
-            editorPageManager.senseCard, 'Definition', 'en')))
+          await expect(editorPageManager.getTextarea(
+            editorPageManager.senseCard, 'Definition', 'en'))
             .toHaveValue(constants.testEntry2.senses[0].definition.en.value);
 
           // TODO: when part of speech is fixed, uncomment and fix test
@@ -451,11 +451,11 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
 
         test('Word with multiple definitions: edit page has correct definitions, parts of speech', async () => {
           await editorPageManager.goto(lexEntriesIds[2]);
-          await expect((await editorPageManager.getTextarea(
-            editorPageManager.senseCard.first(), 'Definition', 'en')))
+          await expect(editorPageManager.getTextarea(
+            editorPageManager.senseCard.first(), 'Definition', 'en'))
             .toHaveValue(constants.testMultipleMeaningEntry1.senses[0].definition.en.value);
-          await expect((await editorPageManager.getTextarea(
-            editorPageManager.senseCard.nth(1), 'Definition', 'en')))
+          await expect(editorPageManager.getTextarea(
+            editorPageManager.senseCard.nth(1), 'Definition', 'en'))
             .toHaveValue(constants.testMultipleMeaningEntry1.senses[1].definition.en.value);
 
           // TODO: when part of speech is fixed, uncomment and fix test
@@ -468,63 +468,63 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
         test('Word with multiple meanings: edit page has correct example sentences, translations', async () => {
           await editorPageManager.goto(lexEntriesIds[2]);
 
-          await expect((await editorPageManager.getTextarea(
-            editorPageManager.senseCard.first().locator(editorPageManager.exampleCardSelector + ' >> nth=0'), 'Sentence', 'th')))
+          await expect(editorPageManager.getTextarea(
+            editorPageManager.senseCard.first().locator(editorPageManager.exampleCardSelector + ' >> nth=0'), 'Sentence', 'th'))
             .toHaveValue(constants.testMultipleMeaningEntry1.senses[0].examples[0].sentence.th.value);
-          await expect((await editorPageManager.getTextarea(
-            editorPageManager.senseCard.first().locator(editorPageManager.exampleCardSelector + ' >> nth=0'), 'Translation', 'en')))
+          await expect(editorPageManager.getTextarea(
+            editorPageManager.senseCard.first().locator(editorPageManager.exampleCardSelector + ' >> nth=0'), 'Translation', 'en'))
             .toHaveValue(constants.testMultipleMeaningEntry1.senses[0].examples[0].translation.en.value);
-          await expect((await editorPageManager.getTextarea(
-            editorPageManager.senseCard.first().locator(editorPageManager.exampleCardSelector + ' >> nth=1'), 'Sentence', 'th')))
+          await expect(editorPageManager.getTextarea(
+            editorPageManager.senseCard.first().locator(editorPageManager.exampleCardSelector + ' >> nth=1'), 'Sentence', 'th'))
             .toHaveValue(constants.testMultipleMeaningEntry1.senses[0].examples[1].sentence.th.value);
-          await expect((await editorPageManager.getTextarea(
-            editorPageManager.senseCard.first().locator(editorPageManager.exampleCardSelector + ' >> nth=1'), 'Translation', 'en')))
+          await expect(editorPageManager.getTextarea(
+            editorPageManager.senseCard.first().locator(editorPageManager.exampleCardSelector + ' >> nth=1'), 'Translation', 'en'))
             .toHaveValue(constants.testMultipleMeaningEntry1.senses[0].examples[1].translation.en.value);
-          await expect((await editorPageManager.getTextarea(
-            editorPageManager.senseCard.nth(1).locator(editorPageManager.exampleCardSelector + ' >> nth=0'), 'Sentence', 'th')))
+          await expect(editorPageManager.getTextarea(
+            editorPageManager.senseCard.nth(1).locator(editorPageManager.exampleCardSelector + ' >> nth=0'), 'Sentence', 'th'))
             .toHaveValue(constants.testMultipleMeaningEntry1.senses[1].examples[0].sentence.th.value);
-          await expect((await editorPageManager.getTextarea(
-            editorPageManager.senseCard.nth(1).locator(editorPageManager.exampleCardSelector + ' >> nth=0'), 'Translation', 'en')))
+          await expect(editorPageManager.getTextarea(
+            editorPageManager.senseCard.nth(1).locator(editorPageManager.exampleCardSelector + ' >> nth=0'), 'Translation', 'en'))
             .toHaveValue(constants.testMultipleMeaningEntry1.senses[1].examples[0].translation.en.value);
-          await expect((await editorPageManager.getTextarea(
-            editorPageManager.senseCard.nth(1).locator(editorPageManager.exampleCardSelector + ' >> nth=1'), 'Sentence', 'th')))
+          await expect(editorPageManager.getTextarea(
+            editorPageManager.senseCard.nth(1).locator(editorPageManager.exampleCardSelector + ' >> nth=1'), 'Sentence', 'th'))
             .toHaveValue(constants.testMultipleMeaningEntry1.senses[1].examples[1].sentence.th.value);
-          await expect((await editorPageManager.getTextarea(
-            editorPageManager.senseCard.nth(1).locator(editorPageManager.exampleCardSelector + ' >> nth=1'), 'Translation', 'en')))
+          await expect(editorPageManager.getTextarea(
+            editorPageManager.senseCard.nth(1).locator(editorPageManager.exampleCardSelector + ' >> nth=1'), 'Translation', 'en'))
             .toHaveValue(constants.testMultipleMeaningEntry1.senses[1].examples[1].translation.en.value);
         });
 
         test('While Show Hidden Fields has not been clicked, hidden fields are hidden if they are empty', async () => {
           await editorPageManager.goto(lexEntriesIds[2]);
-          expect(await editorPageManager.getTextarea(
+          expect(editorPageManager.getTextarea(
             editorPageManager.senseCard.nth(0), 'Semantics Note', 'en')).toHaveCount(0);
-          expect(await editorPageManager.getTextarea(
+          expect(editorPageManager.getTextarea(
             editorPageManager.senseCard.nth(0), 'General Note', 'en')).toBeVisible();
           if ((await editorPageManager.lexAppToolbar.toggleExtraFieldsButton.innerText()).includes('Show Extra Fields')) {
             await editorPageManager.lexAppToolbar.toggleExtraFieldsButton.click();
           }
-          expect(await editorPageManager.getTextarea(
+          expect(editorPageManager.getTextarea(
             editorPageManager.senseCard.nth(0), 'Semantics Note', 'en')).toBeVisible();
-          expect(await editorPageManager.getTextarea(
+          expect(editorPageManager.getTextarea(
             editorPageManager.senseCard.nth(0), 'General Note', 'en')).toBeVisible();
         });
 
         test('Word with multiple meanings: edit page has correct general notes, sources', async () => {
           await editorPageManager.goto(lexEntriesIds[2]);
-          await expect((await editorPageManager.getTextarea(
-            editorPageManager.senseCard.nth(0), 'General Note', 'en')))
+          await expect(editorPageManager.getTextarea(
+            editorPageManager.senseCard.nth(0), 'General Note', 'en'))
             .toHaveValue(constants.testMultipleMeaningEntry1.senses[0].generalNote.en.value);
-          await expect((await editorPageManager.getTextarea(
-            editorPageManager.senseCard.nth(1), 'General Note', 'en')))
+          await expect(editorPageManager.getTextarea(
+            editorPageManager.senseCard.nth(1), 'General Note', 'en'))
             .toHaveValue(constants.testMultipleMeaningEntry1.senses[1].generalNote.en.value);
           if ((await editorPageManager.lexAppToolbar.toggleExtraFieldsButton.innerText()).includes('Show Extra Fields')) {
             await editorPageManager.lexAppToolbar.toggleExtraFieldsButton.click();
           }
-          await expect((await editorPageManager.getTextarea(
-            editorPageManager.senseCard.nth(0), 'Source', 'en')))
+          await expect(editorPageManager.getTextarea(
+            editorPageManager.senseCard.nth(0), 'Source', 'en'))
             .toHaveValue(constants.testMultipleMeaningEntry1.senses[0].source.en.value);
-          await expect((await editorPageManager.getTextarea(
-            editorPageManager.senseCard.nth(1), 'Source', 'en')))
+          await expect(editorPageManager.getTextarea(
+            editorPageManager.senseCard.nth(1), 'Source', 'en'))
             .toHaveValue(constants.testMultipleMeaningEntry1.senses[1].source.en.value);
         });
 
@@ -532,11 +532,11 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
           await editorPageManager.goto(lexEntriesIds[2]);
           await editorPageManager.senseCard.first().locator(editorPageManager.actionMenu.toggleMenuButtonSelector).first().click();
           await editorPageManager.senseCard.first().locator(editorPageManager.actionMenu.moveDownButtonSelector).first().click();
-          await expect((await editorPageManager.getTextarea(
-            editorPageManager.senseCard.first(), 'Definition', 'en')))
+          await expect(editorPageManager.getTextarea(
+            editorPageManager.senseCard.first(), 'Definition', 'en'))
             .toHaveValue(constants.testMultipleMeaningEntry1.senses[1].definition.en.value);
-          await expect((await editorPageManager.getTextarea(
-            editorPageManager.senseCard.nth(1), 'Definition', 'en')))
+          await expect(editorPageManager.getTextarea(
+            editorPageManager.senseCard.nth(1), 'Definition', 'en'))
             .toHaveValue(constants.testMultipleMeaningEntry1.senses[0].definition.en.value);
         });
 
@@ -553,9 +553,9 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
 
           // go back to editor
           await editorPageManager.page.goBack();
-          await (await editorPageManager.getTextarea(editorPageManager.entryCard, lexemeLabel, 'th'))
+          await (editorPageManager.getTextarea(editorPageManager.entryCard, lexemeLabel, 'th'))
             .fill(constants.testEntry3.lexeme.th.value);
-          await (await editorPageManager.getTextarea(editorPageManager.senseCard, 'Definition', 'en'))
+          await (editorPageManager.getTextarea(editorPageManager.senseCard, 'Definition', 'en'))
             .fill(constants.testEntry3.senses[0].definition.en.value);
 
           // TODO: when the partOfSpeech bug is fixed, fix this code
@@ -568,14 +568,14 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
           await editorPageManager.page.waitForURL(url => !url.hash.includes('editor/entry/_new_'));
           await editorPageManager.page.reload();
 
-          const alreadyThere: string = await (await editorPageManager.getTextarea(editorPageManager.entryCard, lexemeLabel, 'th')).inputValue();
-          await (await editorPageManager.getTextarea(editorPageManager.entryCard, lexemeLabel, 'th'))
+          const alreadyThere: string = await editorPageManager.getTextarea(editorPageManager.entryCard, lexemeLabel, 'th').inputValue();
+          await (editorPageManager.getTextarea(editorPageManager.entryCard, lexemeLabel, 'th'))
             .fill(alreadyThere + 'a');
           await editorPageManager.page.reload();
-          await expect((await editorPageManager.getTextarea(
+          await expect((editorPageManager.getTextarea(
             editorPageManager.entryCard, lexemeLabel, 'th')))
             .toHaveValue(constants.testEntry3.lexeme.th.value + 'a');
-          await (await editorPageManager.getTextarea(editorPageManager.entryCard, lexemeLabel, 'th'))
+          await (editorPageManager.getTextarea(editorPageManager.entryCard, lexemeLabel, 'th'))
             .fill(constants.testEntry3.lexeme.th.value);
 
           // New word is visible in edit page
@@ -602,15 +602,15 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
           await expect(editorPageManager.compactEntryListItem).toHaveCount(lexEntriesIds.length);
 
           // previous entry is selected after delete
-          await expect((await editorPageManager.getTextarea(
-            editorPageManager.entryCard, lexemeLabel, 'th')))
+          await expect(editorPageManager.getTextarea(
+              editorPageManager.entryCard, lexemeLabel, 'th'))
             .toHaveValue(constants.testEntry1.lexeme.th.value);
         });
 
         test('Check that Semantic Domain field is visible (for view settings test later)', async () => {
           await editorPageManager.goto();
           // check if label is present
-          await expect(await editorPageManager.getLabel(editorPageManager.senseCard.first(), 'Semantic Domain')).not.toHaveCount(0);
+          await expect(editorPageManager.getLabel(editorPageManager.senseCard.first(), 'Semantic Domain')).not.toHaveCount(0);
         });
       });
 
@@ -638,9 +638,9 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
         await editorPageManager.goto();
         // word has only "th", "tipa" and "taud" visible
         expect(await editorPageManager.getNumberOfElementsWithSameLabel(editorPageManager.entryCard, lexemeLabel)).toEqual(3);
-        await expect(await editorPageManager.getTextarea(editorPageManager.entryCard, lexemeLabel, 'th')).toBeVisible();
-        await expect(await editorPageManager.getTextarea(editorPageManager.entryCard, lexemeLabel, 'tipa')).toBeVisible();
-        await expect(await editorPageManager.getSoundplayer(editorPageManager.entryCard, lexemeLabel, 'taud')).toBeVisible();
+        await expect(editorPageManager.getTextarea(editorPageManager.entryCard, lexemeLabel, 'th')).toBeVisible();
+        await expect(editorPageManager.getTextarea(editorPageManager.entryCard, lexemeLabel, 'tipa')).toBeVisible();
+        await expect(editorPageManager.getSoundplayer(editorPageManager.entryCard, lexemeLabel, 'taud')).toBeVisible();
 
         // make "en" input system visible for "Word" field
         await editorPageManager.configurationPage.goto();
@@ -651,7 +651,7 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
         // check if "en" is visible
         await editorPageManager.goto();
         expect(await editorPageManager.getNumberOfElementsWithSameLabel(editorPageManager.entryCard, lexemeLabel)).toEqual(4);
-        await expect(await editorPageManager.getTextarea(editorPageManager.entryCard, lexemeLabel, 'en')).toBeVisible();
+        await expect(editorPageManager.getTextarea(editorPageManager.entryCard, lexemeLabel, 'en')).toBeVisible();
 
         // make "en" input system invisible for "Word" field
         await editorPageManager.configurationPage.goto();
@@ -663,7 +663,7 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
         // check if "en" is invisible
         await editorPageManager.goto();
         expect(await editorPageManager.getNumberOfElementsWithSameLabel(editorPageManager.entryCard, lexemeLabel)).toEqual(3);
-        await expect(await editorPageManager.getTextarea(editorPageManager.entryCard, lexemeLabel, 'en')).not.toBeVisible();
+        await expect(editorPageManager.getTextarea(editorPageManager.entryCard, lexemeLabel, 'en')).not.toBeVisible();
       });
 
 
@@ -679,13 +679,13 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
         // verify that contributor can still see "tipa"
         await editorPageMember.goto();
         expect(await editorPageMember.getNumberOfElementsWithSameLabel(editorPageMember.entryCard, lexemeLabel)).toEqual(2);
-        await expect(await editorPageMember.getTextarea(editorPageMember.entryCard, lexemeLabel, 'th')).toBeVisible();
-        await expect(await editorPageMember.getTextarea(editorPageMember.entryCard, lexemeLabel, 'tipa')).toBeVisible();
+        await expect(editorPageMember.getTextarea(editorPageMember.entryCard, lexemeLabel, 'th')).toBeVisible();
+        await expect(editorPageMember.getTextarea(editorPageMember.entryCard, lexemeLabel, 'tipa')).toBeVisible();
 
         // Word then only has "th" visible for manager role
         await editorPageManager.goto();
         expect(await editorPageManager.getNumberOfElementsWithSameLabel(editorPageManager.entryCard, lexemeLabel)).toEqual(1);
-        await expect(await editorPageManager.getTextarea(editorPageManager.entryCard, lexemeLabel, 'th')).toBeVisible();
+        await expect(editorPageManager.getTextarea(editorPageManager.entryCard, lexemeLabel, 'th')).toBeVisible();
 
         // restore visibility of "taud" for "Word" field
         await editorPageManager.configurationPage.goto();
@@ -696,8 +696,8 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
         // Word has only "th" and "taud" visible for manager role
         await editorPageManager.goto();
         expect(await editorPageManager.getNumberOfElementsWithSameLabel(editorPageManager.entryCard, lexemeLabel)).toEqual(2);
-        await expect(await editorPageManager.getTextarea(editorPageManager.entryCard, lexemeLabel, 'th')).toBeVisible();
-        await expect(await editorPageManager.getSoundplayer(editorPageManager.entryCard, lexemeLabel, 'taud')).toBeVisible();
+        await expect(editorPageManager.getTextarea(editorPageManager.entryCard, lexemeLabel, 'th')).toBeVisible();
+        await expect(editorPageManager.getSoundplayer(editorPageManager.entryCard, lexemeLabel, 'taud')).toBeVisible();
 
         // restore visibility of "tipa" input system for manager role
         await editorPageManager.configurationPage.goto();
@@ -707,7 +707,7 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
         // Word has "th", "tipa" and "taud" visible again for manager role
         await editorPageManager.goto();
         expect(await editorPageManager.getNumberOfElementsWithSameLabel(editorPageManager.entryCard, lexemeLabel)).toEqual(3);
-        await expect(await editorPageManager.getTextarea(editorPageManager.entryCard, lexemeLabel, 'tipa')).toBeVisible();
+        await expect(editorPageManager.getTextarea(editorPageManager.entryCard, lexemeLabel, 'tipa')).toBeVisible();
       });
 
     });

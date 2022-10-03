@@ -151,7 +151,7 @@ export class EditorPage {
     await this.lexAppToolbar.backToListButton.click();
   }
 
-  async getLabel(card: Locator, label: string): Promise<Locator> {
+  getLabel(card: Locator, label: string): Locator {
     return card.locator(`label:has-text("${label}")`).first();
   }
 
@@ -159,11 +159,11 @@ export class EditorPage {
     return card.locator(`label:has-text("${label}")`).count();
   }
 
-  async getTextarea(card: Locator, field: string, ws: string): Promise<Locator> {
+  getTextarea(card: Locator, field: string, ws: string): Locator {
     return card.locator(`label:has-text("${field}") >> xpath=.. >> div.input-group:has(span.wsid:has-text("${ws}")) >> textarea`);
   }
 
-  async getDropdown(card: Locator, field: string): Promise<Locator> {
+  getDropdown(card: Locator, field: string): Locator {
     return card.locator(`label:has-text("${field}") >> xpath=.. >> select`);
   }
 
@@ -171,11 +171,11 @@ export class EditorPage {
     return card.locator(`label:has-text("${field}") >> xpath=.. >> select >> [selected="selected"]`).innerText();
   }
 
-  async getSoundplayer(card: Locator, field: string, ws: string): Promise<Locator> {
+  getSoundplayer(card: Locator, field: string, ws: string): Locator {
     return card.locator(`label:has-text("${field}") >> xpath=.. >> div.input-group:has(span.wsid:has-text("${ws}")) >> dc-audio`);
   }
 
-  async getPicturesOuterDiv(card: Locator): Promise<Locator> {
+  getPicturesOuterDiv(card: Locator): Locator {
     return card.locator('[data-ng-switch-when="pictures"]');
   }
 
