@@ -292,7 +292,7 @@ class LexUploadCommands
             if (unlink($filePath)) {
                 $data = new MediaResult();
                 $data->path = $folderPath;
-                $data->fileName = $filePath;
+                $data->fileName = $fileName;
                 $response->result = true;
             } else {
                 $data = new ErrorResult();
