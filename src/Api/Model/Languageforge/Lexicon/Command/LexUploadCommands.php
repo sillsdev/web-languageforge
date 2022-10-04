@@ -279,7 +279,7 @@ class LexUploadCommands
                 $data->errorMessage = $errorMsg;
                 return $response;
         }
-        $filePath = $folderPath . '/' . $fileName;
+        $filePath = $folderPath . '/' . $fileName; //Need to get both the original and potential converted file here 
         if (file_exists($filePath) and ! is_dir($filePath)) {
             if (unlink($filePath)) {
                 $data = new MediaResult();
