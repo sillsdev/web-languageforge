@@ -279,20 +279,37 @@ class LexUploadCommands
                 $data->errorMessage = $errorMsg;
                 return $response;
         }
-        $filePath = $folderPath . '/' . $fileName; //Need to get both the original and potential converted file here 
+
+        //Path to the specific file the entry points to
+        $filePath = "$folderPath/$fileName";
+        //Put any other stored versions of the file (e.g. the same file saved in other formats) in an array
+        $fileNameWithoutExt = preg_replace('/\\.[^.\\s]{3,4}$/', '', $fileName);
+        $versionsOfTheSameFile = glob("$folderPath/$fileNameWithoutExt.*");
+
         if (file_exists($filePath) and ! is_dir($filePath)) {
+
+            //Delete the file the entry points to and create the server response
             if (unlink($filePath)) {
                 $data = new MediaResult();
                 $data->path = $folderPath;
-                $data->fileName = $fileName;
+                $data->fileName = $filePath;
                 $response->result = true;
             } else {
                 $data = new ErrorResult();
                 $data->errorType = 'UserMessage';
                 $data->errorMessage = "$fileName could not be deleted. Contact your Site Administrator.";
             }
+
+            //Delete any other stored versions of the file
+            foreach ($versionsOfTheSameFile as $aVersionOfThisFile){
+                if($aVersionOfThisFile != $filePath){ //because $filePath, the one the entry points to, was already deleted above
+                    unlink($aVersionOfThisFile);
+                }
+            }
+
             return $response;
         }
+
         $data = new ErrorResult();
         $data->errorType = 'UserMessage';
         $data->errorMessage = "$fileName does not exist in this project. Contact your Site Administrator.";
