@@ -6,4 +6,5 @@
   "phpcs.composerJsonPath": "src",
   "php.suggest.basic": false,
   "git.ignoreLimitWarning": true,
+  "makefile.makeDirectory": "docker",
 }

@@ -15,13 +15,4 @@ export class LexModals {
     clearSearchButton: this.modalBodyDiv.element(by.className('clear-search-button')),
     addButton: this.modalFooterDiv.element(by.id('select-language-add-btn'))
   };
-
-  // custom field modal
-  customField = {
-    displayNameInput: element(by.id('name')),
-    fieldCodeExists: element(by.id('fieldCodeExists')),
-    levelDropdown: element(by.id('level')),
-    typeDropdown: element(by.id('type')),
-    listCodeDropdown: element(by.id('optionListCode'))
-  };
 }

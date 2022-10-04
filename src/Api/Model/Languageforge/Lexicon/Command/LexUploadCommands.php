@@ -132,11 +132,11 @@ class LexUploadCommands
                 $data->fileName = $fileNamePrefix . '_' . $fileName; //if the file has been converted, $fileName = converted file
                 $response->result = true;
 
-                //Uncomment to ensure that only one format for each audio file is stored in the assets. We want to keep up to two formats right now (09-2022): the original and if needed, a FLEx-compatible one
-                // if (array_key_exists('previousFilename', $_POST)) {
-                //     $previousFilename = $_POST['previousFilename'];
-                //     self::deleteMediaFile($projectId, $mediaType, $previousFilename);
-                // }
+                //If this audio upload is replacing old audio, the previous file(s) for the entry are deleted from the assets
+                if (array_key_exists('previousFilename', $_POST)) {
+                    $previousFilename = $_POST['previousFilename'];
+                    self::deleteMediaFile($projectId, $mediaType, $previousFilename);
+                }
             } else {
                 $data = new ErrorResult();
                 $data->errorType = 'UserMessage';
@@ -279,8 +279,16 @@ class LexUploadCommands
                 $data->errorMessage = $errorMsg;
                 return $response;
         }
-        $filePath = $folderPath . '/' . $fileName;
+
+        //Path to the specific file the entry points to
+        $filePath = "$folderPath/$fileName";
+        //Put any other stored versions of the file (e.g. the same file saved in other formats) in an array
+        $fileNameWithoutExt = preg_replace('/\\.[^.\\s]{3,4}$/', '', $fileName);
+        $versionsOfTheSameFile = glob("$folderPath/$fileNameWithoutExt.*");
+
         if (file_exists($filePath) and ! is_dir($filePath)) {
+
+            //Delete the file the entry points to and create the server response
             if (unlink($filePath)) {
                 $data = new MediaResult();
                 $data->path = $folderPath;
@@ -291,8 +299,17 @@ class LexUploadCommands
                 $data->errorType = 'UserMessage';
                 $data->errorMessage = "$fileName could not be deleted. Contact your Site Administrator.";
             }
+
+            //Delete any other stored versions of the file
+            foreach ($versionsOfTheSameFile as $aVersionOfThisFile){
+                if($aVersionOfThisFile != $filePath){ //because $filePath, the one the entry points to, was already deleted above
+                    unlink($aVersionOfThisFile);
+                }
+            }
+
             return $response;
         }
+
         $data = new ErrorResult();
         $data->errorType = 'UserMessage';
         $data->errorMessage = "$fileName does not exist in this project. Contact your Site Administrator.";
