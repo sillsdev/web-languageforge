@@ -132,11 +132,11 @@ class LexUploadCommands
                 $data->fileName = $fileNamePrefix . '_' . $fileName; //if the file has been converted, $fileName = converted file
                 $response->result = true;
 
-                //Uncomment to ensure that only one format for each audio file is stored in the assets. We want to keep up to two formats right now (09-2022): the original and if needed, a FLEx-compatible one
-                // if (array_key_exists('previousFilename', $_POST)) {
-                //     $previousFilename = $_POST['previousFilename'];
-                //     self::deleteMediaFile($projectId, $mediaType, $previousFilename);
-                // }
+                //If this audio upload is replacing old audio, the previous file(s) for the entry are deleted from the assets
+                if (array_key_exists('previousFilename', $_POST)) {
+                    $previousFilename = $_POST['previousFilename'];
+                    self::deleteMediaFile($projectId, $mediaType, $previousFilename);
+                }
             } else {
                 $data = new ErrorResult();
                 $data->errorType = 'UserMessage';
