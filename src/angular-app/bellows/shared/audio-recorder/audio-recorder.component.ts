@@ -55,6 +55,16 @@ export class AudioRecorderController implements angular.IController {
           }
         );
 
+        //Stopping the media stream tracks releases the red recording indicator from browser tabs
+        this.mediaRecorder.addEventListener("stop",
+          () => {
+            stream.getTracks().forEach(function(track) {
+              track.stop();
+            });
+          }
+        );
+
+
         this.recordingStartTime = new Date();
 
         this.interval = this.$interval(() => {

@@ -65,13 +65,17 @@
   }
 }
 
-// for very small devices such as iPhone 5
-@media (max-width: 350px) {
+// for small and extra small devices
+@include media-breakpoint-down(sm) {
   .btn span {
     display: none;
   }
   #shareBtn, #settingsBtn {
     padding-right: 0;
+
+    span {
+      display: none;
+    }
   }
 }
 
@@ -200,11 +204,15 @@
         font-size: 25px;
         line-height: 25px;
         font-weight: bold;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
         @include media-breakpoint-down(sm) {
           font-size: 18px;
           line-height: 18px;
         }
       }
+      overflow: hidden;
     }
   }
   .breadcrumbs {
