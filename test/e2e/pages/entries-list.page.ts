@@ -31,12 +31,11 @@ export class EntriesListPage {
 
   async goto() {
     await this.page.goto(this.url);
-    // JeanneSonTODO: wait for an element on the page to be visible
-    await this.page.waitForTimeout(3000);
   }
 
-  async getTotalNumberOfEntries(): Promise<string> {
-    return this.totalNumberOfEntries.innerText();
+  async expectTotalNumberOfEntries(nEntries: number) {
+      // format: "3 / 3"
+      await expect(this.totalNumberOfEntries).toHaveText(`${nEntries.toString()} / ${nEntries.toString()}`);
   }
 
   async findEntry(lexeme: string): Promise<string> {
