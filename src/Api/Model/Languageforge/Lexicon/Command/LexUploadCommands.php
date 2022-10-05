@@ -227,11 +227,15 @@ class LexUploadCommands
             $moveOk = copy($tmpFilePath, $filePath);
             @unlink($tmpFilePath);
 
+            //Find the size of the image file
+            $fileSize = filesize($filePath);
+
             // construct server response
             if ($moveOk && $tmpFilePath) {
                 $data = new MediaResult();
                 $data->path = $project->getImageFolderPath($project->getAssetsRelativePath());
                 $data->fileName = $fileNamePrefix . '_' . $fileName;
+                $data->fileSize = $fileSize;
                 $response->result = true;
             } else {
                 $data = new ErrorResult();
