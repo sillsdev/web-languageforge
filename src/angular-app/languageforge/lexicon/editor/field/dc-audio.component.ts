@@ -115,8 +115,8 @@ export class FieldAudioController implements angular.IController {
             this.dcFilename = response.data.data.fileName;
             this.showAudioUpload = false;
             this.notice.push(this.notice.SUCCESS, 'File uploaded successfully.');
-            if(response.data.data.fileSize > 1000000){ //1 MB file size limit 2022-09
-              this.notice.push(this.notice.ERROR, 'WARNING: Because the audio file is larger than 1 MB, it will not be synced with FLEx.');
+            if(response.data.data.fileSize > 1000000){ //1 MB file size limit 2022-10
+              this.notice.push(this.notice.WARN, 'WARNING: Because the audio file - ' + response.data.data.fileName + ' - is larger than 1 MB, it will not be synced with FLEx.');
             }
           } else {
             this.notice.push(this.notice.ERROR, response.data.data.errorMessage);
