@@ -127,7 +127,7 @@ class LexUploadCommands
             }
 
             //Find the size of the upload file now pointed to by the entry
-            $fileSize = intval(`ls -l $filePath | awk '{print $5}'`);
+            $fileSize = filesize($filePath);
 
 
             // construct server response
