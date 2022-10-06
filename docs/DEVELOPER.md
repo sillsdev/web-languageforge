@@ -53,6 +53,7 @@ On Windows, the project should be opened with the [Remote - WSL](https://marketp
 1. You should see a landing page, click "Login"
 1. Use `admin` and `password` to login
 
+Note: The application is accessible via HTTP or HTTPS.  HTTPS is required for service-worker functionality.
 
 ## Tests
 
