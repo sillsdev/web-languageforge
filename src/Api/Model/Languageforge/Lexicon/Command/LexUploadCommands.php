@@ -102,9 +102,8 @@ class LexUploadCommands
                 // Convert to .wav if the result will be less than 1 MB (recording is shorter than 5.6 seconds)
                 // and .mp3 otherwise (recording is longer than 5.6 seconds)
                 $extensionlessFileName = substr($fileName, 0, strrpos($fileName, strtolower($fileExt)));
-                $convertedExtension = $audioDuration < 5.6 ? "wav" : "mp3";
-                $fileName = "$extensionlessFileName.$convertedExtension"; //$fileName ->> the converted file
-                `ffmpeg -i $tmpFilePath $fileName 2> /dev/null`; //original file is at the tmpFilePath. convert that file and save it to be $fileName
+                $fileName = "$extensionlessFileName.webm"; //$fileName ->> the converted file
+                `ffmpeg -i $tmpFilePath -acodec opus $fileName 2> /dev/null`; //original file is at the tmpFilePath. convert that file and save it to be $fileName
                 $filePath = self::mediaFilePath($folderPath, $fileNamePrefix, $fileName);
                 $moveOk = copy($fileName, $filePath);
 

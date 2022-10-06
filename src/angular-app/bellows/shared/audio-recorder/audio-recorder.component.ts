@@ -40,14 +40,14 @@ export class AudioRecorderController implements angular.IController {
           async (e: { data: any }) => {
             this.chunks.push(e.data);
             var roughBlob = new Blob(this.chunks, {
-              type: "audio/webm; codecs=aflt",
+              type: "audio/webm; codecs=opus",
             });
             //In some browsers (Chrome, Edge, ...) navigator.mediaDevices.getUserMedia with MediaRecorder creates WEBM files without duration metadata  //2022-09
             //webmFixDuration appends missing duration metadata to a WEBM file blob.
             this.blob = await webmFixDuration(
               roughBlob,
               this.durationInMilliseconds,
-              "audio/webm; codecs=aflt"
+              "audio/webm; codecs=opus"
             );
             this.chunks = [];
             this.audioSrc = window.URL.createObjectURL(this.blob);
