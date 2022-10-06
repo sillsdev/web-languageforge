@@ -126,16 +126,12 @@ class LexUploadCommands
 
             }
 
-            //Find the size of the upload file now pointed to by the entry
-            $fileSize = filesize($filePath);
-
-
             // construct server response
             if ($moveOk && $tmpFilePath) {
                 $data = new MediaResult();
                 $data->path = $project->getAudioFolderPath($project->getAssetsRelativePath());
                 $data->fileName = $fileNamePrefix . '_' . $fileName; //if the file has been converted, $fileName = converted file
-                $data->fileSize = $fileSize;
+                $data->fileSize = filesize($filePath);
                 $response->result = true;
 
                 //If this audio upload is replacing old audio, the previous file(s) for the entry are deleted from the assets
@@ -227,15 +223,12 @@ class LexUploadCommands
             $moveOk = copy($tmpFilePath, $filePath);
             @unlink($tmpFilePath);
 
-            //Find the size of the image file
-            $fileSize = filesize($filePath);
-
             // construct server response
             if ($moveOk && $tmpFilePath) {
                 $data = new MediaResult();
                 $data->path = $project->getImageFolderPath($project->getAssetsRelativePath());
                 $data->fileName = $fileNamePrefix . '_' . $fileName;
-                $data->fileSize = $fileSize;
+                $data->fileSize = filesize($filePath);
                 $response->result = true;
             } else {
                 $data = new ErrorResult();
