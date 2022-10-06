@@ -127,7 +127,7 @@ class LexUploadCommands
             }
 
             //Find the size of the upload file now pointed to by the entry
-            $fileSize = intval(`ffprobe -i $filePath -show_entries format=size -v quiet -of csv="p=0"`);
+            $fileSize = intval(`ls -l $filePath | awk '{print $5}'`);
 
 
             // construct server response
