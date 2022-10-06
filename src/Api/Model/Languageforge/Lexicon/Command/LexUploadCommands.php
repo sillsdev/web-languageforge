@@ -90,7 +90,11 @@ class LexUploadCommands
             // convert audio file to mp3 or wav format if necessary
             // FLEx only supports mp3 or wav format as of 2022-09
 
-            if (strcmp(strtolower($fileExt), ".mp3") !== 0 && strcmp(strtolower($fileExt), ".wav") !== 0) {
+            if (
+                strcmp(strtolower($fileExt), ".mp3") !== 0 &&
+                strcmp(strtolower($fileExt), ".wav") !== 0 &&
+                strcmp(strtolower($fileExt), ".webm") !== 0
+            ) {
                 //First, find the duration of the file
                 $ffprobeCommand = `ffprobe -i $tmpFilePath -show_entries format=duration -v quiet -of csv="p=0" 2> /dev/null`;
                 $audioDuration = floatval($ffprobeCommand);
