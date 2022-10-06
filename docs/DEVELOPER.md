@@ -53,19 +53,6 @@ On Windows, the project should be opened with the [Remote - WSL](https://marketp
 1. You should see a landing page, click "Login"
 1. Use `admin` and `password` to login
 
-> Sometimes there may be a need to hit the locally running app from a device other than the machine the app is running on.  In order to do that, you'll need to do the following:
-> 1. Figure out your local ip address
-> 1. Access the app via http at that address
->
-> On a Mac for example:
-> ```
-> ifconfig | grep broadcast
-> 	inet 192.168.161.99 netmask 0xfffffc00 broadcast 192.168.163.255
-> ```
->
-> then hit `http://192.168.161.99` from your phone or other device on the same network.
->
-> NOTE: disabling cache on your device may not be trivial, you'll either need to wipe the site settings on your device's browser or you'll need to do it via USB debugging.
 
 ## Tests
 
@@ -249,7 +236,23 @@ If you encounter errors such as VSCode cannot find a file in the path "vendor", 
 
 ## Mobile device testing on a local branch ##
 
-Testing functionality of a local branch is straightforward in the localhost on a desktop or laptop. However, on a mobile device without an IDE running in it, you must "tunnel" to localhost from a URL that any device can access. `ngrok` facilitates this connection. 
+Sometimes there may be a need to hit the locally running app from a device other than the machine the app is running on.  In order to do that, you'll need to do the following:
+### If your firewall is already configured for external access e.g. you use Docker Desktop ###
+
+1. Figure out your local ip address
+1. Access the app via http at that address
+
+On a Mac for example:
+```
+ifconfig | grep broadcast
+	inet 192.168.161.99 netmask 0xfffffc00 broadcast 192.168.163.255
+```
+
+then hit `http://192.168.161.99` from your phone or other device on the same network.
+
+NOTE: disabling cache on your device may not be trivial, you'll either need to wipe the site settings on your device's browser or you'll need to do it via USB debugging.
+
+### If your firewall is not configured for external port 80/443 access, you can use ngrok ###
 
 [Here](https://gist.github.com/SalahHamza/799cac56b8c2cd20e6bfeb8886f18455) are instructions for installing ngrok on WSL (Linux Subsystem for Windows).
 [Here](https://ngrok.com/download) are instructions for installing ngrok on Windows, Mac OS, Linux, or Docker.
@@ -258,5 +261,5 @@ Once ngrok is installed, run:
 `./ngrok http http://localhost`
 in a bash terminal. The same command with https://localhost may not work, so be careful to try http://localhost in particular.
 
-ngrok will return two URLS, one http and one https, that contain what is being served in localhost. Test on another device using one or both of these URLS.
+ngrok will return two URLs, one http and one https, that contain what is being served in localhost. Test on another device using one or both of these URLs.
 
