@@ -6,6 +6,7 @@ Welcome!  We're glad that you are interested in helping develop Language Forge.
     - [Supported Development Environments](#supported-development-environments)
     - [Project Setup](#project-setup)
     - [Running the App Locally](#running-the-app-locally)
+    - [Mobile Device Testing on a Branch](#mobile-device-testing-on-a-branch)
   - [Tests](#tests)
     - [Running Playwright E2E Tests](#running-playwright-e2e-tests)
     - [Running Protractor E2E Tests](#running-protractor-e2e-tests)
@@ -53,19 +54,36 @@ On Windows, the project should be opened with the [Remote - WSL](https://marketp
 1. You should see a landing page, click "Login"
 1. Use `admin` and `password` to login
 
-> Sometimes there may be a need to hit the locally running app from a device other than the machine the app is running on.  In order to do that, you'll need to do the following:
-> 1. Figure out your local ip address
-> 1. Access the app via http at that address
->
-> On a Mac for example:
-> ```
-> ifconfig | grep broadcast
-> 	inet 192.168.161.99 netmask 0xfffffc00 broadcast 192.168.163.255
-> ```
->
-> then hit `http://192.168.161.99` from your phone or other device on the same network.
->
-> NOTE: disabling cache on your device may not be trivial, you'll either need to wipe the site settings on your device's browser or you'll need to do it via USB debugging.
+Note: The application is accessible via HTTP or HTTPS.  HTTPS is required for service-worker functionality.
+
+### Mobile device testing on a branch ###
+
+Sometimes there may be a need to hit the locally running app from a device other than the machine the app is running on.  In order to do that, you'll need to do the following:
+### If your machine's firewall is already configured for external access e.g. you use Docker Desktop ###
+
+1. Figure out your local ip address
+1. Access the app via http at that address
+
+On a Mac for example:
+```
+ifconfig | grep broadcast
+	inet 192.168.161.99 netmask 0xfffffc00 broadcast 192.168.163.255
+```
+
+then hit `http://192.168.161.99` from your phone or other device on the same network.
+
+NOTE: disabling cache on your device may not be trivial, you'll either need to wipe the site settings on your device's browser or you'll need to do it via USB debugging.
+
+### If your machine's firewall is not configured for external port 80/443 access, you can use ngrok ###
+
+[Here](https://gist.github.com/SalahHamza/799cac56b8c2cd20e6bfeb8886f18455) are instructions for installing ngrok on WSL (Linux Subsystem for Windows).
+[Here](https://ngrok.com/download) are instructions for installing ngrok on Windows, Mac OS, Linux, or Docker.
+
+Once ngrok is installed, run:
+`./ngrok http http://localhost`
+in a bash terminal. The same command with https://localhost may not work, so be careful to try http://localhost in particular.
+
+ngrok will return two URLs, one http and one https, that contain what is being served in localhost. Test on another device using one or both of these URLs.
 
 ## Tests
 
