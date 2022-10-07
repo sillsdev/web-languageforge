@@ -6,6 +6,7 @@ Welcome!  We're glad that you are interested in helping develop Language Forge.
     - [Supported Development Environments](#supported-development-environments)
     - [Project Setup](#project-setup)
     - [Running the App Locally](#running-the-app-locally)
+    - [Mobile Device Testing on a Branch](#mobile-device-testing-on-a-branch)
   - [Tests](#tests)
     - [Running Playwright E2E Tests](#running-playwright-e2e-tests)
     - [Running Protractor E2E Tests](#running-protractor-e2e-tests)
@@ -54,6 +55,35 @@ On Windows, the project should be opened with the [Remote - WSL](https://marketp
 1. Use `admin` and `password` to login
 
 Note: The application is accessible via HTTP or HTTPS.  HTTPS is required for service-worker functionality.
+
+### Mobile device testing on a branch ###
+
+Sometimes there may be a need to hit the locally running app from a device other than the machine the app is running on.  In order to do that, you'll need to do the following:
+### If your machine's firewall is already configured for external access e.g. you use Docker Desktop ###
+
+1. Figure out your local ip address
+1. Access the app via http at that address
+
+On a Mac for example:
+```
+ifconfig | grep broadcast
+	inet 192.168.161.99 netmask 0xfffffc00 broadcast 192.168.163.255
+```
+
+then hit `http://192.168.161.99` from your phone or other device on the same network.
+
+NOTE: disabling cache on your device may not be trivial, you'll either need to wipe the site settings on your device's browser or you'll need to do it via USB debugging.
+
+### If your machine's firewall is not configured for external port 80/443 access, you can use ngrok ###
+
+[Here](https://gist.github.com/SalahHamza/799cac56b8c2cd20e6bfeb8886f18455) are instructions for installing ngrok on WSL (Linux Subsystem for Windows).
+[Here](https://ngrok.com/download) are instructions for installing ngrok on Windows, Mac OS, Linux, or Docker.
+
+Once ngrok is installed, run:
+`./ngrok http http://localhost`
+in a bash terminal. The same command with https://localhost may not work, so be careful to try http://localhost in particular.
+
+ngrok will return two URLs, one http and one https, that contain what is being served in localhost. Test on another device using one or both of these URLs.
 
 ## Tests
 
@@ -208,59 +238,3 @@ Other useful resources:
 - [x] [What is best practice to create an AngularJS 1.5 component in Typescript? - Stack Overflow](https://stackoverflow.com/questions/35451652/what-is-best-practice-to-create-an-angularjs-1-5-component-in-typescript)
 - [x] [Don't Panic: Using ui-router as a Component Router](http://dontpanic.42.nl/2016/07/using-ui-router-as-component-router.html)
 - [x] [Lifecycle hooks in Angular 1.5](https://toddmotto.com/angular-1-5-lifecycle-hooks#onchanges)
-
-A [tutorial on YouTube is available showing how to use XDebug and VSCode](https://www.youtube.com/watch?v=nKh5DHViKlA) to debug the LF back-end application.
-
-### PHP Tests Debugging ###
-
-To debug the PHP tests, follow these steps:
-- uncomment the 3 lines in the docker-compose.yml file related to XDebug under the service section `test-php`:
-```
-       - XDEBUG_MODE=develop,debug
-     extra_hosts:
-       - "host.docker.internal:host-gateway
-```
-- In VS Code, set a breakpoint on a line of code in one of the PHP tests (in the `test/php` folder)
-- Click on the `Run and Debug` area of VS Code, then click the green play icon next to `XDebug` in the configuration dropdown.
-
-![XDebug](../readme_images/xdebug1.png) "Debugging with XDebug")
-
-- The VSCode status bar will turn orange when XDebug is active
-- run `make unit-tests` in the terminal
-- VSCode will stop the unit test execution when the breakpoint is hit
-
-A [tutorial on YouTube is available showing how to use XDebug and VSCode](https://www.youtube.com/watch?v=SxIORImpxrQ) to debug the PHP Tests.
-
-Additional considerations:
-
-If you encounter errors such as VSCode cannot find a file in the path "vendor", these source files are not available to VSCode as they are running inside Docker.  If you want to debug vendor libraries (not required), you will have to use Composer to download dependencies and put them in your source tree.
-
-## Mobile device testing on a local branch ##
-
-Sometimes there may be a need to hit the locally running app from a device other than the machine the app is running on.  In order to do that, you'll need to do the following:
-### If your firewall is already configured for external access e.g. you use Docker Desktop ###
-
-1. Figure out your local ip address
-1. Access the app via http at that address
-
-On a Mac for example:
-```
-ifconfig | grep broadcast
-	inet 192.168.161.99 netmask 0xfffffc00 broadcast 192.168.163.255
-```
-
-then hit `http://192.168.161.99` from your phone or other device on the same network.
-
-NOTE: disabling cache on your device may not be trivial, you'll either need to wipe the site settings on your device's browser or you'll need to do it via USB debugging.
-
-### If your firewall is not configured for external port 80/443 access, you can use ngrok ###
-
-[Here](https://gist.github.com/SalahHamza/799cac56b8c2cd20e6bfeb8886f18455) are instructions for installing ngrok on WSL (Linux Subsystem for Windows).
-[Here](https://ngrok.com/download) are instructions for installing ngrok on Windows, Mac OS, Linux, or Docker.
-
-Once ngrok is installed, run:
-`./ngrok http http://localhost`
-in a bash terminal. The same command with https://localhost may not work, so be careful to try http://localhost in particular.
-
-ngrok will return two URLs, one http and one https, that contain what is being served in localhost. Test on another device using one or both of these URLs.
-
