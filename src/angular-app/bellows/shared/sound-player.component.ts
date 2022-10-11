@@ -16,8 +16,12 @@ export class SoundController implements angular.IController {
 
   $onInit(): void {
 
-
     this.slider = this.$element.find('.seek-slider').get(0) as HTMLInputElement;
+
+    //So that duration appears immediately once it is available
+    this.audioElement.addEventListener('durationchange', () => {
+      this.$scope.$apply();
+    });
 
     this.audioElement.addEventListener('ended', () => {
       this.$scope.$apply(() => {

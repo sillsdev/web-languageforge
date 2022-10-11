@@ -117,6 +117,7 @@ class LexUploadCommands
                 $filePath = self::mediaFilePath($folderPath, $fileNamePrefix, $fileName);
                 $moveOk = copy($fileName, $filePath);
 
+
                 //unlink the converted file from its temporary location
                 @unlink($fileName);
 
@@ -130,6 +131,7 @@ class LexUploadCommands
                 $data = new MediaResult();
                 $data->path = $project->getAudioFolderPath($project->getAssetsRelativePath());
                 $data->fileName = $fileNamePrefix . '_' . $fileName; //if the file has been converted, $fileName = converted file
+                $data->fileSize = filesize($filePath);
                 $response->result = true;
 
                 //If this audio upload is replacing old audio, the previous file(s) for the entry are deleted from the assets
@@ -226,6 +228,7 @@ class LexUploadCommands
                 $data = new MediaResult();
                 $data->path = $project->getImageFolderPath($project->getAssetsRelativePath());
                 $data->fileName = $fileNamePrefix . '_' . $fileName;
+                $data->fileSize = filesize($filePath);
                 $response->result = true;
             } else {
                 $data = new ErrorResult();

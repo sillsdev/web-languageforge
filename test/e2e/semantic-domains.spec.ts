@@ -38,7 +38,7 @@ test.describe('Lexicon E2E Semantic Domains Lazy Load', () => {
 
   test('Should be using English Semantic Domain for manager', async () => {
     await editorPage.goto();
-    expect(await (await editorPage.getTextarea(editorPage.entryCard, lexemeLabel, 'th')).inputValue()).toEqual(constants.testEntry1.lexeme.th.value);
+    expect(editorPage.getTextarea(editorPage.entryCard, lexemeLabel, 'th')).toHaveValue(constants.testEntry1.lexeme.th.value);
     await expect(editorPage.senseCard.locator(editorPage.semanticDomainSelector).first()).toHaveText(semanticDomain1dot1English);
     await expect(pageHeader.languageDropdownButton).toHaveText('English');
   });

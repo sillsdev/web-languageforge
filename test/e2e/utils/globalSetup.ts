@@ -16,41 +16,45 @@ function createUser(request: APIRequestContext, baseName: string) {
 }
 
 export default async function globalSetup(config: FullConfig) {
-  for (const project of config.projects) {
-    const baseURL = project.use?.baseURL ?? (
-      config.webServer.port
-        ? `http://localhost:${config.webServer.port}`
-        : config.webServer.url
-    );
-    const browserName = project.use?.browserName ?? project.use?.defaultBrowserType;
-    const projectBrowser = (
-      browserName === 'chromium' ? chromium :
-      browserName === 'firefox' ? firefox :
-      browserName === 'webkit' ? webkit :
-      chromium
-    );
-    const browser = await projectBrowser.launch();
-    const context = await browser.newContext({ baseURL });
-    for (const user of usersToCreate) {
-      await createUser(context.request, user);
-    }
-    await context.close();
-
-    // Now log in as each user and ensure there's a storage state saved
-    const sessionLifetime = 365 * 24 * 60 * 60 * 1000;  // 1 year, in milliseconds
-    const now = new Date();
-    const sessionCutoff = now.getTime() - sessionLifetime;
-    for (const user of usersToCreate) {
-      const path = `${browserName}-${user}-storageState.json`;
-      if (fs.existsSync(path) && fs.statSync(path)?.ctimeMs >= sessionCutoff) {
-        // Storage state file is recent, no need to re-create it
-        continue;
-      }
+  try {
+    for (const project of config.projects) {
+      const baseURL = project.use?.baseURL ?? (
+        config.webServer.port
+          ? `http://localhost:${config.webServer.port}`
+          : config.webServer.url
+      );
+      const browserName = project.use?.browserName ?? project.use?.defaultBrowserType;
+      const projectBrowser = (
+        browserName === 'chromium' ? chromium :
+          browserName === 'firefox' ? firefox :
+            browserName === 'webkit' ? webkit :
+              chromium
+      );
+      const browser = await projectBrowser.launch();
       const context = await browser.newContext({ baseURL });
-      const page = await context.newPage();
-      await loginAs(page, user);
-      await context.storageState({ path });
+      for (const user of usersToCreate) {
+        await createUser(context.request, user);
+      }
       await context.close();
+
+      // Now log in as each user and ensure there's a storage state saved
+      const sessionLifetime = 365 * 24 * 60 * 60 * 1000;  // 1 year, in milliseconds
+      const now = new Date();
+      const sessionCutoff = now.getTime() - sessionLifetime;
+      for (const user of usersToCreate) {
+        const path = `${browserName}-${user}-storageState.json`;
+        if (fs.existsSync(path) && fs.statSync(path)?.ctimeMs >= sessionCutoff) {
+          // Storage state file is recent, no need to re-create it
+          continue;
+        }
+        const context = await browser.newContext({ baseURL });
+        const page = await context.newPage();
+        await loginAs(page, user);
+        await context.storageState({ path });
+        await context.close();
+      }
     }
+  } catch (error) {
+    throw new Error(`Error in Playwright global setup: ${error}.\n`);
   }
 }
