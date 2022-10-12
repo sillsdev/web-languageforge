@@ -16,6 +16,7 @@
 		path /app/changepassword
 		path /password*
 		path /projects*
+		path /favicon.ico
 	}
 	route @next_app_paths {
 		rewrite /app/changepassword /password/change
