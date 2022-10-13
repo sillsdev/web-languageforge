@@ -10,11 +10,7 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <link rel="icon" href="/Site/views/languageforge/theme/default/image/favicon.ico" type="image/x-icon" />
-    <!--[if lte IE 8]>
-    <script src="{{ baseDir }}/assets/js/ie/html5shiv.js"></script><![endif]-->
     <link rel="stylesheet" href="{{ baseDir }}/assets/css/main.css"/>
-    <!--[if lte IE 8]>
-    <link rel="stylesheet" href="assets/css/ie8.css"/><![endif]-->
 </head>
 <body class="landing">
 <div id="page-wrapper">
@@ -26,6 +22,7 @@
                 <li><a href="/">Home</a></li>
                 <li><a href="/public/signup" class="button">Sign Up</a></li>
                 <li><a href="/auth/login" class="button">Login</a></li>
+                <li><a href="#more" class="button">More info and help</a></li>
             </ul>
         </nav>
     </header>
@@ -34,11 +31,6 @@
     <section id="banner">
         <h2>Language Forge</h2>
         <p>Collaborative web-based dictionary building that syncs with FieldWorks</p>
-        <ul class="actions">
-            <li><a href="/public/signup" class="button special">Sign Up</a></li>
-            <li><a href="/auth/login" class="button">Login</a></li>
-            <li><a href="#learn" class="button">Learn More</a></li>
-        </ul>
     </section>
 
     <!-- Main -->
@@ -86,30 +78,20 @@
             </div>
         </section>
 
-        <div class="row">
-            <div class="6u 12u(narrower)">
-
+        <div class="row" id="more">
+            <div>
                 <section class="box special">
                     <span class="image featured"><img src="{{ baseDir }}/images/pic03.jpg" alt=""/></span>
-                    <h3>Help Improve Language Forge</h3>
-                    <p>You can discuss Language Forge, see recent improvements, suggest features and get community help
-                        on our SIL Software Community page.</p>
+                    <h3>Additional Resources</h3>
+                    <p>Thre are plenty of resources to get help and keep up with the latest features.</p>
                     <ul class="actions">
-                        <li><a href="https://community.software.sil.org/c/language-forge" class="button alt">Get Help, Discuss Features</a></li>
+                        <li><a target="_blank" href="https://community.software.sil.org/c/language-forge" class="button alt"><i class="fa fa-users"></i> Help and tips from our active community</a></li>
+                        <li><a target="_blank" href="https://community.software.sil.org/t/w/5454" class="button alt"><i class="fa fa-gift"></i> See what's new</a></li>
+                        <li><a target="_blank" href="https://www.youtube.com/playlist?list=PLJLUPwIFOI8d8lmQVAcBapyw87jCtmDNA" class="button alt"><i class="fa fa-youtube-play"></i> Videos</a></li>
+                        <li><a target="_blank" href="https://github.com/sillsdev/web-languageforge/wiki/Known-Issues-and-Limitations" class="button alt"><i class="fa fa-exclamation-triangle"></i> Known issues and limitations</a></li>
+                        <li><a target="_blank" href="mailto:issues@languageforge.org" class="button alt"><i class="fa fa-envelope"></i> Report a problem (email issues@languageforge.org)</a></li>
                     </ul>
                 </section>
-
-            </div>
-            <div class="6u 12u(narrower)">
-
-                <section class="box special">
-                    <span class="image featured"><img src="{{ baseDir }}/images/pic02.jpg" alt=""/></span>
-                    <h3>Real-Time Collaboration</h3>
-                    <p>Members of the project will see entries updated as it happens by others in the same project.
-                        Language Forge has dozens of additional features including LIFT import, custom field support,
-                        right-to-left script support, and support for many FieldWorks fields.</p>
-                </section>
-
             </div>
         </div>
 
@@ -156,8 +138,6 @@
 <script src="{{ baseDir }}/assets/js/jquery.scrollgress.min.js"></script>
 <script src="{{ baseDir }}/assets/js/skel.min.js"></script>
 <script src="{{ baseDir }}/assets/js/util.js"></script>
-<!--[if lte IE 8]>
-<script src="{{ baseDir }}/assets/js/ie/respond.min.js"></script><![endif]-->
 <script src="{{ baseDir }}/assets/js/main.js"></script>
 
 </body>
