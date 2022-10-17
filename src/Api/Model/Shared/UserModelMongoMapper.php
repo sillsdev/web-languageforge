@@ -10,7 +10,7 @@ class UserModelMongoMapper extends MongoMapper
     {
         static $instance = null;
         if (null === $instance) {
-            $instance = new UserModelMongoMapper(DATABASE, 'users');
+            $instance = new UserModelMongoMapper(DATABASE, "users");
         }
 
         return $instance;

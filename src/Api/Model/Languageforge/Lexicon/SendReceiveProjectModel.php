@@ -4,7 +4,7 @@ namespace Api\Model\Languageforge\Lexicon;
 
 class SendReceiveProjectModel
 {
-    public function __construct($name = '', $repository = '', $role = '')
+    public function __construct($name = "", $repository = "", $role = "")
     {
         $this->name = $name;
         $this->repository = $repository;

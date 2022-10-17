@@ -15,7 +15,7 @@ class SmsQueue
      */
     public static function deliver($smsModel)
     {
-        CodeGuard::checkTypeAndThrow($smsModel, 'Api\Library\Shared\Communicate\Sms\SmsModel');
+        CodeGuard::checkTypeAndThrow($smsModel, "Api\Library\Shared\Communicate\Sms\SmsModel");
         // Check if the smsModel is valid
         if (!$smsModel->to || !$smsModel->from || $smsModel->userRef == null || !$smsModel->userRef->asString()) {
             SmsModel::remove($smsModel->databaseName(), $smsModel->id->asString());
@@ -24,27 +24,22 @@ class SmsQueue
 
             return;
         }
-        $info = explode('|', $smsModel->providerInfo);
+        $info = explode("|", $smsModel->providerInfo);
         $sid = $info[0];
         $token = $info[1];
 
         $client = new \Services_Twilio($sid, $token);
-        $message = $client->account->messages->sendMessage(
-            $smsModel->from,
-            $smsModel->to,
-            $smsModel->message
-        );
+        $message = $client->account->messages->sendMessage($smsModel->from, $smsModel->to, $smsModel->message);
 
         /* Not exactly sure as to what constitutes the various failure modes.  For now dump the message response to the log.
          * As we know more we can 'white list' the codes and handle them gracefully here.
          */
         error_log(var_export($message, true));
-//         var_dump($message);
+        //         var_dump($message);
 
         // Update the state
         $smsModel->state = SmsModel::SMS_SENT;
         $smsModel->write();
-
     }
 
     /**
@@ -67,7 +62,7 @@ class SmsQueue
      */
     public static function queue($smsModel)
     {
-        CodeGuard::checkTypeAndThrow($smsModel, 'Api\Library\Shared\Communicate\Sms\SmsModel');
+        CodeGuard::checkTypeAndThrow($smsModel, "Api\Library\Shared\Communicate\Sms\SmsModel");
         // Check if the smsModel is valid
         if (!$smsModel->to || !$smsModel->from || $smsModel->userRef == null || !$smsModel->userRef->asString()) {
             error_log("Error: Attempting to queue invalid sms");

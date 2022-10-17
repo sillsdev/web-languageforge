@@ -33,7 +33,7 @@ class LexProjectModelTest extends TestCase
         $optionLists->read();
 
         $this->assertTrue(count($optionLists->entries) > 0);
-        $this->assertEquals('adj', $optionLists->entries[0]['items'][0]['key']);
+        $this->assertEquals("adj", $optionLists->entries[0]["items"][0]["key"]);
     }
 
     public function testInitializeNewProject_NotSendReceiveProject_NoSymlinks()
@@ -53,20 +53,20 @@ class LexProjectModelTest extends TestCase
     public function testInitializeNewProject_SendReceiveProjectAndExistingTargetFile_SourceFileMovedAndSymlinksCreated()
     {
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $project->sendReceiveProjectIdentifier = 'sr_id';
-        $project->sendReceiveProject = new SendReceiveProjectModel('sr_name', '', 'manager');
+        $project->sendReceiveProjectIdentifier = "sr_id";
+        $project->sendReceiveProject = new SendReceiveProjectModel("sr_name", "", "manager");
         $project->write();
         $this->assertTrue($project->hasSendReceive());
 
         $projectWorkPath = $project->getSendReceiveWorkFolder();
-        $srImagePath = $projectWorkPath . DIRECTORY_SEPARATOR . 'LinkedFiles' . DIRECTORY_SEPARATOR . 'Pictures';
+        $srImagePath = $projectWorkPath . DIRECTORY_SEPARATOR . "LinkedFiles" . DIRECTORY_SEPARATOR . "Pictures";
         FileUtilities::createAllFolders($srImagePath);
-        $srTestImageFilePath = $srImagePath . DIRECTORY_SEPARATOR . 'existingTargetImage.jpg';
+        $srTestImageFilePath = $srImagePath . DIRECTORY_SEPARATOR . "existingTargetImage.jpg";
         touch($srTestImageFilePath);
         $this->assertTrue(file_exists($srTestImageFilePath));
 
         $assetImagePath = $project->getImageFolderPath();
-        $filenameToMove = 'existingSourceImage.jpg';
+        $filenameToMove = "existingSourceImage.jpg";
         $filePathToMove = $assetImagePath . DIRECTORY_SEPARATOR . $filenameToMove;
         touch($filePathToMove);
         $this->assertTrue(file_exists($filePathToMove));
@@ -103,8 +103,8 @@ class LexProjectModelTest extends TestCase
         // Setup
         $baseDirForSendReceive = self::$environ->setupSendReceiveEnvironment();
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $project->sendReceiveProjectIdentifier = 'sr_id';
-        $project->sendReceiveProject = new SendReceiveProjectModel('sr_name', '', 'manager');
+        $project->sendReceiveProjectIdentifier = "sr_id";
+        $project->sendReceiveProject = new SendReceiveProjectModel("sr_name", "", "manager");
 
         // Execute
         $project->callCleanup();
@@ -119,14 +119,16 @@ class LexProjectModelTest extends TestCase
         // Setup
         $baseDirForSendReceive = self::$environ->setupSendReceiveEnvironment();
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $project->sendReceiveProjectIdentifier = 'sr_id';
-        $project->sendReceiveProject = new SendReceiveProjectModel('sr_name', '', 'manager');
+        $project->sendReceiveProjectIdentifier = "sr_id";
+        $project->sendReceiveProject = new SendReceiveProjectModel("sr_name", "", "manager");
 
-        $projectStatePath = SendReceiveCommands::getLFMergePaths()->statePath . DIRECTORY_SEPARATOR . $project->projectCode . '.state';
-        $projectWorkPath = SendReceiveCommands::getLFMergePaths()->workPath . DIRECTORY_SEPARATOR . $project->projectCode;
+        $projectStatePath =
+            SendReceiveCommands::getLFMergePaths()->statePath . DIRECTORY_SEPARATOR . $project->projectCode . ".state";
+        $projectWorkPath =
+            SendReceiveCommands::getLFMergePaths()->workPath . DIRECTORY_SEPARATOR . $project->projectCode;
         mkdir($projectWorkPath);
-        file_put_contents($projectStatePath, '{ SRState: IDLE }');
-        file_put_contents($projectWorkPath . DIRECTORY_SEPARATOR . 'dummy-file', 'Just a dummy file');
+        file_put_contents($projectStatePath, "{ SRState: IDLE }");
+        file_put_contents($projectWorkPath . DIRECTORY_SEPARATOR . "dummy-file", "Just a dummy file");
 
         // Execute
         $project->callCleanup();
@@ -143,13 +145,15 @@ class LexProjectModelTest extends TestCase
         // Setup
         $baseDirForSendReceive = self::$environ->setupSendReceiveEnvironment();
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $project->sendReceiveProjectIdentifier = 'sr_id';
-        $project->sendReceiveProject = new SendReceiveProjectModel('sr_name', '', 'manager');
+        $project->sendReceiveProjectIdentifier = "sr_id";
+        $project->sendReceiveProject = new SendReceiveProjectModel("sr_name", "", "manager");
 
-        $projectStatePath = SendReceiveCommands::getLFMergePaths()->statePath . DIRECTORY_SEPARATOR . $project->projectCode . '.state';
-        $projectWorkPath = SendReceiveCommands::getLFMergePaths()->workPath . DIRECTORY_SEPARATOR . $project->projectCode;
-        file_put_contents($projectStatePath, '{ SRState: IDLE }');
-        file_put_contents($projectWorkPath, 'Just a dummy file');
+        $projectStatePath =
+            SendReceiveCommands::getLFMergePaths()->statePath . DIRECTORY_SEPARATOR . $project->projectCode . ".state";
+        $projectWorkPath =
+            SendReceiveCommands::getLFMergePaths()->workPath . DIRECTORY_SEPARATOR . $project->projectCode;
+        file_put_contents($projectStatePath, "{ SRState: IDLE }");
+        file_put_contents($projectWorkPath, "Just a dummy file");
 
         // Execute
         $project->callCleanup();

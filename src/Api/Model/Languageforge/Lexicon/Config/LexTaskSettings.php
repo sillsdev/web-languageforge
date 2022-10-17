@@ -2,4 +2,6 @@
 
 namespace Api\Model\Languageforge\Lexicon\Config;
 
-class LexTaskSettings extends LexTask {}
+class LexTaskSettings extends LexTask
+{
+}

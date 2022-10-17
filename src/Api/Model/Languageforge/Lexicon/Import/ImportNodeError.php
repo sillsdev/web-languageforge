@@ -8,8 +8,8 @@ class ImportNodeError
     {
         $this->type = $type;
         $this->identifier = $identifier;
-        $this->errors = array();
-        $this->subnodeErrors = array();
+        $this->errors = [];
+        $this->subnodeErrors = [];
     }
 
     /** @var string guid of lift entry, sense lift id, or attribute name */
@@ -26,7 +26,7 @@ class ImportNodeError
 
     public function hasError()
     {
-        return count($this->errors) > 0 ;
+        return count($this->errors) > 0;
     }
 
     public function hasErrors()
@@ -40,21 +40,24 @@ class ImportNodeError
 
     public function addUnhandledElement($elementName)
     {
-        $this->errors[] = array(
-            'error' => 'UnhandledElement',
-            'element' => $elementName
-        );
+        $this->errors[] = [
+            "error" => "UnhandledElement",
+            "element" => $elementName,
+        ];
     }
 
-    public function addSubnodeError($subnodeError) {
+    public function addSubnodeError($subnodeError)
+    {
         $this->subnodeErrors[] = $subnodeError;
     }
 
-    public function currentSubnodeError() {
+    public function currentSubnodeError()
+    {
         return end($this->subnodeErrors);
     }
 
-    public function getSubnodeError($index) {
+    public function getSubnodeError($index)
+    {
         if ($index >= 0 && $index < count($this->subnodeErrors)) {
             return $this->subnodeErrors[$index];
         }
@@ -71,16 +74,23 @@ class ImportNodeError
      * @throws \Exception
      * @return string
      */
-    protected function toErrorString($termEnd = '', $dataStart = ', ', $dataEnd = '') {
+    protected function toErrorString($termEnd = "", $dataStart = ", ", $dataEnd = "")
+    {
         $msg = "processing $this->type '$this->identifier'" . $termEnd;
         foreach ($this->errors as $error) {
             $msg .= $dataStart;
-            switch ($error['error']) {
-                case 'UnhandledElement':
-                    $msg .= "unhandled element '" . $error['element'] . "'";
+            switch ($error["error"]) {
+                case "UnhandledElement":
+                    $msg .= "unhandled element '" . $error["element"] . "'";
                     break;
                 default:
-                    throw new \Exception("Unknown error type '" . $error['error'] . "' while processing identifier '" . $this->identifier . "'");
+                    throw new \Exception(
+                        "Unknown error type '" .
+                            $error["error"] .
+                            "' while processing identifier '" .
+                            $this->identifier .
+                            "'"
+                    );
             }
             $msg .= $dataEnd;
         }
@@ -92,7 +102,7 @@ class ImportNodeError
         $msg = $this->toErrorString();
         foreach ($this->subnodeErrors as $subnodeError) {
             if ($subnodeError->hasErrors()) {
-                $msg .= ', ' . $subnodeError->toString();
+                $msg .= ", " . $subnodeError->toString();
             }
         }
         return $msg;
@@ -100,7 +110,7 @@ class ImportNodeError
 
     public function toFormattedString($level = 1)
     {
-        $dataStart ="";
+        $dataStart = "";
         for ($i = 1; $i <= $level; $i++) {
             $dataStart .= "\t";
         }
@@ -116,10 +126,10 @@ class ImportNodeError
 
     public function toHtml()
     {
-        $html = $this->toErrorString('</dt>', '<dd>', '</dd>');
+        $html = $this->toErrorString("</dt>", "<dd>", "</dd>");
         foreach ($this->subnodeErrors as $subnodeError) {
             if ($subnodeError->hasErrors()) {
-                $html .= '<dd><dl><dt>' . $subnodeError->toHtml() . '</dl></dd>';
+                $html .= "<dd><dl><dt>" . $subnodeError->toHtml() . "</dl></dd>";
             }
         }
         return $html;

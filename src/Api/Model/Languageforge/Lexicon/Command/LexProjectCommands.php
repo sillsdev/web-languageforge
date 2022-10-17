@@ -29,13 +29,15 @@ class LexProjectCommands
     {
         $project = new LexProjectModel($projectId);
         ProjectCommands::checkIfArchivedAndThrow($project);
-        if ($project->hasSendReceive() && SendReceiveCommands::isInProgress($projectId)) return false;
+        if ($project->hasSendReceive() && SendReceiveCommands::isInProgress($projectId)) {
+            return false;
+        }
 
         $configModel = new LexConfiguration();
         JsonDecoder::decode($configModel, $config);
         $project->config = $configModel;
         $decoder = new JsonDecoder();
-        $decoder->decodeMapOf('', $project->inputSystems, $config['inputSystems']);
+        $decoder->decodeMapOf("", $project->inputSystems, $config["inputSystems"]);
         return $project->write();
     }
 
@@ -57,12 +59,14 @@ class LexProjectCommands
         }
         $oldDBName = $project->databaseName();
 
-        $object['id'] = $projectId;
+        $object["id"] = $projectId;
         JsonDecoder::decode($project, $object);
         $newDBName = $project->databaseName();
-        if (($oldDBName != '') && ($oldDBName != $newDBName)) {
+        if ($oldDBName != "" && $oldDBName != $newDBName) {
             if (MongoStore::hasDB($newDBName)) {
-                throw new \Exception("Cannot rename '$oldDBName' to ' $newDBName' . New project name $newDBName already exists.  Not renaming.");
+                throw new \Exception(
+                    "Cannot rename '$oldDBName' to ' $newDBName' . New project name $newDBName already exists.  Not renaming."
+                );
             }
             MongoStore::renameDB($oldDBName, $newDBName);
         }
@@ -75,8 +79,9 @@ class LexProjectCommands
      * @param string $fieldName
      * @return bool
      */
-    public static function isCustomField($fieldName) {
-        return (strpos($fieldName, 'customField_') === 0);
+    public static function isCustomField($fieldName)
+    {
+        return strpos($fieldName, "customField_") === 0;
     }
 
     /**
@@ -90,10 +95,16 @@ class LexProjectCommands
     public static function updateCustomFieldViews($projectCode, $customFieldSpecs)
     {
         $project = new LexProjectModel();
-        if (!$project->readByProperty('projectCode', $projectCode)) return false;
+        if (!$project->readByProperty("projectCode", $projectCode)) {
+            return false;
+        }
         self::removeDeletedCustomFieldViews($customFieldSpecs, $project->config);
         foreach ($customFieldSpecs as $customFieldSpec) {
-            self::createNewCustomFieldViews($customFieldSpec['fieldName'], $customFieldSpec['fieldType'], $project->config);
+            self::createNewCustomFieldViews(
+                $customFieldSpec["fieldName"],
+                $customFieldSpec["fieldType"],
+                $project->config
+            );
         }
 
         return $project->write();
@@ -110,7 +121,7 @@ class LexProjectCommands
     {
         foreach ($config->roleViews as $role => $roleView) {
             if (!array_key_exists($customFieldName, $roleView->fields)) {
-                if ($customFieldType == 'MultiUnicode' || $customFieldType == 'MultiString') {
+                if ($customFieldType == "MultiUnicode" || $customFieldType == "MultiString") {
                     $roleView->fields[$customFieldName] = new LexViewMultiTextFieldConfig();
                 } else {
                     $roleView->fields[$customFieldName] = new LexViewFieldConfig();
@@ -123,7 +134,7 @@ class LexProjectCommands
 
         foreach ($config->userViews as $userId => $userView) {
             if (!array_key_exists($customFieldName, $userView->fields)) {
-                if ($customFieldType == 'MultiUnicode' || $customFieldType == 'MultiString') {
+                if ($customFieldType == "MultiUnicode" || $customFieldType == "MultiString") {
                     $userView->fields[$customFieldName] = new LexViewMultiTextFieldConfig();
                 } else {
                     $userView->fields[$customFieldName] = new LexViewFieldConfig();
@@ -159,7 +170,7 @@ class LexProjectCommands
     {
         $customFieldNames = [];
         foreach ($customFieldSpecs as $customFieldSpec) {
-            $customFieldNames[] = $customFieldSpec['fieldName'];
+            $customFieldNames[] = $customFieldSpec["fieldName"];
         }
 
         $customFieldNamesToRemove = [];
@@ -175,5 +186,4 @@ class LexProjectCommands
             }
         }
     }
-
 }

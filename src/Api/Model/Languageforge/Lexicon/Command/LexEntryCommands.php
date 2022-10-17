@@ -40,14 +40,15 @@ class LexEntryCommands
     }
     */
 
-    private static function lookupFieldLabel(LexConfigFieldList $fieldList, array $parts) {
+    private static function lookupFieldLabel(LexConfigFieldList $fieldList, array $parts)
+    {
         $currentList = $fieldList;
         // Overwritten at each step of the foreach loop, except when that step isn't a field name (i.e., for language codes)
         // So "newValue.lexeme.en" will set $result for the "lexeme" field but not for "en", since that's not a field
-        $result = '';
+        $result = "";
         foreach ($parts as $part) {
             // Strip away anything after a @ character
-            $fieldName = explode('@', $part, 2)[0];
+            $fieldName = explode("@", $part, 2)[0];
             if (array_key_exists($fieldName, $currentList->fields)) {
                 /** @var LexConfig $fieldConfig */
                 $fieldConfig = $currentList->fields[$fieldName];
@@ -75,17 +76,17 @@ class LexEntryCommands
         $result = $differences;
         foreach ($differences as $key => $value) {
             // Key will look like "newValue.senses#482f60da-b32a-45b9-9450-ee8f24791557.definition.en"
-            $parts = explode('.', $key);
+            $parts = explode(".", $key);
             if (empty($parts)) {
                 continue;
             }
             $restOfKeyParts = array_slice($parts, 1);
-            $restOfKey = implode('.', $restOfKeyParts);
-            if (array_key_exists(ActivityModel::FIELD_LABEL . '.' . $restOfKey, $result)) {
-                continue;  // Only need to look up labels once
+            $restOfKey = implode(".", $restOfKeyParts);
+            if (array_key_exists(ActivityModel::FIELD_LABEL . "." . $restOfKey, $result)) {
+                continue; // Only need to look up labels once
             }
             $fieldLabel = static::lookupFieldLabel($projectConfig->entry, $restOfKeyParts);
-            $result[ActivityModel::FIELD_LABEL . '.' . $restOfKey] = $fieldLabel;
+            $result[ActivityModel::FIELD_LABEL . "." . $restOfKey] = $fieldLabel;
         }
         return $result;
     }
@@ -100,23 +101,29 @@ class LexEntryCommands
      * @param string $command
      * @return bool|array<encoded LexEntryModel> if the project is syncing (or on hold) return false (no save)FixSe
      */
-    public static function updateEntry($projectId, $params, $userId, $mergeQueuePath = null, $pidFilePath = null, $command = null)
-    {
-        CodeGuard::checkTypeAndThrow($params, 'array');
+    public static function updateEntry(
+        $projectId,
+        $params,
+        $userId,
+        $mergeQueuePath = null,
+        $pidFilePath = null,
+        $command = null
+    ) {
+        CodeGuard::checkTypeAndThrow($params, "array");
         $project = new LexProjectModel($projectId);
         ProjectCommands::checkIfArchivedAndThrow($project);
         $now = UniversalTimestamp::now();
         $project->lastEntryModifiedDate = $now;
-        if (array_key_exists('id', $params) && $params['id'] != '') {
-            $entry = new LexEntryModel($project, $params['id']);
-            $oldEntry = new LexEntryModel($project, $params['id']); // NOT $entry = $oldEntry
-            $action = 'update';
+        if (array_key_exists("id", $params) && $params["id"] != "") {
+            $entry = new LexEntryModel($project, $params["id"]);
+            $oldEntry = new LexEntryModel($project, $params["id"]); // NOT $entry = $oldEntry
+            $action = "update";
         } else {
             $entry = new LexEntryModel($project);
             $entry->authorInfo->createdByUserRef->id = $userId;
             $entry->authorInfo->createdDate = $now;
             $entry->guid = Guid::create();
-            $action = 'create';
+            $action = "create";
             // TODO: Consider adding more specific activity entry: which fields were modified? 2014-09-03 RM
             // E.g., "User _____ updated entry _____ by adding a new sense with definition ______"
         }
@@ -125,19 +132,21 @@ class LexEntryCommands
         $entry->authorInfo->modifiedByUserRef->id = $userId;
 
         if ($project->hasSendReceive()) {
-//            $entry->dirtySR++;
+            //            $entry->dirtySR++;
             $entry->dirtySR = 0;
-            if (SendReceiveCommands::isInProgress($projectId)) return false;
+            if (SendReceiveCommands::isInProgress($projectId)) {
+                return false;
+            }
         }
 
-        if (array_key_exists('_update_deep_diff', $params)) {
-            $deepDiff = $params['_update_deep_diff'];
+        if (array_key_exists("_update_deep_diff", $params)) {
+            $deepDiff = $params["_update_deep_diff"];
             DeepDiffDecoder::applyDeepDiff($entry, $deepDiff);
         } else {
             LexEntryDecoder::decode($entry, $params);
         }
 
-        if ($action === 'update') {
+        if ($action === "update") {
             $differences = $oldEntry->calculateDifferences($entry);
             $differences = static::addFieldLabelsToDifferences($project->config, $differences);
         } else {
@@ -148,7 +157,7 @@ class LexEntryCommands
         $project->write();
         ActivityCommands::writeEntry($project, $userId, $entry, $action, $differences);
 
-//        SendReceiveCommands::queueProjectForUpdate($project, $mergeQueuePath);
+        //        SendReceiveCommands::queueProjectForUpdate($project, $mergeQueuePath);
 
         return JsonEncoder::encode($entry);
     }
@@ -159,7 +168,7 @@ class LexEntryCommands
      *          if matches one of LexConfig constants (e.g. POS, DEFINITION, etc), then return a subset of entries that have one or more senses missing the specified field
      * @return LexEntryListModel
      */
-    public static function listEntries($projectId, $missingInfo = '')
+    public static function listEntries($projectId, $missingInfo = "")
     {
         $project = new LexProjectModel($projectId);
         $lexEntries = new LexEntryListModel($project);
@@ -183,7 +192,8 @@ class LexEntryCommands
      * @param string $entryId
      * @return string
      */
-    public static function getEntryLexeme($projectId, $entryId) {
+    public static function getEntryLexeme($projectId, $entryId)
+    {
         $project = new LexProjectModel($projectId);
         $entry = new LexEntryModel($project, $entryId);
         $inputSystems = $project->config->entry->fields[LexConfig::LEXEME]->inputSystems;
@@ -192,6 +202,6 @@ class LexEntryCommands
                 return $entry->lexeme[$inputSystem]->value;
             }
         }
-        return ''; // TODO: Decide what to return for "not found", if empty string is not suitable.
+        return ""; // TODO: Decide what to return for "not found", if empty string is not suitable.
     }
 }

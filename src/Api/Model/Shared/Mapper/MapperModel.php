@@ -11,15 +11,15 @@ class MapperModel extends ObjectForEncoding
      * @param MongoMapper $mapper
      * @param string $id
      */
-    protected function __construct($mapper, $id = '')
+    protected function __construct($mapper, $id = "")
     {
         $this->_mapper = $mapper;
         $now = UniversalTimestamp::now();
         $this->dateModified = $now;
         $this->dateCreated = $now;
-        $this->setReadOnlyProp('dateModified');
-        $this->setReadOnlyProp('dateCreated');
-        CodeGuard::checkTypeAndThrow($id, 'string');
+        $this->setReadOnlyProp("dateModified");
+        $this->setReadOnlyProp("dateCreated");
+        CodeGuard::checkTypeAndThrow($id, "string");
         if (!empty($id)) {
             $this->read($id);
         }
@@ -49,7 +49,8 @@ class MapperModel extends ObjectForEncoding
         }
     }
 
-    public function readIfExists($id) {
+    public function readIfExists($id)
+    {
         if ($this->_mapper->exists($id)) {
             $this->_mapper->read($this, $id);
             return true;
@@ -89,9 +90,9 @@ class MapperModel extends ObjectForEncoding
      */
     public function write()
     {
-        CodeGuard::checkTypeAndThrow($this->id, 'Api\Model\Shared\Mapper\Id');
+        CodeGuard::checkTypeAndThrow($this->id, "Api\Model\Shared\Mapper\Id");
         $now = UniversalTimestamp::now();
-        if (! defined('MAPPERMODEL_NO_TIMESTAMP_UPDATE')) {
+        if (!defined("MAPPERMODEL_NO_TIMESTAMP_UPDATE")) {
             $this->dateModified = $now;
         }
         if (Id::isEmpty($this->id)) {
@@ -101,11 +102,11 @@ class MapperModel extends ObjectForEncoding
         $rearrangeableSubproperties = [];
         foreach ($rearrangeableProperties as $property) {
             $value = $this->$property;
-            if (is_a($value, 'Api\Model\Shared\Mapper\ArrayOf')) {
+            if (is_a($value, "Api\Model\Shared\Mapper\ArrayOf")) {
                 foreach ($value as $item) {
-                    if (is_a($item, 'Api\Model\Shared\Mapper\ObjectForEncoding')) {
+                    if (is_a($item, "Api\Model\Shared\Mapper\ObjectForEncoding")) {
                         foreach ($item->getRearrangeableProperties() as $subProperty) {
-                            if (! array_key_exists($property, $rearrangeableSubproperties)) {
+                            if (!array_key_exists($property, $rearrangeableSubproperties)) {
                                 $rearrangeableSubproperties[$property] = [];
                             }
                             $rearrangeableSubproperties[$property][] = $subProperty;
@@ -114,7 +115,12 @@ class MapperModel extends ObjectForEncoding
                 }
             }
         }
-        $this->id->id = $this->_mapper->write($this, $this->id->id, $rearrangeableProperties, $rearrangeableSubproperties);
+        $this->id->id = $this->_mapper->write(
+            $this,
+            $this->id->id,
+            $rearrangeableProperties,
+            $rearrangeableSubproperties
+        );
 
         return $this->id->id;
     }

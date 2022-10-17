@@ -6,19 +6,15 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "lib": ["es7", "dom"],
-    "module" : "commonjs",
+    "module": "commonjs",
     "moduleResolution": "Node",
     "noImplicitAny": true,
     "rootDir": ".",
     "sourceMap": true,
     "suppressImplicitAnyIndexErrors": true,
     "target": "ES6",
-    "typeRoots": [
-      "node_modules/@types"
-    ]
+    "typeRoots": ["node_modules/@types"]
   },
-  "exclude": [
-    "node_modules"
-  ],
+  "exclude": ["node_modules"],
   "include": ["**/*.ts"]
 }

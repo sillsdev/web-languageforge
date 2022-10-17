@@ -1,12 +1,12 @@
 // Setup other variables
-@import '_variables.scss';
+@import "_variables.scss";
 
 // Pull in Bootstrap files - by default this loads ALL features of Bootstrap which we may not need
-@import '../../../../../../../node_modules/bootstrap/scss/bootstrap.scss';
+@import "../../../../../../../node_modules/bootstrap/scss/bootstrap.scss";
 
 // Pull in bootstrap2 styles for angular ui.bootstrap dependency
-@import '_pagination';
+@import "_pagination";
 
 // Pull in  default global styles to be used sitewide
-@import '../../../../shared/_global.scss';
-@import '_global.scss';
+@import "../../../../shared/_global.scss";
+@import "_global.scss";

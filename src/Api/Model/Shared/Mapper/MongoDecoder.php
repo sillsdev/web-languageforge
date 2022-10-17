@@ -10,7 +10,7 @@ class MongoDecoder extends JsonDecoder
 {
     protected function postDecode($model)
     {
-        if (method_exists($model, 'fixDecode')) {
+        if (method_exists($model, "fixDecode")) {
             $model->fixDecode();
         }
     }
@@ -22,7 +22,7 @@ class MongoDecoder extends JsonDecoder
      * @param string $id
      * @throws \Exception
      */
-    public static function decode($model, $values, $id = '')
+    public static function decode($model, $values, $id = "")
     {
         $decoder = new MongoDecoder();
         $decoder->_decode($model, $values, $id);
@@ -48,10 +48,10 @@ class MongoDecoder extends JsonDecoder
     public function decodeId($key, $model, $values, $id)
     {
         if (!empty($id)) {
-            CodeGuard::checkTypeAndThrow($id, 'string');
+            CodeGuard::checkTypeAndThrow($id, "string");
             $model->$key->id = $id;
         } elseif (!empty($values[$key])) {
-            CodeGuard::checkTypeAndThrow($values[$key], 'string');
+            CodeGuard::checkTypeAndThrow($values[$key], "string");
             $model->$key->id = $values[$key];
         } else {
             throw new \Exception("The id could not be decoded. Value not set in 'values' or 'id' for key '$key'");
@@ -67,15 +67,15 @@ class MongoDecoder extends JsonDecoder
     public function decodeReferenceList($model, $data)
     {
         $model->refs = [];
-        if (array_key_exists('refs', $data)) {
+        if (array_key_exists("refs", $data)) {
             // This likely came from an API client, who shouldn't be sending this.
             return;
         }
         $refsArray = $data;
         foreach ($refsArray as $objectId) {
-            if (!is_a($objectId, 'MongoDB\BSON\ObjectID')) {
+            if (!is_a($objectId, "MongoDB\BSON\ObjectID")) {
                 throw new \Exception(
-                        "Invalid type '" . gettype($objectId) . " : " . get_class($objectId) . "' in ref collection"
+                    "Invalid type '" . gettype($objectId) . " : " . get_class($objectId) . "' in ref collection"
                 );
             }
             array_push($model->refs, new Id((string) $objectId));
@@ -88,7 +88,7 @@ class MongoDecoder extends JsonDecoder
      */
     public function decodeDateTime(&$model, $data)
     {
-        CodeGuard::checkTypeAndThrow($data, 'MongoDB\BSON\UTCDateTime', CodeGuard::CHECK_NULL_OK);
+        CodeGuard::checkTypeAndThrow($data, "MongoDB\BSON\UTCDateTime", CodeGuard::CHECK_NULL_OK);
         /** @var UTCDateTime $data */
         if ($data !== null) {
             /** @var \DateTime $newDateTime */
@@ -103,10 +103,12 @@ class MongoDecoder extends JsonDecoder
      */
     public function decodeUniversalTimestamp(&$model, $data)
     {
-        CodeGuard::checkTypeAndThrow($data, 'MongoDB\BSON\UTCDateTime', CodeGuard::CHECK_NULL_OK);
+        CodeGuard::checkTypeAndThrow($data, "MongoDB\BSON\UTCDateTime", CodeGuard::CHECK_NULL_OK);
         // account for difference between .NET and Linux epoch
         // (which produces negative milliseconds in UTCDateTime then causes an exception in UniversalTimestamp)
-        if ((int) (String) $data < 0) $data = new UTCDateTime(0);
+        if ((int) (string) $data < 0) {
+            $data = new UTCDateTime(0);
+        }
         parent::decodeUniversalTimestamp($model, $data);
     }
 
@@ -119,13 +121,13 @@ class MongoDecoder extends JsonDecoder
      */
     public function decodeDollarDot($key, &$data)
     {
-        if (strpos($key, '___DOLLAR___') > -1) {
-            $newK = str_replace('___DOLLAR___', '$', $key);
+        if (strpos($key, "___DOLLAR___") > -1) {
+            $newK = str_replace("___DOLLAR___", '$', $key);
             $data[$newK] = $data[$key];
             unset($data[$key]);
         }
-        if (strpos($key, '___DOT___') > -1) {
-            $newK = str_replace('___DOT___', '.', $key);
+        if (strpos($key, "___DOT___") > -1) {
+            $newK = str_replace("___DOT___", ".", $key);
             $data[$newK] = $data[$key];
             unset($data[$key]);
         }

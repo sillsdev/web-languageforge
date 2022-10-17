@@ -18,7 +18,11 @@ class MongoStore
         if (static::$_mongoClient == null) {
             // MongoDB Client that will unserialize everything as PHP Arrays consistent with the legacy driver (which our code was built on)
             // see http://mongodb.github.io/mongo-php-library/classes/client/#example
-            static::$_mongoClient = new Client(MONGODB_CONN, [], ['typeMap' => ['root' => 'array', 'document' => 'array', 'array' => 'array']]);
+            static::$_mongoClient = new Client(
+                MONGODB_CONN,
+                [],
+                ["typeMap" => ["root" => "array", "document" => "array", "array" => "array"]]
+            );
         }
         return static::$_mongoClient->selectDatabase($databaseName);
     }
@@ -44,12 +48,12 @@ class MongoStore
      */
     public static function copyDB($sourceName, $destName)
     {
-        $response = static::$_mongoClient->admin->command(array(
-            'copydb' => 1,
-            'fromhost' => 'localhost',
-            'fromdb' => $sourceName,
-            'todb' => $destName,
-        ));
+        $response = static::$_mongoClient->admin->command([
+            "copydb" => 1,
+            "fromhost" => "localhost",
+            "fromdb" => $sourceName,
+            "todb" => $destName,
+        ]);
 
         return $response;
     }
@@ -76,14 +80,16 @@ class MongoStore
             throw new \Exception("Database " . $oldName . " does not exist; cannot rename it to " . $newName . ".");
         }
         if (self::hasDB($newName)) {
-            throw new \Exception("Database " . $newName . " already exists; not renaming " . $oldName . " to " . $newName . ".");
+            throw new \Exception(
+                "Database " . $newName . " already exists; not renaming " . $oldName . " to " . $newName . "."
+            );
         }
         $copyResult = self::copyDB($oldName, $newName);
         $dropResult = self::dropDB($oldName);
-        $result = array(
-            'copyResult' => $copyResult,
-            'dropResult' => $dropResult
-        );
+        $result = [
+            "copyResult" => $copyResult,
+            "dropResult" => $dropResult,
+        ];
 
         return $result;
     }
@@ -96,7 +102,7 @@ class MongoStore
         $db = self::connect($databaseName);
         if (self::hasDB($databaseName)) {
             foreach ($db->listCollections() as $collectionInfo) {
-                if ($collectionInfo->getName() != 'system.indexes') {
+                if ($collectionInfo->getName() != "system.indexes") {
                     $collection = $db->selectCollection($collectionInfo->getName());
                     $collection->drop();
                 }
@@ -112,7 +118,7 @@ class MongoStore
     {
         $db = self::connect($databaseName);
         if (self::hasDB($databaseName)) {
-            if ($collectionName != 'system.indexes') {
+            if ($collectionName != "system.indexes") {
                 $collection = $db->selectCollection($collectionName);
                 $collection->drop();
             }
@@ -129,7 +135,7 @@ class MongoStore
         if (self::hasDB($databaseName)) {
             $db = self::connect($databaseName);
             foreach ($db->listCollections() as $collectionInfo) {
-                if ($collectionInfo->getName() != 'system.indexes') {
+                if ($collectionInfo->getName() != "system.indexes") {
                     $count++;
                 }
             }
@@ -145,7 +151,7 @@ class MongoStore
     public static function getCollectionIndexes($databaseName, $collectionName)
     {
         $db = self::connect($databaseName);
-        if (self::hasDB($databaseName) && $collectionName != 'system.indexes') {
+        if (self::hasDB($databaseName) && $collectionName != "system.indexes") {
             return $db->selectCollection($collectionName)->listIndexes();
         }
         return null;
@@ -159,7 +165,7 @@ class MongoStore
     public static function addIndexesToCollection($databaseName, $collectionName, $indexes)
     {
         $db = self::connect($databaseName);
-        if (self::hasDB($databaseName) && $collectionName != 'system.indexes') {
+        if (self::hasDB($databaseName) && $collectionName != "system.indexes") {
             $db->selectCollection($collectionName)->createIndexes($indexes);
         }
     }
@@ -171,12 +177,16 @@ class MongoStore
      * @param boolean $isDropRequired should an existing index be dropped
      * @return array indexes that don't exist yet
      */
-    public static function getIndexesNotSetInCollection($databaseName, $collectionName, $indexes, $isDropRequired = false)
-    {
+    public static function getIndexesNotSetInCollection(
+        $databaseName,
+        $collectionName,
+        $indexes,
+        $isDropRequired = false
+    ) {
         $indexesToCreate = [];
         $db = self::connect($databaseName);
-        if (self::hasDB($databaseName) && $collectionName != 'system.indexes') {
-            foreach($indexes as $index) {
+        if (self::hasDB($databaseName) && $collectionName != "system.indexes") {
+            foreach ($indexes as $index) {
                 if (self::isAllIndexFieldNamesInCollection($index, $databaseName, $collectionName, $indexName)) {
                     if (!self::isIndexIdenticalInCollection($index, $databaseName, $collectionName, $indexName)) {
                         if ($isDropRequired) {
@@ -202,7 +212,9 @@ class MongoStore
     {
         $indexesToCreate = self::getIndexesNotSetInCollection($databaseName, $collectionName, $indexes, true);
         if (count($indexesToCreate) > 0) {
-            self::connect($databaseName)->selectCollection($collectionName)->createIndexes($indexesToCreate);
+            self::connect($databaseName)
+                ->selectCollection($collectionName)
+                ->createIndexes($indexesToCreate);
         }
     }
 
@@ -213,11 +225,11 @@ class MongoStore
      * @param string $indexName outputs the index name if the field name is found
      * @return boolean true if the index key field name is in the collection
      */
-    public static function isIndexFieldNameInCollection($index, $databaseName, $collectionName, &$indexName = '')
+    public static function isIndexFieldNameInCollection($index, $databaseName, $collectionName, &$indexName = "")
     {
-        $indexName = '';
-        foreach(self::getCollectionIndexes($databaseName, $collectionName) as $indexInfo) {
-            foreach($index['key'] as $fieldName => $order) {
+        $indexName = "";
+        foreach (self::getCollectionIndexes($databaseName, $collectionName) as $indexInfo) {
+            foreach ($index["key"] as $fieldName => $order) {
                 if (array_key_exists($fieldName, $indexInfo->getKey())) {
                     $indexName = $indexInfo->getName();
                     return true;
@@ -235,14 +247,14 @@ class MongoStore
      * @param string $indexName outputs the index name if the field name is found
      * @return boolean true if all the field names of a single index key is in the collection
      */
-    public static function isAllIndexFieldNamesInCollection($index, $databaseName, $collectionName, &$indexName = '')
+    public static function isAllIndexFieldNamesInCollection($index, $databaseName, $collectionName, &$indexName = "")
     {
-        $indexName = '';
-        foreach(self::getCollectionIndexes($databaseName, $collectionName) as $indexInfo) {
+        $indexName = "";
+        foreach (self::getCollectionIndexes($databaseName, $collectionName) as $indexInfo) {
             $isAllFieldNamesInIndex = false;
-            if (count($index['key']) == count($indexInfo->getKey())) {
+            if (count($index["key"]) == count($indexInfo->getKey())) {
                 $isAllFieldNamesInIndex = true;
-                foreach ($index['key'] as $fieldName => $order) {
+                foreach ($index["key"] as $fieldName => $order) {
                     if (!array_key_exists($fieldName, $indexInfo->getKey())) {
                         $isAllFieldNamesInIndex = false;
                         break;
@@ -266,12 +278,16 @@ class MongoStore
      * @param string $indexName expected in collection
      * @return boolean true if the index key field name is identical in the collection
      */
-    public static function isIndexIdenticalInCollection($index, $databaseName, $collectionName, $indexName = '')
+    public static function isIndexIdenticalInCollection($index, $databaseName, $collectionName, $indexName = "")
     {
-        if (!$indexName &&
-            !self::isAllIndexFieldNamesInCollection($index, $databaseName, $collectionName, $indexName)) return false;
+        if (
+            !$indexName &&
+            !self::isAllIndexFieldNamesInCollection($index, $databaseName, $collectionName, $indexName)
+        ) {
+            return false;
+        }
 
-        foreach(self::getCollectionIndexes($databaseName, $collectionName) as $indexInfo) {
+        foreach (self::getCollectionIndexes($databaseName, $collectionName) as $indexInfo) {
             $isIdentical = false;
             if ($indexInfo->getName() == $indexName) {
                 $isIdentical = true;
@@ -287,15 +303,18 @@ class MongoStore
                     }
                 }
 
-                if ($indexInfo->isSparse() && !array_key_exists('sparse', $index) ||
-                    $indexInfo->isTtl() && !array_key_exists('expireAfterSeconds', $index) ||
-                    $indexInfo->isUnique() && !array_key_exists('unique', $index)
+                if (
+                    ($indexInfo->isSparse() && !array_key_exists("sparse", $index)) ||
+                    ($indexInfo->isTtl() && !array_key_exists("expireAfterSeconds", $index)) ||
+                    ($indexInfo->isUnique() && !array_key_exists("unique", $index))
                 ) {
                     $isIdentical = false;
                 }
             }
 
-            if ($isIdentical) return true;
+            if ($isIdentical) {
+                return true;
+            }
         }
 
         return false;

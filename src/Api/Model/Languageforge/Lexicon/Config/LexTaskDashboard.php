@@ -17,5 +17,4 @@ class LexTaskDashboard extends LexTask
     public $timeSpanDays;
 
     public $targetWordCount;
-
 }

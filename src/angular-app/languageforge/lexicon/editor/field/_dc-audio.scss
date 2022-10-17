@@ -16,7 +16,8 @@ dc-audio {
     width: 100%;
   }
 
-  .player, pui-audio-recorder {
+  .player,
+  pui-audio-recorder {
     flex-grow: 1;
   }
 
@@ -51,15 +52,17 @@ dc-audio {
     }
   }
 
-  .btn.dropdown-toggle, .btn.buttonAppend {
+  .btn.dropdown-toggle,
+  .btn.buttonAppend {
     margin-top: -1px;
     margin-bottom: -1px;
     margin-right: -1px;
     border-radius: 0 4px 4px 0;
     color: $theme-primary;
-}
+  }
 
-  div.form-group.float-right, div.form-group.float-left {
+  div.form-group.float-right,
+  div.form-group.float-left {
     margin-bottom: 0;
   }
 

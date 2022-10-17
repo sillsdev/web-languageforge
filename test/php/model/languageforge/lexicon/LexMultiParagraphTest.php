@@ -11,7 +11,7 @@ class MultiParagraphInMap
 {
     public function __construct()
     {
-        $this->data = new MapOf(function() {
+        $this->data = new MapOf(function () {
             return new LexMultiParagraph();
         });
     }
@@ -37,11 +37,18 @@ class LexMultiParagraphTest extends TestCase
     public function testToHTMLAndFromHTML_ExistingModel_RoundTripDataIdentical()
     {
         $multiParagraph = new LexMultiParagraph();
-        $multiParagraph->inputSystem = 'en';
+        $multiParagraph->inputSystem = "en";
 
-        $this->addParagraph($multiParagraph, 'This is the first paragraph in <span lang="de">die Deutsche Sprache</span>', 'styleA');
-        $this->addParagraph($multiParagraph, 'This is the second paragraph in <span lang="es">la lingua Espanol</span>');
-        $this->addParagraph($multiParagraph, null, 'styleC');
+        $this->addParagraph(
+            $multiParagraph,
+            'This is the first paragraph in <span lang="de">die Deutsche Sprache</span>',
+            "styleA"
+        );
+        $this->addParagraph(
+            $multiParagraph,
+            'This is the second paragraph in <span lang="es">la lingua Espanol</span>'
+        );
+        $this->addParagraph($multiParagraph, null, "styleC");
 
         $html = $multiParagraph->toHtml();
         $this->assertTrue(is_string($html));
@@ -55,11 +62,18 @@ class LexMultiParagraphTest extends TestCase
     public function testToHTMLAndFromHTML_ExistingModel_RoundTripDataProducesNoDifferences()
     {
         $multiParagraph = new LexMultiParagraph();
-        $multiParagraph->inputSystem = 'en';
+        $multiParagraph->inputSystem = "en";
 
-        $this->addParagraph($multiParagraph, 'This is the first paragraph in <span lang="de">die Deutsche Sprache</span>', 'styleA');
-        $this->addParagraph($multiParagraph, 'This is the second paragraph in <span lang="es">la lingua Espanol</span>');
-        $this->addParagraph($multiParagraph, null, 'styleC');
+        $this->addParagraph(
+            $multiParagraph,
+            'This is the first paragraph in <span lang="de">die Deutsche Sprache</span>',
+            "styleA"
+        );
+        $this->addParagraph(
+            $multiParagraph,
+            'This is the second paragraph in <span lang="es">la lingua Espanol</span>'
+        );
+        $this->addParagraph($multiParagraph, null, "styleC");
 
         $html = $multiParagraph->toHtml();
         $this->assertTrue(is_string($html));
@@ -74,16 +88,23 @@ class LexMultiParagraphTest extends TestCase
     public function testToHTMLAndFromHTML_ExistingModel_DifferencesFunctionDoesNotTestGuidChanges()
     {
         $multiParagraph = new LexMultiParagraph();
-        $multiParagraph->inputSystem = 'en';
+        $multiParagraph->inputSystem = "en";
 
-        $this->addParagraph($multiParagraph, 'This is the first paragraph in <span lang="de">die Deutsche Sprache</span>', 'styleA');
-        $this->addParagraph($multiParagraph, 'This is the second paragraph in <span lang="es">la lingua Espanol</span>');
-        $this->addParagraph($multiParagraph, null, 'styleC');
+        $this->addParagraph(
+            $multiParagraph,
+            'This is the first paragraph in <span lang="de">die Deutsche Sprache</span>',
+            "styleA"
+        );
+        $this->addParagraph(
+            $multiParagraph,
+            'This is the second paragraph in <span lang="es">la lingua Espanol</span>'
+        );
+        $this->addParagraph($multiParagraph, null, "styleC");
 
         $html = $multiParagraph->toHtml();
         $this->assertTrue(is_string($html));
 
-        $newMultiParagraph = new LexMultiParagraph();  // We do not re-use $multiParagraph->guid here, so the new paragraph has a *different* GUID
+        $newMultiParagraph = new LexMultiParagraph(); // We do not re-use $multiParagraph->guid here, so the new paragraph has a *different* GUID
         $newMultiParagraph->fromHtml($html);
 
         $differences = $multiParagraph->differences($newMultiParagraph);
@@ -94,11 +115,18 @@ class LexMultiParagraphTest extends TestCase
     public function testDifferences_SameObject_NoDifferences()
     {
         $multiParagraph = new LexMultiParagraph();
-        $multiParagraph->inputSystem = 'en';
+        $multiParagraph->inputSystem = "en";
 
-        $this->addParagraph($multiParagraph, 'This is the first paragraph in <span lang="de">die Deutsche Sprache</span>', 'styleA');
-        $this->addParagraph($multiParagraph, 'This is the second paragraph in <span lang="es">la lingua Espanol</span>');
-        $this->addParagraph($multiParagraph, null, 'styleC');
+        $this->addParagraph(
+            $multiParagraph,
+            'This is the first paragraph in <span lang="de">die Deutsche Sprache</span>',
+            "styleA"
+        );
+        $this->addParagraph(
+            $multiParagraph,
+            'This is the second paragraph in <span lang="es">la lingua Espanol</span>'
+        );
+        $this->addParagraph($multiParagraph, null, "styleC");
 
         $newMultiParagraph = $multiParagraph;
         $differences = $multiParagraph->differences($newMultiParagraph);
@@ -108,18 +136,32 @@ class LexMultiParagraphTest extends TestCase
     public function testDifferences_SameDataDifferentObject_NoDifferences()
     {
         $multiParagraph = new LexMultiParagraph();
-        $multiParagraph->inputSystem = 'en';
+        $multiParagraph->inputSystem = "en";
 
-        $this->addParagraph($multiParagraph, 'This is the first paragraph in <span lang="de">die Deutsche Sprache</span>', 'styleA');
-        $this->addParagraph($multiParagraph, 'This is the second paragraph in <span lang="es">la lingua Espanol</span>');
-        $this->addParagraph($multiParagraph, null, 'styleC');
+        $this->addParagraph(
+            $multiParagraph,
+            'This is the first paragraph in <span lang="de">die Deutsche Sprache</span>',
+            "styleA"
+        );
+        $this->addParagraph(
+            $multiParagraph,
+            'This is the second paragraph in <span lang="es">la lingua Espanol</span>'
+        );
+        $this->addParagraph($multiParagraph, null, "styleC");
 
         $newMultiParagraph = new LexMultiParagraph();
-        $newMultiParagraph->inputSystem = 'en';
+        $newMultiParagraph->inputSystem = "en";
 
-        $this->addParagraph($newMultiParagraph, 'This is the first paragraph in <span lang="de">die Deutsche Sprache</span>', 'styleA');
-        $this->addParagraph($newMultiParagraph, 'This is the second paragraph in <span lang="es">la lingua Espanol</span>');
-        $this->addParagraph($newMultiParagraph, null, 'styleC');
+        $this->addParagraph(
+            $newMultiParagraph,
+            'This is the first paragraph in <span lang="de">die Deutsche Sprache</span>',
+            "styleA"
+        );
+        $this->addParagraph(
+            $newMultiParagraph,
+            'This is the second paragraph in <span lang="es">la lingua Espanol</span>'
+        );
+        $this->addParagraph($newMultiParagraph, null, "styleC");
 
         $differences = $multiParagraph->differences($newMultiParagraph);
         $this->assertEquals([], $differences);
@@ -128,80 +170,134 @@ class LexMultiParagraphTest extends TestCase
     public function testDifferences_OnePaaragraphRemoved_AllParagraphsInDifferences()
     {
         $multiParagraph = new LexMultiParagraph();
-        $multiParagraph->inputSystem = 'en';
+        $multiParagraph->inputSystem = "en";
 
-        $this->addParagraph($multiParagraph, 'This is the first paragraph in <span lang="de">die Deutsche Sprache</span>', 'styleA');
-        $this->addParagraph($multiParagraph, 'This is the second paragraph in <span lang="es">la lingua Espanol</span>');
-        $this->addParagraph($multiParagraph, null, 'styleC');
+        $this->addParagraph(
+            $multiParagraph,
+            'This is the first paragraph in <span lang="de">die Deutsche Sprache</span>',
+            "styleA"
+        );
+        $this->addParagraph(
+            $multiParagraph,
+            'This is the second paragraph in <span lang="es">la lingua Espanol</span>'
+        );
+        $this->addParagraph($multiParagraph, null, "styleC");
 
         $newMultiParagraph = new LexMultiParagraph();
-        $newMultiParagraph->inputSystem = 'en';
+        $newMultiParagraph->inputSystem = "en";
 
-        $this->addParagraph($newMultiParagraph, 'This is the first paragraph in <span lang="de">die Deutsche Sprache</span>', 'styleA');
-        $this->addParagraph($newMultiParagraph, 'This is the second paragraph in <span lang="es">la lingua Espanol</span>');
+        $this->addParagraph(
+            $newMultiParagraph,
+            'This is the first paragraph in <span lang="de">die Deutsche Sprache</span>',
+            "styleA"
+        );
+        $this->addParagraph(
+            $newMultiParagraph,
+            'This is the second paragraph in <span lang="es">la lingua Espanol</span>'
+        );
 
         $differences = $multiParagraph->differences($newMultiParagraph);
-        $this->assertEquals([ "this" => $multiParagraph->toHtml(), "other" => $newMultiParagraph->toHtml() ], $differences);
+        $this->assertEquals(
+            ["this" => $multiParagraph->toHtml(), "other" => $newMultiParagraph->toHtml()],
+            $differences
+        );
     }
 
     public function testDifferences_OnePaaragraphAdded_AllParagraphsInDifferences()
     {
         $multiParagraph = new LexMultiParagraph();
-        $multiParagraph->inputSystem = 'en';
+        $multiParagraph->inputSystem = "en";
 
-        $this->addParagraph($multiParagraph, 'This is the first paragraph in <span lang="de">die Deutsche Sprache</span>', 'styleA');
-        $this->addParagraph($multiParagraph, 'This is the second paragraph in <span lang="es">la lingua Espanol</span>');
+        $this->addParagraph(
+            $multiParagraph,
+            'This is the first paragraph in <span lang="de">die Deutsche Sprache</span>',
+            "styleA"
+        );
+        $this->addParagraph(
+            $multiParagraph,
+            'This is the second paragraph in <span lang="es">la lingua Espanol</span>'
+        );
 
         $newMultiParagraph = new LexMultiParagraph();
-        $newMultiParagraph->inputSystem = 'en';
+        $newMultiParagraph->inputSystem = "en";
 
-        $this->addParagraph($newMultiParagraph, 'This is the first paragraph in <span lang="de">die Deutsche Sprache</span>', 'styleA');
-        $this->addParagraph($newMultiParagraph, 'This is the second paragraph in <span lang="es">la lingua Espanol</span>');
-        $this->addParagraph($newMultiParagraph, null, 'styleC');
+        $this->addParagraph(
+            $newMultiParagraph,
+            'This is the first paragraph in <span lang="de">die Deutsche Sprache</span>',
+            "styleA"
+        );
+        $this->addParagraph(
+            $newMultiParagraph,
+            'This is the second paragraph in <span lang="es">la lingua Espanol</span>'
+        );
+        $this->addParagraph($newMultiParagraph, null, "styleC");
 
         $differences = $multiParagraph->differences($newMultiParagraph);
-        $this->assertEquals([ "this" => $multiParagraph->toHtml(), "other" => $newMultiParagraph->toHtml() ], $differences);
+        $this->assertEquals(
+            ["this" => $multiParagraph->toHtml(), "other" => $newMultiParagraph->toHtml()],
+            $differences
+        );
     }
 
     public function testDifferences_WeHaveNoParagraphsAndTheyDo_AllParagraphsInDifferences()
     {
         $multiParagraph = new LexMultiParagraph();
-        $multiParagraph->inputSystem = 'en';
+        $multiParagraph->inputSystem = "en";
 
         $newMultiParagraph = new LexMultiParagraph();
-        $newMultiParagraph->inputSystem = 'en';
+        $newMultiParagraph->inputSystem = "en";
 
-        $this->addParagraph($newMultiParagraph, 'This is the first paragraph in <span lang="de">die Deutsche Sprache</span>', 'styleA');
-        $this->addParagraph($newMultiParagraph, 'This is the second paragraph in <span lang="es">la lingua Espanol</span>');
-        $this->addParagraph($newMultiParagraph, null, 'styleC');
+        $this->addParagraph(
+            $newMultiParagraph,
+            'This is the first paragraph in <span lang="de">die Deutsche Sprache</span>',
+            "styleA"
+        );
+        $this->addParagraph(
+            $newMultiParagraph,
+            'This is the second paragraph in <span lang="es">la lingua Espanol</span>'
+        );
+        $this->addParagraph($newMultiParagraph, null, "styleC");
 
         $differences = $multiParagraph->differences($newMultiParagraph);
-        $this->assertEquals([ "this" => $multiParagraph->toHtml(), "other" => $newMultiParagraph->toHtml() ], $differences);
+        $this->assertEquals(
+            ["this" => $multiParagraph->toHtml(), "other" => $newMultiParagraph->toHtml()],
+            $differences
+        );
     }
 
     public function testDifferences_TheyHaveNoParagraphsAndWeDo_AllParagraphsInDifferences()
     {
         $multiParagraph = new LexMultiParagraph();
-        $multiParagraph->inputSystem = 'en';
+        $multiParagraph->inputSystem = "en";
 
-        $this->addParagraph($multiParagraph, 'This is the first paragraph in <span lang="de">die Deutsche Sprache</span>', 'styleA');
-        $this->addParagraph($multiParagraph, 'This is the second paragraph in <span lang="es">la lingua Espanol</span>');
-        $this->addParagraph($multiParagraph, null, 'styleC');
+        $this->addParagraph(
+            $multiParagraph,
+            'This is the first paragraph in <span lang="de">die Deutsche Sprache</span>',
+            "styleA"
+        );
+        $this->addParagraph(
+            $multiParagraph,
+            'This is the second paragraph in <span lang="es">la lingua Espanol</span>'
+        );
+        $this->addParagraph($multiParagraph, null, "styleC");
 
         $newMultiParagraph = new LexMultiParagraph();
-        $newMultiParagraph->inputSystem = 'en';
+        $newMultiParagraph->inputSystem = "en";
 
         $differences = $multiParagraph->differences($newMultiParagraph);
-        $this->assertEquals([ "this" => $multiParagraph->toHtml(), "other" => $newMultiParagraph->toHtml() ], $differences);
+        $this->assertEquals(
+            ["this" => $multiParagraph->toHtml(), "other" => $newMultiParagraph->toHtml()],
+            $differences
+        );
     }
 
     public function testDifferences_NoParagraphsForUsOrThem_NoDifferences()
     {
         $multiParagraph = new LexMultiParagraph();
-        $multiParagraph->inputSystem = 'en';
+        $multiParagraph->inputSystem = "en";
 
         $newMultiParagraph = new LexMultiParagraph();
-        $newMultiParagraph->inputSystem = 'en';
+        $newMultiParagraph->inputSystem = "en";
 
         $differences = $multiParagraph->differences($newMultiParagraph);
         $this->assertEquals([], $differences);
@@ -210,14 +306,21 @@ class LexMultiParagraphTest extends TestCase
     public function testFromHTML_MultipleClassValues_GuidExtracted()
     {
         $paragraph = new LexParagraph();
-        $paragraph->styleName = 'styleA';
+        $paragraph->styleName = "styleA";
         $paragraph->content = 'This is the first paragraph in <span lang="de">die Deutsche Sprache</span>';
         $multiParagraph = new LexMultiParagraph();
-        $multiParagraph->inputSystem = '';
+        $multiParagraph->inputSystem = "";
         $multiParagraph->paragraphs->append($paragraph);
 
-        $html = '<p lang="" class="firstClassValue guid_' . $paragraph->guid . ' styleName_' . $paragraph->styleName .
-            ' fourthClassValue'.'">' . $paragraph->content . '</p>';
+        $html =
+            '<p lang="" class="firstClassValue guid_' .
+            $paragraph->guid .
+            " styleName_" .
+            $paragraph->styleName .
+            " fourthClassValue" .
+            '">' .
+            $paragraph->content .
+            "</p>";
         $newMultiParagraph = new LexMultiParagraph($multiParagraph->guid);
         $newMultiParagraph->fromHtml($html);
 
@@ -241,7 +344,7 @@ class LexMultiParagraphTest extends TestCase
     {
         $multiParagraph = new LexMultiParagraph();
         $params = json_decode(json_encode(LexDbeDtoEntriesEncoder::encode($multiParagraph)), true);
-        $params['paragraphsHtml'] = "\r";
+        $params["paragraphsHtml"] = "\r";
 
         $newMultiParagraph = new LexMultiParagraph($multiParagraph->guid);
 
@@ -254,16 +357,23 @@ class LexMultiParagraphTest extends TestCase
     public function testDecode_ExistingModelAndMapOf_DecodeOk()
     {
         $multiParagraph = new LexMultiParagraph();
-        $multiParagraph->inputSystem = 'en';
+        $multiParagraph->inputSystem = "en";
 
-        $this->addParagraph($multiParagraph, 'This is the first paragraph in <span lang="de">die Deutsche Sprache</span>', 'styleA');
-        $this->addParagraph($multiParagraph, 'This is the second paragraph in <span lang="es">la lingua Espanol</span>');
-        $this->addParagraph($multiParagraph, null, 'styleC');
+        $this->addParagraph(
+            $multiParagraph,
+            'This is the first paragraph in <span lang="de">die Deutsche Sprache</span>',
+            "styleA"
+        );
+        $this->addParagraph(
+            $multiParagraph,
+            'This is the second paragraph in <span lang="es">la lingua Espanol</span>'
+        );
+        $this->addParagraph($multiParagraph, null, "styleC");
 
         $params = json_decode(json_encode(LexDbeDtoEntriesEncoder::encode($multiParagraph)), true);
 
         $newMultiParagraph = new LexMultiParagraph($multiParagraph->guid);
-        $key = 'customField_entry_Cust_MultiPara';
+        $key = "customField_entry_Cust_MultiPara";
         $newTestMapOf = new MultiParagraphInMap();
         $newTestMapOf->data[$key] = clone $newMultiParagraph;
 

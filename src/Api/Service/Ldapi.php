@@ -9,27 +9,27 @@ use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use Silex\Application;
-use \Firebase\JWT\JWT;
+use Firebase\JWT\JWT;
 
-require_once APPPATH . 'vendor/autoload.php';
+require_once APPPATH . "vendor/autoload.php";
 
 class Ldapi
 {
     public static function callDotnetCoreServer($method, $url, array $jsonData = null)
     {
-        $url = 'http://localhost:8085/api/v2/' . $url;
+        $url = "http://localhost:8085/api/v2/" . $url;
         // Should eventually be: $url = 'https://admin.languagedepot.org/api/' . $url;
 
         $opts = [
-            'http_errors' => false,
-            'headers' => [ 'Authorization' => 'Bearer ' . LANGUAGE_DEPOT_API_TOKEN ],
+            "http_errors" => false,
+            "headers" => ["Authorization" => "Bearer " . LANGUAGE_DEPOT_API_TOKEN],
         ];
         if (isset($jsonData)) {
-            $opts['json'] = $jsonData;
+            $opts["json"] = $jsonData;
         }
 
         $handler = HandlerStack::create();
-        $client = new Client(['handler' => $handler]);
+        $client = new Client(["handler" => $handler]);
 
         // To implement retrying, uncomment below
         // $tryCounter = 1;
@@ -57,11 +57,11 @@ class Ldapi
             } catch (\Exception $e) {
             }
             $statusCode = $response->getStatusCode();
-            if (isset($json) && isset($json['ok']) && $json['ok']) {
-                return $json['data'];
+            if (isset($json) && isset($json["ok"]) && $json["ok"]) {
+                return $json["data"];
             } else {
-                if (isset($json) && isset($json['message'])) {
-                    $message = $json['message'];
+                if (isset($json) && isset($json["message"])) {
+                    $message = $json["message"];
                 } else {
                     $message = $body;
                 }
@@ -74,32 +74,32 @@ class Ldapi
 
     public static function callNodeJsServer($languageDepotUsername, $method, $url, array $jsonData = null)
     {
-        $baseUrl = getenv('LDAPI_BASE_URL') ?: 'https://admin.languagedepot.org/api/v2/';
+        $baseUrl = getenv("LDAPI_BASE_URL") ?: "https://admin.languagedepot.org/api/v2/";
 
         if ($languageDepotUsername) {
             $jwtPayload = [
                 "sub" => $languageDepotUsername,
                 "aud" => "https://admin.languagedepot.org/api/v2",
-                "iat" => time() - 5,  // Backdate 5 seconds in case of clock skew
-                "exp" => time() + 60,  // One-minute tokens so even if someone intercepts them, they can't use them
+                "iat" => time() - 5, // Backdate 5 seconds in case of clock skew
+                "exp" => time() + 60, // One-minute tokens so even if someone intercepts them, they can't use them
             ];
-            $jwt = JWT::encode($jwtPayload, LANGUAGE_DEPOT_API_TOKEN, 'HS256');
+            $jwt = JWT::encode($jwtPayload, LANGUAGE_DEPOT_API_TOKEN, "HS256");
         } else {
             $jwt = null;
         }
 
         $opts = [
-            'http_errors' => false,
+            "http_errors" => false,
         ];
         if (isset($jwt)) {
-            $opts['headers'] = [ 'Authorization' => 'Bearer ' . $jwt];
+            $opts["headers"] = ["Authorization" => "Bearer " . $jwt];
         }
         if (isset($jsonData)) {
-            $opts['json'] = $jsonData;
+            $opts["json"] = $jsonData;
         }
 
         $handler = HandlerStack::create();
-        $client = new Client(['handler' => $handler]);
+        $client = new Client(["handler" => $handler]);
 
         // To implement retrying, uncomment below
         // $tryCounter = 1;
@@ -121,9 +121,12 @@ class Ldapi
         try {
             $response = $client->request($method, $baseUrl . $url, $opts);
         } catch (ConnectException $e) {
-            if (ENVIRONMENT == 'development' && (strpos($baseUrl, '172.17.0.1') !== false || strpos($baseUrl, 'localhost') !== false)) {
+            if (
+                ENVIRONMENT == "development" &&
+                (strpos($baseUrl, "172.17.0.1") !== false || strpos($baseUrl, "localhost") !== false)
+            ) {
                 // Ignore "connection refused" errors, as that just means local LDAPI dev environment isn't running
-                return '';
+                return "";
             }
         }
 

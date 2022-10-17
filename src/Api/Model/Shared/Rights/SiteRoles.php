@@ -7,17 +7,17 @@ use Api\Model\Shared\Mapper\MapOf;
 
 class SiteRoles extends RolesBase
 {
-    const SITE_MANAGER    = 'site_manager';    // highest possible level for site: various management responsibilities like creating projects
-    const PROJECT_CREATOR = 'project_creator'; // permission to create a project
-    const USER = 'user';
-    const NONE = 'none';
+    const SITE_MANAGER = "site_manager"; // highest possible level for site: various management responsibilities like creating projects
+    const PROJECT_CREATOR = "project_creator"; // permission to create a project
+    const USER = "user";
+    const NONE = "none";
 
     public static function init()
     {
-        self::$_rights = array();
+        self::$_rights = [];
 
         // User
-        $rights = array();
+        $rights = [];
         $rights[] = Domain::USERS + Operation::EDIT_OWN;
         $rights[] = Domain::USERS + Operation::VIEW_OWN;
         $rights[] = Domain::PROJECTS + Operation::VIEW_OWN;
@@ -53,7 +53,7 @@ class SiteRoles extends RolesBase
             return self::_getRightsArray(self::$_rights, $roleMap[$website->domain]);
         }
 
-        return array();
+        return [];
     }
 
     /**
@@ -72,6 +72,5 @@ class SiteRoles extends RolesBase
 
         return false;
     }
-
 }
 SiteRoles::init();

@@ -13,12 +13,12 @@ class ActivityModelMongoMapper extends MongoMapper
     public static function connect($databaseName)
     {
         if (!isset(static::$_pool[$databaseName])) {
-            static::$_pool[$databaseName] = new ActivityModelMongoMapper($databaseName, 'activity');
+            static::$_pool[$databaseName] = new ActivityModelMongoMapper($databaseName, "activity");
         }
 
         return static::$_pool[$databaseName];
     }
 
     /** @var ActivityModelMongoMapper[] */
-    private static $_pool = array();
+    private static $_pool = [];
 }

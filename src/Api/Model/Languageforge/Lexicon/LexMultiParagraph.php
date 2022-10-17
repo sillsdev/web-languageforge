@@ -8,7 +8,8 @@ use Api\Model\Shared\Mapper\ArrayOf;
 use Api\Model\Shared\Mapper\ObjectForEncoding;
 use LazyProperty\LazyPropertiesTrait;
 
-function generateParagraph() {
+function generateParagraph()
+{
     return new LexParagraph();
 }
 
@@ -16,31 +17,32 @@ class LexMultiParagraph extends ObjectForEncoding
 {
     use LazyPropertiesTrait;
 
-    public function __construct($guid = '')
+    public function __construct($guid = "")
     {
-        $this->setReadOnlyProp('guid');
+        $this->setReadOnlyProp("guid");
         $this->guid = Guid::makeValid($guid);
-        $this->initLazyProperties(['paragraphs'], false);
+        $this->initLazyProperties(["paragraphs"], false);
     }
 
     protected function getPropertyType(string $name)
     {
         switch ($name) {
-            case 'paragraphs':
+            case "paragraphs":
                 return "ArrayOf(LexParagraph)";
             default:
                 return "string";
         }
     }
 
-    protected function createProperty($name) {
+    protected function createProperty($name)
+    {
         switch ($this->getPropertyType($name)) {
-            case 'ArrayOf(LexParagraph)':
-                return new ArrayOf('Api\Model\Languageforge\Lexicon\generateParagraph');
+            case "ArrayOf(LexParagraph)":
+                return new ArrayOf("Api\Model\Languageforge\Lexicon\generateParagraph");
 
-            case 'string':
+            case "string":
             default:
-                return '';
+                return "";
         }
     }
 
@@ -56,21 +58,22 @@ class LexMultiParagraph extends ObjectForEncoding
     /**
      * @return string
      */
-    public function toHtml() {
-        $html = '';
+    public function toHtml()
+    {
+        $html = "";
         /** @var LexParagraph $paragraph */
         foreach ($this->paragraphs as $paragraph) {
-            $html .= '<p';
+            $html .= "<p";
             $html .= ' lang="' . $this->inputSystem . '"';
             $html .= ' class="guid_' . $paragraph->guid;
             if (isset($paragraph->styleName)) {
-                $html .= ' styleName_' . $paragraph->styleName;
+                $html .= " styleName_" . $paragraph->styleName;
             }
             $html .= '">';
             if (isset($paragraph->content)) {
                 $html .= $paragraph->content;
             }
-            $html .= '</p>';
+            $html .= "</p>";
         }
         return $html;
     }
@@ -78,23 +81,24 @@ class LexMultiParagraph extends ObjectForEncoding
     /**
      * @param $html string
      */
-    public function fromHtml($html) {
-        $this->paragraphs->exchangeArray(array());
+    public function fromHtml($html)
+    {
+        $this->paragraphs->exchangeArray([]);
         if (trim($html)) {
             $dom = new \DOMDocument();
             $dom->loadHTML(trim($html));
             /** @var \DOMElement $node */
-            foreach ($dom->getElementsByTagName('p') as $node) {
-                $this->inputSystem = $node->getAttribute('lang');
+            foreach ($dom->getElementsByTagName("p") as $node) {
+                $this->inputSystem = $node->getAttribute("lang");
                 $paragraph = new LexParagraph();
-                foreach (explode(' ', $node->getAttribute('class')) as $classValue) {
-                    if (StringUtil::startsWith($classValue, 'guid_')) {
+                foreach (explode(" ", $node->getAttribute("class")) as $classValue) {
+                    if (StringUtil::startsWith($classValue, "guid_")) {
                         $guid = substr($classValue, 5);
                         if ($guid) {
                             $paragraph->guid = $guid;
                         }
                     }
-                    if (StringUtil::startsWith($classValue, 'styleName_')) {
+                    if (StringUtil::startsWith($classValue, "styleName_")) {
                         $styleName = substr($classValue, 10);
                         if ($styleName) {
                             $paragraph->styleName = $styleName;
@@ -113,9 +117,9 @@ class LexMultiParagraph extends ObjectForEncoding
     protected function calculateDifferences(LexMultiParagraph $otherMultiParagraph)
     {
         // We won't try to diff the content; it's harder than it's worth since this is just for the activity feed.
-        $thisHtml  = $this->toHtml();
+        $thisHtml = $this->toHtml();
         $otherHtml = $otherMultiParagraph->toHtml();
-        return [ "this" => $thisHtml, "other" => $otherHtml ];
+        return ["this" => $thisHtml, "other" => $otherHtml];
     }
 
     public function differences(LexMultiParagraph $otherMultiParagraph)
@@ -127,8 +131,7 @@ class LexMultiParagraph extends ObjectForEncoding
         }
         for ($i = 0; $i < $len; $i++) {
             // This is the simplest way to step through both arrays
-            if ($this->paragraphs[$i]->content !== $otherMultiParagraph->paragraphs[$i]->content)
-            {
+            if ($this->paragraphs[$i]->content !== $otherMultiParagraph->paragraphs[$i]->content) {
                 return $this->calculateDifferences($otherMultiParagraph);
             }
         }

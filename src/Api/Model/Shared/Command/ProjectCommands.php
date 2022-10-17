@@ -79,22 +79,23 @@ class ProjectCommands
      */
     public static function deleteProjects($projectIds, $userId)
     {
-        CodeGuard::checkTypeAndThrow($projectIds, 'array');
-        CodeGuard::checkTypeAndThrow($userId, 'string');
+        CodeGuard::checkTypeAndThrow($projectIds, "array");
+        CodeGuard::checkTypeAndThrow($userId, "string");
 
         $user = new UserModel($userId);
         $count = 0;
         foreach ($projectIds as $projectId) {
-            CodeGuard::checkTypeAndThrow($projectId, 'string');
+            CodeGuard::checkTypeAndThrow($projectId, "string");
             $project = ProjectModel::getById($projectId);
             if ($userId != $project->ownerRef->asString() && $user->role != SystemRoles::SYSTEM_ADMIN) {
                 throw new UserUnauthorizedException(
                     "This $project->appName project '$project->projectName'\n" .
-                    "can only be deleted by project owner or\n " .
-                    "a system administrator\n");
+                        "can only be deleted by project owner or\n " .
+                        "a system administrator\n"
+                );
             }
             if ($user->lastUsedProjectId == $projectId) {
-                $user->lastUsedProjectId = '';
+                $user->lastUsedProjectId = "";
                 $user->write();
             }
             $project->remove();
@@ -111,19 +112,20 @@ class ProjectCommands
      */
     public static function archiveProject($projectId, $userId)
     {
-        CodeGuard::checkTypeAndThrow($projectId, 'string');
-        CodeGuard::checkTypeAndThrow($userId, 'string');
+        CodeGuard::checkTypeAndThrow($projectId, "string");
+        CodeGuard::checkTypeAndThrow($userId, "string");
 
         $project = new ProjectModel($projectId);
         $user = new UserModel($userId);
         if ($userId != $project->ownerRef->asString() && $user->role != SystemRoles::SYSTEM_ADMIN) {
             throw new UserUnauthorizedException(
                 "This $project->appName project '$project->projectName'\n" .
-                "can only be archived by project owner or\n " .
-                "a system administrator\n");
+                    "can only be archived by project owner or\n " .
+                    "a system administrator\n"
+            );
         }
 
-        $user->lastUsedProjectId = '';
+        $user->lastUsedProjectId = "";
         $user->write();
 
         $project->isArchived = true;
@@ -136,10 +138,10 @@ class ProjectCommands
      */
     public static function publishProjects($projectIds)
     {
-        CodeGuard::checkTypeAndThrow($projectIds, 'array');
+        CodeGuard::checkTypeAndThrow($projectIds, "array");
         $count = 0;
         foreach ($projectIds as $projectId) {
-            CodeGuard::checkTypeAndThrow($projectId, 'string');
+            CodeGuard::checkTypeAndThrow($projectId, "string");
             $project = new ProjectModel($projectId);
             $project->isArchived = false;
             $project->write();
@@ -165,15 +167,17 @@ class ProjectCommands
      * @param ProjectModel $project
      * @throws ResourceNotAvailableException
      */
-    public static function checkIfArchivedAndThrow($project) {
-        CodeGuard::checkNullAndThrow($project, 'project');
-        CodeGuard::checkTypeAndThrow($project, '\Api\Model\Shared\ProjectModel');
+    public static function checkIfArchivedAndThrow($project)
+    {
+        CodeGuard::checkNullAndThrow($project, "project");
+        CodeGuard::checkTypeAndThrow($project, "\Api\Model\Shared\ProjectModel");
         if ($project->isArchived) {
             throw new ResourceNotAvailableException(
                 "This $project->appName project '$project->projectName'\n" .
-                "is archived and cannot be modified. Please\n" .
-                "contact a system administrator to re-publish\n" .
-                "this project if you want to make further updates.");
+                    "is archived and cannot be modified. Please\n" .
+                    "contact a system administrator to re-publish\n" .
+                    "this project if you want to make further updates."
+            );
         }
     }
 
@@ -184,7 +188,7 @@ class ProjectCommands
      */
     public static function usersDto($projectId)
     {
-        CodeGuard::checkTypeAndThrow($projectId, 'string');
+        CodeGuard::checkTypeAndThrow($projectId, "string");
         CodeGuard::checkNotFalseAndThrow($projectId, '$projectId');
 
         $usersDto = ManageUsersDto::encode($projectId);
@@ -215,7 +219,7 @@ class ProjectCommands
     public static function updateUserRole($projectId, $userId, $projectRole = ProjectRoles::CONTRIBUTOR)
     {
         CodeGuard::checkNotFalseAndThrow($projectId, '$projectId');
-        CodeGuard::checkNotFalseAndThrow($userId, 'userId');
+        CodeGuard::checkNotFalseAndThrow($userId, "userId");
         //CodeGuard::assertInArrayOrThrow($role, array(ProjectRoles::CONTRIBUTOR, ProjectRoles::MANAGER));
 
         // Add the user to the project
@@ -285,14 +289,16 @@ class ProjectCommands
         return $project->write();
     }
 
-    public static function grantAccessForUserRequest($projectId, $userId, $projectRole) {
+    public static function grantAccessForUserRequest($projectId, $userId, $projectRole)
+    {
         // check if userId exists in request queue on project model
         self::updateUserRole($projectId, $userId, $projectRole);
         // remove userId from request queue
         // send email notifying of acceptance
     }
 
-    public static function requestAccessForProject($projectId, $userId) {
+    public static function requestAccessForProject($projectId, $userId)
+    {
         // add userId to request queue
         // send email to project owner and all managers
     }
@@ -328,10 +334,10 @@ class ProjectCommands
     {
         $project = new ProjectSettingsModel($projectId);
 
-        return array(
-            'sms' => JsonEncoder::encode($project->smsSettings),
-            'email' => JsonEncoder::encode($project->emailSettings)
-        );
+        return [
+            "sms" => JsonEncoder::encode($project->smsSettings),
+            "email" => JsonEncoder::encode($project->emailSettings),
+        ];
     }
 
     /**
@@ -342,7 +348,7 @@ class ProjectCommands
     {
         $project = new ProjectModel();
 
-        return $project->readByProperties(array('projectCode' => $code));
+        return $project->readByProperties(["projectCode" => $code]);
     }
 
     /**
@@ -359,7 +365,7 @@ class ProjectCommands
 
         $project->write();
 
-        return $project->website()->baseUrl() . '/invite/' . $newAuthToken;
+        return $project->website()->baseUrl() . "/invite/" . $newAuthToken;
     }
 
     /**
@@ -372,9 +378,9 @@ class ProjectCommands
         // TODO: check that project invite sharing is enabled.  If not, throw exception if disabled.
         $project = ProjectModel::getById($projectId);
         if (empty($project->inviteToken->token)) {
-            return '';
+            return "";
         } else {
-            return $project->website()->baseUrl() . '/invite/' . $project->inviteToken->token;
+            return $project->website()->baseUrl() . "/invite/" . $project->inviteToken->token;
         }
     }
 
@@ -385,7 +391,7 @@ class ProjectCommands
     public static function disableInviteToken($projectId)
     {
         $project = ProjectModel::getById($projectId);
-        $project->inviteToken->token = '';
+        $project->inviteToken->token = "";
         $project->write();
     }
 
@@ -406,11 +412,11 @@ class ProjectCommands
      * @param $projectId
      * @param $newRole the value of the roles array to link
      */
-    public static function useInviteToken($userId, $projectId) {
+    public static function useInviteToken($userId, $projectId)
+    {
         $model = ProjectModel::getById($projectId);
         // only invite/change permissions if the user is not yet a member
-        if (!$model->userIsMember($userId))
-        {
+        if (!$model->userIsMember($userId)) {
             $model->addUserByInviteToken($userId);
             $model->write();
 
@@ -419,6 +425,6 @@ class ProjectCommands
             $user->write();
         }
 
-		return $model;
+        return $model;
     }
 }

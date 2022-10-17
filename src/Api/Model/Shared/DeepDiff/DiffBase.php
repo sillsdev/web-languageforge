@@ -16,20 +16,29 @@ class DiffBase
     /** @var array */
     public $path;
 
-    public function toMongoPath() {
-        return join('.', $this->path);
+    public function toMongoPath()
+    {
+        return join(".", $this->path);
     }
 
-    public function getValue() {}
+    public function getValue()
+    {
+    }
 
-    public static function fromDeepDiff($deepDiff) {
-        $kind = $deepDiff['kind'];
+    public static function fromDeepDiff($deepDiff)
+    {
+        $kind = $deepDiff["kind"];
         switch ($kind) {
-            case 'N': return new AddedDiff($deepDiff);
-            case 'D': return new DeletedDiff($deepDiff);
-            case 'E': return new EditedDiff($deepDiff);
-            case 'A': return new ArrayDiff($deepDiff);
-            default: return null;
+            case "N":
+                return new AddedDiff($deepDiff);
+            case "D":
+                return new DeletedDiff($deepDiff);
+            case "E":
+                return new EditedDiff($deepDiff);
+            case "A":
+                return new ArrayDiff($deepDiff);
+            default:
+                return null;
         }
     }
 }

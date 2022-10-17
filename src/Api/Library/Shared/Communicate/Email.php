@@ -13,10 +13,10 @@ class Email
      * @param string $content
      * @param string $htmlContent
      */
-    public static function send($from, $to, $subject, $content, $htmlContent = '')
+    public static function send($from, $to, $subject, $content, $htmlContent = "")
     {
         // Create the Transport
-        $transport = \Swift_SmtpTransport::newInstance(Env::requireEnv('MAIL_HOST'));
+        $transport = \Swift_SmtpTransport::newInstance(Env::requireEnv("MAIL_HOST"));
 
         // Create the Mailer using your created Transport
         $mailer = \Swift_Mailer::newInstance($transport);
@@ -27,7 +27,7 @@ class Email
         $message->setTo($to);
         $message->setBody($content);
         if ($htmlContent) {
-            $message->addPart($htmlContent, 'text/html');
+            $message->addPart($htmlContent, "text/html");
         }
 
         // Send the message

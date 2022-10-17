@@ -7,24 +7,31 @@ use Palaso\Utilities\CodeGuard;
 
 class DeepDiffDecoder
 {
-    public static function prepareDeepDiff($diffs) {
+    public static function prepareDeepDiff($diffs)
+    {
         $result = [];
         foreach (static::reorderPushes($diffs) as $diff) {
             $diffInstance = DiffBase::fromDeepDiff($diff);
-            if ($diffInstance) $result[] = $diffInstance;
+            if ($diffInstance) {
+                $result[] = $diffInstance;
+            }
         }
         return $result;
     }
 
-    public static function reorderPushes($diffs) {
+    public static function reorderPushes($diffs)
+    {
         $currentPath = [];
         $pushes = [];
         $result = [];
         foreach ($diffs as $diff) {
-            if ($diff['kind'] == 'A' && $diff['item']['kind'] == 'N' &&
-                ($currentPath == [] || $currentPath == $diff['path'])) {
-                    $currentPath = $diff['path'];
-                    $pushes[] = $diff;
+            if (
+                $diff["kind"] == "A" &&
+                $diff["item"]["kind"] == "N" &&
+                ($currentPath == [] || $currentPath == $diff["path"])
+            ) {
+                $currentPath = $diff["path"];
+                $pushes[] = $diff;
             } else {
                 if ($pushes) {
                     foreach (array_reverse($pushes) as $push) {
@@ -52,7 +59,7 @@ class DeepDiffDecoder
      */
     public static function applyDeepDiff($model, $deepDiff)
     {
-        CodeGuard::checkTypeAndThrow($deepDiff, 'array');
+        CodeGuard::checkTypeAndThrow($deepDiff, "array");
         // TODO: Do we need something like this next line from JsonDecoder, or something similar to it?
         // $propertiesToIgnore = $this->getPrivateAndReadOnlyProperties($model);
         $diffs = static::prepareDeepDiff($deepDiff);
@@ -74,13 +81,13 @@ class DeepDiffDecoder
         $last = array_pop($allButLast);
         $target = $model;
         $value = $diff->getValue();
-        $customFieldsIdx = array_search('customFields', $allButLast, true);
+        $customFieldsIdx = array_search("customFields", $allButLast, true);
         $customFieldData = [];
-        if ($customFieldsIdx !== false && $customFieldsIdx+2 <= count($path)) {
+        if ($customFieldsIdx !== false && $customFieldsIdx + 2 <= count($path)) {
             // Custom fields need special handling
-            $allButLast = array_slice($path, 0, $customFieldsIdx+2);
-            $customFieldName = $path[$customFieldsIdx+1];
-            $rest = array_slice($path, $customFieldsIdx+2);
+            $allButLast = array_slice($path, 0, $customFieldsIdx + 2);
+            $customFieldName = $path[$customFieldsIdx + 1];
+            $rest = array_slice($path, $customFieldsIdx + 2);
             foreach (\array_reverse($rest) as $step) {
                 $customFieldData = [$step => $customFieldData];
             }
@@ -93,14 +100,14 @@ class DeepDiffDecoder
 
         // The tricky part is distinguishing LexMultiText fields from LexValue fields, hence the slightly-convoluted construction of $customFieldData
 
-        $prevStep = '';
+        $prevStep = "";
         foreach ($allButLast as $step) {
-            if ($prevStep === 'customFields') {
+            if ($prevStep === "customFields") {
                 $target = static::getCustomFieldStep($target, $step, $customFieldData);
             } else {
                 $target = static::getNextStep($target, $step, $last, $value);
             }
-            if ($target instanceof \Api\Model\Languageforge\Lexicon\LexMultiText && $last === 'value') {
+            if ($target instanceof \Api\Model\Languageforge\Lexicon\LexMultiText && $last === "value") {
                 // For MultiText fields, we need $last to be NEXT-to-last step (the writing system), not "value"
                 $last = $path[count($path) - 2];
                 // $last = $step;
@@ -111,9 +118,9 @@ class DeepDiffDecoder
             $prevStep = $step;
         }
         if ($diff instanceof ArrayDiff) {
-            if ($diff->item['kind'] == 'N') {
+            if ($diff->item["kind"] == "N") {
                 static::pushValue($target, $last, $value);
-            } elseif ($diff->item['kind'] == 'D') {
+            } elseif ($diff->item["kind"] == "D") {
                 if ($target instanceof \ArrayObject) {
                     array_pop($target[$last]);
                 } else {
@@ -128,7 +135,8 @@ class DeepDiffDecoder
         }
     }
 
-    private static function getCustomFieldStep($target, $step, $customFieldData) {
+    private static function getCustomFieldStep($target, $step, $customFieldData)
+    {
         if (isset($target[$step])) {
             return $target[$step];
         } else {
@@ -138,7 +146,8 @@ class DeepDiffDecoder
         }
     }
 
-    private static function getNextStep($target, $step) {
+    private static function getNextStep($target, $step)
+    {
         if ($target instanceof \ArrayObject) {
             return $target[$step];
         } else {
@@ -146,12 +155,13 @@ class DeepDiffDecoder
         }
     }
 
-    private static function setValue(&$target, $last, $value) {
+    private static function setValue(&$target, $last, $value)
+    {
         if ($target instanceof \Api\Model\Languageforge\Lexicon\LexMultiText) {
             $target->form($last, $value);
-        } else if ($target instanceof \Api\Model\Languageforge\Lexicon\LexValue) {
-            $target->value($value);  // TODO: Test this
-        } else if ($target instanceof \ArrayObject) {
+        } elseif ($target instanceof \Api\Model\Languageforge\Lexicon\LexValue) {
+            $target->value($value); // TODO: Test this
+        } elseif ($target instanceof \ArrayObject) {
             $target[$last] = $value;
         } else {
             if ($target->$last instanceof \Api\Model\Languageforge\Lexicon\LexValue) {
@@ -162,7 +172,8 @@ class DeepDiffDecoder
         }
     }
 
-    private static function pushValue(&$target, $last, $value) {
+    private static function pushValue(&$target, $last, $value)
+    {
         if ($target instanceof \ArrayObject) {
             $target[$last][] = $value;
         } else {

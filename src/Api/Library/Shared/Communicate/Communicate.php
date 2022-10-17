@@ -25,8 +25,15 @@ class Communicate
      * @param DeliveryInterface|null $delivery
      * @return string
      */
-    public static function communicateToUsers($users, $project, $subject, $smsTemplate, $emailTemplate, $htmlEmailTemplate = '', DeliveryInterface $delivery = null)
-    {
+    public static function communicateToUsers(
+        $users,
+        $project,
+        $subject,
+        $smsTemplate,
+        $emailTemplate,
+        $htmlEmailTemplate = "",
+        DeliveryInterface $delivery = null
+    ) {
         // store message in database
         $messageModel = new MessageModel($project);
         $messageModel->subject = $subject;
@@ -34,7 +41,15 @@ class Communicate
         $messageId = $messageModel->write();
 
         foreach ($users as $user) {
-            self::communicateToUser($user, $project, $subject, $smsTemplate, $emailTemplate, $htmlEmailTemplate, $delivery);
+            self::communicateToUser(
+                $user,
+                $project,
+                $subject,
+                $smsTemplate,
+                $emailTemplate,
+                $htmlEmailTemplate,
+                $delivery
+            );
             $unreadModel = new UnreadMessageModel($user->id->asString(), $project->id->asString());
             $unreadModel->markUnread($messageId);
             $unreadModel->write();
@@ -53,21 +68,31 @@ class Communicate
      * @param string $htmlEmailTemplate
      * @param DeliveryInterface $delivery
      */
-    public static function communicateToUser($user, $project, $subject, $smsTemplate, $emailTemplate, $htmlEmailTemplate = '', DeliveryInterface $delivery = null)
-    {
+    public static function communicateToUser(
+        $user,
+        $project,
+        $subject,
+        $smsTemplate,
+        $emailTemplate,
+        $htmlEmailTemplate = "",
+        DeliveryInterface $delivery = null
+    ) {
         // Prepare the email message if required
-        if ($user->communicate_via == UserModel::COMMUNICATE_VIA_EMAIL || $user->communicate_via == UserModel::COMMUNICATE_VIA_BOTH) {
-            CodeGuard::checkNotFalseAndThrow($project->emailSettings->fromAddress, 'email from address');
-            CodeGuard::checkNotFalseAndThrow($user->email, 'email to address');
+        if (
+            $user->communicate_via == UserModel::COMMUNICATE_VIA_EMAIL ||
+            $user->communicate_via == UserModel::COMMUNICATE_VIA_BOTH
+        ) {
+            CodeGuard::checkNotFalseAndThrow($project->emailSettings->fromAddress, "email from address");
+            CodeGuard::checkNotFalseAndThrow($user->email, "email to address");
             $from = [$project->emailSettings->fromAddress => $project->emailSettings->fromName];
             $to = [$user->email => $user->name];
             $vars = [
-                    'user' => $user,
-                    'project' => $project
+                "user" => $user,
+                "project" => $project,
             ];
             $template = CommunicateHelper::templateFromString($emailTemplate);
             $content = $template->render($vars);
-            $htmlContent = '';
+            $htmlContent = "";
             if ($htmlEmailTemplate) {
                 $template = CommunicateHelper::templateFromString($emailTemplate);
                 $htmlContent = $template->render($vars);
@@ -78,15 +103,18 @@ class Communicate
 
         // Prepare the sms message if required
         if ($project->smsSettings->hasValidCredentials()) {
-            if ($user->communicate_via == UserModel::COMMUNICATE_VIA_SMS || $user->communicate_via == UserModel::COMMUNICATE_VIA_BOTH) {
+            if (
+                $user->communicate_via == UserModel::COMMUNICATE_VIA_SMS ||
+                $user->communicate_via == UserModel::COMMUNICATE_VIA_BOTH
+            ) {
                 $databaseName = $project->databaseName();
                 $sms = new SmsModel($databaseName);
-                $sms->providerInfo = $project->smsSettings->accountId . '|' . $project->smsSettings->authToken;
+                $sms->providerInfo = $project->smsSettings->accountId . "|" . $project->smsSettings->authToken;
                 $sms->to = $user->mobile_phone;
                 $sms->from = $project->smsSettings->fromNumber;
                 $vars = [
-                    'user' => $user,
-                    'project' => $project
+                    "user" => $user,
+                    "project" => $project,
                 ];
                 $template = CommunicateHelper::templateFromString($smsTemplate);
                 $sms->message = $template->render($vars);
@@ -108,14 +136,14 @@ class Communicate
         $userModel->write();
 
         $to = [$userModel->email => $userModel->name];
-        $subject = $website->name . ' account signup validation';
+        $subject = $website->name . " account signup validation";
         $vars = [
-                'user' => $userModel,
-                'link' => UrlHelper::baseUrl() . '/validate/' . $userModel->validationKey,
-                'website' => $website,
+            "user" => $userModel,
+            "link" => UrlHelper::baseUrl() . "/validate/" . $userModel->validationKey,
+            "website" => $website,
         ];
 
-        self::sendTemplateEmail($to, $subject, 'SignupValidate', $vars, $website, $delivery);
+        self::sendTemplateEmail($to, $subject, "SignupValidate", $vars, $website, $delivery);
     }
 
     /**
@@ -126,14 +154,14 @@ class Communicate
     public static function sendWelcomeToWebsite($userModel, $website, DeliveryInterface $delivery = null)
     {
         $to = [$userModel->email => $userModel->name];
-        $subject = 'Welcome to ' . $website->name;
+        $subject = "Welcome to " . $website->name;
         $vars = [
-            'user' => $userModel,
-            'link' => UrlHelper::baseUrl(),
-            'website' => $website,
+            "user" => $userModel,
+            "link" => UrlHelper::baseUrl(),
+            "website" => $website,
         ];
 
-        self::sendTemplateEmail($to, $subject, 'WelcomeToWebsite', $vars, $website, $delivery);
+        self::sendTemplateEmail($to, $subject, "WelcomeToWebsite", $vars, $website, $delivery);
     }
 
     /**
@@ -143,21 +171,26 @@ class Communicate
      * @param Website $website
      * @param DeliveryInterface $delivery
      */
-    public static function sendInvite($inviterUserModel, $toUserModel, $projectModel, $website, DeliveryInterface $delivery = null)
-    {
+    public static function sendInvite(
+        $inviterUserModel,
+        $toUserModel,
+        $projectModel,
+        $website,
+        DeliveryInterface $delivery = null
+    ) {
         $toUserModel->setValidation(7);
         $toUserModel->write();
 
         $to = [$toUserModel->email => $toUserModel->name];
-        $subject = $website->name . ' invitation';
+        $subject = $website->name . " invitation";
         $vars = [
-            'user' => $inviterUserModel,
-            'project' => $projectModel,
-            'link' => self::calculateSignupUrl($website, $toUserModel->email),
-            'website' => $website,
+            "user" => $inviterUserModel,
+            "project" => $projectModel,
+            "link" => self::calculateSignupUrl($website, $toUserModel->email),
+            "website" => $website,
         ];
 
-        self::sendTemplateEmail($to, $subject, 'InvitationValidate', $vars, $website, $delivery);
+        self::sendTemplateEmail($to, $subject, "InvitationValidate", $vars, $website, $delivery);
     }
 
     /**
@@ -168,19 +201,25 @@ class Communicate
      * @param Website $website
      * @param DeliveryInterface $delivery
      */
-    public static function sendNewUserInProject($toUserModel, $newUserName, $newUserPassword, $project, $website, DeliveryInterface $delivery = null)
-    {
+    public static function sendNewUserInProject(
+        $toUserModel,
+        $newUserName,
+        $newUserPassword,
+        $project,
+        $website,
+        DeliveryInterface $delivery = null
+    ) {
         $to = [$toUserModel->email => $toUserModel->name];
-        $subject = $website->name . ' new user login for project ' . $project->projectName;
+        $subject = $website->name . " new user login for project " . $project->projectName;
         $vars = [
-                'user' => $toUserModel,
-                'newUserName' => $newUserName,
-                'newUserPassword' => $newUserPassword,
-                'website' => $website,
-                'project' => $project
+            "user" => $toUserModel,
+            "newUserName" => $newUserName,
+            "newUserPassword" => $newUserPassword,
+            "website" => $website,
+            "project" => $project,
         ];
 
-        self::sendTemplateEmail($to, $subject, 'NewUserInProject', $vars, $website, $delivery);
+        self::sendTemplateEmail($to, $subject, "NewUserInProject", $vars, $website, $delivery);
     }
 
     /**
@@ -191,18 +230,23 @@ class Communicate
      * @param Website $website
      * @param DeliveryInterface $delivery
      */
-    public static function sendAddedToProject($inviterUserModel, $toUserModel, $projectModel, $website, DeliveryInterface $delivery = null)
-    {
+    public static function sendAddedToProject(
+        $inviterUserModel,
+        $toUserModel,
+        $projectModel,
+        $website,
+        DeliveryInterface $delivery = null
+    ) {
         $to = [$toUserModel->email => $toUserModel->name];
-        $subject = 'You\'ve been added to the project ' . $projectModel->projectName . ' on ' . $website->name;
+        $subject = 'You\'ve been added to the project ' . $projectModel->projectName . " on " . $website->name;
         $vars = [
-            'toUser' => $toUserModel,
-            'inviterUser' => $inviterUserModel,
-            'project' => $projectModel,
-            'website' => $website
+            "toUser" => $toUserModel,
+            "inviterUser" => $inviterUserModel,
+            "project" => $projectModel,
+            "website" => $website,
         ];
 
-        self::sendTemplateEmail($to, $subject, 'AddedToProject', $vars, $website, $delivery);
+        self::sendTemplateEmail($to, $subject, "AddedToProject", $vars, $website, $delivery);
     }
 
     /**
@@ -216,14 +260,14 @@ class Communicate
         $user->write();
 
         $to = [$user->email => $user->name];
-        $subject = $website->name . ' Forgotten Password Verification';
+        $subject = $website->name . " Forgotten Password Verification";
         $vars = [
-            'user' => $user,
-            'link' => UrlHelper::baseUrl() . '/auth/reset_password/' . $user->resetPasswordKey,
-            'website' => $website,
+            "user" => $user,
+            "link" => UrlHelper::baseUrl() . "/auth/reset_password/" . $user->resetPasswordKey,
+            "website" => $website,
         ];
 
-        self::sendTemplateEmail($to, $subject, 'ForgotPasswordVerification', $vars, $website, $delivery);
+        self::sendTemplateEmail($to, $subject, "ForgotPasswordVerification", $vars, $website, $delivery);
     }
 
     /**
@@ -232,20 +276,25 @@ class Communicate
      * @param Website $website
      * @param DeliveryInterface $delivery
      */
-    public static function sendJoinRequestConfirmation($user, $projectModel, $website, DeliveryInterface $delivery = null)
-    {
+    public static function sendJoinRequestConfirmation(
+        $user,
+        $projectModel,
+        $website,
+        DeliveryInterface $delivery = null
+    ) {
         $user->setValidation(7);
         $user->write();
 
         $to = [$user->email => $user->name];
-        $subject = 'You\'ve submitted a join request to the project ' . $projectModel->projectName . ' on ' . $website->name;
+        $subject =
+            'You\'ve submitted a join request to the project ' . $projectModel->projectName . " on " . $website->name;
         $vars = [
-            'user' => $user,
-            'project' => $projectModel,
-            'website' => $website
+            "user" => $user,
+            "project" => $projectModel,
+            "website" => $website,
         ];
 
-        self::sendTemplateEmail($to, $subject, 'JoinRequestConfirmation', $vars, $website, $delivery);
+        self::sendTemplateEmail($to, $subject, "JoinRequestConfirmation", $vars, $website, $delivery);
     }
 
     /**
@@ -261,16 +310,16 @@ class Communicate
         $user->write();
 
         $to = [$admin->email => $admin->name];
-        $subject = $user->name . ' join request';
+        $subject = $user->name . " join request";
         $vars = [
-            'user' => $user,
-            'admin' => $admin,
-            'project' => $projectModel,
-            'link' => UrlHelper::baseUrl() . '/app/usermanagement/' . $projectModel->id->asString() . '#!/joinRequests',
-            'website' => $website
+            "user" => $user,
+            "admin" => $admin,
+            "project" => $projectModel,
+            "link" => UrlHelper::baseUrl() . "/app/usermanagement/" . $projectModel->id->asString() . "#!/joinRequests",
+            "website" => $website,
         ];
 
-        self::sendTemplateEmail($to, $subject, 'JoinRequest', $vars, $website, $delivery);
+        self::sendTemplateEmail($to, $subject, "JoinRequest", $vars, $website, $delivery);
     }
 
     /**
@@ -282,46 +331,46 @@ class Communicate
     public static function sendJoinRequestAccepted($user, $projectModel, $website, DeliveryInterface $delivery = null)
     {
         $to = [$user->email => $user->name];
-        $subject = 'You\'ve submitted a join request to the project ' . $projectModel->projectName . ' on ' . $website->name;
+        $subject =
+            'You\'ve submitted a join request to the project ' . $projectModel->projectName . " on " . $website->name;
         $vars = [
-            'user' => $user,
-            'project' => $projectModel,
-            'link' => UrlHelper::baseUrl() . "/app/{$projectModel->appName}/" . $projectModel->id->asString(),
-            'website' => $website
+            "user" => $user,
+            "project" => $projectModel,
+            "link" => UrlHelper::baseUrl() . "/app/{$projectModel->appName}/" . $projectModel->id->asString(),
+            "website" => $website,
         ];
 
-        self::sendTemplateEmail($to, $subject, 'JoinRequestAccepted', $vars, $website, $delivery);
+        self::sendTemplateEmail($to, $subject, "JoinRequestAccepted", $vars, $website, $delivery);
     }
 
-    private static function sendTemplateEmail($to, $subject, $templateName, $vars, $website, DeliveryInterface $delivery = null)
-    {
-        $from = ['no-reply@languageforge.org' => 'Language Forge'];
+    private static function sendTemplateEmail(
+        $to,
+        $subject,
+        $templateName,
+        $vars,
+        $website,
+        DeliveryInterface $delivery = null
+    ) {
+        $from = ["no-reply@languageforge.org" => "Language Forge"];
 
-        $templatePath = $website->base . '/theme/' . $website->theme . '/email/en';
-        if (! file_exists(APPPATH . 'Site/views/' . "$templatePath/$templateName.twig" )) {
-            $templatePath = $website->base . '/theme/default/email/en';
-            if (! file_exists(APPPATH . 'Site/views/' . "$templatePath/$templateName.twig" )) {
-                $templatePath = 'shared/email/en';
+        $templatePath = $website->base . "/theme/" . $website->theme . "/email/en";
+        if (!file_exists(APPPATH . "Site/views/" . "$templatePath/$templateName.twig")) {
+            $templatePath = $website->base . "/theme/default/email/en";
+            if (!file_exists(APPPATH . "Site/views/" . "$templatePath/$templateName.twig")) {
+                $templatePath = "shared/email/en";
             }
         }
 
         $template = CommunicateHelper::templateFromFile("$templatePath/$templateName.twig");
         $content = $template->render($vars);
 
-        $htmlContent = '';
-        if (file_exists(APPPATH . 'Site/views/' . "$templatePath/$templateName.html.twig")) {
+        $htmlContent = "";
+        if (file_exists(APPPATH . "Site/views/" . "$templatePath/$templateName.html.twig")) {
             $template = CommunicateHelper::templateFromFile("$templatePath/$templateName.html.twig");
             $htmlContent = $template->render($vars);
         }
 
-        CommunicateHelper::deliverEmail(
-            $from,
-            $to,
-            $subject,
-            $content,
-            $htmlContent,
-            $delivery
-        );
+        CommunicateHelper::deliverEmail($from, $to, $subject, $content, $htmlContent, $delivery);
     }
 
     /**
@@ -331,14 +380,18 @@ class Communicate
      * @param string $avatar
      * @return string
      */
-    public static function calculateSignupUrl(Website $website, string $email, string $name = null, string $avatar = null): string
-    {
-        $url = UrlHelper::baseUrl() . '/public/signup#!/?e=' . urlencode($email);
+    public static function calculateSignupUrl(
+        Website $website,
+        string $email,
+        string $name = null,
+        string $avatar = null
+    ): string {
+        $url = UrlHelper::baseUrl() . "/public/signup#!/?e=" . urlencode($email);
         if ($name) {
-            $url = $url . '&n=' . urlencode($name);
+            $url = $url . "&n=" . urlencode($name);
         }
         if ($avatar) {
-            $url = $url . '&a=' . urlencode($avatar);
+            $url = $url . "&a=" . urlencode($avatar);
         }
         return $url;
     }

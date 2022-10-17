@@ -8,8 +8,7 @@ class LexMultiTextTest extends TestCase
     public function createMultitext(array $values)
     {
         $multiText = new LexMultiText();
-        foreach ($values as $key => $value)
-        {
+        foreach ($values as $key => $value) {
             $multiText->form($key, $value);
         }
         return $multiText;
@@ -28,8 +27,8 @@ class LexMultiTextTest extends TestCase
         $one = ["fr" => "bonjour"];
         $two = ["en" => "bonjour"];
         $expectedDifferences = [
-            [ "inputSystem" => "fr", "this" => "bonjour", "other" => "" ],
-            [ "inputSystem" => "en", "this" => "", "other" => "bonjour" ],
+            ["inputSystem" => "fr", "this" => "bonjour", "other" => ""],
+            ["inputSystem" => "en", "this" => "", "other" => "bonjour"],
         ];
         $this->doTest($one, $two, $expectedDifferences);
     }
@@ -38,9 +37,7 @@ class LexMultiTextTest extends TestCase
     {
         $one = ["fr" => "bonjour"];
         $two = ["fr" => ""];
-        $expectedDifferences = [
-            [ "inputSystem" => "fr", "this" => "bonjour", "other" => "" ],
-        ];
+        $expectedDifferences = [["inputSystem" => "fr", "this" => "bonjour", "other" => ""]];
         $this->doTest($one, $two, $expectedDifferences);
     }
 
@@ -48,9 +45,7 @@ class LexMultiTextTest extends TestCase
     {
         $one = ["fr" => "bonjour"];
         $two = [];
-        $expectedDifferences = [
-            [ "inputSystem" => "fr", "this" => "bonjour", "other" => "" ],
-        ];
+        $expectedDifferences = [["inputSystem" => "fr", "this" => "bonjour", "other" => ""]];
         $this->doTest($one, $two, $expectedDifferences);
     }
 
@@ -58,9 +53,7 @@ class LexMultiTextTest extends TestCase
     {
         $one = [];
         $two = ["fr" => "bonjour"];
-        $expectedDifferences = [
-            [ "inputSystem" => "fr", "this" => "", "other" => "bonjour" ],
-        ];
+        $expectedDifferences = [["inputSystem" => "fr", "this" => "", "other" => "bonjour"]];
         $this->doTest($one, $two, $expectedDifferences);
     }
 
@@ -111,8 +104,8 @@ class LexMultiTextTest extends TestCase
         $one = ["fr" => "bonjour", "en" => "hello"];
         $two = ["fr" => "au revoir", "en" => "goodbye"];
         $expectedDifferences = [
-            [ "inputSystem" => "fr", "this" => "bonjour", "other" => "au revoir" ],
-            [ "inputSystem" => "en", "this" => "hello", "other" => "goodbye" ],
+            ["inputSystem" => "fr", "this" => "bonjour", "other" => "au revoir"],
+            ["inputSystem" => "en", "this" => "hello", "other" => "goodbye"],
         ];
         $this->doTest($one, $two, $expectedDifferences);
     }
@@ -122,9 +115,9 @@ class LexMultiTextTest extends TestCase
         $one = ["fr" => "bonjour", "en" => "hello", "xyz" => "will be deleted"];
         $two = ["fr" => "au revoir", "en" => "goodbye"];
         $expectedDifferences = [
-            [ "inputSystem" => "fr",  "this" => "bonjour", "other" => "au revoir" ],
-            [ "inputSystem" => "en",  "this" => "hello", "other" => "goodbye" ],
-            [ "inputSystem" => "xyz", "this" => "will be deleted", "other" => "" ],
+            ["inputSystem" => "fr", "this" => "bonjour", "other" => "au revoir"],
+            ["inputSystem" => "en", "this" => "hello", "other" => "goodbye"],
+            ["inputSystem" => "xyz", "this" => "will be deleted", "other" => ""],
         ];
         $this->doTest($one, $two, $expectedDifferences);
     }
@@ -134,9 +127,9 @@ class LexMultiTextTest extends TestCase
         $one = ["fr" => "bonjour", "en" => "hello"];
         $two = ["fr" => "au revoir", "en" => "goodbye", "xyz" => "will be deleted"];
         $expectedDifferences = [
-            [ "inputSystem" => "fr",  "this" => "bonjour", "other" => "au revoir" ],
-            [ "inputSystem" => "en",  "this" => "hello", "other" => "goodbye" ],
-            [ "inputSystem" => "xyz", "this" => "", "other" => "will be deleted" ],
+            ["inputSystem" => "fr", "this" => "bonjour", "other" => "au revoir"],
+            ["inputSystem" => "en", "this" => "hello", "other" => "goodbye"],
+            ["inputSystem" => "xyz", "this" => "", "other" => "will be deleted"],
         ];
         $this->doTest($one, $two, $expectedDifferences);
     }
@@ -146,10 +139,10 @@ class LexMultiTextTest extends TestCase
         $one = ["fr" => "bonjour", "en" => "hello", "xyz" => "will be deleted"];
         $two = ["fr" => "au revoir", "en" => "goodbye", "abc" => "is new"];
         $expectedDifferences = [
-            [ "inputSystem" => "fr",  "this" => "bonjour", "other" => "au revoir" ],
-            [ "inputSystem" => "en",  "this" => "hello", "other" => "goodbye" ],
-            [ "inputSystem" => "xyz", "this" => "will be deleted", "other" => "" ],
-            [ "inputSystem" => "abc", "this" => "", "other" => "is new" ],
+            ["inputSystem" => "fr", "this" => "bonjour", "other" => "au revoir"],
+            ["inputSystem" => "en", "this" => "hello", "other" => "goodbye"],
+            ["inputSystem" => "xyz", "this" => "will be deleted", "other" => ""],
+            ["inputSystem" => "abc", "this" => "", "other" => "is new"],
         ];
         $this->doTest($one, $two, $expectedDifferences);
     }

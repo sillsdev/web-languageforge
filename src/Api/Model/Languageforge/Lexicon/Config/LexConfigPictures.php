@@ -8,8 +8,8 @@ class LexConfigPictures extends LexConfigMultiText
     {
         parent::__construct();
         $this->type = self::PICTURES;
-        $this->label = 'Pictures';
-        $this->captionLabel = 'Captions';
+        $this->label = "Pictures";
+        $this->captionLabel = "Captions";
         $this->captionHideIfEmpty = true;
     }
 

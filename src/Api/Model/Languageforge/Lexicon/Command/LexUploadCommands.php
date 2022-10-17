@@ -14,10 +14,7 @@ use Palaso\Utilities\FileUtilities;
 
 class LexUploadCommands
 {
-    private static $allowedLiftExtensions = array(
-        ".lift"
-    );
-
+    private static $allowedLiftExtensions = [".lift"];
 
     /**
      * Upload an audio file
@@ -32,15 +29,15 @@ class LexUploadCommands
     {
         $project = new LexProjectModel($projectId);
         ProjectCommands::checkIfArchivedAndThrow($project);
-        if ($mediaType != 'audio') {
+        if ($mediaType != "audio") {
             throw new \Exception("Unsupported upload type.");
         }
-        if (! $tmpFilePath) {
+        if (!$tmpFilePath) {
             throw new \Exception("Upload controller did not move the uploaded file.");
         }
 
-        $file = $_FILES['file'];
-        $fileName = $file['name'];
+        $file = $_FILES["file"];
+        $fileName = $file["name"];
         $fileNamePrefix = date("YmdHis");
 
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
@@ -49,9 +46,9 @@ class LexUploadCommands
 
         $fileName = FileUtilities::replaceSpecialCharacters($fileName);
 
-        $fileExt = (false === $pos = strrpos($fileName, '.')) ? '' : substr($fileName, $pos);
+        $fileExt = false === ($pos = strrpos($fileName, ".")) ? "" : substr($fileName, $pos);
 
-        $allowedTypes = array(
+        $allowedTypes = [
             "application/octet-stream",
 
             // allow m4a audio uploads, which curiously has a mime type of video/mp4, audio/m4a, audio/mp4, or audio/x-m4a
@@ -75,23 +72,13 @@ class LexUploadCommands
             "audio/ogg",
             "audio/webm",
             // allow Google Chrome to handle MediaRecorder recordings as video/webm MimeType
-            "video/webm"
-        );
-        $allowedExtensions = array(
-            ".mp3",
-            ".mpa",
-            ".mpg",
-            ".m4a",
-            ".wav",
-            ".ogg",
-            ".flac",
-            ".webm",
-        );
+            "video/webm",
+        ];
+        $allowedExtensions = [".mp3", ".mpa", ".mpg", ".m4a", ".wav", ".ogg", ".flac", ".webm"];
 
         $response = new UploadResponse();
 
         if (in_array(strtolower($fileType), $allowedTypes) && in_array(strtolower($fileExt), $allowedExtensions)) {
-
             // make the folders if they don't exist
             $project->createAssetsFolders();
             $folderPath = $project->getAudioFolderPath();
@@ -111,44 +98,42 @@ class LexUploadCommands
                 // Convert to .wav if the result will be less than 1 MB (recording is shorter than 5.6 seconds)
                 // and .mp3 otherwise (recording is longer than 5.6 seconds)
                 $extensionlessFileName = substr($fileName, 0, strrpos($fileName, strtolower($fileExt)));
-                $convertedExtension = ($audioDuration < 5.6) ? 'wav' : 'mp3';
+                $convertedExtension = $audioDuration < 5.6 ? "wav" : "mp3";
                 $fileName = "$extensionlessFileName.$convertedExtension"; //$fileName ->> the converted file
                 `ffmpeg -i $tmpFilePath $fileName 2> /dev/null`; //original file is at the tmpFilePath. convert that file and save it to be $fileName
                 $filePath = self::mediaFilePath($folderPath, $fileNamePrefix, $fileName);
                 $moveOk = copy($fileName, $filePath);
-
 
                 //unlink the converted file from its temporary location
                 @unlink($fileName);
 
                 //unlink the original file as well, now that we've both stored it and made the converted copy
                 @unlink($tmpFilePath);
-
             }
 
             // construct server response
             if ($moveOk && $tmpFilePath) {
                 $data = new MediaResult();
                 $data->path = $project->getAudioFolderPath($project->getAssetsRelativePath());
-                $data->fileName = $fileNamePrefix . '_' . $fileName; //if the file has been converted, $fileName = converted file
+                $data->fileName = $fileNamePrefix . "_" . $fileName; //if the file has been converted, $fileName = converted file
                 $data->fileSize = filesize($filePath);
                 $response->result = true;
 
                 //If this audio upload is replacing old audio, the previous file(s) for the entry are deleted from the assets
-                if (array_key_exists('previousFilename', $_POST)) {
-                    $previousFilename = $_POST['previousFilename'];
+                if (array_key_exists("previousFilename", $_POST)) {
+                    $previousFilename = $_POST["previousFilename"];
                     self::deleteMediaFile($projectId, $mediaType, $previousFilename);
                 }
             } else {
                 $data = new ErrorResult();
-                $data->errorType = 'UserMessage';
+                $data->errorType = "UserMessage";
                 $data->errorMessage = "$fileName could not be saved to the right location. Contact your Site Administrator.";
                 $response->result = false;
             }
         } else {
             $allowedExtensionsStr = implode(", ", $allowedExtensions);
             $data = new ErrorResult();
-            $data->errorType = 'UserMessage';
+            $data->errorType = "UserMessage";
             if (count($allowedExtensions) < 1) {
                 $data->errorMessage = "$fileName is not an allowed audio file. No audio file formats are currently enabled, contact your Site Administrator.";
             } elseif (count($allowedExtensions) == 1) {
@@ -176,15 +161,15 @@ class LexUploadCommands
     {
         $project = new LexProjectModel($projectId);
         ProjectCommands::checkIfArchivedAndThrow($project);
-        if ($mediaType != 'sense-image') {
+        if ($mediaType != "sense-image") {
             throw new \Exception("Unsupported upload type.");
         }
-        if (! $tmpFilePath) {
+        if (!$tmpFilePath) {
             throw new \Exception("Upload controller did not move the uploaded file.");
         }
 
-        $file = $_FILES['file'];
-        $fileName = $file['name'];
+        $file = $_FILES["file"];
+        $fileName = $file["name"];
         $fileNamePrefix = date("YmdHis");
 
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
@@ -193,27 +178,26 @@ class LexUploadCommands
 
         $fileName = FileUtilities::replaceSpecialCharacters($fileName);
 
-        $fileExt = (false === $pos = strrpos($fileName, '.')) ? '' : substr($fileName, $pos);
+        $fileExt = false === ($pos = strrpos($fileName, ".")) ? "" : substr($fileName, $pos);
 
-        $allowedTypes = array(
+        $allowedTypes = [
             "image/jpeg",
             "image/jpg",
             // SVG disabled until we can ensure no embedded Javascript; see https://github.com/w3c/svgwg/issues/266
             // "image/svg+xml",
             "image/gif",
-            "image/png"
-        );
-        $allowedExtensions = array(
+            "image/png",
+        ];
+        $allowedExtensions = [
             ".jpg",
             ".jpeg",
             // ".svg",
             ".gif",
-            ".png"
-        );
+            ".png",
+        ];
 
         $response = new UploadResponse();
         if (in_array(strtolower($fileType), $allowedTypes) && in_array(strtolower($fileExt), $allowedExtensions)) {
-
             // make the folders if they don't exist
             $project->createAssetsFolders();
             $folderPath = $project->getImageFolderPath();
@@ -227,19 +211,19 @@ class LexUploadCommands
             if ($moveOk && $tmpFilePath) {
                 $data = new MediaResult();
                 $data->path = $project->getImageFolderPath($project->getAssetsRelativePath());
-                $data->fileName = $fileNamePrefix . '_' . $fileName;
+                $data->fileName = $fileNamePrefix . "_" . $fileName;
                 $data->fileSize = filesize($filePath);
                 $response->result = true;
             } else {
                 $data = new ErrorResult();
-                $data->errorType = 'UserMessage';
+                $data->errorType = "UserMessage";
                 $data->errorMessage = "$fileName could not be saved to the right location. Contact your Site Administrator.";
                 $response->result = false;
             }
         } else {
             $allowedExtensionsStr = implode(", ", $allowedExtensions);
             $data = new ErrorResult();
-            $data->errorType = 'UserMessage';
+            $data->errorType = "UserMessage";
             if (count($allowedExtensions) < 1) {
                 $data->errorMessage = "$fileName is not an allowed image file. No image file formats are currently enabled, contact your Site Administrator.";
             } elseif (count($allowedExtensions) == 1) {
@@ -262,23 +246,24 @@ class LexUploadCommands
      * @throws \Exception
      * @return UploadResponse
      */
-    public static function deleteMediaFile($projectId, $mediaType, $fileName) {
+    public static function deleteMediaFile($projectId, $mediaType, $fileName)
+    {
         $response = new UploadResponse();
         $response->result = false;
         $project = new LexProjectModel($projectId);
         ProjectCommands::checkIfArchivedAndThrow($project);
         switch ($mediaType) {
-            case 'audio':
+            case "audio":
                 $folderPath = $project->getAudioFolderPath();
                 break;
-            case 'sense-image':
+            case "sense-image":
                 $folderPath = $project->getImageFolderPath();
                 break;
             default:
                 $errorMsg = "Error in function deleteImageFile, unsupported mediaType: $mediaType";
-                throw new \Exception($errorMsg) ;
+                throw new \Exception($errorMsg);
                 $data = new ErrorResult();
-                $data->errorType = 'Exception';
+                $data->errorType = "Exception";
                 $data->errorMessage = $errorMsg;
                 return $response;
         }
@@ -286,11 +271,10 @@ class LexUploadCommands
         //Path to the specific file the entry points to
         $filePath = "$folderPath/$fileName";
         //Put any other stored versions of the file (e.g. the same file saved in other formats) in an array
-        $fileNameWithoutExt = preg_replace('/\\.[^.\\s]{3,4}$/', '', $fileName);
+        $fileNameWithoutExt = preg_replace('/\\.[^.\\s]{3,4}$/', "", $fileName);
         $versionsOfTheSameFile = glob("$folderPath/$fileNameWithoutExt.*");
 
-        if (file_exists($filePath) and ! is_dir($filePath)) {
-
+        if (file_exists($filePath) and !is_dir($filePath)) {
             //Delete the file the entry points to and create the server response
             if (unlink($filePath)) {
                 $data = new MediaResult();
@@ -299,13 +283,14 @@ class LexUploadCommands
                 $response->result = true;
             } else {
                 $data = new ErrorResult();
-                $data->errorType = 'UserMessage';
+                $data->errorType = "UserMessage";
                 $data->errorMessage = "$fileName could not be deleted. Contact your Site Administrator.";
             }
 
             //Delete any other stored versions of the file
-            foreach ($versionsOfTheSameFile as $aVersionOfThisFile){
-                if($aVersionOfThisFile != $filePath){ //because $filePath, the one the entry points to, was already deleted above
+            foreach ($versionsOfTheSameFile as $aVersionOfThisFile) {
+                if ($aVersionOfThisFile != $filePath) {
+                    //because $filePath, the one the entry points to, was already deleted above
                     unlink($aVersionOfThisFile);
                 }
             }
@@ -314,7 +299,7 @@ class LexUploadCommands
         }
 
         $data = new ErrorResult();
-        $data->errorType = 'UserMessage';
+        $data->errorType = "UserMessage";
         $data->errorMessage = "$fileName does not exist in this project. Contact your Site Administrator.";
         return $response;
     }
@@ -328,7 +313,7 @@ class LexUploadCommands
      */
     public static function mediaFilePath($folderPath, $fileNamePrefix, $originalFileName)
     {
-        return $folderPath . DIRECTORY_SEPARATOR . $fileNamePrefix . '_' . $originalFileName;
+        return $folderPath . DIRECTORY_SEPARATOR . $fileNamePrefix . "_" . $originalFileName;
     }
 
     /**
@@ -340,7 +325,9 @@ class LexUploadCommands
      */
     public static function cleanupFiles($folderPath, $fileNamePrefix, $allowedExtensions)
     {
-        $cleanupFiles = glob($folderPath . DIRECTORY_SEPARATOR . $fileNamePrefix . '*[' . implode(', ', $allowedExtensions) . ']');
+        $cleanupFiles = glob(
+            $folderPath . DIRECTORY_SEPARATOR . $fileNamePrefix . "*[" . implode(", ", $allowedExtensions) . "]"
+        );
         foreach ($cleanupFiles as $cleanupFile) {
             @unlink($cleanupFile);
         }
@@ -357,18 +344,18 @@ class LexUploadCommands
      */
     public static function importProjectZip($projectId, $mediaType, $tmpFilePath)
     {
-        if ($mediaType != 'import-zip') {
+        if ($mediaType != "import-zip") {
             throw new \Exception("Unsupported upload type.");
         }
-        if (! $tmpFilePath) {
+        if (!$tmpFilePath) {
             throw new \Exception("Upload controller did not move the uploaded file.");
         }
 
-        $file = $_FILES['file'];
-        $fileName = $file['name'];
-        $mergeRule = self::extractStringFromArray($_POST, 'mergeRule', LiftMergeRule::IMPORT_WINS);
-        $skipSameModTime = self::extractBooleanFromArray($_POST, 'skipSameModTime');
-        $deleteMatchingEntry = self::extractBooleanFromArray($_POST, 'deleteMatchingEntry');
+        $file = $_FILES["file"];
+        $fileName = $file["name"];
+        $mergeRule = self::extractStringFromArray($_POST, "mergeRule", LiftMergeRule::IMPORT_WINS);
+        $skipSameModTime = self::extractBooleanFromArray($_POST, "skipSameModTime");
+        $deleteMatchingEntry = self::extractBooleanFromArray($_POST, "deleteMatchingEntry");
 
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $fileType = finfo_file($finfo, $tmpFilePath);
@@ -376,48 +363,44 @@ class LexUploadCommands
 
         $fileName = FileUtilities::replaceSpecialCharacters($fileName);
 
-        $fileExt = (false === $pos = strrpos($fileName, '.')) ? '' : substr($fileName, $pos);
+        $fileExt = false === ($pos = strrpos($fileName, ".")) ? "" : substr($fileName, $pos);
 
-        $allowedTypes = array(
-            "application/zip",
-            "application/octet-stream",
-            "application/x-7z-compressed"
-        );
-        $allowedExtensions = array(
-            ".zip",
-            ".zipx",
-            ".7z"
-        );
+        $allowedTypes = ["application/zip", "application/octet-stream", "application/x-7z-compressed"];
+        $allowedExtensions = [".zip", ".zipx", ".7z"];
 
         $response = new UploadResponse();
         if (in_array(strtolower($fileType), $allowedTypes) && in_array(strtolower($fileExt), $allowedExtensions)) {
-
             // make the folders if they don't exist
             $project = new LexProjectModel($projectId);
             $project->createAssetsFolders();
             $folderPath = $project->getAssetsFolderPath();
 
             // move uploaded file from tmp location to assets
-            $filePath =  $folderPath . DIRECTORY_SEPARATOR . $fileName;
+            $filePath = $folderPath . DIRECTORY_SEPARATOR . $fileName;
             $moveOk = copy($tmpFilePath, $filePath);
             @unlink($tmpFilePath);
 
             // import zip
             if ($moveOk) {
-                $importer = LiftImport::get()->importZip($filePath, $project, $mergeRule, $skipSameModTime, $deleteMatchingEntry);
+                $importer = LiftImport::get()->importZip(
+                    $filePath,
+                    $project,
+                    $mergeRule,
+                    $skipSameModTime,
+                    $deleteMatchingEntry
+                );
                 $project->write();
 
                 $liftFilename = basename($importer->liftFilePath);
-                if (! $project->liftFilePath || $mergeRule != LiftMergeRule::IMPORT_LOSES) {
-
+                if (!$project->liftFilePath || $mergeRule != LiftMergeRule::IMPORT_LOSES) {
                     // cleanup previous files of any allowed extension
-                    $cleanupFiles = glob($folderPath . '/*[' . implode(', ', self::$allowedLiftExtensions) . ']');
+                    $cleanupFiles = glob($folderPath . "/*[" . implode(", ", self::$allowedLiftExtensions) . "]");
                     foreach ($cleanupFiles as $cleanupFile) {
                         @unlink($cleanupFile);
                     }
 
                     // copy uploaded LIFT file from extract location to assets
-                    $filePath =  $folderPath . DIRECTORY_SEPARATOR . $liftFilename;
+                    $filePath = $folderPath . DIRECTORY_SEPARATOR . $liftFilename;
                     $project->liftFilePath = $filePath;
                     $project->write();
                     $moveOk = copy($importer->liftFilePath, $filePath);
@@ -433,20 +416,20 @@ class LexUploadCommands
                     $response->result = true;
                 } else {
                     $data = new ErrorResult();
-                    $data->errorType = 'UserMessage';
+                    $data->errorType = "UserMessage";
                     $data->errorMessage = "$liftFilename could not be saved to the right location. Contact your Site Administrator.";
                     $response->result = false;
                 }
             } else {
                 $data = new ErrorResult();
-                $data->errorType = 'UserMessage';
+                $data->errorType = "UserMessage";
                 $data->errorMessage = "$fileName could not be saved to the right location. Contact your Site Administrator.";
                 $response->result = false;
             }
         } else {
             $allowedExtensionsStr = implode(", ", $allowedExtensions);
             $data = new ErrorResult();
-            $data->errorType = 'UserMessage';
+            $data->errorType = "UserMessage";
             if (count($allowedExtensions) < 1) {
                 $data->errorMessage = "$fileName is not an allowed compressed file. No compressed file formats are currently enabled, contact your Site Administrator.";
             } elseif (count($allowedExtensions) == 1) {
@@ -472,18 +455,18 @@ class LexUploadCommands
      */
     public static function importLiftFile($projectId, $mediaType, $tmpFilePath)
     {
-        if ($mediaType != 'import-lift') {
+        if ($mediaType != "import-lift") {
             throw new \Exception("Unsupported upload type.");
         }
-        if (! $tmpFilePath) {
+        if (!$tmpFilePath) {
             throw new \Exception("Upload controller did not move the uploaded file.");
         }
 
-        $file = $_FILES['file'];
-        $fileName = $file['name'];
-        $mergeRule = self::extractStringFromArray($_POST, 'mergeRule', LiftMergeRule::IMPORT_WINS);
-        $skipSameModTime = self::extractBooleanFromArray($_POST, 'skipSameModTime');
-        $deleteMatchingEntry = self::extractBooleanFromArray($_POST, 'deleteMatchingEntry');
+        $file = $_FILES["file"];
+        $fileName = $file["name"];
+        $mergeRule = self::extractStringFromArray($_POST, "mergeRule", LiftMergeRule::IMPORT_WINS);
+        $skipSameModTime = self::extractBooleanFromArray($_POST, "skipSameModTime");
+        $deleteMatchingEntry = self::extractBooleanFromArray($_POST, "deleteMatchingEntry");
 
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $fileType = finfo_file($finfo, $tmpFilePath);
@@ -491,34 +474,38 @@ class LexUploadCommands
 
         $fileName = FileUtilities::replaceSpecialCharacters($fileName);
 
-        $fileExt = (false === $pos = strrpos($fileName, '.')) ? '' : substr($fileName, $pos);
-        $allowedTypes = array(
-            "text/xml",
-            "application/xml"
-        );
+        $fileExt = false === ($pos = strrpos($fileName, ".")) ? "" : substr($fileName, $pos);
+        $allowedTypes = ["text/xml", "application/xml"];
 
         $response = new UploadResponse();
-        if (in_array(strtolower($fileType), $allowedTypes) && in_array(strtolower($fileExt), self::$allowedLiftExtensions)) {
-
+        if (
+            in_array(strtolower($fileType), $allowedTypes) &&
+            in_array(strtolower($fileExt), self::$allowedLiftExtensions)
+        ) {
             // make the folders if they don't exist
             $project = new LexProjectModel($projectId);
             $project->createAssetsFolders();
             $folderPath = $project->getAssetsFolderPath();
 
-            $importer = LiftImport::get()->merge($tmpFilePath, $project, $mergeRule, $skipSameModTime, $deleteMatchingEntry);
+            $importer = LiftImport::get()->merge(
+                $tmpFilePath,
+                $project,
+                $mergeRule,
+                $skipSameModTime,
+                $deleteMatchingEntry
+            );
             $project->write();
 
             $moveOk = true;
-            if (! $project->liftFilePath || $mergeRule != LiftMergeRule::IMPORT_LOSES) {
-
+            if (!$project->liftFilePath || $mergeRule != LiftMergeRule::IMPORT_LOSES) {
                 // cleanup previous files of any allowed extension
-                $cleanupFiles = glob($folderPath . '/*[' . implode(', ', self::$allowedLiftExtensions) . ']');
+                $cleanupFiles = glob($folderPath . "/*[" . implode(", ", self::$allowedLiftExtensions) . "]");
                 foreach ($cleanupFiles as $cleanupFile) {
                     @unlink($cleanupFile);
                 }
 
                 // move uploaded LIFT file from tmp location to assets
-                $filePath =  $folderPath . DIRECTORY_SEPARATOR . $fileName;
+                $filePath = $folderPath . DIRECTORY_SEPARATOR . $fileName;
                 $project->liftFilePath = $filePath;
                 $project->write();
                 $moveOk = copy($tmpFilePath, $filePath);
@@ -535,14 +522,14 @@ class LexUploadCommands
                 $response->result = true;
             } else {
                 $data = new ErrorResult();
-                $data->errorType = 'UserMessage';
+                $data->errorType = "UserMessage";
                 $data->errorMessage = "$fileName could not be saved to the right location. Contact your Site Administrator.";
                 $response->result = false;
             }
         } else {
             $allowedExtensionsStr = implode(", ", self::$allowedLiftExtensions);
             $data = new ErrorResult();
-            $data->errorType = 'UserMessage';
+            $data->errorType = "UserMessage";
             if (count(self::$allowedLiftExtensions) < 1) {
                 $data->errorMessage = "$fileName of type: $fileType is not an allowed LIFT file. No LIFT file formats are currently enabled, contact your Site Administrator.";
             } elseif (count(self::$allowedLiftExtensions) == 1) {
@@ -585,7 +572,7 @@ class LexUploadCommands
             if (is_bool($array[$key])) {
                 $result = $array[$key];
             } else {
-                $result = (strtolower($array[$key]) == 'true');
+                $result = strtolower($array[$key]) == "true";
             }
         }
         return $result;

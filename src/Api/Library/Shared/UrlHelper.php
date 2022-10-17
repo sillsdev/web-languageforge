@@ -8,7 +8,7 @@ class UrlHelper
 {
     public static function getHostname()
     {
-        return Env::requireEnv('WEBSITE');
+        return Env::requireEnv("WEBSITE");
     }
 
     public static function baseUrl()

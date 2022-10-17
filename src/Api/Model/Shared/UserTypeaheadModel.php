@@ -15,19 +15,21 @@ class UserTypeaheadModel extends MapperListModel
      * @param Website $website
      * @param bool $include
      */
-    public function __construct($term, $projectIdOrIds = '', $website, $include = false)
+    public function __construct($term, $projectIdOrIds = "", $website, $include = false)
     {
-        $query = array('$or' => array(
-                        array('name' => array('$regex' => $term, '$options' => '-i')),
-                        array('username' => array('$regex' => $term, '$options' => '-i')),
-                        array('email' => strtolower($term)),
-                ));
+        $query = [
+            '$or' => [
+                ["name" => ['$regex' => $term, '$options' => "-i"]],
+                ["username" => ['$regex' => $term, '$options' => "-i"]],
+                ["email" => strtolower($term)],
+            ],
+        ];
         if (!empty($projectIdOrIds)) {
             // Allow $projectIdOrIds to be either an array or a single ID
             if (is_array($projectIdOrIds)) {
                 $idsForQuery = $projectIdOrIds;
             } else {
-                $idsForQuery = array($projectIdOrIds);
+                $idsForQuery = [$projectIdOrIds];
             }
             // If passed string IDs, convert to MongoID objects
             $idsForQuery = array_map(function ($id) {
@@ -38,18 +40,14 @@ class UserTypeaheadModel extends MapperListModel
                 }
             }, $idsForQuery);
             $inOrNotIn = $include ? '$in' : '$nin';
-            $query['projects'] = array($inOrNotIn => $idsForQuery);
+            $query["projects"] = [$inOrNotIn => $idsForQuery];
             //error_log("Query: " . print_r($query, true));
         }
         // Filter for only users on the current site
         $encodedDomain = $website->domain;
         MongoEncoder::encodeDollarDot($encodedDomain);
-        $query['siteRole.'.$encodedDomain] = array('$exists' => true);
-        parent::__construct(
-                UserModelMongoMapper::instance(),
-                $query,
-                array('username', 'name', 'avatarRef')
-        );
+        $query["siteRole." . $encodedDomain] = ['$exists' => true];
+        parent::__construct(UserModelMongoMapper::instance(), $query, ["username", "name", "avatarRef"]);
         // If we were called with a project filter that excluded certain users, also
         // return a list of specifically which users were excluded. Which happens to
         // be another typeahead search with the same query term, but *including* only

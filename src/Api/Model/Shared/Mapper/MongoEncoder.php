@@ -28,24 +28,24 @@ class MongoEncoder
      */
     protected function _encode($model, $encodeId = false)
     {
-        $data = array();
+        $data = [];
         $properties = get_object_vars($model);
         foreach ($properties as $key => $value) {
-            if (is_a($value, 'Api\Model\Shared\Mapper\ArrayOf')) {
+            if (is_a($value, "Api\Model\Shared\Mapper\ArrayOf")) {
                 $data[$key] = $this->encodeArrayOf($model->{$key});
-            } elseif (is_a($value, 'Api\Model\Shared\Mapper\MapOf')) {
+            } elseif (is_a($value, "Api\Model\Shared\Mapper\MapOf")) {
                 $data[$key] = $this->encodeMapOf($model->{$key});
-            } elseif (is_a($value, 'Api\Model\Shared\Mapper\IdReference')) {
+            } elseif (is_a($value, "Api\Model\Shared\Mapper\IdReference")) {
                 $data[$key] = $this->encodeIdReference($model->{$key});
-            } elseif (is_a($value, 'Api\Model\Shared\Mapper\Id')) {
+            } elseif (is_a($value, "Api\Model\Shared\Mapper\Id")) {
                 if ($encodeId) {
                     $data[$key] = $this->encodeId($model->{$key});
                 }
-            } elseif (is_a($value, 'DateTime')) {
+            } elseif (is_a($value, "DateTime")) {
                 $data[$key] = $this->encodeDateTime($model->{$key});
-            } elseif (is_a($value, 'Litipk\Jiffy\UniversalTimestamp')) {
+            } elseif (is_a($value, "Litipk\Jiffy\UniversalTimestamp")) {
                 $data[$key] = $this->encodeUniversalTimestamp($model->{$key});
-            } elseif (is_a($value, 'Api\Model\Shared\Mapper\ReferenceList')) {
+            } elseif (is_a($value, "Api\Model\Shared\Mapper\ReferenceList")) {
                 $data[$key] = $this->encodeReferenceList($model->{$key});
             } else {
                 // Data type protection
@@ -96,7 +96,7 @@ class MongoEncoder
      */
     public function encodeArrayOf($model)
     {
-        $result = array();
+        $result = [];
         foreach ($model as $item) {
             if (is_object($item)) {
                 $result[] = $this->_encode($item, true);
@@ -121,10 +121,10 @@ class MongoEncoder
     public static function encodeDollarDot(&$key)
     {
         if (strpos($key, '$') > -1) {
-            $key = str_replace('$', '___DOLLAR___', $key);
+            $key = str_replace('$', "___DOLLAR___", $key);
         }
-        if (strpos($key, '.') > -1) {
-            $key = str_replace('.', '___DOT___', $key);
+        if (strpos($key, ".") > -1) {
+            $key = str_replace(".", "___DOT___", $key);
         }
     }
 
@@ -135,7 +135,7 @@ class MongoEncoder
      */
     public function encodeMapOf($model)
     {
-        $result = array();
+        $result = [];
         $count = 0;
         foreach ($model as $key => $item) {
             self::encodeDollarDot($key);
@@ -161,14 +161,11 @@ class MongoEncoder
      */
     public function encodeReferenceList($model)
     {
-        $result = array_map(
-            function ($id) {
-                CodeGuard::checkTypeAndThrow($id, 'Api\Model\Shared\Mapper\Id');
-                /** @var Id $id */
-                return MongoMapper::mongoID($id->asString());
-            },
-            $model->refs
-        );
+        $result = array_map(function ($id) {
+            CodeGuard::checkTypeAndThrow($id, "Api\Model\Shared\Mapper\Id");
+            /** @var Id $id */
+            return MongoMapper::mongoID($id->asString());
+        }, $model->refs);
         return $result;
     }
 
@@ -178,7 +175,7 @@ class MongoEncoder
      */
     public function encodeDateTime($model)
     {
-        return new UTCDateTime(1000*$model->getTimestamp());
+        return new UTCDateTime(1000 * $model->getTimestamp());
     }
 
     /**

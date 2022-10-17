@@ -10,49 +10,53 @@ class LexExample extends ObjectForEncoding
 {
     use LazyPropertiesTrait;
 
-    public function __construct($liftId = '', $guid = '')
+    public function __construct($liftId = "", $guid = "")
     {
-        $this->setReadOnlyProp('authorInfo');
-        if ($liftId) $this->liftId = $liftId;
+        $this->setReadOnlyProp("authorInfo");
+        if ($liftId) {
+            $this->liftId = $liftId;
+        }
         $this->guid = Guid::makeValid($guid);
 
-        $this->initLazyProperties([
-            'authorInfo',
-            'sentence',
-            'translation',
-            'translationGuid',
-            'reference',
-            'customFields',
-        ], false);
+        $this->initLazyProperties(
+            ["authorInfo", "sentence", "translation", "translationGuid", "reference", "customFields"],
+            false
+        );
     }
 
-    protected function getPropertyType(string $name) {
+    protected function getPropertyType(string $name)
+    {
         switch ($name) {
-            case 'authorInfo':
+            case "authorInfo":
                 return "LexAuthorInfo";
-            case 'sentence':
-            case 'translation':
-            case 'reference':
+            case "sentence":
+            case "translation":
+            case "reference":
                 return "LexMultiText";
-            case 'translationGuid':
+            case "translationGuid":
                 return "Guid";
-            case 'customFields':
+            case "customFields":
                 return "MapOf(CustomField)";
             default:
                 return "string";
         }
     }
 
-    protected function createProperty($name) {
+    protected function createProperty($name)
+    {
         switch ($this->getPropertyType($name)) {
-            case 'LexAuthorInfo': return new LexAuthorInfo();
-            case 'LexMultiText': return new LexMultiText();
-            case 'Guid': return Guid::create();
-            case 'MapOf(CustomField)': return new MapOf('Api\Model\Languageforge\Lexicon\generateCustomField');
+            case "LexAuthorInfo":
+                return new LexAuthorInfo();
+            case "LexMultiText":
+                return new LexMultiText();
+            case "Guid":
+                return Guid::create();
+            case "MapOf(CustomField)":
+                return new MapOf("Api\Model\Languageforge\Lexicon\generateCustomField");
 
-            case 'string':
+            case "string":
             default:
-                return '';
+                return "";
         }
     }
 
@@ -63,7 +67,7 @@ class LexExample extends ObjectForEncoding
                 return $this->sentence[$preferredInputSystem];
             } elseif ($this->sentence->count() > 0) {
                 foreach ($this->sentence as $inputSystem => $content) {
-                    return (string)$content;
+                    return (string) $content;
                 }
             }
         }
@@ -77,7 +81,7 @@ class LexExample extends ObjectForEncoding
         $result = [];
         foreach ($differences as $difference) {
             $inputSystem = $difference["inputSystem"];
-            $result["this."  . $propertyName . "." . $inputSystem] = $difference["this"];
+            $result["this." . $propertyName . "." . $inputSystem] = $difference["this"];
             $result["other." . $propertyName . "." . $inputSystem] = $difference["other"];
         }
         return $result;
@@ -93,20 +97,20 @@ class LexExample extends ObjectForEncoding
                 $difference = $multiText->differences($otherExample->$propertyName);
                 return $this->convertLexMultiTextDifferences($difference, $propertyName);
             case "string":
-                $thisValue  = $this->$propertyName;
+                $thisValue = $this->$propertyName;
                 $otherValue = $otherExample->$propertyName;
                 if ($thisValue === $otherValue) {
                     return [];
                 } else {
                     return ["this." . $propertyName => $thisValue, "other." . $propertyName => $otherValue];
                 }
-            case 'MapOf(CustomField)':
+            case "MapOf(CustomField)":
                 // TODO: Implement this. Will probably have to refactor this function a bit to handle that one level of nesting
                 return [];
-            case 'LexAuthorInfo':
+            case "LexAuthorInfo":
                 // We don't put authorInfo changes in the activity log
                 return [];
-            case 'Guid':
+            case "Guid":
                 // We don't put translationGuid changes in the activity log either
                 return [];
             default:
@@ -116,17 +120,9 @@ class LexExample extends ObjectForEncoding
 
     public function differences(LexExample $otherExample)
     {
-        $properties = [
-            'authorInfo',
-            'sentence',
-            'translation',
-            'translationGuid',
-            'reference',
-            'customFields',
-        ];
+        $properties = ["authorInfo", "sentence", "translation", "translationGuid", "reference", "customFields"];
         $result = [];
-        foreach ($properties as $property)
-        {
+        foreach ($properties as $property) {
             foreach ($this->getPropertyDifference($otherExample, $property) as $key => $difference) {
                 $result[$key] = $difference;
             }
@@ -162,5 +158,4 @@ class LexExample extends ObjectForEncoding
 
     /** @var LexMultiText */
     public $reference;
-
 }

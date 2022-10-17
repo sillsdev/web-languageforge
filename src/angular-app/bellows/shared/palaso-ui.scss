@@ -2,17 +2,17 @@ $background-highlight: #ffc;
 
 /* Typeahead */
 .typeahead {
-    z-index: 51;
-    margin-top: 0;
-    -webkit-border-radius: 4px;
-    -moz-border-radius: 4px;
-    border-radius: 4px;
-    display: inline-block;
+  z-index: 51;
+  margin-top: 0;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  display: inline-block;
 }
 
 div.typeahead .typeahead-results {
-    z-index: 10;
-    width: 100%;
+  z-index: 10;
+  width: 100%;
 }
 
 div.typeahead ul {
@@ -31,137 +31,133 @@ div.typeahead ul {
 }
 
 li.typeahead-item p.name {
-    font-size: 1.0em;
+  font-size: 1em;
 }
 
 li.typeahead-item p.email {
-    font-size: 0.8em;
-    color: #666666;
+  font-size: 0.8em;
+  color: #666666;
 }
 .typeahead + span {
-    vertical-align: top;
+  vertical-align: top;
 }
 
 /* listview */
 div.listview {
-    margin-top: 8px;
+  margin-top: 8px;
 }
 
 div.listview div.paginationblock div {
-    display: inline-block;
+  display: inline-block;
 }
 
 .listview .active {
-    background-color: $background-highlight;
+  background-color: $background-highlight;
 }
 
 div.listview div.pagination select {
-    width: 70px;
+  width: 70px;
 }
 
 .larger-text {
-    font-size: 1.25em;
+  font-size: 1.25em;
 }
 
 /* Control bar for use at top of listview */
 form.control-bar {
-    margin-bottom: 0;
+  margin-bottom: 0;
 }
 
 /* use for user signup password strength meter */
 input.ng-pristine + ul#strength {
-    display:none;
+  display: none;
 }
 ul#strength {
-    display:inline;
-    list-style:none;
-    margin:0;
-    margin-left:15px;
-    padding:0;
-    vertical-align:6px;
+  display: inline;
+  list-style: none;
+  margin: 0;
+  margin-left: 15px;
+  padding: 0;
+  vertical-align: 6px;
 }
 .point:last {
-    margin:0 !important;
+  margin: 0 !important;
 }
 .point {
-    background:#DDD;
-    border-radius:2px;
-    display:inline-block;
-    height:5px;
-    margin-right:1px;
-    width:10px;
+  background: #ddd;
+  border-radius: 2px;
+  display: inline-block;
+  height: 5px;
+  margin-right: 1px;
+  width: 10px;
 }
-
-
 
 /* Highlighted text in text selection directive */
 .highlighted {
-    background-color: yellow;
+  background-color: yellow;
 }
 
 /* Styles for the two tagging directives (view-tags and add-tags) */
 .tag-list ul li {
-    position: relative;
-    color: #3E6D8E;
-    background-color: #E0EAF1;
-    border-bottom: 1px solid #b3cee1;
-    border-right: 1px solid #b3cee1;
-    padding: 3px 4px 3px 4px;
-    margin: 2px 2px 2px 5px;
-    text-decoration: none;
-    font-size: 90%;
-    line-height: 1.4;
-    white-space: nowrap;
-    display: inline-block;
+  position: relative;
+  color: #3e6d8e;
+  background-color: #e0eaf1;
+  border-bottom: 1px solid #b3cee1;
+  border-right: 1px solid #b3cee1;
+  padding: 3px 4px 3px 4px;
+  margin: 2px 2px 2px 5px;
+  text-decoration: none;
+  font-size: 90%;
+  line-height: 1.4;
+  white-space: nowrap;
+  display: inline-block;
 }
 
 .tag-list ul li img.closeicon {
-    position: absolute;
-    top: -10px;
-    right: -10px;
-    color: red;
-    z-index: 1;
-    cursor: pointer;
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  color: red;
+  z-index: 1;
+  cursor: pointer;
 }
 
 /* TODO: Convert to sass? */
 .entryItemView i.fa-times:hover {
-    color:red;
+  color: red;
 }
 
 form.new-tags i.fa-plus {
-    color: green;
+  color: green;
 }
 
 .addItem {
-    text-align:right;
-    font-size:12px;
-    margin-right:20px;
-    cursor: pointer;
+  text-align: right;
+  font-size: 12px;
+  margin-right: 20px;
+  cursor: pointer;
 }
 
 /* Style for file upload */
 .drop-box {
-    border: 4px dashed #e67345;
-    background-color: white;
-    text-align: center;
-    padding-top: 30px;
-    padding-bottom: 30px;
+  border: 4px dashed #e67345;
+  background-color: white;
+  text-align: center;
+  padding-top: 30px;
+  padding-bottom: 30px;
 }
-
-
 
 /* style for notice messages */
 div.notices {
-    position: fixed;
-    top: 7px;
-    left: 0;
-    right: 0;
-    z-index: 1025;
-    min-width: 300px;
-    max-width: 450px;
-    width: auto;
-    margin: auto;
+  position: fixed;
+  top: 7px;
+  left: 0;
+  right: 0;
+  z-index: 1025;
+  min-width: 300px;
+  max-width: 450px;
+  width: auto;
+  margin: auto;
 }
 
 .notices pre {
@@ -170,18 +166,18 @@ div.notices {
 
 /* overrides definitions in sf.css and bootstrap.css */
 div.notices .animate-repeat {
-    line-height: inherit;
+  line-height: inherit;
 }
 
 /* Select language directive */
 pui-select-language div.scroll-table {
-    max-height: 330px;
-    overflow-y: auto;
-    margin-bottom: 20px;
+  max-height: 330px;
+  overflow-y: auto;
+  margin-bottom: 20px;
 }
 
 pui-select-language div.scroll-table table {
-    margin-bottom: 0;
+  margin-bottom: 0;
 }
 
 .unread {
@@ -190,27 +186,28 @@ pui-select-language div.scroll-table table {
 
 .pui-tab-select {
   margin-bottom: 1em;
-  button, .dropdown-menu {
+  button,
+  .dropdown-menu {
     width: 100%;
   }
 }
 
 .audio-buttons a i.fa {
-    font-size: 2rem;
+  font-size: 2rem;
 }
 
 pui-soundplayer {
   display: flex;
   width: 100%;
   .controls {
-      display: flex;
-      width: 100%;
-      font-size: 1.05rem;
-      align-items: center;
-      padding-left: 5pt;
-      .seek-slider {
-        flex-grow: 1;
-        height: auto;
+    display: flex;
+    width: 100%;
+    font-size: 1.05rem;
+    align-items: center;
+    padding-left: 5pt;
+    .seek-slider {
+      flex-grow: 1;
+      height: auto;
     }
   }
 }

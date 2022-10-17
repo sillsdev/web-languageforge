@@ -6,7 +6,7 @@ use Api\Model\Shared\Mapper\ObjectForEncoding;
 
 class LexCommentReply extends ObjectForEncoding
 {
-    public function __construct($content = '')
+    public function __construct($content = "")
     {
         $this->content = $content;
         $this->id = uniqid();

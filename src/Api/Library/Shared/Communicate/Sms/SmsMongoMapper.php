@@ -13,12 +13,12 @@ class SmsMongoMapper extends MongoMapper
     public static function connect($databaseName)
     {
         if (!isset(static::$_pool[$databaseName])) {
-            static::$_pool[$databaseName] = new SmsMongoMapper($databaseName, 'sms');
+            static::$_pool[$databaseName] = new SmsMongoMapper($databaseName, "sms");
         }
 
         return static::$_pool[$databaseName];
     }
 
     /** @var SmsMongoMapper[] */
-    private static $_pool = array();
+    private static $_pool = [];
 }

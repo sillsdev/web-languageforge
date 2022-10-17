@@ -14,7 +14,8 @@ class LexMultiValue
     /** @var ArrayOf */
     public $values;
 
-    public static function createFromArray($values) {
+    public static function createFromArray($values)
+    {
         $field = new LexMultiValue();
         $field->values = new ArrayOf();
         $field->values->exchangeArray($values);
@@ -36,19 +37,18 @@ class LexMultiValue
     public function differences(LexMultiValue $otherMultiValue)
     {
         // Shows differences between the arrays as whole values. Use individualDifferences function to see individual additions or removals.
-        if ($this->values == $otherMultiValue->values)
-        {
+        if ($this->values == $otherMultiValue->values) {
             // Shortcut so we don't have to copy arrays just to find out they were already equal
             return [];
         }
-        $thisArr  = $this->values->getArrayCopy();
+        $thisArr = $this->values->getArrayCopy();
         $otherArr = $otherMultiValue->values->getArrayCopy();
         $thisJson = json_encode($thisArr);
         $otherJson = json_encode($otherArr);
         return ["this" => $thisJson, "other" => $otherJson];
     }
 
-/* If individual differences between arrays (insertions and deletions) are desired, we could do it like this:
+    /* If individual differences between arrays (insertions and deletions) are desired, we could do it like this:
     public function individualDifferences(LexMultiValue $otherMultiValue)
     {
         $result = [];

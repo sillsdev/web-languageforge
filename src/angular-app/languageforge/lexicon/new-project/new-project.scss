@@ -1,4 +1,4 @@
-@import '../../../../Site/views/languageforge/theme/default/sass/_variables.scss';
+@import "../../../../Site/views/languageforge/theme/default/sass/_variables.scss";
 /* progress indicator */
 #progress-indicator {
   padding: 0 0 30px 0;
@@ -6,7 +6,6 @@
   margin-left: 0;
   list-style: none;
   li {
-
     display: inline-block;
     padding-right: 5px;
     padding-left: 5px;
@@ -15,7 +14,7 @@
       display: block;
       font-size: 55px;
     }
-    i.fa-check-square{
+    i.fa-check-square {
       color: green;
       font-size: 50px;
       height: 56px;
@@ -29,27 +28,26 @@
   }
 }
 
-#send-receive-button{
-    margin-top: 60px;
-    margin-bottom: 20px;
-    font-size: 1em;
-    white-space: normal;
-
+#send-receive-button {
+  margin-top: 60px;
+  margin-bottom: 20px;
+  font-size: 1em;
+  white-space: normal;
 }
 
-#create-button{
-    margin-bottom: 20px;
-    font-size: 1em;
-    white-space: normal;
+#create-button {
+  margin-bottom: 20px;
+  font-size: 1em;
+  white-space: normal;
 }
 
 a#flex-help-link {
-   text-decoration: none;
-   color: #e67345
+  text-decoration: none;
+  color: #e67345;
 }
 
 #flex-help-link:hover {
-    color: #0088cc !important;
+  color: #0088cc !important;
 }
 
 .centerBlock {
