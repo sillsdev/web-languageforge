@@ -1771,8 +1771,8 @@ EOD;
     // has range elements defined in the file rather than in external file
     const liftDataWithInlineRanges = <<<EOD
 <?xml version="1.0" encoding="UTF-8" ?>
-___PSEUDO_INLINE_PLACEHOLDER___<?oxygen RNGSchema="lift.rng" type="xml"?>
-___PSEUDO_INLINE_PLACEHOLDER___<?blueprint schema="lift.rng"?>
+ <?oxygen RNGSchema="lift.rng" type="xml"?>
+ <?blueprint schema="lift.rng"?>
 
 <lift version="0.13" producer="LexiquePro.3.6">
 
