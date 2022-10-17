@@ -10,6 +10,7 @@
     "xdebug.php-pack",
     "svelte.svelte-vscode",
     "bradlc.vscode-tailwindcss",
-    "ms-playwright.playwright"
+    "ms-playwright.playwright",
+    "esbenp.prettier-vscode"
   ]
 }

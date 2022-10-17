@@ -7,4 +7,5 @@
   "php.suggest.basic": false,
   "git.ignoreLimitWarning": true,
   "makefile.makeDirectory": "docker",
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
 }

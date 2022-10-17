@@ -1,0 +1,49 @@
+## Special file types
+# File types for ESLint
+*.js
+*.cjs
+*.ts
+*.svelte
+
+# File types we're not sure about yet
+*.html
+*.htm
+*.yaml
+*.yml
+
+## Based on our .gitignore files as recommended at https://prettier.io/docs/en/configuration.html,
+# because we generally don't want to format the same things that we don't want to commit
+# (e.g. dependencies, builds, generated code etc.)
+PhpUnitTests.xml
+docker/e2e-results.xml
+src/assets/*
+src/dist/*
+src/vendor/*
+src/cache/*
+test/php/\.phpunit\.result\.cache
+node_modules
+.DS_Store
+docker-scan-results.txt
+test-results/
+playwright-report/
+*storageState.json
+
+# From next-app/.gitignore
+next-app/**/build
+next-app/**/.svelte-kit
+next-app/**/package
+next-app/**/.env
+next-app/**/.env.*
+!next-app/**/.env.example
+
+## Extras
+# Libraries and generated code
+src/help/template/scripts/
+src/help/template/Theme3_Black/
+src/help/whxdata/
+src/js/lib/
+src/Site/views/languageforge/theme/default/page/home/assets/
+*.generated-data.*
+
+# An invalid, probably unused json file
+src/json/languageforge/lexicon/partOfSpeech_full.json
