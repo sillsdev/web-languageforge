@@ -19,7 +19,9 @@
   flex-direction: row;
   align-items: center;
 
-  input[type=text], input[type=email], input[type=password] {
+  input[type="text"],
+  input[type="email"],
+  input[type="password"] {
     min-width: 0; // necessary in Firefox for small screens
   }
 
@@ -51,7 +53,7 @@
   margin-top: 1rem;
   margin-bottom: 0;
 
-  input[type=checkbox] {
+  input[type="checkbox"] {
     margin-left: 0;
   }
 }
@@ -70,7 +72,7 @@
     max-width: 3em;
   }
 
-  input[type=text] {
+  input[type="text"] {
     height: 1.5em;
     margin-left: 0.5em;
     padding: 0.25em;
@@ -78,7 +80,7 @@
 
   .delete-member {
     width: 1rem;
-    text-align:right;
+    text-align: right;
   }
 
   > *:not(:last-child) {

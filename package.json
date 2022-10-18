@@ -16,7 +16,8 @@
     "webpack:prd": "webpack --config webpack-prd.config.js",
     "compile-test-e2e": "tsc -p test/app",
     "test-e2e": "protractor test/app/protractorConf.js",
-    "make": "cd docker && make"
+    "make": "cd docker && make",
+    "prepare": "husky install"
   },
   "license": "MIT",
   "repository": {
@@ -76,9 +77,11 @@
     "file-loader": "^5.1.0",
     "glob": "^7.1.2",
     "html-loader": "^0.5.5",
+    "husky": "^8.0.1",
     "jasmine-core": "^3.6.0",
     "jasmine-reporters": "^2.1.1",
     "jasmine-spec-reporter": "^4.1.1",
+    "lint-staged": "^13.0.3",
     "mini-css-extract-plugin": "^1.3.9",
     "ng-annotate-loader": "^0.7.0",
     "ngtemplate-loader": "^2.1.0",
@@ -105,5 +108,8 @@
     "preset": "airbnb",
     "disallowTrailingComma": true,
     "requireTrailingComma": false
+  },
+  "lint-staged": {
+    "*": "prettier --write --ignore-unknown"
   }
 }

@@ -4,13 +4,13 @@ namespace Api\Model\Shared;
 
 class InputSystem
 {
-    public function __construct($tag = 'qaa', $name = '', $abbr = '')
+    public function __construct($tag = "qaa", $name = "", $abbr = "")
     {
         $this->tag = $tag;
         $this->abbreviation = $abbr;
         $this->languageName = $name;
         $this->isRightToLeft = false;
-        $this->cssFontFamily = '';
+        $this->cssFontFamily = "";
     }
 
     /** @var string */

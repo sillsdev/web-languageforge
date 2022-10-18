@@ -8,7 +8,7 @@ class ReferenceList
 {
     public function __construct()
     {
-        $this->refs = array();
+        $this->refs = [];
     }
 
     /** @var Id[] */
@@ -33,7 +33,7 @@ class ReferenceList
      */
     public function _addRef($id)
     {
-        CodeGuard::checkTypeAndThrow($id, 'string');
+        CodeGuard::checkTypeAndThrow($id, "string");
         // CARRY ON HERE CP :-)
         $idModel = new Id($id);
         if (!in_array($idModel, $this->refs)) {
@@ -62,7 +62,7 @@ class ReferenceList
     public function _removeRef($id)
     {
         if (in_array($id, $this->refs)) {
-            $this->refs = array_values(array_diff($this->refs, array($id)));
+            $this->refs = array_values(array_diff($this->refs, [$id]));
         }
         // TODO Log if ref doesn't exist?
     }

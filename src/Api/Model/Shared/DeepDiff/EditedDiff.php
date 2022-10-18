@@ -13,14 +13,16 @@ class EditedDiff extends DiffBase
     /** @var mixed */
     public $newData;
 
-    public function __construct(Array $diff) {
-        $this->kind = 'E';
-        $this->path = $diff['path'];
-        $this->oldData = $diff['lhs'];
-        $this->newData = $diff['rhs'];
+    public function __construct(array $diff)
+    {
+        $this->kind = "E";
+        $this->path = $diff["path"];
+        $this->oldData = $diff["lhs"];
+        $this->newData = $diff["rhs"];
     }
 
-    public function getValue() {
+    public function getValue()
+    {
         return $this->newData;
     }
 }

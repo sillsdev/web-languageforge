@@ -226,7 +226,7 @@ EOD;
 
     public function testLiftImportMerge_FlexAllFields_HasAllFields()
     {
-        $liftFilePath = self::$environ->createTestLiftFile(self::liftAllFlexFields, 'LiftAllFlexFields.lift');
+        $liftFilePath = self::$environ->createTestLiftFile(self::liftAllFlexFields, "LiftAllFlexFields.lift");
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $mergeRule = LiftMergeRule::IMPORT_WINS;
         $skipSameModTime = false;
@@ -238,44 +238,44 @@ EOD;
 
         $entries = $entryList->entries;
         $this->assertEquals(2, $entryList->count);
-        $entriesByGuid = self::$environ->indexItemsBy($entries, 'guid');
+        $entriesByGuid = self::$environ->indexItemsBy($entries, "guid");
 
-        $entry0 = new LexEntryModel($project, $entriesByGuid['0a18bb95-0eb2-422e-bf7e-c1fd90274670']['id']);
-        new LexEntryModel($project, $entriesByGuid['dc4106ac-13fd-4ae0-a32b-b737f413d515']['id']);
+        $entry0 = new LexEntryModel($project, $entriesByGuid["0a18bb95-0eb2-422e-bf7e-c1fd90274670"]["id"]);
+        new LexEntryModel($project, $entriesByGuid["dc4106ac-13fd-4ae0-a32b-b737f413d515"]["id"]);
 
-        $this->assertEquals('0a18bb95-0eb2-422e-bf7e-c1fd90274670', $entry0->guid);
-        $this->assertEquals('คาม', $entry0->lexeme['th']);
-        $this->assertEquals('คาม', $entry0->citationForm['th']);
-        $this->assertEquals('คาม', $entry0->etymology['th']);
-        $this->assertEquals('A Etymology', $entry0->etymology['en']);
-        $this->assertEquals('A Etymology Gloss', $entry0->etymologyGloss['en']);
-        $this->assertEquals('A Etymology Comment', $entry0->etymologyComment['en']);
-        $this->assertEquals('คาม', $entry0->pronunciation['th']);
-        $this->assertEquals('stem', $entry0->morphologyType);
-        $this->assertEquals('A Literal Meaning', $entry0->literalMeaning['en']);
+        $this->assertEquals("0a18bb95-0eb2-422e-bf7e-c1fd90274670", $entry0->guid);
+        $this->assertEquals("คาม", $entry0->lexeme["th"]);
+        $this->assertEquals("คาม", $entry0->citationForm["th"]);
+        $this->assertEquals("คาม", $entry0->etymology["th"]);
+        $this->assertEquals("A Etymology", $entry0->etymology["en"]);
+        $this->assertEquals("A Etymology Gloss", $entry0->etymologyGloss["en"]);
+        $this->assertEquals("A Etymology Comment", $entry0->etymologyComment["en"]);
+        $this->assertEquals("คาม", $entry0->pronunciation["th"]);
+        $this->assertEquals("stem", $entry0->morphologyType);
+        $this->assertEquals("A Literal Meaning", $entry0->literalMeaning["en"]);
 
         /* @var $sense00 LexSense */
         $sense00 = $entry0->senses[0];
 
-        $this->assertEquals('Noun', $sense00->partOfSpeech->value);
-        $this->assertEquals('A Word', $sense00->gloss['en']->value);
-        $this->assertEquals('A Word Defn', $sense00->definition['en']->value);
-        $this->assertEquals(LexMultiValue::createFromArray(['9.1.3.1']), $sense00->semanticDomain);
-        $this->assertEquals(LexMultiValue::createFromArray(['901']), $sense00->anthropologyCategories);
-        $this->assertEquals(LexMultiValue::createFromArray(['applied linguistics']), $sense00->academicDomains);
-        $this->assertEquals(new LexValue('primary'), $sense00->senseType);
-        $this->assertEquals(LexMultiValue::createFromArray(['Tentative']), $sense00->status);
-        $this->assertEquals(LexMultiValue::createFromArray(['colloquial']), $sense00->usages);
+        $this->assertEquals("Noun", $sense00->partOfSpeech->value);
+        $this->assertEquals("A Word", $sense00->gloss["en"]->value);
+        $this->assertEquals("A Word Defn", $sense00->definition["en"]->value);
+        $this->assertEquals(LexMultiValue::createFromArray(["9.1.3.1"]), $sense00->semanticDomain);
+        $this->assertEquals(LexMultiValue::createFromArray(["901"]), $sense00->anthropologyCategories);
+        $this->assertEquals(LexMultiValue::createFromArray(["applied linguistics"]), $sense00->academicDomains);
+        $this->assertEquals(new LexValue("primary"), $sense00->senseType);
+        $this->assertEquals(LexMultiValue::createFromArray(["Tentative"]), $sense00->status);
+        $this->assertEquals(LexMultiValue::createFromArray(["colloquial"]), $sense00->usages);
 
-        $expected = new LexPicture('Desert.jpg', $sense00->pictures[0]->guid);
-        $expected->caption['th'] = 'รูป';
-        $expected->caption['en'] = 'image';
-        $expected->caption['fr'] = 'photo';
+        $expected = new LexPicture("Desert.jpg", $sense00->pictures[0]->guid);
+        $expected->caption["th"] = "รูป";
+        $expected->caption["en"] = "image";
+        $expected->caption["fr"] = "photo";
         $this->assertEquals($expected, $sense00->pictures[0]);
 
         /* @var $example000 LexExample */
         $example000 = $sense00->examples[0];
-        $this->assertEquals('ใหท่ มี', $example000->sentence['th']);
-        $this->assertEquals('A Translation', $example000->translation['en']->value);
+        $this->assertEquals("ใหท่ มี", $example000->sentence["th"]);
+        $this->assertEquals("A Translation", $example000->translation["en"]->value);
     }
 }

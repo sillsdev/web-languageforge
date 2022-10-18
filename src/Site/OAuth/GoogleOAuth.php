@@ -47,9 +47,9 @@ class GoogleOAuth extends OAuthBase
     protected function getOAuthProvider($redirectUri): AbstractProvider
     {
         $provider = new SelectAccountGoogleOAuthProvider([
-            'clientId' => Env::requireEnv('GOOGLE_CLIENT_ID'),
-            'clientSecret' => Env::requireEnv('GOOGLE_CLIENT_SECRET'),
-            'redirectUri' => $redirectUri,
+            "clientId" => Env::requireEnv("GOOGLE_CLIENT_ID"),
+            "clientSecret" => Env::requireEnv("GOOGLE_CLIENT_SECRET"),
+            "redirectUri" => $redirectUri,
         ]);
         return $provider;
     }

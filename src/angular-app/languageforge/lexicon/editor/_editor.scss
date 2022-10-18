@@ -1,17 +1,17 @@
-@import '../../../../../node_modules/bootstrap/scss/functions';
-@import '../../../../../node_modules/bootstrap/scss/variables';
-@import '../../../../../node_modules/bootstrap/scss/mixins';
+@import "../../../../../node_modules/bootstrap/scss/functions";
+@import "../../../../../node_modules/bootstrap/scss/variables";
+@import "../../../../../node_modules/bootstrap/scss/mixins";
 
-@import '../../../../Site/views/languageforge/theme/default/sass/variables';
+@import "../../../../Site/views/languageforge/theme/default/sass/variables";
 
 .lexAppToolbar {
-    border: 1px solid $line-color;
-    margin: 0 0 5px;
-    padding: 4px;
-    width: 100%;
-    float: left;
-    background-color: #f6f6f6;
-    border-radius: $border-radius;
+  border: 1px solid $line-color;
+  margin: 0 0 5px;
+  padding: 4px;
+  width: 100%;
+  float: left;
+  background-color: #f6f6f6;
+  border-radius: $border-radius;
   #toggleActivityFeed {
     position: relative;
     .activity-count {
@@ -33,89 +33,89 @@
   }
 }
 .hdrnav .hdrnav-container {
-    float: left;
-    width: 100%;
-    .btn-group {
-        margin-left: 10px;
-    }
+  float: left;
+  width: 100%;
+  .btn-group {
+    margin-left: 10px;
+  }
 }
 form .wsid {
-    width: 60px;
-    max-width: 60px;
-    text-align: right;
+  width: 60px;
+  max-width: 60px;
+  text-align: right;
 }
 
 @include media-breakpoint-down(sm) {
-    .dc-rendered-word {
-        display: block;
-    }
-    .hdrnav .return-button {
-        float: left;
-    }
-    #lexAppCommentView .entryItemView, #lexAppCommentView .commentListView {
-        max-height: none ;
-        height: auto;
-    }
+  .dc-rendered-word {
+    display: block;
+  }
+  .hdrnav .return-button {
+    float: left;
+  }
+  #lexAppCommentView .entryItemView,
+  #lexAppCommentView .commentListView {
+    max-height: none;
+    height: auto;
+  }
 }
 
 fieldset.comment-filter {
-    margin: 20px;
-    border: 2px groove threedface;
+  margin: 20px;
+  border: 2px groove threedface;
 }
 
 legend.override-bootstrap {
-    width: auto;
-    margin: inherit;
-    margin-left: 20px;
-    padding-left: 5px;
-    padding-right: 5px;
-    padding-top: inherit;
-    padding-bottom: inherit;
-    border: 0;
-    font-size: inherit;
-    line-height: inherit;
+  width: auto;
+  margin: inherit;
+  margin-left: 20px;
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-top: inherit;
+  padding-bottom: inherit;
+  border: 0;
+  font-size: inherit;
+  line-height: inherit;
 }
 
 .override-bootstrap.filter-controls {
-    margin-bottom: 5px;
+  margin-bottom: 5px;
 }
 
 .filter-controls-inner {
-    margin: 0 5px 5px 5px;
+  margin: 0 5px 5px 5px;
 }
 
 .filter-controls-inner.collapse.in {
-    /* When div is not collapsed, and ONLY when it is not collapsed, override "overflow: hidden".
+  /* When div is not collapsed, and ONLY when it is not collapsed, override "overflow: hidden".
     This is required so that the date picker popup can be shown. */
-    overflow: inherit;
+  overflow: inherit;
 }
 
 /*animate*/
 .animate-switch-container {
-    position: relative;
-    height: 665px;
-    overflow: hidden;
+  position: relative;
+  height: 665px;
+  overflow: hidden;
 }
 
-
 .animate-switch.ng-animate {
-    -webkit-transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
-    -moz-transition: all cubic-bezier(0.250, 0.460, 0.450, 0.040) 0.5s;
-    transition: all ease-in 0.5s;
-    position: relative;
-    display: block;
+  -webkit-transition: all cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.5s;
+  -moz-transition: all cubic-bezier(0.25, 0.46, 0.45, 0.04) 0.5s;
+  transition: all ease-in 0.5s;
+  position: relative;
+  display: block;
 }
 
 .animate-switch.ng-leave.ng-leave-active,
 .animate-switch.ng-enter {
-    /*animation: moveToLeft .5s ease-in;*/
-    right: 721px;
+  /*animation: moveToLeft .5s ease-in;*/
+  right: 721px;
 }
 
 .animate-switch.ng-leave,
 .animate-switch.ng-enter.ng-enter-active {
-    /*animation: moveToRight .5s ease-in;*/
-    right: 0;
+  /*animation: moveToRight .5s ease-in;*/
+  right: 0;
 }
 
 /* This is TODO for getting the scroll bars to line up in the animation
@@ -172,151 +172,156 @@ legend.override-bootstrap {
 /*********************************************************/
 
 .override-bootstrap input[type="checkbox"] {
-    text-align: center;
-    margin-top: 0;
-    margin-right: 4px;
+  text-align: center;
+  margin-top: 0;
+  margin-right: 4px;
 }
 
 .datepicker input {
-    text-align: center;
-    margin-bottom: 0;
+  text-align: center;
+  margin-bottom: 0;
 }
 
 .datepicker label {
-    display: inline;
+  display: inline;
 }
 
 .text-center {
-    /* Date picker uses this class for its week numbers */
-    text-align: center;
+  /* Date picker uses this class for its week numbers */
+  text-align: center;
 }
 
-.datepicker table th, .datepicker table td {
-    /* Override lf.css */
-    padding: 1px;
+.datepicker table th,
+.datepicker table td {
+  /* Override lf.css */
+  padding: 1px;
 }
 
-.datepicker table th button.float-left, .datepicker table th button.float-right {
-    padding: 2px 13px;
+.datepicker table th button.float-left,
+.datepicker table th button.float-right {
+  padding: 2px 13px;
 }
 
 .datepicker button i {
-    /* Override ls.css */
-    margin-right: 0;
+  /* Override ls.css */
+  margin-right: 0;
 }
 
-.datepicker table tbody tr:hover, .datepicker table tbody tr.altrow:hover {
-    /* Override lf.css */
-    background-color: inherit;
+.datepicker table tbody tr:hover,
+.datepicker table tbody tr.altrow:hover {
+  /* Override lf.css */
+  background-color: inherit;
 }
 
-.datepicker th button, .datepicker td button {
-    /* Override bootstrap.css */
-    background: #fff;
+.datepicker th button,
+.datepicker td button {
+  /* Override bootstrap.css */
+  background: #fff;
 }
 
-.datepicker th button.btn-info, .datepicker td button.btn-info {
-    /* Un-override bootstrap.css for btn-info */
-    background-color: #49afcd;
+.datepicker th button.btn-info,
+.datepicker td button.btn-info {
+  /* Un-override bootstrap.css for btn-info */
+  background-color: #49afcd;
 }
 
 .filter-controls button i {
-    /* Override lf.css */
-    margin-right: 0;
+  /* Override lf.css */
+  margin-right: 0;
 }
 
 .filter-controls .horiz-controls {
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: flex-start; /* Or try space-between */
-    margin-bottom: 10px;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start; /* Or try space-between */
+  margin-bottom: 10px;
 }
 
 .filter-controls .horiz-controls.flex-center {
-    justify-content: center; /* Or try space-between */
+  justify-content: center; /* Or try space-between */
 }
 
 .filter-controls .horiz-controls .horiz-flex-element {
-    margin: 0 10px;
+  margin: 0 10px;
 }
 
 .filter-controls .horiz-controls {
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: flex-start; /* Or try space-between */
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start; /* Or try space-between */
 }
 
 .filter-controls .horiz-controls .self-flex-end {
-    align-self: flex-end;
+  align-self: flex-end;
 }
 
 .filter-controls .top-right-corner {
-    position: absolute;
-    top: 0; /* Might need to increase this once the "For the demo, these do NOT work" text goes away */
-    right: 10px;
+  position: absolute;
+  top: 0; /* Might need to increase this once the "For the demo, these do NOT work" text goes away */
+  right: 10px;
 }
 
 dc-entry .card {
-    margin-bottom: 1rem;
+  margin-bottom: 1rem;
 }
 
 #entryList {
-    /* Override palaso-ui.scss */
-    /*    height: auto !important;*/
-    height: 550px;
-    margin-bottom: 20px;
+  /* Override palaso-ui.scss */
+  /*    height: auto !important;*/
+  height: 550px;
+  margin-bottom: 20px;
 }
 
 #entryList .table {
-    margin-bottom: 0;
+  margin-bottom: 0;
 }
 
 .outer-flex {
-    display: flex;
-    flex-direction: row;
-    align-items: stretch;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
 }
 
 .lexiconHeaderContainer {
-    width: 100%;
-    display: flex;
-    flex-flow: row;
-    justify-content: space-between;
+  width: 100%;
+  display: flex;
+  flex-flow: row;
+  justify-content: space-between;
 }
 
 #lexAppListView {
-    margin-top: 20px;
-    .lexiconListItem {
-        cursor: pointer;
-        h5 {
-            margin: 0;
-        }
+  margin-top: 20px;
+  .lexiconListItem {
+    cursor: pointer;
+    h5 {
+      margin: 0;
     }
-    .lexiconItemListContainer {
-      @include media-breakpoint-up(md) {
-        margin-bottom: 5px;
-        height: calc(100vh - 260px);
-      }
-      @include media-breakpoint-down(sm) {
-        height: calc(100vh - 220px);
-      }
-      overflow: auto;
+  }
+  .lexiconItemListContainer {
+    @include media-breakpoint-up(md) {
+      margin-bottom: 5px;
+      height: calc(100vh - 260px);
     }
-    .lexiconListItem.active {
-        cursor: default;
+    @include media-breakpoint-down(sm) {
+      height: calc(100vh - 220px);
     }
-    .no-entries .btn {
-        margin: 0 20px 10px 0;
-    }
-    .no-entries .btn:last-child {
-        margin-right: 0;
-    }
+    overflow: auto;
+  }
+  .lexiconListItem.active {
+    cursor: default;
+  }
+  .no-entries .btn {
+    margin: 0 20px 10px 0;
+  }
+  .no-entries .btn:last-child {
+    margin-right: 0;
+  }
 }
 
 .uneditable-input {
-    cursor: auto;
-    color: inherit;
-    background-color: white;
+  cursor: auto;
+  color: inherit;
+  background-color: white;
 }
 
 #lexAppEditView {
@@ -325,7 +330,7 @@ dc-entry .card {
     overflow: auto;
 
     .list-group-item {
-      padding: .25rem 1.25rem;
+      padding: 0.25rem 1.25rem;
     }
   }
   .word-definition-title {
@@ -336,7 +341,7 @@ dc-entry .card {
       font-size: 24px;
     }
   }
-  .word-definition-title-sticky{
+  .word-definition-title-sticky {
     position: sticky;
     top: 0px;
     z-index: 5;
@@ -354,13 +359,14 @@ dc-entry .card {
   .listItemPrimary {
     text-align: initial;
     z-index: 2;
-    font-size: 1.0em;
+    font-size: 1em;
   }
   .listItemSecondary {
     z-index: 2;
     font-size: 0.8em;
   }
-  .listItemPrimary, .listItemSecondary {
+  .listItemPrimary,
+  .listItemSecondary {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -583,11 +589,12 @@ dc-entry .card {
     padding: 0;
     border-radius: $border-radius $border-radius 0 0;
     > div {
-        padding: 0.5rem 0.5rem;
-        flex-grow: 1;
-        line-height: 1.9em;
+      padding: 0.5rem 0.5rem;
+      flex-grow: 1;
+      line-height: 1.9em;
     }
-    #newWord, #editorNewWordBtn {
+    #newWord,
+    #editorNewWordBtn {
       width: 47px;
       background: $Downriver;
       cursor: pointer;
@@ -633,7 +640,7 @@ dc-entry .card {
       padding: 0.5em 1em 0.5em;
       margin: 0;
       font-size: 14px;
-      background: #E5E5E5;
+      background: #e5e5e5;
       &:first-child {
         border-bottom: 0;
       }
@@ -670,7 +677,7 @@ dc-entry .card {
 .reverse-label {
   float: right;
   margin-right: 0.75em;
-  input[type=checkbox] {
+  input[type="checkbox"] {
     margin-right: 0.25em;
     vertical-align: middle;
   }
@@ -696,7 +703,7 @@ dc-entry .card {
   border-radius: 0;
   font-size: 14px;
   line-height: 45px;
-  padding: 0 2.5em 0 2.0em;
+  padding: 0 2.5em 0 2em;
 }
 
 .filter-entries-wrapper {
@@ -729,21 +736,21 @@ dc-entry .card {
 }
 
 .lexiconListItemCompact {
-    position: relative;
-    overflow-y: hidden;
-    min-height: 40px;
-    height: 50px;
-    border-bottom: solid 1px darkgrey;
-    width: 100%;
-    line-height: 1.2em;
+  position: relative;
+  overflow-y: hidden;
+  min-height: 40px;
+  height: 50px;
+  border-bottom: solid 1px darkgrey;
+  width: 100%;
+  line-height: 1.2em;
 }
 
 .lexiconItemListContainer .selected {
-    background-color: $lf-highlight;
+  background-color: $lf-highlight;
 }
 
 .lexiconItemListContainer .listItemHasComment {
-    border-right: solid 5px $lf-comments;
+  border-right: solid 5px $lf-comments;
 }
 
 .entryItemView {
@@ -804,42 +811,44 @@ dc-entry .card {
 }
 
 #lexAppCommentView .commentCount {
-    color: $lf-comments;
-    font-weight: bold;
-    padding: 5px;
-    width: 120px;
-    text-align: right;
+  color: $lf-comments;
+  font-weight: bold;
+  padding: 5px;
+  width: 120px;
+  text-align: right;
 }
 
 #lexAppCommentView form.dc-multitext .uneditable-input {
-    height: 20px;
-    overflow: hidden;
+  height: 20px;
+  overflow: hidden;
 }
 
 #lexAppCommentView form.dc-multitext .uneditable-input:hover {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 #lexAppCommentView .dc-multioptionlist-value,
 .commentRegarding .dc-multioptionlist-value {
-    background-color: inherit;
-    width: inherit;
+  background-color: inherit;
+  width: inherit;
 }
 
 #lexAppCommentView .commentListView img,
 .commentRegarding img {
-    width: 50px;
+  width: 50px;
 }
 
 form.submitted .ng-invalid {
-    border: 1px solid #f00;
+  border: 1px solid #f00;
 }
 
 // remove up/down arrows for goto Entry
 .gotoEntry {
   width: 60px;
-  &::-webkit-inner-spin-button{ display: none; }
-  -moz-appearance:textfield;
+  &::-webkit-inner-spin-button {
+    display: none;
+  }
+  -moz-appearance: textfield;
 }
 
 .gotoEntry.ng-invalid {

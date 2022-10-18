@@ -11,7 +11,7 @@ use Api\Model\Shared\Communicate\SmsSettings;
  */
 class ProjectSettingsModel extends ProjectModel
 {
-    public function __construct($id = '')
+    public function __construct($id = "")
     {
         $this->smsSettings = new SmsSettings();
         $this->emailSettings = new EmailSettings();

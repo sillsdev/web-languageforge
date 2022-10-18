@@ -14,16 +14,14 @@ class UserUnreadModel extends UserRelationModel
      * @param string $projectId
      * @param string $questionId
      */
-    public function __construct($itemType, $userId, $projectId, $questionId = '')
+    public function __construct($itemType, $userId, $projectId, $questionId = "")
     {
-        $this->unread = new ArrayOf(
-            function() {
-                return new UnreadItem();
-            }
-        );
+        $this->unread = new ArrayOf(function () {
+            return new UnreadItem();
+        });
         $this->questionRef = new IdReference($questionId);
         $this->_type = $itemType;
-        parent::__construct('unread_item', $userId, $projectId);
+        parent::__construct("unread_item", $userId, $projectId);
         $this->read();
     }
 
@@ -36,22 +34,22 @@ class UserUnreadModel extends UserRelationModel
     /** @var IdReference */
     public $questionRef;
 
-    public function read($id = '')
+    public function read($id = "")
     {
         $mapper = self::mapper();
-        $query = array(
-                'type' => 'unread_item',
-                'userRef' => MongoMapper::mongoID($this->userRef->asString())
-        );
-        if ($this->projectRef->asString() != '') {
-            $query['projectRef'] = MongoMapper::mongoID($this->projectRef->asString());
+        $query = [
+            "type" => "unread_item",
+            "userRef" => MongoMapper::mongoID($this->userRef->asString()),
+        ];
+        if ($this->projectRef->asString() != "") {
+            $query["projectRef"] = MongoMapper::mongoID($this->projectRef->asString());
         } else {
-            $query['projectRef'] = null;
+            $query["projectRef"] = null;
         }
-        if ($this->questionRef->asString() != '') {
-            $query['questionRef'] = MongoMapper::mongoID($this->questionRef->asString());
+        if ($this->questionRef->asString() != "") {
+            $query["questionRef"] = MongoMapper::mongoID($this->questionRef->asString());
         } else {
-            $query['questionRef'] = null;
+            $query["questionRef"] = null;
         }
         $mapper->readByProperties($this, $query);
     }
@@ -82,7 +80,7 @@ class UserUnreadModel extends UserRelationModel
         for ($i = $c - 1; $i >= 0; $i--) {
             if ($this->unread[$i] == $item) {
                 unset($this->unread[$i]);
-//                break; // The lack of a break here is consistent with the previous implementation, and currently isn't a performance issue. CP 2013-12
+                //                break; // The lack of a break here is consistent with the previous implementation, and currently isn't a performance issue. CP 2013-12
             }
         }
     }
@@ -98,7 +96,7 @@ class UserUnreadModel extends UserRelationModel
         if ($isInputAssociativeArray) {
             $idsToRemove = $itemIds;
         } else {
-            $idsToRemove = array_flip($itemIds);  // Simplest way to convert a "normal" array to a "dict-like" array when we only care about O(1) lookups on the keys
+            $idsToRemove = array_flip($itemIds); // Simplest way to convert a "normal" array to a "dict-like" array when we only care about O(1) lookups on the keys
         }
         $c = $this->unread->count();
         for ($i = $c - 1; $i >= 0; $i--) {
@@ -139,7 +137,7 @@ class UserUnreadModel extends UserRelationModel
      */
     public function unreadItems()
     {
-        $items = array();
+        $items = [];
         foreach ($this->unread as $value) {
             if ($value->type == $this->_type) {
                 $items[] = $value->itemRef->asString();
@@ -157,22 +155,22 @@ class UserUnreadModel extends UserRelationModel
      * @param string $exceptThisUserId
      * @throws \Exception
      */
-    public static function markUnreadForProjectMembers($itemId, $project, $questionId = '', $exceptThisUserId = '')
+    public static function markUnreadForProjectMembers($itemId, $project, $questionId = "", $exceptThisUserId = "")
     {
         $className = get_called_class();
-        if ($className == 'Api\Model\UserUnreadModel') {
+        if ($className == "Api\Model\UserUnreadModel") {
             throw new \Exception("static method markUnreadForProject cannot be called from base class UserUnreadModel");
         }
         $userList = $project->listUsers();
         foreach ($userList->entries as $user) {
-            if ($user['id'] == $exceptThisUserId) {
+            if ($user["id"] == $exceptThisUserId) {
                 continue;
             }
             // TODO: Review: This code is getting cumbersome with if statements for specific child classes.  Maybe it's time to move this method to the child classes - cjh 2013/10
-            if ($questionId != '') {
-                $unreadModel = new $className($user['id'], $project->id->asString(), $questionId);
+            if ($questionId != "") {
+                $unreadModel = new $className($user["id"], $project->id->asString(), $questionId);
             } else {
-                $unreadModel = new $className($user['id'], $project->id->asString());
+                $unreadModel = new $className($user["id"], $project->id->asString());
             }
             /** @var UserUnreadModel $unreadModel */
             $unreadModel->markUnread($itemId);

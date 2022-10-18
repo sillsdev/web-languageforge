@@ -37,10 +37,15 @@ class ProjectCommandsTest extends TestCase
         $user1Id = self::$environ->createUser("user1name", "User1 Name", "user1@example.com");
         $user1 = new UserModel($user1Id);
 
-        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, LfProjectModel::LEXICON_APP,
-            $user1->id->asString(), self::$environ->website);
+        $projectId = ProjectCommands::createProject(
+            SF_TESTPROJECT,
+            SF_TESTPROJECTCODE,
+            LfProjectModel::LEXICON_APP,
+            $user1->id->asString(),
+            self::$environ->website
+        );
 
-        $this->assertEquals(1, ProjectCommands::deleteProjects(array($projectId), $user1Id));
+        $this->assertEquals(1, ProjectCommands::deleteProjects([$projectId], $user1Id));
     }
 
     public function testDeleteProjects_NotProjectOwner_Throw()
@@ -53,12 +58,17 @@ class ProjectCommandsTest extends TestCase
         $user1 = new UserModel($user1Id);
         $user2 = new UserModel($user2Id);
 
-        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, LfProjectModel::LEXICON_APP,
-            $user1->id->asString(), self::$environ->website);
+        $projectId = ProjectCommands::createProject(
+            SF_TESTPROJECT,
+            SF_TESTPROJECTCODE,
+            LfProjectModel::LEXICON_APP,
+            $user1->id->asString(),
+            self::$environ->website
+        );
         $project = new ProjectModel($projectId);
         $project->addUser($user2->id->asString(), ProjectRoles::MANAGER);
 
-        ProjectCommands::deleteProjects(array($projectId), $user2Id);
+        ProjectCommands::deleteProjects([$projectId], $user2Id);
     }
 
     public function testArchiveProjects_PublishedProject_ProjectArchived()
@@ -111,7 +121,7 @@ class ProjectCommandsTest extends TestCase
 
         $this->assertTrue($project->isArchived);
 
-        $count = ProjectCommands::publishProjects(array($projectId));
+        $count = ProjectCommands::publishProjects([$projectId]);
 
         $project = new ProjectModel($projectId);
         $this->assertEquals(1, $count);
@@ -139,9 +149,9 @@ class ProjectCommandsTest extends TestCase
         $this->assertEquals($userId, $updatedUser->id);
         $this->assertNotEquals(ProjectRoles::MANAGER, $updatedUser->role);
         $projectUser = $sameProject->listUsers()->entries[0];
-        $this->assertEquals('Existing Name', $projectUser['name']);
+        $this->assertEquals("Existing Name", $projectUser["name"]);
         $userProject = $updatedUser->listProjects(self::$environ->website->domain)->entries[0];
-        $this->assertEquals(SF_TESTPROJECT, $userProject['projectName']);
+        $this->assertEquals(SF_TESTPROJECT, $userProject["projectName"]);
     }
 
     public function testUpdateUserRole_JoinTwice_JoinedOnce()
@@ -183,7 +193,7 @@ class ProjectCommandsTest extends TestCase
         // setup parameters: project and users
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
-        $userIds = array();
+        $userIds = [];
 
         // there are no users in project
         $this->assertEquals(0, $project->listUsers()->count);
@@ -205,7 +215,7 @@ class ProjectCommandsTest extends TestCase
 
         $result = ProjectCommands::readProjectSettings($projectId);
 
-        $this->assertEquals('12345', $result['sms']['accountId']);
+        $this->assertEquals("12345", $result["sms"]["accountId"]);
     }
 
     public function testRemoveUsers_UsersInProject_RemovedFromProject()
@@ -238,20 +248,20 @@ class ProjectCommandsTest extends TestCase
 
         // each user in project, project has each user
         $user1Project = $otherUser1->listProjects(self::$environ->website->domain)->entries[0];
-        $this->assertEquals(SF_TESTPROJECT, $user1Project['projectName']);
+        $this->assertEquals(SF_TESTPROJECT, $user1Project["projectName"]);
         $user2Project = $otherUser1->listProjects(self::$environ->website->domain)->entries[0];
-        $this->assertEquals(SF_TESTPROJECT, $user2Project['projectName']);
+        $this->assertEquals(SF_TESTPROJECT, $user2Project["projectName"]);
         $user3Project = $otherUser1->listProjects(self::$environ->website->domain)->entries[0];
-        $this->assertEquals(SF_TESTPROJECT, $user3Project['projectName']);
+        $this->assertEquals(SF_TESTPROJECT, $user3Project["projectName"]);
         $projectUser1 = $otherProject->listUsers()->entries[0];
-        $this->assertEquals('user1name', $projectUser1['username']);
+        $this->assertEquals("user1name", $projectUser1["username"]);
         $projectUser2 = $otherProject->listUsers()->entries[1];
-        $this->assertEquals('user2name', $projectUser2['username']);
+        $this->assertEquals("user2name", $projectUser2["username"]);
         $projectUser3 = $otherProject->listUsers()->entries[2];
-        $this->assertEquals('user3name', $projectUser3['username']);
+        $this->assertEquals("user3name", $projectUser3["username"]);
 
         // remove users from project
-        $userIds = array($user1->id->asString(), $user2->id->asString(), $user3->id->asString());
+        $userIds = [$user1->id->asString(), $user2->id->asString(), $user3->id->asString()];
         ProjectCommands::removeUsers($projectId, $userIds);
 
         // read from disk
@@ -290,12 +300,12 @@ class ProjectCommandsTest extends TestCase
         $user2->write();
 
         // save data for rest of this test
-        self::$save['projectId'] = $projectId;
-        self::$save['user1Id'] = $user1Id;
-        self::$save['user2Id'] = $user2Id;
+        self::$save["projectId"] = $projectId;
+        self::$save["user1Id"] = $user1Id;
+        self::$save["user2Id"] = $user2Id;
 
         // remove users from project.  user1 still remains as project owner
-        $userIds = array($user1->id->asString(), $user2->id->asString());
+        $userIds = [$user1->id->asString(), $user2->id->asString()];
 
         ProjectCommands::removeUsers($projectId, $userIds);
 
@@ -307,9 +317,9 @@ class ProjectCommandsTest extends TestCase
     public function testRemoveUsers_ProjectOwner_NotRemovedFromProject()
     {
         // read from disk
-        $sameProject = new ProjectModel(self::$save['projectId']);
-        $sameUser1 = new UserModel(self::$save['user1Id']);
-        $sameUser2 = new UserModel(self::$save['user2Id']);
+        $sameProject = new ProjectModel(self::$save["projectId"]);
+        $sameUser1 = new UserModel(self::$save["user1Id"]);
+        $sameUser2 = new UserModel(self::$save["user2Id"]);
 
         // project still has project owner
         $this->assertEquals(1, $sameProject->listUsers()->count);
@@ -334,7 +344,7 @@ class ProjectCommandsTest extends TestCase
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $project->write();
 
-        $this->assertFalse(ProjectCommands::projectCodeExists('randomcode'));
+        $this->assertFalse(ProjectCommands::projectCodeExists("randomcode"));
     }
 
     public function testCreateProject_NewProject_ProjectOwnerSet()
@@ -343,8 +353,13 @@ class ProjectCommandsTest extends TestCase
         $user1Id = self::$environ->createUser("user1name", "User1 Name", "user1@example.com");
         $user1 = new UserModel($user1Id);
 
-        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, LexProjectModel::LEXICON_APP,
-            $user1->id->asString(), self::$environ->website);
+        $projectId = ProjectCommands::createProject(
+            SF_TESTPROJECT,
+            SF_TESTPROJECTCODE,
+            LexProjectModel::LEXICON_APP,
+            $user1->id->asString(),
+            self::$environ->website
+        );
 
         $project = new ProjectModel($projectId);
         $this->assertTrue($project->ownerRef->asString() == $user1->id->asString());
@@ -356,15 +371,20 @@ class ProjectCommandsTest extends TestCase
         $user1Id = self::$environ->createUser("user1name", "User1 Name", "user1@example.com");
         $user1 = new UserModel($user1Id);
 
-        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, LexProjectModel::LEXICON_APP,
-            $user1->id->asString(), self::$environ->website);
+        $projectId = ProjectCommands::createProject(
+            SF_TESTPROJECT,
+            SF_TESTPROJECTCODE,
+            LexProjectModel::LEXICON_APP,
+            $user1->id->asString(),
+            self::$environ->website
+        );
 
         $project = new LexProjectModel($projectId);
-        $collectionName = 'activity';
+        $collectionName = "activity";
         $databaseName = $project->databaseName();
         $indexCount = iterator_count(MongoStore::getCollectionIndexes($databaseName, $collectionName));
         $this->assertTrue($indexCount >= 1);
-        $index = ['key' => ['_id' => 1]];
+        $index = ["key" => ["_id" => 1]];
         $this->assertTrue(MongoStore::isIndexFieldNameInCollection($index, $databaseName, $collectionName));
     }
 
@@ -376,39 +396,49 @@ class ProjectCommandsTest extends TestCase
         $user1Id = self::$environ->createUser("user1name", "User1 Name", "user1@example.com");
         $user1 = new UserModel($user1Id);
         $srProject = null;
-        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE,
-            LexProjectModel::LEXICON_APP, $user1->id->asString(), self::$environ->website, $srProject);
+        $projectId = ProjectCommands::createProject(
+            SF_TESTPROJECT,
+            SF_TESTPROJECTCODE,
+            LexProjectModel::LEXICON_APP,
+            $user1->id->asString(),
+            self::$environ->website,
+            $srProject
+        );
         $project = new LexProjectModel($projectId);
         $databaseName = $project->databaseName();
         $collectionName = LexEntryModel::mapper($databaseName)->getCollectionName();
 
         // is not in collection
-        $index = ['key' => ['code' => 1]];
-        $this->assertFalse(MongoStore::isIndexFieldNameInCollection($index, $databaseName, $collectionName, $indexName));
-        $this->assertEquals('', $indexName);
+        $index = ["key" => ["code" => 1]];
+        $this->assertFalse(
+            MongoStore::isIndexFieldNameInCollection($index, $databaseName, $collectionName, $indexName)
+        );
+        $this->assertEquals("", $indexName);
 
         // is not in collection irrespective of field order
-        $index = ['key' => ['code' => -1]];
-        $this->assertFalse(MongoStore::isIndexFieldNameInCollection($index, $databaseName, $collectionName, $indexName));
+        $index = ["key" => ["code" => -1]];
+        $this->assertFalse(
+            MongoStore::isIndexFieldNameInCollection($index, $databaseName, $collectionName, $indexName)
+        );
 
         // is in collection
-        $index = ['key' => ['guid' => 1]];
+        $index = ["key" => ["guid" => 1]];
         $this->assertTrue(MongoStore::isIndexFieldNameInCollection($index, $databaseName, $collectionName, $indexName));
-        $this->assertEquals('guid_1', $indexName);
+        $this->assertEquals("guid_1", $indexName);
 
         // is in collection irrespective of field order
-        $index = ['key' => ['guid' => -1]];
+        $index = ["key" => ["guid" => -1]];
         $this->assertTrue(MongoStore::isIndexFieldNameInCollection($index, $databaseName, $collectionName, $indexName));
 
         // is in collection if its not the first key in collection
-        $index = ['key' => ['dirtySR' => 1]];
+        $index = ["key" => ["dirtySR" => 1]];
         $this->assertTrue(MongoStore::isIndexFieldNameInCollection($index, $databaseName, $collectionName, $indexName));
-        $this->assertEquals('guid_1_dirtySR_1', $indexName);
+        $this->assertEquals("guid_1_dirtySR_1", $indexName);
 
         // is in collection if its not the first key in index
-        $index = ['key' => ['code' => 1, 'dirtySR' => 1]];
+        $index = ["key" => ["code" => 1, "dirtySR" => 1]];
         $this->assertTrue(MongoStore::isIndexFieldNameInCollection($index, $databaseName, $collectionName, $indexName));
-        $this->assertEquals('guid_1_dirtySR_1', $indexName);
+        $this->assertEquals("guid_1_dirtySR_1", $indexName);
     }
 
     public function testMongoStoreIsAllIndexFieldNamesInCollection_LexProject_Ok()
@@ -419,49 +449,71 @@ class ProjectCommandsTest extends TestCase
         $user1Id = self::$environ->createUser("user1name", "User1 Name", "user1@example.com");
         $user1 = new UserModel($user1Id);
         $srProject = null;
-        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE,
-            LexProjectModel::LEXICON_APP, $user1->id->asString(), self::$environ->website, $srProject);
+        $projectId = ProjectCommands::createProject(
+            SF_TESTPROJECT,
+            SF_TESTPROJECTCODE,
+            LexProjectModel::LEXICON_APP,
+            $user1->id->asString(),
+            self::$environ->website,
+            $srProject
+        );
         $project = new LexProjectModel($projectId);
         $databaseName = $project->databaseName();
         $collectionName = LexEntryModel::mapper($databaseName)->getCollectionName();
 
         // is not in collection
-        $index = ['key' => ['code' => 1]];
-        $this->assertFalse(MongoStore::isAllIndexFieldNamesInCollection($index, $databaseName, $collectionName, $indexName));
-        $this->assertEquals('', $indexName);
+        $index = ["key" => ["code" => 1]];
+        $this->assertFalse(
+            MongoStore::isAllIndexFieldNamesInCollection($index, $databaseName, $collectionName, $indexName)
+        );
+        $this->assertEquals("", $indexName);
 
         // is not in collection irrespective of field order
-        $index = ['key' => ['code' => -1]];
-        $this->assertFalse(MongoStore::isAllIndexFieldNamesInCollection($index, $databaseName, $collectionName, $indexName));
+        $index = ["key" => ["code" => -1]];
+        $this->assertFalse(
+            MongoStore::isAllIndexFieldNamesInCollection($index, $databaseName, $collectionName, $indexName)
+        );
 
         // is not in collection if only the second field name exists
-        $index = ['key' => ['code' => 1, 'dirtySR' => 1]];
-        $this->assertFalse(MongoStore::isAllIndexFieldNamesInCollection($index, $databaseName, $collectionName, $indexName));
-        $this->assertEquals('', $indexName);
+        $index = ["key" => ["code" => 1, "dirtySR" => 1]];
+        $this->assertFalse(
+            MongoStore::isAllIndexFieldNamesInCollection($index, $databaseName, $collectionName, $indexName)
+        );
+        $this->assertEquals("", $indexName);
 
         // is not in collection if only one field name matches
-        $index = ['key' => ['dirtySR' => 1]];
-        $this->assertFalse(MongoStore::isAllIndexFieldNamesInCollection($index, $databaseName, $collectionName, $indexName));
-        $this->assertEquals('', $indexName);
+        $index = ["key" => ["dirtySR" => 1]];
+        $this->assertFalse(
+            MongoStore::isAllIndexFieldNamesInCollection($index, $databaseName, $collectionName, $indexName)
+        );
+        $this->assertEquals("", $indexName);
 
         // is in collection
-        $index = ['key' => ['guid' => 1]];
-        $this->assertTrue(MongoStore::isAllIndexFieldNamesInCollection($index, $databaseName, $collectionName, $indexName));
-        $this->assertEquals('guid_1', $indexName);
+        $index = ["key" => ["guid" => 1]];
+        $this->assertTrue(
+            MongoStore::isAllIndexFieldNamesInCollection($index, $databaseName, $collectionName, $indexName)
+        );
+        $this->assertEquals("guid_1", $indexName);
 
         // is in collection irrespective of field order
-        $index = ['key' => ['guid' => -1]];
-        $this->assertTrue(MongoStore::isAllIndexFieldNamesInCollection($index, $databaseName, $collectionName, $indexName));
+        $index = ["key" => ["guid" => -1]];
+        $this->assertTrue(
+            MongoStore::isAllIndexFieldNamesInCollection($index, $databaseName, $collectionName, $indexName)
+        );
 
         // is in collection if both match
-        $index = ['key' => ['guid' => 1, 'dirtySR' => 1]];
-        $this->assertTrue(MongoStore::isAllIndexFieldNamesInCollection($index, $databaseName, $collectionName, $indexName));
-        $this->assertEquals('guid_1_dirtySR_1', $indexName);
+        $index = ["key" => ["guid" => 1, "dirtySR" => 1]];
+        $this->assertTrue(
+            MongoStore::isAllIndexFieldNamesInCollection($index, $databaseName, $collectionName, $indexName)
+        );
+        $this->assertEquals("guid_1_dirtySR_1", $indexName);
 
         // is in collection if both match irrespective of field name order
-        $index = ['key' => ['dirtySR' => 1, 'guid' => 1]];
-        $this->assertTrue(MongoStore::isAllIndexFieldNamesInCollection($index, $databaseName, $collectionName, $indexName));
-        $this->assertEquals('guid_1_dirtySR_1', $indexName);
+        $index = ["key" => ["dirtySR" => 1, "guid" => 1]];
+        $this->assertTrue(
+            MongoStore::isAllIndexFieldNamesInCollection($index, $databaseName, $collectionName, $indexName)
+        );
+        $this->assertEquals("guid_1_dirtySR_1", $indexName);
     }
 
     public function testMongoStoreIsIndexIdenticalInCollection_LexProject_Ok()
@@ -472,42 +524,48 @@ class ProjectCommandsTest extends TestCase
         $user1Id = self::$environ->createUser("user1name", "User1 Name", "user1@example.com");
         $user1 = new UserModel($user1Id);
         $srProject = null;
-        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE,
-            LexProjectModel::LEXICON_APP, $user1->id->asString(), self::$environ->website, $srProject);
+        $projectId = ProjectCommands::createProject(
+            SF_TESTPROJECT,
+            SF_TESTPROJECTCODE,
+            LexProjectModel::LEXICON_APP,
+            $user1->id->asString(),
+            self::$environ->website,
+            $srProject
+        );
         $project = new LexProjectModel($projectId);
         $databaseName = $project->databaseName();
         $collectionName = LexEntryModel::mapper($databaseName)->getCollectionName();
 
         // is not in collection
-        $index = ['key' => ['code' => 1]];
+        $index = ["key" => ["code" => 1]];
         $this->assertFalse(MongoStore::isIndexIdenticalInCollection($index, $databaseName, $collectionName));
 
         // is not in collection irrespective of field order
-        $index = ['key' => ['code' => -1]];
+        $index = ["key" => ["code" => -1]];
         $this->assertFalse(MongoStore::isIndexIdenticalInCollection($index, $databaseName, $collectionName));
 
         // is not in collection if field missing
-        $index = ['key' => ['guid' => 1]];
+        $index = ["key" => ["guid" => 1]];
         $this->assertFalse(MongoStore::isIndexIdenticalInCollection($index, $databaseName, $collectionName));
 
         // is not in collection irrespective of field order and if field missing
-        $index = ['key' => ['guid' => -1]];
+        $index = ["key" => ["guid" => -1]];
         $this->assertFalse(MongoStore::isIndexIdenticalInCollection($index, $databaseName, $collectionName));
 
         // is not in collection if with 2 field names and field missing
-        $index = ['key' => ['guid' => 1, 'dirtySR' => 1]];
+        $index = ["key" => ["guid" => 1, "dirtySR" => 1]];
         $this->assertFalse(MongoStore::isIndexIdenticalInCollection($index, $databaseName, $collectionName));
 
         // is not in collection if field different
-        $index = ['key' => ['guid' => 1], 'unique' => false];
+        $index = ["key" => ["guid" => 1], "unique" => false];
         $this->assertFalse(MongoStore::isIndexIdenticalInCollection($index, $databaseName, $collectionName));
 
         // is in collection
-        $index = ['key' => ['guid' => 1], 'unique' => true];
+        $index = ["key" => ["guid" => 1], "unique" => true];
         $this->assertTrue(MongoStore::isIndexIdenticalInCollection($index, $databaseName, $collectionName));
 
         // is in collection if with 2 field names
-        $index = ['key' => ['guid' => 1, 'dirtySR' => 1], 'unique' => true];
+        $index = ["key" => ["guid" => 1, "dirtySR" => 1], "unique" => true];
         $this->assertTrue(MongoStore::isIndexIdenticalInCollection($index, $databaseName, $collectionName));
     }
 
@@ -519,25 +577,37 @@ class ProjectCommandsTest extends TestCase
         $user1Id = self::$environ->createUser("user1name", "User1 Name", "user1@example.com");
         $user1 = new UserModel($user1Id);
         $srProject = null;
-        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE,
-            LexProjectModel::LEXICON_APP, $user1->id->asString(), self::$environ->website, $srProject);
+        $projectId = ProjectCommands::createProject(
+            SF_TESTPROJECT,
+            SF_TESTPROJECTCODE,
+            LexProjectModel::LEXICON_APP,
+            $user1->id->asString(),
+            self::$environ->website,
+            $srProject
+        );
         $project = new LexProjectModel($projectId);
         $databaseName = $project->databaseName();
         $collectionName = LexEntryModel::mapper($databaseName)->getCollectionName();
         $indexes = LexEntryModel::mapper($databaseName)->INDEXES_REQUIRED;
         foreach ($indexes as $index) {
-            $this->assertTrue(MongoStore::isIndexIdenticalInCollection($index, $databaseName, $collectionName),
-                'index not in lexicon: ' . var_export($index, true));
+            $this->assertTrue(
+                MongoStore::isIndexIdenticalInCollection($index, $databaseName, $collectionName),
+                "index not in lexicon: " . var_export($index, true)
+            );
         }
-        $additionalIndex = ['key' => ['test' => 1]];
+        $additionalIndex = ["key" => ["test" => 1]];
         $indexes[] = $additionalIndex;
-        $this->assertFalse(MongoStore::isAllIndexFieldNamesInCollection($additionalIndex, $databaseName, $collectionName));
+        $this->assertFalse(
+            MongoStore::isAllIndexFieldNamesInCollection($additionalIndex, $databaseName, $collectionName)
+        );
 
         MongoStore::ensureIndexesInCollection($databaseName, $collectionName, $indexes);
 
         foreach ($indexes as $index) {
-            $this->assertTrue(MongoStore::isIndexIdenticalInCollection($index, $databaseName, $collectionName),
-                'index not in lexicon: ' . var_export($index, true));
+            $this->assertTrue(
+                MongoStore::isIndexIdenticalInCollection($index, $databaseName, $collectionName),
+                "index not in lexicon: " . var_export($index, true)
+            );
         }
     }
 
@@ -549,20 +619,26 @@ class ProjectCommandsTest extends TestCase
         $user1 = new UserModel($user1Id);
         $srProject = null;
 
-        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE,
-            LexProjectModel::LEXICON_APP, $user1->id->asString(), self::$environ->website, $srProject);
+        $projectId = ProjectCommands::createProject(
+            SF_TESTPROJECT,
+            SF_TESTPROJECTCODE,
+            LexProjectModel::LEXICON_APP,
+            $user1->id->asString(),
+            self::$environ->website,
+            $srProject
+        );
 
         $project = new LexProjectModel($projectId);
         $databaseName = $project->databaseName();
         $collectionName = LexEntryModel::mapper($databaseName)->getCollectionName();
         $indexCount = iterator_count(MongoStore::getCollectionIndexes($databaseName, $collectionName));
         $this->assertTrue($indexCount >= 3);
-        $index = ['key' => ['guid' => 1]];
+        $index = ["key" => ["guid" => 1]];
         $this->assertTrue(MongoStore::isAllIndexFieldNamesInCollection($index, $databaseName, $collectionName));
         $collectionName = LexOptionListModel::mapper($databaseName)->getCollectionName();
         $indexCount = iterator_count(MongoStore::getCollectionIndexes($databaseName, $collectionName));
         $this->assertTrue($indexCount >= 2);
-        $index = ['key' => ['code' => 1]];
+        $index = ["key" => ["code" => 1]];
         $this->assertTrue(MongoStore::isAllIndexFieldNamesInCollection($index, $databaseName, $collectionName));
     }
 
@@ -574,8 +650,14 @@ class ProjectCommandsTest extends TestCase
         $user1 = new UserModel($user1Id);
         $srProject = null;
 
-        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE,
-            LexProjectModel::LEXICON_APP, $user1->id->asString(), self::$environ->website, $srProject);
+        $projectId = ProjectCommands::createProject(
+            SF_TESTPROJECT,
+            SF_TESTPROJECTCODE,
+            LexProjectModel::LEXICON_APP,
+            $user1->id->asString(),
+            self::$environ->website,
+            $srProject
+        );
 
         $project = new LexProjectModel($projectId);
         $assetImagePath = $project->getImageFolderPath();
@@ -595,15 +677,21 @@ class ProjectCommandsTest extends TestCase
         self::$environ->clean();
         $user1Id = self::$environ->createUser("user1name", "User1 Name", "user1@example.com");
         $user1 = new UserModel($user1Id);
-        $srProject = array(
-            'identifier' => 'srIdentifier',
-            'name' => 'srName',
-            'repository' => 'https://public.languagedepot.org',
-            'role' => 'manager'
-        );
+        $srProject = [
+            "identifier" => "srIdentifier",
+            "name" => "srName",
+            "repository" => "https://public.languagedepot.org",
+            "role" => "manager",
+        ];
 
-        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE,
-            LexProjectModel::LEXICON_APP, $user1->id->asString(), self::$environ->website, $srProject);
+        $projectId = ProjectCommands::createProject(
+            SF_TESTPROJECT,
+            SF_TESTPROJECTCODE,
+            LexProjectModel::LEXICON_APP,
+            $user1->id->asString(),
+            self::$environ->website,
+            $srProject
+        );
 
         $project = new LexProjectModel($projectId);
         $assetImagePath = $project->getImageFolderPath();
@@ -617,7 +705,8 @@ class ProjectCommandsTest extends TestCase
         FileUtilities::removeFolderAndAllContents($projectWorkPath);
     }
 
-    public function testDeleteProjectSecondProject_multipleProjectsWithUserMembers_firstProjectShowsUserMembers() {
+    public function testDeleteProjectSecondProject_multipleProjectsWithUserMembers_firstProjectShowsUserMembers()
+    {
         self::$environ->clean();
 
         // create two users and two projects
@@ -625,8 +714,20 @@ class ProjectCommandsTest extends TestCase
         $user2Id = self::$environ->createUser("user2name", "User2 Name", "user2@example.com");
         $user1 = new UserModel($user1Id);
         $user2 = new UserModel($user2Id);
-        $project1Id = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, LfProjectModel::LEXICON_APP, $user1Id, self::$environ->website);
-        $project2Id = ProjectCommands::createProject(SF_TESTPROJECT2, SF_TESTPROJECTCODE2, LfProjectModel::LEXICON_APP, $user1Id, self::$environ->website);
+        $project1Id = ProjectCommands::createProject(
+            SF_TESTPROJECT,
+            SF_TESTPROJECTCODE,
+            LfProjectModel::LEXICON_APP,
+            $user1Id,
+            self::$environ->website
+        );
+        $project2Id = ProjectCommands::createProject(
+            SF_TESTPROJECT2,
+            SF_TESTPROJECTCODE2,
+            LfProjectModel::LEXICON_APP,
+            $user1Id,
+            self::$environ->website
+        );
 
         // user1 is already a manager of both projects
         // make user2 a manager of both projects as well
@@ -635,18 +736,18 @@ class ProjectCommandsTest extends TestCase
 
         // list members of project1 - there should be two members
         $usersDto = ProjectCommands::usersDto($project1Id);
-        $this->assertEquals(2, $usersDto['userCount']);
+        $this->assertEquals(2, $usersDto["userCount"]);
 
         // list members of project2 - there should be two members
         $usersDto = ProjectCommands::usersDto($project2Id);
-        $this->assertEquals(2, $usersDto['userCount']);
+        $this->assertEquals(2, $usersDto["userCount"]);
 
         // user1 deletes project1
-        ProjectCommands::deleteProjects(array($project1Id), $user1Id);
+        ProjectCommands::deleteProjects([$project1Id], $user1Id);
 
         // list members of project2 - there should be two members
         $usersDto = ProjectCommands::usersDto($project2Id);
-        $this->assertEquals(2, $usersDto['userCount']);
+        $this->assertEquals(2, $usersDto["userCount"]);
     }
 
     public function testUpdateUserRole_userIsAdminAndSetTechSupportRole_techSupportRoleSet()
@@ -660,7 +761,13 @@ class ProjectCommandsTest extends TestCase
 
         $ownerId = self::$environ->createUser("ownername", "owner Name", "owner@example.com");
 
-        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, LfProjectModel::LEXICON_APP, $ownerId, self::$environ->website);
+        $projectId = ProjectCommands::createProject(
+            SF_TESTPROJECT,
+            SF_TESTPROJECTCODE,
+            LfProjectModel::LEXICON_APP,
+            $ownerId,
+            self::$environ->website
+        );
         ProjectCommands::updateUserRole($projectId, $adminId, ProjectRoles::TECH_SUPPORT);
 
         $project = ProjectModel::getById($projectId);
@@ -680,7 +787,13 @@ class ProjectCommandsTest extends TestCase
 
         $ownerId = self::$environ->createUser("ownername", "owner Name", "owner@example.com");
 
-        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, LfProjectModel::LEXICON_APP, $ownerId, self::$environ->website);
+        $projectId = ProjectCommands::createProject(
+            SF_TESTPROJECT,
+            SF_TESTPROJECTCODE,
+            LfProjectModel::LEXICON_APP,
+            $ownerId,
+            self::$environ->website
+        );
         ProjectCommands::updateUserRole($projectId, $userId, ProjectRoles::TECH_SUPPORT);
     }
 
@@ -688,47 +801,80 @@ class ProjectCommandsTest extends TestCase
     {
         self::$environ->clean();
         $ownerId = self::$environ->createUser("ownername", "owner Name", "owner@example.com");
-        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, LfProjectModel::LEXICON_APP, $ownerId, self::$environ->website);
+        $projectId = ProjectCommands::createProject(
+            SF_TESTPROJECT,
+            SF_TESTPROJECTCODE,
+            LfProjectModel::LEXICON_APP,
+            $ownerId,
+            self::$environ->website
+        );
         $projectModel = ProjectModel::getById($projectId);
         $inviteUrl = ProjectCommands::createInviteLink($projectId, ProjectRoles::MANAGER);
 
         // Assert URL is valid to site
         $this->assertStringContainsString($projectModel->siteName, $inviteUrl);
-        $this->assertStringContainsString('.org/invite/', $inviteUrl);
+        $this->assertStringContainsString(".org/invite/", $inviteUrl);
 
         // Assert invite token is found in the database
-        $lastSlashPos = strrpos($inviteUrl, '/');
+        $lastSlashPos = strrpos($inviteUrl, "/");
         $token = substr($inviteUrl, $lastSlashPos + 1);
-        $this->assertTrue($projectModel->readByProperties(['inviteToken.token' => $token, 'inviteToken.defaultRole' => ProjectRoles::MANAGER]));
+        $this->assertTrue(
+            $projectModel->readByProperties([
+                "inviteToken.token" => $token,
+                "inviteToken.defaultRole" => ProjectRoles::MANAGER,
+            ])
+        );
 
         // Disable invite link and make sure it no longer exists in the DB
         ProjectCommands::disableInviteToken($projectId);
-        $this->assertFalse($projectModel->readByProperty('inviteToken.token', $token));
+        $this->assertFalse($projectModel->readByProperty("inviteToken.token", $token));
     }
 
     public function testProjectInviteLink_changeInviteLinkDefaultRole_roleChangeSuccessful()
     {
         self::$environ->clean();
         $ownerId = self::$environ->createUser("ownername", "owner Name", "owner@example.com");
-        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, LfProjectModel::LEXICON_APP, $ownerId, self::$environ->website);
+        $projectId = ProjectCommands::createProject(
+            SF_TESTPROJECT,
+            SF_TESTPROJECTCODE,
+            LfProjectModel::LEXICON_APP,
+            $ownerId,
+            self::$environ->website
+        );
         $projectModel = ProjectModel::getById($projectId);
         $inviteUrl = ProjectCommands::createInviteLink($projectId, ProjectRoles::MANAGER);
 
         // Assert defaultRole is set to initialized role
-        $lastSlashPos = strrpos($inviteUrl, '/');
+        $lastSlashPos = strrpos($inviteUrl, "/");
         $token = substr($inviteUrl, $lastSlashPos + 1);
-        $this->assertTrue($projectModel->readByProperties(['inviteToken.token' => $token, 'inviteToken.defaultRole' => ProjectRoles::MANAGER]));
+        $this->assertTrue(
+            $projectModel->readByProperties([
+                "inviteToken.token" => $token,
+                "inviteToken.defaultRole" => ProjectRoles::MANAGER,
+            ])
+        );
 
         // Change defaultRole
         ProjectCommands::updateInviteTokenRole($projectId, ProjectRoles::CONTRIBUTOR);
-        $this->assertTrue($projectModel->readByProperties(['inviteToken.token' => $token, 'inviteToken.defaultRole' => ProjectRoles::CONTRIBUTOR]));
+        $this->assertTrue(
+            $projectModel->readByProperties([
+                "inviteToken.token" => $token,
+                "inviteToken.defaultRole" => ProjectRoles::CONTRIBUTOR,
+            ])
+        );
     }
 
     public function testProjectInviteLink_addMemberFromLink_additionSuccessful()
     {
         self::$environ->clean();
         $ownerId = self::$environ->createUser("ownername", "owner Name", "owner@example.com");
-        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, LfProjectModel::LEXICON_APP, $ownerId, self::$environ->website);
+        $projectId = ProjectCommands::createProject(
+            SF_TESTPROJECT,
+            SF_TESTPROJECTCODE,
+            LfProjectModel::LEXICON_APP,
+            $ownerId,
+            self::$environ->website
+        );
         $projectModel = ProjectModel::getById($projectId);
         $inviteUrl = ProjectCommands::createInviteLink($projectId, ProjectRoles::MANAGER);
 
@@ -744,7 +890,13 @@ class ProjectCommandsTest extends TestCase
     {
         self::$environ->clean();
         $ownerId = self::$environ->createUser("ownername", "owner Name", "owner@example.com");
-        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, LfProjectModel::LEXICON_APP, $ownerId, self::$environ->website);
+        $projectId = ProjectCommands::createProject(
+            SF_TESTPROJECT,
+            SF_TESTPROJECTCODE,
+            LfProjectModel::LEXICON_APP,
+            $ownerId,
+            self::$environ->website
+        );
         $projectModel = ProjectModel::getById($projectId);
         $inviteUrl = ProjectCommands::createInviteLink($projectId, ProjectRoles::CONTRIBUTOR);
 

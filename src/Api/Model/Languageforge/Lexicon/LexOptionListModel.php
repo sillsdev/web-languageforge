@@ -15,7 +15,7 @@ class LexOptionListModel extends MapperModel
      * @param ProjectModel $projectModel
      * @param string $id
      */
-    public function __construct($projectModel, $id = '')
+    public function __construct($projectModel, $id = "")
     {
         $this->items = new ArrayOf(function () {
             return new LexOptionListItem();
@@ -53,7 +53,7 @@ class LexOptionListModel extends MapperModel
         /** @var LexOptionListMongoMapper $instance */
         static $instance = null;
         if (null === $instance || $instance->databaseName() != $databaseName) {
-            $instance = new LexOptionListMongoMapper($databaseName, 'optionlists');
+            $instance = new LexOptionListMongoMapper($databaseName, "optionlists");
         }
 
         return $instance;
@@ -70,7 +70,7 @@ class LexOptionListModel extends MapperModel
     {
         $optionList = new LexOptionListModel($projectModel);
         $listCode = LexConfig::flexOptionlistCode($fieldName);
-        if (!$optionList->readByProperty('code', $listCode)) {
+        if (!$optionList->readByProperty("code", $listCode)) {
             $optionList->name = LexConfig::flexOptionlistName($listCode);
             $optionList->code = $listCode;
             $optionList->canDelete = false;
@@ -92,26 +92,25 @@ class LexOptionListModel extends MapperModel
         }
 
         $json = json_decode(file_get_contents($filePath), true);
-        if (count($json) <= 0) return;
+        if (count($json) <= 0) {
+            return;
+        }
 
-        $this->items->exchangeArray(array());
+        $this->items->exchangeArray([]);
         foreach ($json as $item) {
-            $optionListItem = new LexOptionListItem($item['value'], $item['key']);
-            if (array_key_exists('abbreviation', $item)) {
-                $optionListItem->abbreviation = $item['abbreviation'];
+            $optionListItem = new LexOptionListItem($item["value"], $item["key"]);
+            if (array_key_exists("abbreviation", $item)) {
+                $optionListItem->abbreviation = $item["abbreviation"];
             }
-            if (array_key_exists('guid', $item)) {
-                $optionListItem->guid = $item['guid'];
+            if (array_key_exists("guid", $item)) {
+                $optionListItem->guid = $item["guid"];
             }
             $this->items[] = $optionListItem;
         }
     }
-
 }
 
 class LexOptionListMongoMapper extends MongoMapper
 {
-    public $INDEXES_REQUIRED = [
-        ['key' => ['code' => 1], 'unique' => true]
-    ];
+    public $INDEXES_REQUIRED = [["key" => ["code" => 1], "unique" => true]];
 }

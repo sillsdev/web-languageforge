@@ -10,7 +10,7 @@ class Guid
     /**
      * Regular expression pattern for finding a valid UUID4.
      */
-    const UUID4_PATTERN = '[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}';
+    const UUID4_PATTERN = "[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}";
 
     /**
      * @return string
@@ -26,7 +26,7 @@ class Guid
      */
     public static function isValid($guid)
     {
-        if (!Uuid::isValid($guid) || !preg_match('/' . self::UUID4_PATTERN . '/', $guid)) {
+        if (!Uuid::isValid($guid) || !preg_match("/" . self::UUID4_PATTERN . "/", $guid)) {
             return false;
         }
 
@@ -51,9 +51,9 @@ class Guid
      */
     public static function extract($idContainingGuid)
     {
-        $guid = '';
+        $guid = "";
         if ($idContainingGuid) {
-            $isMatched = preg_match('/' . self::UUID4_PATTERN . '/', $idContainingGuid, $guids);
+            $isMatched = preg_match("/" . self::UUID4_PATTERN . "/", $idContainingGuid, $guids);
             if ($isMatched && self::isValid($guids[0])) {
                 $guid = $guids[0];
             }

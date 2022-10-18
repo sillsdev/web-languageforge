@@ -1,6 +1,6 @@
-@import '../../../../../node_modules/bootstrap/scss/functions';
-@import '../../../../../node_modules/bootstrap/scss/variables';
-@import '../../../../../node_modules/bootstrap/scss/mixins';
+@import "../../../../../node_modules/bootstrap/scss/functions";
+@import "../../../../../node_modules/bootstrap/scss/variables";
+@import "../../../../../node_modules/bootstrap/scss/mixins";
 
 // Styles to use for entry view as well as small screens
 @mixin activitySmallView {
@@ -169,10 +169,10 @@
                 .activity-value {
                   font-weight: bold;
                   &:before {
-                    content: "\"";
+                    content: '"';
                   }
                   &:after {
-                    content: "\"";
+                    content: '"';
                   }
                 }
               }

@@ -4,7 +4,8 @@ namespace Api\Library\Shared\Palaso;
 
 class DbScriptLogger
 {
-    public function __construct($makeChanges) {
+    public function __construct($makeChanges)
+    {
         $this->output = "";
         $this->makeChanges = $makeChanges;
         if ($makeChanges) {
@@ -21,41 +22,46 @@ class DbScriptLogger
     protected $makeChanges;
 
     /**
-     * Output an informational message 
+     * Output an informational message
      * @param string $message
      */
-    protected function info($message = "\n") {
+    protected function info($message = "\n")
+    {
         $this->output .= "$message\n";
     }
-    
+
     /**
      * Output an important message
      * @param mixed $message
      */
-    protected function yell($message) {
+    protected function yell($message)
+    {
         $this->output .= "\nIMPORTANT: $message\n\n";
     }
-    
+
     /**
      * Output a warning
      * @param mixed $message
      */
-    protected function warn($message) {
+    protected function warn($message)
+    {
         $this->output .= "\nWARNING: $message\n\n";
     }
-    
+
     /**
      * Output a message about something that has been automatically fixed
      * @param mixed $message
      */
-    protected function fix($message) {
+    protected function fix($message)
+    {
         $this->output .= "\nFIXED: $message\n\n";
     }
-    
+
     /**
      * @return string - the output
      */
-    public function flushOutput() {
+    public function flushOutput()
+    {
         $output = $this->output;
         $this->output = "";
         return $output;

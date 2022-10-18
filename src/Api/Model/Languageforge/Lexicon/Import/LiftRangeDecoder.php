@@ -38,7 +38,7 @@ class LiftRangeDecoder
     public function __construct($projectModel)
     {
         $this->_projectModel = $projectModel;
-        $this->_errors = array();
+        $this->_errors = [];
     }
 
     /** @var LexProjectModel */
@@ -53,7 +53,7 @@ class LiftRangeDecoder
      */
     public function decode($sxeNode)
     {
-        $ranges = array();
+        $ranges = [];
         foreach ($sxeNode->range as $rangeNode) {
             $range = $this->readRange($rangeNode);
             $ranges[$range->id] = $range;
@@ -75,14 +75,14 @@ class LiftRangeDecoder
         } else {
             $range = new LiftRange();
         }
-        $range->id = (string)$sxeNode['id'];
-        if (isset($sxeNode['guid'])) {
-            $range->guid = (string)$sxeNode['guid'];
+        $range->id = (string) $sxeNode["id"];
+        if (isset($sxeNode["guid"])) {
+            $range->guid = (string) $sxeNode["guid"];
         }
-        if (isset($sxeNode['href'])) {
-            $range->href = (string)$sxeNode['href'];
+        if (isset($sxeNode["href"])) {
+            $range->href = (string) $sxeNode["href"];
         }
-        foreach (array('description', 'label', 'abbrev') as $name) {
+        foreach (["description", "label", "abbrev"] as $name) {
             if (isset($sxeNode->{$name})) {
                 if (isset($range->{$name})) {
                     $existingMultiText = $range->{$name};
@@ -93,7 +93,7 @@ class LiftRangeDecoder
             }
         }
 
-        $elementsById = array();
+        $elementsById = [];
         foreach ($sxeNode->{'range-element'} as $rangeElementNode) {
             $rangeElement = $this->readRangeElement($rangeElementNode);
             $elementsById[$rangeElement->id] = $rangeElement;
@@ -122,15 +122,15 @@ class LiftRangeDecoder
     {
         //CodeGuard::assertKeyExistsOrThrow('id', $sxeNode, 'range-element attributes');
         $rangeElement = new LiftRangeElement();
-        $rangeElement->id = (string)$sxeNode['id'];
-        if (isset($sxeNode['guid'])) {
-            $rangeElement->guid = (string)$sxeNode['guid'];
+        $rangeElement->id = (string) $sxeNode["id"];
+        if (isset($sxeNode["guid"])) {
+            $rangeElement->guid = (string) $sxeNode["guid"];
         }
-        if (isset($sxeNode['parent'])) {
-            $rangeElement->parent = (string)$sxeNode['parent'];
+        if (isset($sxeNode["parent"])) {
+            $rangeElement->parent = (string) $sxeNode["parent"];
             // $rangeElement->parentRef will be set later
         }
-        foreach (array('description', 'label', 'abbrev') as $name) {
+        foreach (["description", "label", "abbrev"] as $name) {
             if (isset($sxeNode->{$name})) {
                 $rangeElement->{$name} = $this->readMultiText($sxeNode->{$name});
             }
@@ -156,8 +156,8 @@ class LiftRangeDecoder
         }
         if (isset($sxeNode->form)) {
             foreach ($sxeNode->form as $form) {
-                $inputSystemTag = (string)$form['lang'];
-                $multiText->form($inputSystemTag, (string)$form->text);
+                $inputSystemTag = (string) $form["lang"];
+                $multiText->form($inputSystemTag, (string) $form->text);
                 // TODO: Do we need to count input systems found in LIFT ranges? I think no, because
                 // the input systems found in ranges are ones for which an interface translation has
                 // been defined, which is not the same concept as "ones for which data exists". 2014-09 RM

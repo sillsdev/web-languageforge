@@ -1,21 +1,21 @@
 #userManagementMembers {
-    form.form-inline {
-        margin-bottom: 10px;
+  form.form-inline {
+    margin-bottom: 10px;
 
-        div.form-control {
-            width: 100%;
-        }
+    div.form-control {
+      width: 100%;
     }
+  }
 
-    .form-inline .btn {
-        margin-bottom: 0;
-    }
-    #typeaheadDiv {
-        position: relative;
-    }
+  .form-inline .btn {
+    margin-bottom: 0;
+  }
+  #typeaheadDiv {
+    position: relative;
+  }
 
-    .invited-user {
-        font-style: italic;
-        color: #707070;
-    }
+  .invited-user {
+    font-style: italic;
+    color: #707070;
+  }
 }

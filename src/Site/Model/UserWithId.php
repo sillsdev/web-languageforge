@@ -6,10 +6,10 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class UserWithId implements UserInterface
 {
-    public function __construct($username, $password, $id, array $roles = array())
+    public function __construct($username, $password, $id, array $roles = [])
     {
-        if ('' === $username || null === $username) {
-            throw new \InvalidArgumentException('The username cannot be empty.');
+        if ("" === $username || null === $username) {
+            throw new \InvalidArgumentException("The username cannot be empty.");
         }
 
         $this->username = $username;

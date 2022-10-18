@@ -10,8 +10,8 @@ class ProjectListModel extends MapperListModel
     {
         parent::__construct(
             ProjectModelMongoMapper::instance(),
-            array(),
-            array('projectName', 'language', 'projectCode', 'siteName', 'appName')
+            [],
+            ["projectName", "language", "projectCode", "siteName", "appName"]
         );
     }
 }

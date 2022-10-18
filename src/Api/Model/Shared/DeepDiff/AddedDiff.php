@@ -10,13 +10,15 @@ class AddedDiff extends DiffBase
     /** @var mixed */
     public $newData;
 
-    public function __construct(Array $diff) {
-        $this->kind = 'N';
-        $this->path = $diff['path'];
-        $this->newData = $diff['rhs'];
+    public function __construct(array $diff)
+    {
+        $this->kind = "N";
+        $this->path = $diff["path"];
+        $this->newData = $diff["rhs"];
     }
 
-    public function getValue() {
+    public function getValue()
+    {
         return $this->newData;
     }
 }

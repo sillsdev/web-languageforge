@@ -2,4 +2,6 @@
 
 namespace Api\Model\Shared\Mapper;
 
-class IdReference extends Id {}
+class IdReference extends Id
+{
+}

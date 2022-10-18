@@ -6,7 +6,7 @@ use Api\Model\Shared\Mapper\ObjectForEncoding;
 
 class LexPicture extends ObjectForEncoding
 {
-    public function __construct($fileName = '', $guid = '')
+    public function __construct($fileName = "", $guid = "")
     {
         $this->fileName = $fileName;
         $this->caption = new LexMultiText();

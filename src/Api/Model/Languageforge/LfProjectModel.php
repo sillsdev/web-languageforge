@@ -7,9 +7,9 @@ use Api\Model\Shared\ProjectModel;
 class LfProjectModel extends ProjectModel
 {
     // define languageforge project types here
-    const LEXICON_APP = 'lexicon';
+    const LEXICON_APP = "lexicon";
 
-    public function __construct($id = '')
+    public function __construct($id = "")
     {
         parent::__construct($id);
     }

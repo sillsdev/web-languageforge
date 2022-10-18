@@ -7,7 +7,7 @@ use Sil\PhpEnv\Env; // https://github.com/silinternational/php-env#class-env-sum
 
 class Website
 {
-    const LANGUAGEFORGE = 'languageforge';
+    const LANGUAGEFORGE = "languageforge";
 
     /**
      * Website constructor.
@@ -18,18 +18,18 @@ class Website
     public function __construct($domain, $base)
     {
         if ($base != self::LANGUAGEFORGE) {
-            throw new \Exception('website->base must be languageforge');
+            throw new \Exception("website->base must be languageforge");
         }
         $this->domain = $domain;
         $this->name = $domain;
         $this->base = $base;
-        $this->theme = 'default';
+        $this->theme = "default";
         $this->ssl = false;
         $this->isProduction = false;
-        $this->defaultProjectCode = '';
+        $this->defaultProjectCode = "";
         $this->userDefaultSiteRole = SiteRoles::USER;
         $this->allowSignupFromOtherSites = true;
-        $this->releaseStage = 'local';
+        $this->releaseStage = "local";
     }
 
     /** @var string - the domain / hostname of the website */
@@ -69,7 +69,7 @@ class Website
      * @param string $hostname
      * @return Website
      */
-    public static function get($hostname = 'languageforge.org')
+    public static function get($hostname = "languageforge.org")
     {
         if (!$hostname) {
             $hostname = self::getHostname();
@@ -83,12 +83,12 @@ class Website
 
     private static function getHostname()
     {
-        return Env::requireEnv('WEBSITE');
+        return Env::requireEnv("WEBSITE");
     }
 
     public function baseUrl()
     {
-        $protocol = ($this->ssl) ? "https" : "http";
+        $protocol = $this->ssl ? "https" : "http";
 
         return $protocol . "://" . self::getHostname();
     }

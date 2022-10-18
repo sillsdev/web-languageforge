@@ -52,11 +52,11 @@ div.picklists li {
 }
 
 div.picklists li:hover {
-  background-color: #EEE;
+  background-color: #eee;
 }
 
 div.picklists li.selected {
-  background-color: #DDD;
+  background-color: #ddd;
 }
 
 dl.picklists {
@@ -68,11 +68,11 @@ dl.picklists div {
 }
 
 dl.picklists div div:hover {
-  background-color: #EEE;
+  background-color: #eee;
 }
 
 dl.picklists div.selected {
-  background-color: #DDD;
+  background-color: #ddd;
 }
 
 dl.picklists dd {
@@ -86,7 +86,10 @@ dl.picklists dd {
   color: #fff;
 }
 
-.nav, .pagination, .carousel, .panel-title {
+.nav,
+.pagination,
+.carousel,
+.panel-title {
   a {
     cursor: pointer;
   }
@@ -115,38 +118,38 @@ nav {
   border-radius: 0 !important;
 }
 
-.formspacing{
+.formspacing {
   line-height: 25px;
 }
 
-.form-styling{
+.form-styling {
   padding-left: 80px;
 }
 
-.form-group-styling{
+.form-group-styling {
   display: block;
   background-color: #f5f5f5;
 }
 
-.form-pre-styling{
+.form-pre-styling {
   display: block;
   background-color: #f5f5f5;
 }
 
-.indent1{
+.indent1 {
   padding-left: 20px;
 }
 
-.iconPadding{
+.iconPadding {
   padding-right: 15px;
 }
 
-.username-styling{
+.username-styling {
   font-weight: bold;
   color: #e67345;
 }
 
-.username-styling:hover{
+.username-styling:hover {
   color: #0088cc;
   text-decoration: underline;
 }
@@ -170,12 +173,11 @@ nav {
 }
 
 .btn-std {
-  @include button-variant(white, #ADADAD, #E6E6E6);
+  @include button-variant(white, #adadad, #e6e6e6);
 }
 
 // TODO: Remove hack for modal box issue as a result of ui.bootstrap
 .modal-select-language {
-
   .modal {
     position: fixed;
     top: 0;
@@ -202,7 +204,6 @@ nav {
   }
 
   .modal-content {
-
     height: 100%;
     display: flex;
     flex-flow: column;
@@ -259,69 +260,69 @@ nav {
 }
 
 .desktop-title {
+  position: relative;
+  bottom: 11px;
+  img {
+    height: 3.5em;
+  }
+  a {
     position: relative;
-    bottom: 11px;
-    img {
-        height: 3.5em;
-    }
-    a {
-        position: relative;
-        bottom: 8px;
-        color: white;
-    }
-    a:hover {
-        text-decoration: none;
-    }
+    bottom: 8px;
+    color: white;
+  }
+  a:hover {
+    text-decoration: none;
+  }
 }
 
 .mobile-title {
-    position: relative;
-    bottom: 13px;
-    img {
-        height: 2.6em;
-    }
-    a:hover {
-        text-decoration: none;
-    }
+  position: relative;
+  bottom: 13px;
+  img {
+    height: 2.6em;
+  }
+  a:hover {
+    text-decoration: none;
+  }
 }
 
 .alert-dismissible .close {
-    top: -.125rem;
-    padding: 0;
+  top: -0.125rem;
+  padding: 0;
 }
 
 // override bootstrap tab style for on focus / hover as temporary fix for uib-tabs
 // this fixes/removes the grey line on the bottom of selected tabs
 // longterm solution is to make a change to a fork of uib, after we switch to bs4-beta
 .nav-tabs {
-    .nav-link:focus{
-        border-bottom-color: white;
-    }
-    .uib-tab.active a:hover {
-        border-bottom-color: white;
-    }
+  .nav-link:focus {
+    border-bottom-color: white;
+  }
+  .uib-tab.active a:hover {
+    border-bottom-color: white;
+  }
 }
 
 // bootstrap v4 Beta 2 uses 'appearance: none' but browsers are not recognizing that property name - IJH 2017-12
 select.custom-select {
-    -webkit-appearance: none;  /* Removes default Chrome and Safari caret */
-    -moz-appearance: none;  /* Removes default Firefox caret */
+  -webkit-appearance: none; /* Removes default Chrome and Safari caret */
+  -moz-appearance: none; /* Removes default Firefox caret */
 }
 
 .dropdown .pui-no-caret::after {
-    display: none;
+  display: none;
 }
 
 pui-tab {
-    width: 100%;
+  width: 100%;
 }
 
 .flex-grow {
-    flex: 1 1 auto;
+  flex: 1 1 auto;
 }
 
 .flex-no-grow {
-    flex: 0 0 auto;
+  flex: 0 0 auto;
 }
 
 input::-ms-clear {

@@ -18,10 +18,14 @@ class LexDeletedCommentListModel extends MapperListModel
         new LexProjectModel($projectModel->id->asString());
 
         if (!is_null($newerThanTimestamp)) {
-            $startDate = new UTCDateTime(1000*$newerThanTimestamp);
-            parent::__construct( self::mapper($projectModel->databaseName()), array('isDeleted' => true, 'dateModified'=> array('$gte' => $startDate)), array());
+            $startDate = new UTCDateTime(1000 * $newerThanTimestamp);
+            parent::__construct(
+                self::mapper($projectModel->databaseName()),
+                ["isDeleted" => true, "dateModified" => ['$gte' => $startDate]],
+                []
+            );
         } else {
-            parent::__construct( self::mapper($projectModel->databaseName()), array('isDeleted' => true), array());
+            parent::__construct(self::mapper($projectModel->databaseName()), ["isDeleted" => true], []);
         }
     }
 
@@ -30,7 +34,7 @@ class LexDeletedCommentListModel extends MapperListModel
         /** @var MongoMapper $instance */
         static $instance = null;
         if (null === $instance || $instance->databaseName() != $databaseName) {
-            $instance = new MongoMapper($databaseName, 'lexiconComments');
+            $instance = new MongoMapper($databaseName, "lexiconComments");
         }
 
         return $instance;

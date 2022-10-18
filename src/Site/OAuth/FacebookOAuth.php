@@ -34,8 +34,8 @@ class FacebookOAuth extends OAuthBase
         }
         $query = [];
         parse_str($queryStr, $query);
-        if (array_key_exists('asid', $query)) {
-            $userId = $query['asid'];
+        if (array_key_exists("asid", $query)) {
+            $userId = $query["asid"];
             $url = "https://graph.facebook.com/v4.0/$userId/picture";
             return $url;
         } else {
@@ -61,10 +61,10 @@ class FacebookOAuth extends OAuthBase
     protected function getOAuthProvider($redirectUri): AbstractProvider
     {
         $provider = new SelectAccountFacebookOAuthProvider([
-            'clientId' => Env::requireEnv('FACEBOOK_CLIENT_ID'),
-            'clientSecret' => Env::requireEnv('FACEBOOK_CLIENT_SECRET'),
-            'redirectUri' => $redirectUri,
-            'graphApiVersion' => 'v4.0',
+            "clientId" => Env::requireEnv("FACEBOOK_CLIENT_ID"),
+            "clientSecret" => Env::requireEnv("FACEBOOK_CLIENT_SECRET"),
+            "redirectUri" => $redirectUri,
+            "graphApiVersion" => "v4.0",
         ]);
         return $provider;
     }

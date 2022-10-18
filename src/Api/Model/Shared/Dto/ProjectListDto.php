@@ -30,37 +30,36 @@ class ProjectListDto
             $projectList->readUserProjects($userId);
         }
 
-        $data = array();
-        $data['entries'] = array();
+        $data = [];
+        $data["entries"] = [];
         $count = 0;
         foreach ($projectList->entries as $entry) {
-            $project = new ProjectModel($entry['id']);
+            $project = new ProjectModel($entry["id"]);
             $role = ProjectRoles::NONE;
             if (count($project->users) > 0) {
                 if (isset($project->users[$userId]) && isset($project->users[$userId]->role)) {
                     $role = $project->users[$userId]->role;
                 }
             }
-            $entry['role'] = $role;
-            if (array_key_exists('ownerRef', $entry) and $entry['ownerRef']) {
-                $entry['ownerId'] = strval($entry['ownerRef']);
+            $entry["role"] = $role;
+            if (array_key_exists("ownerRef", $entry) and $entry["ownerRef"]) {
+                $entry["ownerId"] = strval($entry["ownerRef"]);
             } else {
-                $entry['ownerId'] = '';
+                $entry["ownerId"] = "";
                 // for legacy projects that don't have an owner
             }
-            unset($entry['ownerRef']);
-            $entry['dateModified'] = $project->dateModified->asDateTimeInterface()->format(\DateTime::RFC2822);
-            $data['entries'][] = $entry;
+            unset($entry["ownerRef"]);
+            $entry["dateModified"] = $project->dateModified->asDateTimeInterface()->format(\DateTime::RFC2822);
+            $data["entries"][] = $entry;
             $count++;
         }
-        $data['count'] = $count;
+        $data["count"] = $count;
 
         // Default sort list on project names
-        usort($data['entries'], function ($a, $b) {
-            $sortOn = 'projectName';
-            if (array_key_exists($sortOn, $a) &&
-                array_key_exists($sortOn, $b)){
-                return (strtolower($a[$sortOn]) > strtolower($b[$sortOn])) ? 1 : -1;
+        usort($data["entries"], function ($a, $b) {
+            $sortOn = "projectName";
+            if (array_key_exists($sortOn, $a) && array_key_exists($sortOn, $b)) {
+                return strtolower($a[$sortOn]) > strtolower($b[$sortOn]) ? 1 : -1;
             } else {
                 return 0;
             }

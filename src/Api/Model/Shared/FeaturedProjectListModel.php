@@ -8,10 +8,6 @@ class FeaturedProjectListModel extends MapperListModel
 {
     public function __construct()
     {
-        parent::__construct(
-            ProjectModelMongoMapper::instance(),
-            array('featured' => true),
-            array('projectName', 'language')
-        );
+        parent::__construct(ProjectModelMongoMapper::instance(), ["featured" => true], ["projectName", "language"]);
     }
 }

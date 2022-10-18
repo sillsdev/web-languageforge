@@ -15,14 +15,14 @@ class UserProfileDto
      */
     public static function encode($userId, $website)
     {
-        $dto = array();
+        $dto = [];
 
         $userModel = new UserModel($userId);
         $userProfile = UserProfileEncoder::encodeModel($userModel, $website);
-        $dto['projectsSettings'] = $userProfile['projects'];
+        $dto["projectsSettings"] = $userProfile["projects"];
 
-        unset($userProfile['projects']);
-        $dto['userProfile'] = $userProfile;
+        unset($userProfile["projects"]);
+        $dto["userProfile"] = $userProfile;
 
         return $dto;
     }

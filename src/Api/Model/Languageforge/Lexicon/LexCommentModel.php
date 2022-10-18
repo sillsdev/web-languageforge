@@ -12,30 +12,28 @@ use Api\Model\Shared\ProjectModel;
 class LexCommentModel extends MapperModel
 {
     // Comment statuses
-    const STATUS_OPEN = 'open';
-    const STATUS_RESOLVED = 'resolved';
-    const STATUS_TODO = 'todo';
+    const STATUS_OPEN = "open";
+    const STATUS_RESOLVED = "resolved";
+    const STATUS_TODO = "todo";
 
     /**
      * @param ProjectModel|LexProjectModel $projectModel
      * @param string       $id
      */
-    public function __construct($projectModel, $id = '')
+    public function __construct($projectModel, $id = "")
     {
-        $this->setReadOnlyProp('authorInfo');
-        $this->setReadOnlyProp('replies');
-        $this->setReadOnlyProp('score');
-        $this->setReadOnlyProp('status');
-        $this->setPrivateProp('isDeleted');
+        $this->setReadOnlyProp("authorInfo");
+        $this->setReadOnlyProp("replies");
+        $this->setReadOnlyProp("score");
+        $this->setReadOnlyProp("status");
+        $this->setPrivateProp("isDeleted");
 
         $this->id = new Id();
         $this->entryRef = new IdReference();
         $this->isDeleted = false;
-        $this->replies = new ArrayOf(
-            function () {
-                return new LexCommentReply();
-            }
-        );
+        $this->replies = new ArrayOf(function () {
+            return new LexCommentReply();
+        });
         $this->status = self::STATUS_OPEN;
         $this->score = 0;
         $this->authorInfo = new LexAuthorInfo();
@@ -80,7 +78,7 @@ class LexCommentModel extends MapperModel
         /** @var MongoMapper $instance */
         static $instance = null;
         if (null === $instance || $instance->databaseName() != $databaseName) {
-            $instance = new MongoMapper($databaseName, 'lexiconComments');
+            $instance = new MongoMapper($databaseName, "lexiconComments");
         }
 
         return $instance;

@@ -12,7 +12,7 @@ class MessageModel extends MapperModel
      * @param ProjectModel $projectModel
      * @param string $id
      */
-    public function __construct($projectModel, $id = '')
+    public function __construct($projectModel, $id = "")
     {
         $this->id = new Id();
         $this->_projectModel = $projectModel;
@@ -44,12 +44,12 @@ class MessageModelMongoMapper extends MongoMapper
     public static function connect($databaseName)
     {
         if (!isset(static::$_pool[$databaseName])) {
-            static::$_pool[$databaseName] = new MessageModelMongoMapper($databaseName, 'messages');
+            static::$_pool[$databaseName] = new MessageModelMongoMapper($databaseName, "messages");
         }
 
         return static::$_pool[$databaseName];
     }
 
     /** @var MessageModelMongoMapper[] */
-    private static $_pool = array();
+    private static $_pool = [];
 }

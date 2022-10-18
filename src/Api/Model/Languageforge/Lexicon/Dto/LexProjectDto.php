@@ -12,15 +12,15 @@ class LexProjectDtoEncoder extends JsonEncoder
     {
         // TODO ownerRef is declared in ProjectModel as an IdReference.  Here, it gets encoded as an Array 2014-08 DDW
         // Trello: https://trello.com/c/Zw0aLLYv
-        if ($key == 'ownerRef') {
+        if ($key == "ownerRef") {
             $user = new UserModel();
             if ($user->readIfExists($model->asString())) {
                 return [
-                    'id' => $user->id->asString(),
-                    'username' => $user->username
+                    "id" => $user->id->asString(),
+                    "username" => $user->username,
                 ];
             } else {
-                return '';
+                return "";
             }
         } else {
             return $model->asString();
@@ -31,7 +31,7 @@ class LexProjectDtoEncoder extends JsonEncoder
     {
         $encoder = new LexProjectDtoEncoder();
         $data = $encoder->_encode($model);
-        if (method_exists($model, 'getPrivateProperties')) {
+        if (method_exists($model, "getPrivateProperties")) {
             $privateProperties = (array) $model->getPrivateProperties();
             foreach ($privateProperties as $prop) {
                 unset($data[$prop]);
@@ -53,16 +53,16 @@ class LexProjectDto
         $project = new LexProjectModel($projectId);
         $projectDto = LexProjectDtoEncoder::encode($project);
 
-        $data = array();
-        $data['project'] = array();
-        $data['project']['interfaceLanguageCode'] = $projectDto['interfaceLanguageCode'];
-        $data['project']['ownerRef'] = $projectDto['ownerRef'];
-        $data['project']['projectCode'] = $projectDto['projectCode'];
-        $data['project']['featured'] = $projectDto['featured'];
+        $data = [];
+        $data["project"] = [];
+        $data["project"]["interfaceLanguageCode"] = $projectDto["interfaceLanguageCode"];
+        $data["project"]["ownerRef"] = $projectDto["ownerRef"];
+        $data["project"]["projectCode"] = $projectDto["projectCode"];
+        $data["project"]["featured"] = $projectDto["featured"];
         if ($project->hasSendReceive()) {
-            $data['project']['sendReceive'] = array();
-            $data['project']['sendReceive']['project'] = $projectDto['sendReceiveProject'];
-            $data['project']['sendReceive']['project']['identifier'] = $projectDto['sendReceiveProjectIdentifier'];
+            $data["project"]["sendReceive"] = [];
+            $data["project"]["sendReceive"]["project"] = $projectDto["sendReceiveProject"];
+            $data["project"]["sendReceive"]["project"]["identifier"] = $projectDto["sendReceiveProjectIdentifier"];
         }
 
         return $data;

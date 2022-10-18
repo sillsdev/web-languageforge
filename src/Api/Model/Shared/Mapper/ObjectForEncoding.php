@@ -11,7 +11,7 @@ class ObjectForEncoding
     private $_readOnlyProperties;
 
     /** @var array */
-    protected $_rearrangeableProperties;  // E.g., "senses" for a LexEntry, and "pictures" or "examples" for a LexSense
+    protected $_rearrangeableProperties; // E.g., "senses" for a LexEntry, and "pictures" or "examples" for a LexSense
     // TODO: would a name like "guidKeyedProperties" be better? - 2018-07-13 RM
 
     protected function setReadOnlyProp($propertyName)

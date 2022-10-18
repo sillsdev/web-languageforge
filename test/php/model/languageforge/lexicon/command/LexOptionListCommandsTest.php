@@ -22,40 +22,39 @@ class LexOptionListCommandsTest extends TestCase
         $project->initializeNewProject();
         $optionLists->read();
         $this->assertEquals(1, $optionLists->count);
-        $initialValue = $optionLists->entries[0]['items'][0]['value'];
-        $this->assertEquals('Adjective (adj)', $initialValue);
+        $initialValue = $optionLists->entries[0]["items"][0]["value"];
+        $this->assertEquals("Adjective (adj)", $initialValue);
 
         // Swap first and last items of parts of speech list
-        $count = count($optionLists->entries[0]['items']);
-        $swap = $optionLists->entries[0]['items'][0];
-        $optionLists->entries[0]['items'][0] = $optionLists->entries[0]['items'][$count-1];
-        $optionLists->entries[0]['items'][$count-1] = $swap;
+        $count = count($optionLists->entries[0]["items"]);
+        $swap = $optionLists->entries[0]["items"][0];
+        $optionLists->entries[0]["items"][0] = $optionLists->entries[0]["items"][$count - 1];
+        $optionLists->entries[0]["items"][$count - 1] = $swap;
         LexOptionListCommands::updateList($project->id->asString(), $optionLists->entries[0]);
 
         $optionLists->read();
-        $newValue = $optionLists->entries[0]['items'][0]['value'];
-        $this->assertEquals('Verb (v)', $newValue);
+        $newValue = $optionLists->entries[0]["items"][0]["value"];
+        $this->assertEquals("Verb (v)", $newValue);
 
         // Create part of speech list for fruits
         $fruits = [
-            ['key' => 'a', 'value' => 'apple'],
-            ['key' => 'b', 'value' => 'berry'],
-            ['key' => 'c', 'value' => 'cherry'],
-            ['key' => 'g', 'value' => 'grape'],
-            ['key' => 'm', 'value' => 'mango'],
-            ['key' => 'p', 'value' => 'pineapple']
+            ["key" => "a", "value" => "apple"],
+            ["key" => "b", "value" => "berry"],
+            ["key" => "c", "value" => "cherry"],
+            ["key" => "g", "value" => "grape"],
+            ["key" => "m", "value" => "mango"],
+            ["key" => "p", "value" => "pineapple"],
         ];
         $data = [
-            'id' => '',
-            'name' => 'List of Fruits',
-            'code' => 'fruits',
-            'items' => $fruits,
-            'canDelete' => false
+            "id" => "",
+            "name" => "List of Fruits",
+            "code" => "fruits",
+            "items" => $fruits,
+            "canDelete" => false,
         ];
         LexOptionListCommands::updateList($project->id->asString(), $data);
         $optionLists->read();
 
         $this->assertEquals(2, $optionLists->count);
     }
-
 }

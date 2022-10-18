@@ -17,7 +17,7 @@ Only keep lines below that describe this change, then delete the rest.
 
 ## Screenshots
 
-Please provide screenshots / animations for any change that involves the UI.  Please provide animations to demonstrate user interaction / behavior changes
+Please provide screenshots / animations for any change that involves the UI. Please provide animations to demonstrate user interaction / behavior changes
 
 ## Checklist
 
@@ -28,7 +28,7 @@ Please provide screenshots / animations for any change that involves the UI.  Pl
 
 ## How to test
 
-Please describe how to test and/or verify your changes. Provide instructions so we can reproduce.  Please also provide relevant test data as necessary.  These instructions will be used for QA testing below.
+Please describe how to test and/or verify your changes. Provide instructions so we can reproduce. Please also provide relevant test data as necessary. These instructions will be used for QA testing below.
 
 - [ ] Test A
 - [ ] Test B
