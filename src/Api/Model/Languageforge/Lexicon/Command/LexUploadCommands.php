@@ -87,20 +87,18 @@ class LexUploadCommands
             $filePath = self::mediaFilePath($folderPath, $fileNamePrefix, $fileName);
             $moveOk = copy($tmpFilePath, $filePath);
 
-            // convert audio file to mp3 or wav format if necessary
-            // FLEx only supports mp3 or wav format as of 2022-09
-
-            if (strcmp(strtolower($fileExt), ".mp3") !== 0 && strcmp(strtolower($fileExt), ".wav") !== 0) {
+            if (
+                strcmp(strtolower($fileExt), ".mp3") !== 0 &&
+                strcmp(strtolower($fileExt), ".wav") !== 0 &&
+                strcmp(strtolower($fileExt), ".webm") !== 0
+            ) {
                 //First, find the duration of the file
                 $ffprobeCommand = `ffprobe -i $tmpFilePath -show_entries format=duration -v quiet -of csv="p=0" 2> /dev/null`;
                 $audioDuration = floatval($ffprobeCommand);
 
-                // Convert to .wav if the result will be less than 1 MB (recording is shorter than 5.6 seconds)
-                // and .mp3 otherwise (recording is longer than 5.6 seconds)
                 $extensionlessFileName = substr($fileName, 0, strrpos($fileName, strtolower($fileExt)));
-                $convertedExtension = $audioDuration < 5.6 ? "wav" : "mp3";
-                $fileName = "$extensionlessFileName.$convertedExtension"; //$fileName ->> the converted file
-                `ffmpeg -i $tmpFilePath $fileName 2> /dev/null`; //original file is at the tmpFilePath. convert that file and save it to be $fileName
+                $fileName = "$extensionlessFileName.webm"; //$fileName ->> the converted file
+                `ffmpeg -i $tmpFilePath -acodec opus $fileName 2> /dev/null`; //original file is at the tmpFilePath. convert that file and save it to be $fileName
                 $filePath = self::mediaFilePath($folderPath, $fileNamePrefix, $fileName);
                 $moveOk = copy($fileName, $filePath);
 
