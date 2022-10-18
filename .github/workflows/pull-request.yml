@@ -4,11 +4,6 @@ name: Build and Test
 on:
   pull_request:
 
-defaults:
-  run:
-    shell: bash
-    working-directory: docker
-
 env:
   DOCKER_BUILDKIT: 1
 
@@ -29,7 +24,7 @@ jobs:
         with:
           check_name: Unit Test Results
           github_token: ${{ github.token }}
-          files: docker/PhpUnitTests.xml
+          files: PhpUnitTests.xml
 
   build-app-run-e2e-tests:
     runs-on: ubuntu-latest
@@ -67,9 +62,8 @@ jobs:
 
       -
         name: Playwright E2E Tests
-        working-directory: .
         # see https://playwright.dev/docs/ci#github-actions
-        run: npm run make playwright-tests
+        run: make playwright-tests
 
       -
         name: Upload test results
@@ -91,7 +85,6 @@ jobs:
           cache: "npm"
       -
         name: Run prettier check
-        working-directory: .
         run: npx prettier --check .
 
   # protractor-tests:

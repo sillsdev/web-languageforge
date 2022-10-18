@@ -12,10 +12,6 @@ jobs:
       # https://docs.docker.com/develop/develop-images/build_enhancements/
       DOCKER_BUILDKIT: 1
 
-    defaults:
-      run:
-        working-directory: docker
-
     steps:
       -
         uses: actions/checkout@v2

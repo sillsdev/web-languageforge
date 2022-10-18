@@ -6,7 +6,7 @@ See [Developer Guide](docs/DEVELOPER.md) for the quick start instructions.
 
 ### Alternate local development (full infrastructure)
 
-From within the `/docker` directory, `make next-dev` and access app via http://localhost
+From the project root directory, `make next-dev` and access app via http://localhost
 
 ### Alternate local development (limited)
 

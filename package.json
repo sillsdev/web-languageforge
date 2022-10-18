@@ -16,7 +16,7 @@
     "webpack:prd": "webpack --config webpack-prd.config.js",
     "compile-test-e2e": "tsc -p test/app",
     "test-e2e": "protractor test/app/protractorConf.js",
-    "make": "cd docker && make",
+    "make": "make",
     "prepare": "husky install"
   },
   "license": "MIT",

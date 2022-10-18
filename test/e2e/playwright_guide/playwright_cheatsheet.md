@@ -3,11 +3,10 @@
 ## Most simple
 
 1. install VSCode Extension: [_Playwright Test for VSCode_](https://marketplace.visualstudio.com/items?itemName=ms-playwright.playwright)
-1. `cd docker`
-1. `make`
-1. run tests directly with the extension in the side bar
-1. ![Screenshot showing VSCode Playwright extension](playwright_extension_sidebar.png "Playwright Test for VSCode")
-1. or run tests directly from the spec files
+2. `make`
+3. run tests directly with the extension in the side bar
+4. ![Screenshot showing VSCode Playwright extension](playwright_extension_sidebar.png "Playwright Test for VSCode")
+5. or run tests directly from the spec files
 
 ![Screenshot showing extension in the file](playwright_extension_in_test_file.png)
 
@@ -17,7 +16,6 @@
 
 ## Simple
 
-1. `cd docker`
 1. `make playwright-tests`
    This commands executes the playwright tests. Execution is specified in the makefile.
 
@@ -25,7 +23,6 @@
 
 ### Setup
 
-1. `cd docker`
 1. `make`
 1. `cd ..`
 1. `npx playwright test`
