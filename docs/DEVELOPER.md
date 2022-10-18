@@ -2,16 +2,19 @@
 
 Welcome! We're glad that you are interested in helping develop Language Forge.
 
+<details>
+  <summary>Table of contents</summary>
+
 - [Development Environment Quick Start](#development-environment-quick-start)
   - [Supported Development Environments](#supported-development-environments)
   - [Project Setup](#project-setup)
   - [Running the App Locally](#running-the-app-locally)
-  - [Mobile Device Testing on a Branch](#mobile-device-testing-on-a-branch)
+  - [Mobile device testing on a branch](#mobile-device-testing-on-a-branch)
 - [Tests](#tests)
   - [Running Playwright E2E Tests](#running-playwright-e2e-tests)
   - [Running Protractor E2E Tests](#running-protractor-e2e-tests)
   - [Running Unit Tests](#running-unit-tests)
-- [Other commands](#other-commands)
+- [Other Commands](#other-commands)
   - [Cleanup](#cleanup)
   - [Running dev](#running-dev)
 - [Debugging](#debugging)
@@ -22,6 +25,7 @@ Welcome! We're glad that you are interested in helping develop Language Forge.
   - [PHP](#php)
   - [JavaScript](#javascript)
   - [Angular & TypeScript](#angular--typescript)
+  </details>
 
 ## Development Environment Quick Start
 
@@ -58,10 +62,10 @@ Note: The application is accessible via HTTP or HTTPS. HTTPS is required for ser
 
 Sometimes there may be a need to hit the locally running app from a device other than the machine the app is running on. In order to do that, you'll need to do the following:
 
-### If your machine's firewall is already configured for external access e.g. you use Docker Desktop
+**If your machine's firewall is already configured for external access e.g. you use Docker Desktop**
 
 1. Figure out your local ip address
-1. Access the app via http at that address
+2. Access the app via http at that address
 
 On a Mac for example:
 
@@ -74,7 +78,7 @@ then hit `http://192.168.161.99` from your phone or other device on the same net
 
 NOTE: disabling cache on your device may not be trivial, you'll either need to wipe the site settings on your device's browser or you'll need to do it via USB debugging.
 
-### If your machine's firewall is not configured for external port 80/443 access, you can use ngrok
+**If your machine's firewall is not configured for external port 80/443 access, you can use ngrok**
 
 [Here](https://gist.github.com/SalahHamza/799cac56b8c2cd20e6bfeb8886f18455) are instructions for installing ngrok on WSL (Linux Subsystem for Windows).
 [Here](https://ngrok.com/download) are instructions for installing ngrok on Windows, Mac OS, Linux, or Docker.
