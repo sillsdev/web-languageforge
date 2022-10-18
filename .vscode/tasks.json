@@ -53,11 +53,8 @@
     {
       "label": "Reset E2E tests",
       "type": "process",
-      "command": "docker-compose",
-      "args": ["restart", "app-for-e2e"],
-      "options": {
-        "cwd": "docker"
-      },
+      "command": "docker",
+      "args": ["compose", "restart", "app-for-e2e"],
       "problemMatcher": []
     }
   ]

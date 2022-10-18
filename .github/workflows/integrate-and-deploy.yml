@@ -32,10 +32,6 @@ jobs:
       # https://docs.docker.com/develop/develop-images/build_enhancements/
       DOCKER_BUILDKIT: 1
 
-    defaults:
-      run:
-        working-directory: docker
-
     steps:
       -
         uses: actions/checkout@v2
@@ -53,7 +49,7 @@ jobs:
           echo ::set-output name=TAG_NEXT_APP::${{ inputs.image-tag-next-app }}
           echo ::set-output name=LFMERGE_NAMESPACE::ghcr.io/sillsdev/lfmerge
           # Get LfMerge tag from Dockerfile, fallback to "latest" as default if that fails
-          TAG_LFMERGE=$(head -n 1 lfmerge/Dockerfile | cut -d: -f2)
+          TAG_LFMERGE=$(head -n 1 docker/lfmerge/Dockerfile | cut -d: -f2)
           TAG_LFMERGE=${TAG_LFMERGE:-latest}
           echo ::set-output name=TAG_LFMERGE::${TAG_LFMERGE}
       -
@@ -76,9 +72,8 @@ jobs:
         run: make unit-tests-ci
       # -
       #   name: E2E Tests
-      #   working-directory: .
       #   run: |
-      #     docker-compose -f docker/docker-compose.yml up -d app-for-playwright
+      #     docker-compose -f docker-compose.yml up -d app-for-playwright
       #     npx playwright install chromium
       #     npx playwright test
       -
