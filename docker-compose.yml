@@ -4,7 +4,6 @@ version: '3.5'
 services:
   ui-builder:
     build:
-      context: .
       dockerfile: docker/ui-builder/Dockerfile
     image: lf-ui-builder
     container_name: lf-ui-builder
@@ -26,7 +25,6 @@ services:
 
   app:
     build:
-      context: .
       dockerfile: docker/app/Dockerfile
       args:
         - ENVIRONMENT=development
@@ -247,7 +245,6 @@ services:
 
   test-e2e:
     build:
-      context: .
       dockerfile: docker/test-e2e/Dockerfile
       args:
         - ENVIRONMENT=development
@@ -278,7 +275,6 @@ services:
 
   app-for-e2e:
     build:
-      context: .
       dockerfile: docker/app-for-e2e/Dockerfile
     image: app-for-e2e
     container_name: app-for-e2e
@@ -300,7 +296,6 @@ services:
 
   app-for-playwright:
     build:
-      context: .
       dockerfile: docker/app/Dockerfile
       args:
         - ENVIRONMENT=development
@@ -333,7 +328,6 @@ services:
 
   test-php:
     build:
-      context: .
       dockerfile: docker/test-php/Dockerfile
     image: test-php
     container_name: test-php

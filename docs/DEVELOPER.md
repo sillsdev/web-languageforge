@@ -46,9 +46,7 @@ On Windows, the project should be opened with the [Remote - WSL](https://marketp
 
 ### Running the App Locally
 
-> Note: `make` rules can be run directly from the root directory or with `npm run make` from any project sub-directory.
-
-1. `make` or `npm run make`
+1. `make`
 2. Within any browser, navigate to https://localhost
 3. Continue through any certificate warnings
 4. You should see a landing page, click "Login"
