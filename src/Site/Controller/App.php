@@ -25,30 +25,24 @@ class App extends Base
      */
     public function view(
         /** @noinspection PhpUnusedParameterInspection */
-        Request $request, Application $app, $appName, $projectId = ''
+        Request $request,
+        Application $app,
+        $appName,
+        $projectId = ""
     ) {
-
-
         /**
          * TODO: This logic should be moved into a future Authentication handler.
          * As of right now, Auth.php cannot give us the answer we need to know if
          * Authentication was successfully or not, so we check and process the invite token
          * here.  CJH - 2019-08
          */
-        if ($app['session']->get('inviteToken')) {
-            try
-            {
+        if ($app["session"]->get("inviteToken")) {
+            try {
                 $projectId = $this->processInviteToken($app);
-            }
-            catch (ResourceNotAvailableException $e)
-            {
-                return $app->redirect(
-                    '/app/projects#!/?errorMessage=' .
-                    base64_encode($e->getMessage())
-                );
-            } finally
-            {
-                $app['session']->set('inviteToken', '');
+            } catch (ResourceNotAvailableException $e) {
+                return $app->redirect("/app/projects#!/?errorMessage=" . base64_encode($e->getMessage()));
+            } finally {
+                $app["session"]->set("inviteToken", "");
             }
         }
 
@@ -56,19 +50,17 @@ class App extends Base
         try {
             $this->setupBaseVariables($app);
             $this->setupAngularAppVariables($model);
-        } catch (UserUnauthorizedException $e)
-        {
+        } catch (UserUnauthorizedException $e) {
             if (SilexSessionHelper::getUserId($app)) {
-                return $app->redirect('/app/projects');
+                return $app->redirect("/app/projects");
             }
-            return $app->redirect('/auth/logout');
-
+            return $app->redirect("/auth/logout");
         } catch (\Exception $e) {
             // setupBaseVariables() had a catch block for exceptions of unspecified type and it has been refactored here
             // Investigations into exception type were unsuccessful
-            return $app->redirect('/auth/logout');
+            return $app->redirect("/auth/logout");
         }
-        return $this->renderPage($app, 'angular-app');
+        return $this->renderPage($app, "angular-app");
     }
 
     /**
@@ -84,47 +76,54 @@ class App extends Base
      */
     public function setupAngularAppVariables(AppModel $model)
     {
-        if ($model->projectId == 'favicon.ico') {
-            $model->projectId = '';
+        if ($model->projectId == "favicon.ico") {
+            $model->projectId = "";
         }
 
         if ($model->isChildApp) {
             $model->appName = "{$model->appName}-{$model->projectId}";
-            $model->projectId = '';
+            $model->projectId = "";
         }
 
         $this->_appName = $model->appName;
-        $this->data['isAngular2'] = $model->isAppAngular2();
-        $this->data['appName'] = $model->appName;
-        $this->data['appFolder'] = $model->appFolder;
-        $this->data['projectId'] = $model->projectId;
+        $this->data["isAngular2"] = $model->isAppAngular2();
+        $this->data["appName"] = $model->appName;
+        $this->data["appFolder"] = $model->appFolder;
+        $this->data["projectId"] = $model->projectId;
 
         if ($model->requireProject) {
             if ($model->isPublicApp) {
-                $model->projectId = SilexSessionHelper::requireValidProjectIdForThisWebsite($model->app, $this->website, $model->projectId);
+                $model->projectId = SilexSessionHelper::requireValidProjectIdForThisWebsite(
+                    $model->app,
+                    $this->website,
+                    $model->projectId
+                );
             } else {
-                $model->projectId =
-                    SilexSessionHelper::requireValidProjectIdForThisWebsiteAndValidateUserMembership($model->app, $this->website, $model->projectId);
+                $model->projectId = SilexSessionHelper::requireValidProjectIdForThisWebsiteAndValidateUserMembership(
+                    $model->app,
+                    $this->website,
+                    $model->projectId
+                );
             }
         }
 
-        $model->app['session']->set('projectId', $model->projectId);
+        $model->app["session"]->set("projectId", $model->projectId);
         $this->_projectId = $model->projectId;
 
-        $this->addJavascriptFiles($model->siteFolder . '/js', ['vendor', 'assets']);
+        $this->addJavascriptFiles($model->siteFolder . "/js", ["vendor", "assets"]);
 
-        if ($this->data['isAngular2']) {
-            $this->addJavascriptFiles($model->appFolder . '/dist');
+        if ($this->data["isAngular2"]) {
+            $this->addJavascriptFiles($model->appFolder . "/dist");
         } else {
-            $this->addJavascriptFiles($model->appFolder, ['js/vendor', 'js/assets']);
+            $this->addJavascriptFiles($model->appFolder, ["js/vendor", "js/assets"]);
         }
 
         if ($model->parentAppFolder) {
-            $this->addJavascriptFiles($model->parentAppFolder, ['js/vendor', 'js/assets']);
+            $this->addJavascriptFiles($model->parentAppFolder, ["js/vendor", "js/assets"]);
         }
 
-        $this->addCssFiles('angular-app/bellows/shared');
-        $this->addCssFiles($model->appFolder, ['node_modules']);
+        $this->addCssFiles("angular-app/bellows/shared");
+        $this->addCssFiles($model->appFolder, ["node_modules"]);
 
         $this->addSemanticDomainFile($model);
     }
@@ -135,14 +134,17 @@ class App extends Base
      */
     private function addSemanticDomainFile(AppModel $model)
     {
-        $interfaceLanguageCode = 'en';
+        $interfaceLanguageCode = "en";
         if ($model->projectId) {
             $project = ProjectModel::getById($model->projectId);
             if ($project->interfaceLanguageCode) {
                 $interfaceLanguageCode = $project->interfaceLanguageCode;
             }
 
-            $usernameOrEmail = $model->app['security.token_storage']->getToken()->getUser()->getUsername();
+            $usernameOrEmail = $model->app["security.token_storage"]
+                ->getToken()
+                ->getUser()
+                ->getUsername();
             $user = new UserModel();
             if ($user->readByUsernameOrEmail($usernameOrEmail)) {
                 if ($user->interfaceLanguageCode) {
@@ -151,39 +153,44 @@ class App extends Base
             }
         }
 
-        $semDomFilePath = $model->siteFolder . '/core/semantic-domains/semantic-domains.' . $interfaceLanguageCode .
-            '.generated-data.js';
+        $semDomFilePath =
+            $model->siteFolder .
+            "/core/semantic-domains/semantic-domains." .
+            $interfaceLanguageCode .
+            ".generated-data.js";
         if (file_exists($semDomFilePath)) {
-            $this->data['jsNotMinifiedFiles'][] = $semDomFilePath;
+            $this->data["jsNotMinifiedFiles"][] = $semDomFilePath;
             return;
         }
 
-        $semDomFilePath = $model->siteFolder . '/core/semantic-domains/semantic-domains.en.generated-data.js';
+        $semDomFilePath = $model->siteFolder . "/core/semantic-domains/semantic-domains.en.generated-data.js";
         if (file_exists($semDomFilePath)) {
-            $this->data['jsNotMinifiedFiles'][] = $semDomFilePath;
+            $this->data["jsNotMinifiedFiles"][] = $semDomFilePath;
         }
     }
 
     private function processInviteToken(Application $app)
     {
-        try
-        {
-            $projectId = ProjectModel::getIdByInviteToken($app['session']->get('inviteToken'));
-        } catch (ResourceNotAvailableException $e)
-        {
-            throw new ResourceNotAvailableException('This invite link is not valid, it may have been disabled. Please check with your project manager.');
+        try {
+            $projectId = ProjectModel::getIdByInviteToken($app["session"]->get("inviteToken"));
+        } catch (ResourceNotAvailableException $e) {
+            throw new ResourceNotAvailableException(
+                "This invite link is not valid, it may have been disabled. Please check with your project manager."
+            );
         }
         $userId = SilexSessionHelper::getUserId($app);
         ProjectCommands::useInviteToken($userId, $projectId);
 
         return $projectId;
     }
-
 }
 
-class AppNotFoundException extends \Exception { }
+class AppNotFoundException extends \Exception
+{
+}
 
-class AppModel {
+class AppModel
+{
     /**
      * @var Application
      */
@@ -247,13 +254,14 @@ class AppModel {
      * @param boolean $isPublicApp
      * @throws AppNotFoundException
      */
-    public function __construct(Application $app, $appName, $website, $projectId = '') {
+    public function __construct(Application $app, $appName, $website, $projectId = "")
+    {
         $this->app = $app;
         $this->appName = $appName;
         $this->projectId = $projectId;
-        $this->isPublicApp = (preg_match('@^/(public|auth)/@', $app['request']->getRequestUri()) == 1);
+        $this->isPublicApp = preg_match("@^/(public|auth)/@", $app["request"]->getRequestUri()) == 1;
         $this->determineFolderPaths($appName, $projectId, $website, $this->isPublicApp);
-     }
+    }
 
     /**
      * @param string $appName
@@ -262,13 +270,14 @@ class AppModel {
      * @param boolean $isPublic
      * @throws AppNotFoundException
      */
-    private function determineFolderPaths($appName, $projectId, $website, $isPublic) {
-        $siteFolder = 'angular-app/' . $website->base;
+    private function determineFolderPaths($appName, $projectId, $website, $isPublic)
+    {
+        $siteFolder = "angular-app/" . $website->base;
         $sitePublicFolder = "$siteFolder/public";
         $bellowsFolder = "angular-app/bellows";
         $bellowsAppFolder = "$bellowsFolder/apps";
         $bellowsPublicAppFolder = "$bellowsAppFolder/public";
-        $parentAppFolder = '';
+        $parentAppFolder = "";
         $isChildApp = false;
         $isBellows = false;
 
@@ -323,7 +332,8 @@ class AppModel {
         $this->requireProject = $this->isProjectContextRequired($appName);
     }
 
-    private function isProjectContextRequired($appName) {
+    private function isProjectContextRequired($appName)
+    {
         switch ($appName) {
             case "lexicon":
             case "projectmanagement":
@@ -334,24 +344,20 @@ class AppModel {
         }
     }
 
-    public function isAppAngular2() {
-        $siteAppsInAngular2 = [
-            "rapid-words",
-            "review-suggest"
-        ];
+    public function isAppAngular2()
+    {
+        $siteAppsInAngular2 = ["rapid-words", "review-suggest"];
         return in_array($this->appName, $siteAppsInAngular2);
     }
 
-    private function isChildApp($location, $parentAppName, $appName) {
+    private function isChildApp($location, $parentAppName, $appName)
+    {
         $appFolder = "$location/$parentAppName/$appName";
-        return (
-            $appName != '' &&
-            file_exists($appFolder) &&
-            file_exists("$appFolder/$parentAppName-$appName.html")
-        );
+        return $appName != "" && file_exists($appFolder) && file_exists("$appFolder/$parentAppName-$appName.html");
     }
 
-    private function appExists($location, $appName) {
+    private function appExists($location, $appName)
+    {
         $appFolder = "$location/$appName";
         return file_exists($appFolder);
     }

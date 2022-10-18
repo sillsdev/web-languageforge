@@ -1,5 +1,5 @@
 <?php
 
-define('APPPATH', __DIR__ . '/../../../../'); // the src folder
+define("APPPATH", __DIR__ . "/../../../../"); // the src folder
 
-require_once APPPATH . 'vendor/autoload.php';
+require_once APPPATH . "vendor/autoload.php";

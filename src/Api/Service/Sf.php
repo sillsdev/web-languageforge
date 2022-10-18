@@ -35,7 +35,7 @@ use Api\Model\Shared\UserModel;
 use Silex\Application;
 use Site\Controller\Auth;
 
-require_once APPPATH . 'vendor/autoload.php';
+require_once APPPATH . "vendor/autoload.php";
 
 class Sf
 {
@@ -50,7 +50,7 @@ class Sf
         $this->update_last_activity();
 
         // TODO put in the LanguageForge style error handler for logging / jsonrpc return formatting etc. CP 2013-07
-        ini_set('display_errors', 0);
+        ini_set("display_errors", 0);
     }
 
     /** @var Application */
@@ -137,9 +137,9 @@ class Sf
     public function user_updateProfile($params)
     {
         $result = UserCommands::updateUserProfile($params, $this->userId, $this->website);
-        if ($result == 'login') {
+        if ($result == "login") {
             // Username changed
-            $this->app['session']->getFlashBag()->add('infoMessage', 'Username changed. Please login.');
+            $this->app["session"]->getFlashBag()->add("infoMessage", "Username changed. Please login.");
         }
         return $result;
     }
@@ -173,12 +173,12 @@ class Sf
         return UserCommands::listUsers();
     }
 
-    public function user_typeahead($term, $projectIdToExclude = '')
+    public function user_typeahead($term, $projectIdToExclude = "")
     {
         return UserCommands::userTypeaheadList($term, $projectIdToExclude, $this->website);
     }
 
-    public function user_typeaheadExclusive($term, $projectIdToExclude = '')
+    public function user_typeaheadExclusive($term, $projectIdToExclude = "")
     {
         $projectIdToExclude = empty($projectIdToExclude) ? $this->projectId : $projectIdToExclude;
         return UserCommands::userTypeaheadList($term, $projectIdToExclude, $this->website);
@@ -212,9 +212,9 @@ class Sf
      */
     public function user_register($params)
     {
-        $result = UserCommands::register($params, $this->website, $this->app['session']->get('captcha_info'));
-        if ($result == 'login') {
-            Auth::login($this->app, UserCommands::sanitizeInput($params['email']), $params['password']);
+        $result = UserCommands::register($params, $this->website, $this->app["session"]->get("captcha_info"));
+        if ($result == "login") {
+            Auth::login($this->app, UserCommands::sanitizeInput($params["email"]), $params["password"]);
         }
         return $result;
     }
@@ -222,8 +222,8 @@ class Sf
     public function user_register_oauth($params)
     {
         $result = UserCommands::registerOAuthUser($params, $this->website);
-        if ($result == 'login') {
-            Auth::loginWithoutPassword($this->app, UserCommands::sanitizeInput($params['username']));
+        if ($result == "login") {
+            Auth::loginWithoutPassword($this->app, UserCommands::sanitizeInput($params["username"]));
         }
         return $result;
     }
@@ -238,8 +238,9 @@ class Sf
         return UserCommands::createUser($params, $this->website);
     }
 
-    public function get_captcha_data() {
-        return UserCommands::getCaptchaData($this->app['session']);
+    public function get_captcha_data()
+    {
+        return UserCommands::getCaptchaData($this->app["session"]);
     }
 
     public function user_sendInvite($toEmail, $lexRoleKey)
@@ -261,7 +262,6 @@ class Sf
         return UserCommands::sendJoinRequest($projectID, $this->userId, $this->website);
     }
 
-
     /**
      * @param string $projectName
      * @param string $projectCode
@@ -271,7 +271,14 @@ class Sf
      */
     public function project_create($projectName, $projectCode, $appName, $srProject = null)
     {
-        return ProjectCommands::createProject($projectName, $projectCode, $appName, $this->userId, $this->website, $srProject);
+        return ProjectCommands::createProject(
+            $projectName,
+            $projectCode,
+            $appName,
+            $this->userId,
+            $this->website,
+            $srProject
+        );
     }
 
     /**
@@ -286,7 +293,7 @@ class Sf
     public function project_create_switchSession($projectName, $projectCode, $appName, $srProject)
     {
         $projectId = $this->project_create($projectName, $projectCode, $appName, $srProject);
-        $this->app['session']->set('projectId', $projectId);
+        $this->app["session"]->set("projectId", $projectId);
         return $projectId;
     }
 
@@ -301,10 +308,12 @@ class Sf
     public function project_join_switchSession($srIdentifier, $role)
     {
         $projectId = SendReceiveCommands::getProjectIdFromSendReceive($srIdentifier);
-        if (!$projectId) return false;
+        if (!$projectId) {
+            return false;
+        }
 
         ProjectCommands::updateUserRole($projectId, $this->userId, $role);
-        $this->app['session']->set('projectId', $projectId);
+        $this->app["session"]->set("projectId", $projectId);
         return $projectId;
     }
 
@@ -316,7 +325,7 @@ class Sf
 
     public function project_archive()
     {
-        $this->app['session']->set('projectId', "");
+        $this->app["session"]->set("projectId", "");
         return ProjectCommands::archiveProject($this->projectId, $this->userId);
     }
 
@@ -393,7 +402,7 @@ class Sf
         if (empty($projectIds)) {
             $projectIds = [$this->projectId];
         }
-        $this->app['session']->set('projectId', "");
+        $this->app["session"]->set("projectId", "");
         return ProjectCommands::deleteProjects($projectIds, $this->userId);
     }
 
@@ -423,13 +432,13 @@ class Sf
         return ActivityListDto::getActivityForUser($this->website->domain, $this->userId, $filterParams);
     }
 
-	public function activity_list_dto_for_current_project($filterParams = [])
+    public function activity_list_dto_for_current_project($filterParams = [])
     {
         $projectModel = ProjectModel::getById($this->projectId);
         return ActivityListDto::getActivityForOneProject($projectModel, $this->userId, $filterParams);
     }
 
-	public function activity_list_dto_for_project($projectCode, $filterParams = [])
+    public function activity_list_dto_for_project($projectCode, $filterParams = [])
     {
         $projectModel = ProjectModel::getByProjectCode($projectCode);
         $user = new UserModel($this->userId);
@@ -456,8 +465,8 @@ class Sf
 
     public function project_acceptJoinRequest($userId, $role)
     {
-         UserCommands::acceptJoinRequest($this->projectId, $userId, $this->website, $role);
-         ProjectCommands::removeJoinRequest($this->projectId, $userId);
+        UserCommands::acceptJoinRequest($this->projectId, $userId, $this->website, $role);
+        ProjectCommands::removeJoinRequest($this->projectId, $userId);
     }
 
     public function project_denyJoinRequest($userId)
@@ -482,7 +491,7 @@ class Sf
         return ProjectCommands::readProject($id);
     }
 
-	public function project_read_by_code($projectCode)
+    public function project_read_by_code($projectCode)
     {
         $projectModel = ProjectModel::getByProjectCode($projectCode);
         $user = new UserModel($this->userId);
@@ -546,9 +555,9 @@ class Sf
         return LexProjectDto::encode($this->projectId);
     }
 
-	public function lex_stats($projectCode)
-	{
-		$projectModel = ProjectModel::getByProjectCode($projectCode);
+    public function lex_stats($projectCode)
+    {
+        $projectModel = ProjectModel::getByProjectCode($projectCode);
         $user = new UserModel($this->userId);
 
         if ($user->isMemberOfProject($projectModel->id->asString())) {
@@ -556,11 +565,11 @@ class Sf
         }
 
         throw new UserUnauthorizedException("User $this->userId is not a member of project $projectCode");
-	}
+    }
 
-	public function lex_stats_all($projectCode)
-	{
-		$projectModel = ProjectModel::getByProjectCode($projectCode);
+    public function lex_stats_all($projectCode)
+    {
+        $projectModel = ProjectModel::getByProjectCode($projectCode);
         $user = new UserModel($this->userId);
 
         if ($user->isMemberOfProject($projectModel->id->asString())) {
@@ -568,23 +577,23 @@ class Sf
         }
 
         throw new UserUnauthorizedException("User $this->userId is not a member of project $projectCode");
-	}
+    }
 
     public function lex_dbeDtoFull($browserId, $offset)
     {
-        $sessionLabel = 'lexDbeFetch_' . $browserId;
-        $this->app['session']->set($sessionLabel, time());
+        $sessionLabel = "lexDbeFetch_" . $browserId;
+        $this->app["session"]->set($sessionLabel, time());
 
         return LexDbeDto::encode($this->projectId, $this->userId, null, $offset);
     }
 
     public function lex_dbeDtoUpdatesOnly($browserId, $lastFetchTime = null)
     {
-        $sessionLabel = 'lexDbeFetch_' . $browserId;
+        $sessionLabel = "lexDbeFetch_" . $browserId;
         if ($lastFetchTime == null) {
-            $lastFetchTime = $this->app['session']->get($sessionLabel);
+            $lastFetchTime = $this->app["session"]->get($sessionLabel);
         }
-        $this->app['session']->set($sessionLabel, time());
+        $this->app["session"]->set($sessionLabel, time());
         if ($lastFetchTime) {
             $lastFetchTime = $lastFetchTime - 5; // 5 second buffer
 
@@ -596,7 +605,9 @@ class Sf
 
     public function lex_configuration_update($config, $optionlists)
     {
-        if (!LexProjectCommands::updateConfig($this->projectId, $config)) return false;
+        if (!LexProjectCommands::updateConfig($this->projectId, $config)) {
+            return false;
+        }
         foreach ($optionlists as $optionlist) {
             LexOptionListCommands::updateList($this->projectId, $optionlist);
         }
@@ -717,9 +728,9 @@ class Sf
         return SendReceiveCommands::notificationSendRequest($projectCode);
     }
 
-
     // -------------------------------- Project Management App Api ----------------------------------
-    public function project_management_dto() {
+    public function project_management_dto()
+    {
         return ProjectManagementDto::encode($this->projectId);
     }
 
@@ -729,15 +740,15 @@ class Sf
         if ($this->userId) {
             $user = new UserModel($this->userId);
         } else {
-            return '';
+            return "";
         }
         if ($user->languageDepotUsername) {
             return $user->languageDepotUsername;
         }
         if ($user->email) {
-            $ldUsers = LdapiCommands::searchUsers('', $user->email);
+            $ldUsers = LdapiCommands::searchUsers("", $user->email);
             if ($ldUsers && count($ldUsers) == 1) {
-                $username = $ldUsers[0]['username'];
+                $username = $ldUsers[0]["username"];
                 if ($username) {
                     $user->languageDepotUsername = $username;
                     $user->write();
@@ -745,54 +756,66 @@ class Sf
                 }
             }
         }
-        return '';
+        return "";
     }
 
-    public function ldapi_check_user_password($username, $password) {
+    public function ldapi_check_user_password($username, $password)
+    {
         return LdapiCommands::checkUserPassword($this->get_ldapi_username(), $username, $password);
     }
 
-    public function ldapi_get_all_users() {
+    public function ldapi_get_all_users()
+    {
         return LdapiCommands::getAllUsers($this->get_ldapi_username());
     }
 
-    public function ldapi_search_users($searchText) {
+    public function ldapi_search_users($searchText)
+    {
         return LdapiCommands::searchUsers($this->get_ldapi_username(), $searchText);
     }
 
-    public function ldapi_get_user($username) {
+    public function ldapi_get_user($username)
+    {
         return LdapiCommands::getUser($this->get_ldapi_username(), $username);
     }
 
-    public function ldapi_update_user($username, $userdata) {
+    public function ldapi_update_user($username, $userdata)
+    {
         return LdapiCommands::updateUser($this->get_ldapi_username(), $username, $userdata);
     }
 
-    public function ldapi_get_all_projects() {
+    public function ldapi_get_all_projects()
+    {
         return LdapiCommands::getAllProjects($this->get_ldapi_username());
     }
 
-    public function ldapi_get_project($projectCode) {
+    public function ldapi_get_project($projectCode)
+    {
         return LdapiCommands::getProject($this->get_ldapi_username(), $projectCode);
     }
 
-    public function ldapi_get_projects_for_user($username) {
+    public function ldapi_get_projects_for_user($username)
+    {
         return LdapiCommands::getProjectsForUser($this->get_ldapi_username(), $username);
     }
 
-    public function ldapi_user_is_manager_of_project($username, $projectCode) {
+    public function ldapi_user_is_manager_of_project($username, $projectCode)
+    {
         return LdapiCommands::isUserManagerOfProject($this->get_ldapi_username(), $username, $projectCode);
     }
 
-    public function ldapi_project_updateUserRole($projectCode, $username, $role) {
+    public function ldapi_project_updateUserRole($projectCode, $username, $role)
+    {
         return LdapiCommands::updateUserRoleInProject($this->get_ldapi_username(), $projectCode, $username, $role);
     }
 
-    public function ldapi_project_removeUser($projectCode, $username) {
+    public function ldapi_project_removeUser($projectCode, $username)
+    {
         return LdapiCommands::removeUserFromProject($this->get_ldapi_username(), $projectCode, $username);
     }
 
-    public function ldapi_get_all_roles() {
+    public function ldapi_get_all_roles()
+    {
         return LdapiCommands::getAllRoles();
     }
 
@@ -802,22 +825,22 @@ class Sf
     private static function isAnonymousMethod($methodName)
     {
         $methods = [
-            'get_captcha_data',
-            'reset_password',
-            'sendReceive_getUserProjects',
-            'user_register',
-            'user_register_oauth',
-            'user_calculate_username',
-            'check_unique_identity',
-            'session_getSessionData'
+            "get_captcha_data",
+            "reset_password",
+            "sendReceive_getUserProjects",
+            "user_register",
+            "user_register_oauth",
+            "user_calculate_username",
+            "check_unique_identity",
+            "session_getSessionData",
         ];
         return in_array($methodName, $methods);
     }
 
     public function checkPermissions($methodName)
     {
-        if (! self::isAnonymousMethod($methodName)) {
-            if (! $this->userId) {
+        if (!self::isAnonymousMethod($methodName)) {
+            if (!$this->userId) {
                 throw new UserNotAuthenticatedException("Your session has timed out.  Please login again.");
             }
             try {
@@ -826,15 +849,16 @@ class Sf
                 $projectModel = null;
             }
             $rightsHelper = new RightsHelper($this->userId, $projectModel, $this->website);
-            if (! $rightsHelper->userCanAccessMethod($methodName)) {
+            if (!$rightsHelper->userCanAccessMethod($methodName)) {
                 throw new UserUnauthorizedException("Insufficient privileges accessing API method '$methodName'");
             }
         }
     }
 
-    public function checkPermissionsWithParams($methodName, $params = null) {
-        if (! self::isAnonymousMethod($methodName)) {
-            if (! $this->userId) {
+    public function checkPermissionsWithParams($methodName, $params = null)
+    {
+        if (!self::isAnonymousMethod($methodName)) {
+            if (!$this->userId) {
                 throw new UserNotAuthenticatedException("Your session has timed out.  Please login again.");
             }
             try {
@@ -843,7 +867,7 @@ class Sf
                 $projectModel = null;
             }
             $rightsHelper = new RightsHelper($this->userId, $projectModel, $this->website);
-            if (! $rightsHelper->userCanAccessMethodWithParams($methodName, $params)) {
+            if (!$rightsHelper->userCanAccessMethodWithParams($methodName, $params)) {
                 throw new UserUnauthorizedException("Insufficient privileges accessing API method '$methodName'");
             }
         }
@@ -855,6 +879,6 @@ class Sf
             // Default to current time
             $newtime = time();
         }
-        $this->app['session']->set('last_activity', $newtime);
+        $this->app["session"]->set("last_activity", $newtime);
     }
 }

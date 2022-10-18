@@ -8,20 +8,21 @@ use Api\Model\Shared\Rights\ProjectRoles;
 
 class LexRoles extends ProjectRoles
 {
-    const OBSERVER = 'observer';
-    const OBSERVER_WITH_COMMENT = 'observer_with_comment';
+    const OBSERVER = "observer";
+    const OBSERVER_WITH_COMMENT = "observer_with_comment";
 
-    public static function getRolesList() {
+    public static function getRolesList()
+    {
         $roles = ProjectRoles::getRolesList();
-        $roles[self::OBSERVER] = 'Observer';
-        $roles[self::OBSERVER_WITH_COMMENT] = 'Observer with comment';
+        $roles[self::OBSERVER] = "Observer";
+        $roles[self::OBSERVER_WITH_COMMENT] = "Observer with comment";
         return $roles;
     }
 
     public static function init()
     {
         // Observer
-        $rights = array();
+        $rights = [];
         $rights[] = Domain::PROJECTS + Operation::VIEW;
         $rights[] = Domain::ENTRIES + Operation::VIEW;
         $rights[] = Domain::COMMENTS + Operation::VIEW;
@@ -57,8 +58,13 @@ class LexRoles extends ProjectRoles
     }
 
     private static $_rights;
-    public static function hasRight($role, $right) { return self::_hasRight(self::$_rights, $role, $right); }
-    public static function getRightsArray($role) { return self::_getRightsArray(self::$_rights, $role); }
-
+    public static function hasRight($role, $right)
+    {
+        return self::_hasRight(self::$_rights, $role, $right);
+    }
+    public static function getRightsArray($role)
+    {
+        return self::_getRightsArray(self::$_rights, $role);
+    }
 }
 LexRoles::init();

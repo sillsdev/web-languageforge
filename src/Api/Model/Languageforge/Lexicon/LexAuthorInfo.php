@@ -19,10 +19,10 @@ class LexAuthorInfo extends ObjectForEncoding
         $this->createdDate = $now;
         $this->modifiedDate = $now;
 
-        $this->setReadOnlyProp('createdByUserRef');
-        $this->setReadOnlyProp('modifiedByUserRef');
-        $this->setReadOnlyProp('createdDate');
-        $this->setReadOnlyProp('modifiedDate');
+        $this->setReadOnlyProp("createdByUserRef");
+        $this->setReadOnlyProp("modifiedByUserRef");
+        $this->setReadOnlyProp("createdDate");
+        $this->setReadOnlyProp("modifiedDate");
     }
 
     /** @var IdReference user's Id as string */

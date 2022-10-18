@@ -9,17 +9,17 @@ class LexDbeDtoCommentsEncoder extends JsonEncoder
 {
     public function encodeIdReference(&$key, $model)
     {
-        if ($key == 'createdByUserRef' || $key == 'modifiedByUserRef') {
+        if ($key == "createdByUserRef" || $key == "modifiedByUserRef") {
             $user = new UserModel();
             if ($user->readIfExists($model->asString())) {
                 return [
-                    'id' => $user->id->asString(),
-                    'avatar_ref' => $user->avatar_ref,
-                    'name' => $user->name,
-                    'username' => $user->username
+                    "id" => $user->id->asString(),
+                    "avatar_ref" => $user->avatar_ref,
+                    "name" => $user->name,
+                    "username" => $user->username,
                 ];
             } else {
-                return '';
+                return "";
             }
         } else {
             return $model->asString();

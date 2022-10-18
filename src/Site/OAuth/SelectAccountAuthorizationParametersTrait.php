@@ -11,8 +11,8 @@ trait SelectAccountAuthorizationParametersTrait
     {
         // Default provider adds "approval_prompt=auto", but using both "prompt" and "approval_prompt" together is not allowed
         $params = parent::getAuthorizationParameters($options);
-        $params['prompt'] = 'select_account';
-        unset($params['approval_prompt']);
+        $params["prompt"] = "select_account";
+        unset($params["approval_prompt"]);
         return $params;
     }
 }

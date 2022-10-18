@@ -10,14 +10,14 @@ class UserModelWithPasswordTest extends TestCase
         // create  user with a random password
         $environ = new MongoTestEnvironment();
         $environ->clean();
-        $userId = $environ->createUser('test', 'test user', 'user@me.com');
+        $userId = $environ->createUser("test", "test user", "user@me.com");
         $passwordModel = new UserModelWithPassword($userId);
         $someRandomPassword = '$2a$07$zLvg2ereYSEPMGoGttzxrenCCUykFpp6eNTAc.C/NDQPx7WkvUvWa'; // bcrypt for 'blahblah'
         $passwordModel->password = $someRandomPassword;
         $passwordModel->write();
 
         // change the password to 12345
-        $password = '12345';
+        $password = "12345";
         $passwordModel->changePassword($password);
         $passwordModel->write();
 
@@ -30,7 +30,7 @@ class UserModelWithPasswordTest extends TestCase
     {
         $environ = new MongoTestEnvironment();
         $environ->clean();
-        $userId = $environ->createUser('test', 'test user', 'user@me.com');
+        $userId = $environ->createUser("test", "test user", "user@me.com");
         $passwordModel = new UserModelWithPassword($userId);
         $passwordModel->write();
 
@@ -41,13 +41,12 @@ class UserModelWithPasswordTest extends TestCase
     {
         $environ = new MongoTestEnvironment();
         $environ->clean();
-        $userId = $environ->createUser('test', 'test user', 'user@me.com');
+        $userId = $environ->createUser("test", "test user", "user@me.com");
         $passwordModel = new UserModelWithPassword($userId);
         $someRandomPassword = '$2a$07$zLvg2ereYSEPMGoGttzxrenCCUykFpp6eNTAc.C/NDQPx7WkvUvWa'; // bcrypt for 'blahblah'
         $passwordModel->password = $someRandomPassword;
         $passwordModel->write();
 
         $this->assertTrue($passwordModel->passwordExists());
-
     }
 }

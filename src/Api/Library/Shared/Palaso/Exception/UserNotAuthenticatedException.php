@@ -2,4 +2,6 @@
 
 namespace Api\Library\Shared\Palaso\Exception;
 
-class UserNotAuthenticatedException extends \Exception { }
+class UserNotAuthenticatedException extends \Exception
+{
+}

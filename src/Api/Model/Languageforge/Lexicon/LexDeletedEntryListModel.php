@@ -16,10 +16,14 @@ class LexDeletedEntryListModel extends MapperListModel
     public function __construct($projectModel, $newerThanTimestamp = null)
     {
         if (!is_null($newerThanTimestamp)) {
-            $startDate = new UTCDateTime(1000*$newerThanTimestamp);
-            parent::__construct( self::mapper($projectModel->databaseName()), array('dateModified'=> array('$gte' => $startDate), 'isDeleted' => true), array('id'));
+            $startDate = new UTCDateTime(1000 * $newerThanTimestamp);
+            parent::__construct(
+                self::mapper($projectModel->databaseName()),
+                ["dateModified" => ['$gte' => $startDate], "isDeleted" => true],
+                ["id"]
+            );
         } else {
-            parent::__construct( self::mapper($projectModel->databaseName()), array('isDeleted' => true), array('id'));
+            parent::__construct(self::mapper($projectModel->databaseName()), ["isDeleted" => true], ["id"]);
         }
     }
 
@@ -28,7 +32,7 @@ class LexDeletedEntryListModel extends MapperListModel
         /** @var MongoMapper $instance */
         static $instance = null;
         if (null === $instance || $instance->databaseName() != $databaseName) {
-            $instance = new MongoMapper($databaseName, 'lexicon');
+            $instance = new MongoMapper($databaseName, "lexicon");
         }
 
         return $instance;

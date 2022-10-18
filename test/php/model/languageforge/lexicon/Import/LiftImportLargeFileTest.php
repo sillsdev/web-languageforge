@@ -8,8 +8,8 @@ class TestLiftImportInfo
 {
     public function __construct()
     {
-        $this->points = array();
-        $this->add('base');
+        $this->points = [];
+        $this->add("base");
     }
 
     public $points;
@@ -18,7 +18,7 @@ class TestLiftImportInfo
     {
         $mem = memory_get_peak_usage(true);
         $current = memory_get_usage();
-        $point = array('name' => $name, 'mem' => $mem, 'current' => $current);
+        $point = ["name" => $name, "mem" => $mem, "current" => $current];
         $this->points[] = $point;
         $this->displayPoint($point);
     }
@@ -32,7 +32,7 @@ class TestLiftImportInfo
 
     public function displayPoint($point)
     {
-        echo $point['name'] . ' pk '. $point['mem'] / 1024 . 'K cur '  . $point['current'] / 1024 . 'K<br/>';
+        echo $point["name"] . " pk " . $point["mem"] / 1024 . "K cur " . $point["current"] / 1024 . "K<br/>";
     }
 }
 
@@ -52,19 +52,19 @@ class LiftImportLargeFileTest extends TestCase
         $environ->clean();
 
         $project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-//         $liftFilePath = '/home/cambell/src/Forge/TestData/Gilaki/Gilaki.lift';
-//        $liftFilePath = '/home/cambell/src/Forge/TestData/Webster/Webster.lift';
-//        $liftFilePath = '/home/ira/TestData/test-langprojih-flex/test-langprojih-flex.lift';
-        $liftFilePath = '/home/ira/TestData/test-rwr-flex/test-rwr-flex.lift';
-        $mergeRule =  LiftMergeRule::IMPORT_WINS;
+        //         $liftFilePath = '/home/cambell/src/Forge/TestData/Gilaki/Gilaki.lift';
+        //        $liftFilePath = '/home/cambell/src/Forge/TestData/Webster/Webster.lift';
+        //        $liftFilePath = '/home/ira/TestData/test-langprojih-flex/test-langprojih-flex.lift';
+        $liftFilePath = "/home/ira/TestData/test-rwr-flex/test-rwr-flex.lift";
+        $mergeRule = LiftMergeRule::IMPORT_WINS;
         $skipSameModTime = false;
 
         $time1 = new DateTime();
         LiftImport::get()->merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
         $time2 = new DateTime();
         $elapsed = $time2->diff($time1);
-        echo $elapsed->format('%I:%S') . '<br/>';
+        echo $elapsed->format("%I:%S") . "<br/>";
 
-        $testInfo->add('post merge');
+        $testInfo->add("post merge");
     }
 }

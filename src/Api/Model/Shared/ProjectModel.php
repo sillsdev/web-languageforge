@@ -20,37 +20,37 @@ use Palaso\Utilities\FileUtilities;
 
 class ProjectModel extends MapperModel
 {
-    public function __construct($id = '')
+    public function __construct($id = "")
     {
         $this->id = new Id();
         $this->ownerRef = new IdReference();
-        $this->users = new MapOf(function() {
+        $this->users = new MapOf(function () {
             return new ProjectRoleModel();
         });
 
         $this->allowSharing = false;
 
-        $this->userJoinRequests = new MapOf(function() {
+        $this->userJoinRequests = new MapOf(function () {
             return new ProjectRoleModel();
         });
 
         $this->isArchived = false;
         $this->allowInviteAFriend = true;
-        $this->interfaceLanguageCode = 'en';
+        $this->interfaceLanguageCode = "en";
 
         $this->inviteToken = new InviteToken();
 
-        $this->setReadOnlyProp('id');
-        $this->setReadOnlyProp('ownerRef');
-        $this->setReadOnlyProp('users');
-        $this->setReadOnlyProp('projectCode');
-        $this->setReadOnlyProp('siteName');
-        $this->setReadOnlyProp('appName');
+        $this->setReadOnlyProp("id");
+        $this->setReadOnlyProp("ownerRef");
+        $this->setReadOnlyProp("users");
+        $this->setReadOnlyProp("projectCode");
+        $this->setReadOnlyProp("siteName");
+        $this->setReadOnlyProp("appName");
 
         // There's separate API calls to get/set $userJoinRequests
         // TODO: Add API calls for $usersRequestingAccess DDW 2016-09
-        $this->setPrivateProp('userJoinRequests');
-        $this->setPrivateProp('usersRequestingAccess');
+        $this->setPrivateProp("userJoinRequests");
+        $this->setPrivateProp("usersRequestingAccess");
 
         parent::__construct(ProjectModelMongoMapper::instance(), $id);
     }
@@ -124,7 +124,9 @@ class ProjectModel extends MapperModel
     public static function getDefaultProject($website)
     {
         $project = new ProjectModel();
-        if ($project->readByProperties(array('projectCode' => $website->defaultProjectCode, 'siteName' => $website->domain))) {
+        if (
+            $project->readByProperties(["projectCode" => $website->defaultProjectCode, "siteName" => $website->domain])
+        ) {
             return ProjectModel::getById($project->id->asString());
         } else {
             return null;
@@ -137,12 +139,13 @@ class ProjectModel extends MapperModel
      * @return bool
      * @throws \Exception
      */
-    public static function projectExistsOnWebsite($projectId, $website) {
+    public static function projectExistsOnWebsite($projectId, $website)
+    {
         $projectExists = false;
         $projectModel = new ProjectModel();
         if ($projectModel->exists($projectId)) {
             $projectModel = ProjectModel::getById($projectId);
-            $projectExists = ($website->domain == $projectModel->siteName);
+            $projectExists = $website->domain == $projectModel->siteName;
         }
         return $projectExists;
     }
@@ -153,11 +156,11 @@ class ProjectModel extends MapperModel
      */
     public function databaseName()
     {
-        CodeGuard::checkEmptyAndThrow($this->projectCode, 'projectCode');
+        CodeGuard::checkEmptyAndThrow($this->projectCode, "projectCode");
         $name = strtolower($this->projectCode);
-        $name = str_replace(' ', '_', $name);
+        $name = str_replace(" ", "_", $name);
 
-        return 'sf_' . $name;
+        return "sf_" . $name;
     }
 
     /**
@@ -187,7 +190,7 @@ class ProjectModel extends MapperModel
     public function addUser($userId, $role)
     {
         ProjectModelMongoMapper::instance();
-//        $ProjectModelMongoMapper::mongoID($userId)
+        //        $ProjectModelMongoMapper::mongoID($userId)
         $model = new ProjectRoleModel();
         $model->role = $role;
         $this->users[$userId] = $model;
@@ -202,10 +205,13 @@ class ProjectModel extends MapperModel
     {
         $rolesArray = $this->getRolesList();
         $validRole = array_key_exists($this->inviteToken->defaultRole, $rolesArray);
-        if(!$validRole)
-        {
-            throw new ResourceNotAvailableException('Project ' . $projectId . '\'s invite token is associated with nonexistent role '
-                . $model->inviteToken->defaultRole);
+        if (!$validRole) {
+            throw new ResourceNotAvailableException(
+                "Project " .
+                    $projectId .
+                    '\'s invite token is associated with nonexistent role ' .
+                    $model->inviteToken->defaultRole
+            );
         }
         $this->addUser($userId, $this->inviteToken->defaultRole);
     }
@@ -216,7 +222,8 @@ class ProjectModel extends MapperModel
      * @param string $role the system role the user has
      * @see roles
      */
-    public function createUserJoinRequest($userId, $role) {
+    public function createUserJoinRequest($userId, $role)
+    {
         ProjectModelMongoMapper::instance();
         $model = new ProjectRoleModel();
         $model->role = $role;
@@ -259,13 +266,13 @@ class ProjectModel extends MapperModel
         $userList = new UserListProjectModel($this->id->asString());
         $userList->read();
         for ($i = 0, $l = count($userList->entries); $i < $l; $i++) {
-            $userId = $userList->entries[$i]['id'];
+            $userId = $userList->entries[$i]["id"];
             if (!array_key_exists($userId, $this->users)) {
                 continue;
             }
-            $userList->entries[$i]['role'] = $this->users[$userId]->role;
+            $userList->entries[$i]["role"] = $this->users[$userId]->role;
         }
-         return $userList;
+        return $userList;
     }
 
     public function listInvitees()
@@ -273,8 +280,8 @@ class ProjectModel extends MapperModel
         $invitees = new InviteeListProjectModel($this->id->asString());
         $invitees->read();
         foreach ($invitees->entries as $i => $invitee) {
-            if (array_key_exists($invitee['id'], $this->users)) {
-                $invitees->entries[$i]['role'] = $this->users[$invitee['id']]->role;
+            if (array_key_exists($invitee["id"], $this->users)) {
+                $invitees->entries[$i]["role"] = $this->users[$invitee["id"]]->role;
             }
         }
         return $invitees;
@@ -285,12 +292,12 @@ class ProjectModel extends MapperModel
         $allUserList = UserCommands::listUsers();
         $userList = [];
         for ($i = 0, $l = count($allUserList->entries); $i < $l; $i++) {
-            $userId = $allUserList->entries[$i]['id'];
+            $userId = $allUserList->entries[$i]["id"];
             if (array_key_exists($userId, $this->userJoinRequests)) {
-                $userList[$i] = array(
-                                      "user"=> $allUserList->entries[$i],
-                                      "role"=> $this->userJoinRequests[$userId]
-                                     );
+                $userList[$i] = [
+                    "user" => $allUserList->entries[$i],
+                    "role" => $this->userJoinRequests[$userId],
+                ];
             }
         }
         return $userList;
@@ -325,7 +332,8 @@ class ProjectModel extends MapperModel
      * @param string $userId
      * @return bool
      */
-    public function isOwner($userId) {
+    public function isOwner($userId)
+    {
         return $this->ownerRef->asString() == $userId;
     }
 
@@ -338,8 +346,8 @@ class ProjectModel extends MapperModel
      */
     public function hasRight($userId, $right)
     {
-        if (!method_exists($this->rolesClass, 'hasRight')) {
-            throw new \Exception('hasRight method cannot be called directly from ProjectModel');
+        if (!method_exists($this->rolesClass, "hasRight")) {
+            throw new \Exception("hasRight method cannot be called directly from ProjectModel");
         }
         $hasRight = false;
         if (key_exists($userId, $this->users->getArrayCopy())) {
@@ -354,9 +362,10 @@ class ProjectModel extends MapperModel
      * @throws \Exception
      * @return array
      */
-    public function getRolesList() {
-        if (!method_exists($this->rolesClass, 'hasRight')) {
-            throw new \Exception('hasRight method cannot be called directly from ProjectModel');
+    public function getRolesList()
+    {
+        if (!method_exists($this->rolesClass, "hasRight")) {
+            throw new \Exception("hasRight method cannot be called directly from ProjectModel");
         }
         $rolesClass = $this->rolesClass;
         return $rolesClass::getRolesList();
@@ -370,12 +379,12 @@ class ProjectModel extends MapperModel
      */
     public function getRightsArray($userId)
     {
-        if (!method_exists($this->rolesClass, 'getRightsArray')) {
-            throw new \Exception('getRightsArray method cannot be called directly from ProjectModel');
+        if (!method_exists($this->rolesClass, "getRightsArray")) {
+            throw new \Exception("getRightsArray method cannot be called directly from ProjectModel");
         }
-        CodeGuard::checkTypeAndThrow($userId, 'string');
+        CodeGuard::checkTypeAndThrow($userId, "string");
         if (!key_exists($userId, $this->users->getArrayCopy())) {
-            $result = array();
+            $result = [];
         } else {
             $role = $this->users[$userId]->role;
             $rolesClass = $this->rolesClass;
@@ -393,19 +402,20 @@ class ProjectModel extends MapperModel
      */
     public function getPublicSettings(
         /** @noinspection PhpUnusedParameterInspection used in inherited methods */
-        $userId)
-    {
-        $settings = array(
+        $userId
+    ) {
+        $settings = [
             "allowInviteAFriend" => $this->allowInviteAFriend,
-        );
+        ];
         return $settings;
     }
 
     /**
      * @return bool
      */
-    public function hasId() {
-        return $this->id->asString() != '';
+    public function hasId()
+    {
+        return $this->id->asString() != "";
     }
 
     /**
@@ -417,11 +427,12 @@ class ProjectModel extends MapperModel
     {
         $project = new ProjectModel($projectId);
         switch ($project->appName) {
-            case 'lexicon':
+            case "lexicon":
                 return new LexProjectModel($projectId);
             default:
                 throw new ResourceNotAvailableException(
-                    "projectId '$projectId' could not be found when calling ProjectModel::getById()");
+                    "projectId '$projectId' could not be found when calling ProjectModel::getById()"
+                );
         }
     }
 
@@ -433,13 +444,14 @@ class ProjectModel extends MapperModel
     public static function getIdByInviteToken($token)
     {
         $model = new ProjectModel();
-        $model->readByProperty('inviteToken.token', $token);
+        $model->readByProperty("inviteToken.token", $token);
         switch ($model->appName) {
-            case 'lexicon':
+            case "lexicon":
                 return $model->id->id;
             default:
                 throw new ResourceNotAvailableException(
-                    "inviteToken '$token' could not be found when calling ProjectModel::getIdByInviteToken()");
+                    "inviteToken '$token' could not be found when calling ProjectModel::getIdByInviteToken()"
+                );
         }
     }
 
@@ -451,7 +463,7 @@ class ProjectModel extends MapperModel
     public static function getByProjectCode($projectCode)
     {
         $m = new ProjectModel();
-        $m->readByProperties(array('projectCode' => $projectCode));
+        $m->readByProperties(["projectCode" => $projectCode]);
         if ($m->hasId()) {
             return self::getById($m->id->asString());
         }
@@ -463,7 +475,7 @@ class ProjectModel extends MapperModel
      */
     public function getAssetsRelativePath()
     {
-        return 'assets/' . $this->appName. '/' . $this->databaseName();
+        return "assets/" . $this->appName . "/" . $this->databaseName();
     }
 
     /**

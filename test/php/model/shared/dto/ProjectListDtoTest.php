@@ -37,14 +37,14 @@ class ProjectListDtoTest extends TestCase
 
         $dto = ProjectListDto::encode($userId, self::$environ->website);
 
-        $this->assertEquals(2, $dto['count']);
-        $this->assertIsArray($dto['entries']);
-        $this->assertEquals($projectId1, $dto['entries'][0]['id']);
-        $this->assertEquals(SF_TESTPROJECT, $dto['entries'][0]['projectName']);
-        $this->assertEquals(ProjectRoles::MANAGER, $dto['entries'][0]['role']);
-        $this->assertEquals($projectId2, $dto['entries'][1]['id']);
-        $this->assertEquals(SF_TESTPROJECT2, $dto['entries'][1]['projectName']);
-        $this->assertEquals(ProjectRoles::NONE, $dto['entries'][1]['role']);
+        $this->assertEquals(2, $dto["count"]);
+        $this->assertIsArray($dto["entries"]);
+        $this->assertEquals($projectId1, $dto["entries"][0]["id"]);
+        $this->assertEquals(SF_TESTPROJECT, $dto["entries"][0]["projectName"]);
+        $this->assertEquals(ProjectRoles::MANAGER, $dto["entries"][0]["role"]);
+        $this->assertEquals($projectId2, $dto["entries"][1]["id"]);
+        $this->assertEquals(SF_TESTPROJECT2, $dto["entries"][1]["projectName"]);
+        $this->assertEquals(ProjectRoles::NONE, $dto["entries"][1]["role"]);
     }
 
     public function testEncode_SystemAdmin2Projects1Archived_DtoReturnsProjectCount1()
@@ -67,19 +67,19 @@ class ProjectListDtoTest extends TestCase
 
         $dto = ProjectListDto::encode($userId, self::$environ->website);
 
-        $this->assertEquals(1, $dto['count']);
-        $this->assertIsArray($dto['entries']);
-        $this->assertEquals($projectId2, $dto['entries'][0]['id']);
-        $this->assertEquals(SF_TESTPROJECT2, $dto['entries'][0]['projectName']);
-        $this->assertEquals(ProjectRoles::NONE, $dto['entries'][0]['role']);
+        $this->assertEquals(1, $dto["count"]);
+        $this->assertIsArray($dto["entries"]);
+        $this->assertEquals($projectId2, $dto["entries"][0]["id"]);
+        $this->assertEquals(SF_TESTPROJECT2, $dto["entries"][0]["projectName"]);
+        $this->assertEquals(ProjectRoles::NONE, $dto["entries"][0]["role"]);
 
         $dto = ProjectListDto::encode($userId, self::$environ->website, true);
 
-        $this->assertEquals(1, $dto['count']);
-        $this->assertIsArray($dto['entries']);
-        $this->assertEquals($projectId1, $dto['entries'][0]['id']);
-        $this->assertEquals(SF_TESTPROJECT, $dto['entries'][0]['projectName']);
-        $this->assertEquals(ProjectRoles::MANAGER, $dto['entries'][0]['role']);
+        $this->assertEquals(1, $dto["count"]);
+        $this->assertIsArray($dto["entries"]);
+        $this->assertEquals($projectId1, $dto["entries"][0]["id"]);
+        $this->assertEquals(SF_TESTPROJECT, $dto["entries"][0]["projectName"]);
+        $this->assertEquals(ProjectRoles::MANAGER, $dto["entries"][0]["role"]);
     }
 
     public function testEncode_UserOf1Project2Projects_DtoReturnsProjectCount1()
@@ -101,10 +101,10 @@ class ProjectListDtoTest extends TestCase
 
         $dto = ProjectListDto::encode($userId, self::$environ->website);
 
-        $this->assertEquals(1, $dto['count']);
-        $this->assertIsArray($dto['entries']);
-        $this->assertEquals($projectId1, $dto['entries'][0]['id']);
-        $this->assertEquals(SF_TESTPROJECT, $dto['entries'][0]['projectName']);
-        $this->assertEquals(ProjectRoles::CONTRIBUTOR, $dto['entries'][0]['role']);
+        $this->assertEquals(1, $dto["count"]);
+        $this->assertIsArray($dto["entries"]);
+        $this->assertEquals($projectId1, $dto["entries"][0]["id"]);
+        $this->assertEquals(SF_TESTPROJECT, $dto["entries"][0]["projectName"]);
+        $this->assertEquals(ProjectRoles::CONTRIBUTOR, $dto["entries"][0]["role"]);
     }
 }

@@ -23,15 +23,17 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
      * @param array     $options   Options for processing a successful authentication attempt.
      * @param string|null $providerKey
      */
-    public function __construct(HttpUtils $httpUtils, array $options = array(), $providerKey = null) {
+    public function __construct(HttpUtils $httpUtils, array $options = [], $providerKey = null)
+    {
         parent::__construct($httpUtils, $options);
         $this->setProviderKey($providerKey);
     }
 
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token) {
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token)
+    {
         $username = $token->getUser()->getUsername();
         $user = new UserModel();
-        if (strpos($username, '@') !== false) {
+        if (strpos($username, "@") !== false) {
             $user->readByEmail($username);
         } else {
             $user->readByUserName($username);
@@ -52,13 +54,13 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
 
         // redirect to page before the login screen was presented, or to the default project for this user
         $referer = $this->determineTargetUrl($request);
-        $url = '/app/projects';
-        if ($referer and strpos($referer, '/app/') !== false) {
+        $url = "/app/projects";
+        if ($referer and strpos($referer, "/app/") !== false) {
             $url = $referer;
         } elseif ($projectId && ProjectModel::projectExistsOnWebsite($projectId, $website)) {
             $project = ProjectModel::getById($projectId);
             if ($project->userIsMember($user->id->asString())) {
-                $url = '/app/'.$project->appName.'/'.$projectId;
+                $url = "/app/" . $project->appName . "/" . $projectId;
             }
         }
         return $this->httpUtils->createRedirectResponse($request, $url);

@@ -21,7 +21,7 @@ class UserRelationModel extends MapperModel
         $this->type = $type;
         $this->userRef = new IdReference($userId);
         $this->projectRef = new IdReference($projectId);
-        parent::__construct(self::mapper(), '');
+        parent::__construct(self::mapper(), "");
     }
 
     /** @var Id */
@@ -40,7 +40,7 @@ class UserRelationModel extends MapperModel
     {
         static $instance = null;
         if (null === $instance) {
-            $instance = new MongoMapper(DATABASE, 'userrelation');
+            $instance = new MongoMapper(DATABASE, "userrelation");
         }
 
         return $instance;

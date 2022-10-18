@@ -18,7 +18,7 @@
 
 .dc-text {
   width: 100%;
-  
+
   textarea {
     padding: 0.25rem;
     // height: 38px;
@@ -103,7 +103,7 @@
 }
 .dc-text .ta-editor span:hover {
   /*border: 1px solid #ADDDDD;*/
-  background-color: #ADDDDD;
+  background-color: #addddd;
 }
 
 /* auto hide the toolbar when not selected (focused) */
@@ -142,4 +142,3 @@
   /* Place on top of each other */
   grid-area: 1 / 1 / 2 / 2;
 }
-

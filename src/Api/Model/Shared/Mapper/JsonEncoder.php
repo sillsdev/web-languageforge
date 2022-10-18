@@ -27,10 +27,10 @@ class JsonEncoder
      */
     protected function _encode($model)
     {
-        $data = array();
+        $data = [];
         $properties = get_object_vars($model);
-        $privateProperties = array();
-        if (method_exists($model, 'getPrivateProperties')) {
+        $privateProperties = [];
+        if (method_exists($model, "getPrivateProperties")) {
             $privateProperties = (array) $model->getPrivateProperties();
         }
 
@@ -38,19 +38,19 @@ class JsonEncoder
             if (in_array($key, $privateProperties)) {
                 continue;
             }
-            if (is_a($value, 'Api\Model\Shared\Mapper\IdReference')) {
+            if (is_a($value, "Api\Model\Shared\Mapper\IdReference")) {
                 $data[$key] = $this->encodeIdReference($key, $model->{$key});
-            } elseif (is_a($value, 'Api\Model\Shared\Mapper\Id')) {
+            } elseif (is_a($value, "Api\Model\Shared\Mapper\Id")) {
                 $data[$key] = $this->encodeId($key, $model->{$key});
-            } elseif (is_a($value, 'Api\Model\Shared\Mapper\ArrayOf')) {
+            } elseif (is_a($value, "Api\Model\Shared\Mapper\ArrayOf")) {
                 $data[$key] = $this->encodeArrayOf($key, $model->{$key});
-            } elseif (is_a($value, 'Api\Model\Shared\Mapper\MapOf')) {
+            } elseif (is_a($value, "Api\Model\Shared\Mapper\MapOf")) {
                 $data[$key] = $this->encodeMapOf($key, $model->{$key});
-            } elseif (is_a($value, 'DateTime')) {
+            } elseif (is_a($value, "DateTime")) {
                 $data[$key] = $this->encodeDateTime($model->{$key});
-            } elseif (is_a($value, 'Litipk\Jiffy\UniversalTimestamp')) {
+            } elseif (is_a($value, "Litipk\Jiffy\UniversalTimestamp")) {
                 $data[$key] = $this->encodeUniversalTimestamp($model->{$key});
-            } elseif (is_a($value, 'Api\Model\Shared\Mapper\ReferenceList')) {
+            } elseif (is_a($value, "Api\Model\Shared\Mapper\ReferenceList")) {
                 $data[$key] = $this->encodeReferenceList($key, $model->{$key});
             } else {
                 // Data type protection
@@ -58,7 +58,7 @@ class JsonEncoder
                     throw new \Exception("Must not encode array in '" . get_class($model) . "->" . $key . "'");
                 }
                 // Special hack to help debugging our app
-                if ($key == 'projects' || $key == 'users') {
+                if ($key == "projects" || $key == "users") {
                     throw new \Exception("Possible bad write of '$key'\n" . var_export($model, true));
                 }
                 if (is_object($value)) {
@@ -66,7 +66,7 @@ class JsonEncoder
                 } else {
                     // Default encode
                     if (is_null($value)) {
-                        $value = '';
+                        $value = "";
                     }
                     $data[$key] = $value;
                 }
@@ -83,8 +83,9 @@ class JsonEncoder
      */
     public function encodeIdReference(
         /** @noinspection PhpUnusedParameterInspection $key may be used in derived methods */
-        &$key, $model)
-    {
+        &$key,
+        $model
+    ) {
         $result = $model->id;
 
         return $result;
@@ -97,8 +98,9 @@ class JsonEncoder
      */
     public function encodeId(
         /** @noinspection PhpUnusedParameterInspection $key may be used in derived methods */
-        $key, $model)
-    {
+        $key,
+        $model
+    ) {
         $result = $model->id;
 
         return $result;
@@ -112,10 +114,11 @@ class JsonEncoder
      */
     public function encodeArrayOf(
         /** @noinspection PhpUnusedParameterInspection $key may be used in derived methods */
-        $key, $model)
-    {
+        $key,
+        $model
+    ) {
         // Note: $key may be used in derived methods
-        $result = array();
+        $result = [];
         foreach ($model as $item) {
             if (is_object($item)) {
                 $result[] = $this->_encode($item);
@@ -140,9 +143,10 @@ class JsonEncoder
      */
     public function encodeMapOf(
         /** @noinspection PhpUnusedParameterInspection $key may be used in derived methods */
-        $key, $model)
-    {
-        $result = array();
+        $key,
+        $model
+    ) {
+        $result = [];
         $count = 0;
         foreach ($model as $itemKey => $item) {
             if (is_object($item)) {
@@ -168,17 +172,15 @@ class JsonEncoder
      */
     public function encodeReferenceList(
         /** @noinspection PhpUnusedParameterInspection $key may be used in derived methods */
-        $key, $model)
-    {
+        $key,
+        $model
+    ) {
         // Note: $key may be used in derived methods
-        $result = array_map(
-            function ($id) {
-                CodeGuard::checkTypeAndThrow($id, 'Api\Model\Shared\Mapper\Id');
+        $result = array_map(function ($id) {
+            CodeGuard::checkTypeAndThrow($id, "Api\Model\Shared\Mapper\Id");
 
-                return $id->id;
-            },
-            $model->refs
-        );
+            return $id->id;
+        }, $model->refs);
 
         return $result;
     }
@@ -191,7 +193,7 @@ class JsonEncoder
     {
         // Can't use DateTime::ISO8601 here since it returns timezones like "+0700" (format code "O") and we need "+07:00" (format code "P")
         // But format code "c" returns a proper RFC 3339 date (2012-12-25T12:34:56+00:00) which will be parsed by every browser
-        return $model->format('c');
+        return $model->format("c");
     }
 
     /**
@@ -202,7 +204,6 @@ class JsonEncoder
     {
         // Unfortunately, UniversalTimestamp::ISO8601_WITH_MILLISECONDS returns timezones like "+0700" (format code "O") and we need "+07:00" (format code "P")
         $dt = $model->asDateTimeInterface();
-        return $model->asFormattedString(UniversalTimestamp::ISO8601_WITH_MILLISECONDS_WITHOUT_TZ) . $dt->format('P');
+        return $model->asFormattedString(UniversalTimestamp::ISO8601_WITH_MILLISECONDS_WITHOUT_TZ) . $dt->format("P");
     }
-
 }

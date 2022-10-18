@@ -8,18 +8,18 @@ use Api\Model\Shared\Mapper\MapperModel;
 
 class SmsModel extends MapperModel
 {
-    const SMS_NEW     = 'new';
-    const SMS_SENDING = 'sending';
-    const SMS_SENT    = 'sent';
-    const SMS_FAIL    = 'fail';
+    const SMS_NEW = "new";
+    const SMS_SENDING = "sending";
+    const SMS_SENT = "sent";
+    const SMS_FAIL = "fail";
 
-    const SMS_TWILIO  = 'twilio';
+    const SMS_TWILIO = "twilio";
 
     /**
      * @param string $databaseName
      * @param string $id
      */
-    public function __construct($databaseName, $id = '')
+    public function __construct($databaseName, $id = "")
     {
         $this->id = new Id();
         $this->userRef = new IdReference();

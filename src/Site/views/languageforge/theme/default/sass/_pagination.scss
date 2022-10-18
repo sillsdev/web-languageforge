@@ -12,12 +12,12 @@ Pagination styling for page indexing
   margin-bottom: 0;
   margin-left: 0;
   -webkit-border-radius: 4px;
-     -moz-border-radius: 4px;
-          border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
   *zoom: 1;
   -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-     -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .pagination > li {
@@ -61,9 +61,9 @@ Pagination styling for page indexing
 .pagination > li:first-child > span {
   border-left-width: 1px;
   -webkit-border-bottom-left-radius: 4px;
-          border-bottom-left-radius: 4px;
+  border-bottom-left-radius: 4px;
   -webkit-border-top-left-radius: 4px;
-          border-top-left-radius: 4px;
+  border-top-left-radius: 4px;
   -moz-border-radius-bottomleft: 4px;
   -moz-border-radius-topleft: 4px;
 }
@@ -71,9 +71,9 @@ Pagination styling for page indexing
 .pagination > li:last-child > a,
 .pagination > li:last-child > span {
   -webkit-border-top-right-radius: 4px;
-          border-top-right-radius: 4px;
+  border-top-right-radius: 4px;
   -webkit-border-bottom-right-radius: 4px;
-          border-bottom-right-radius: 4px;
+  border-bottom-right-radius: 4px;
   -moz-border-radius-topright: 4px;
   -moz-border-radius-bottomright: 4px;
 }
@@ -95,9 +95,9 @@ Pagination styling for page indexing
 .pagination-large > li:first-child > a,
 .pagination-large > li:first-child > span {
   -webkit-border-bottom-left-radius: 6px;
-          border-bottom-left-radius: 6px;
+  border-bottom-left-radius: 6px;
   -webkit-border-top-left-radius: 6px;
-          border-top-left-radius: 6px;
+  border-top-left-radius: 6px;
   -moz-border-radius-bottomleft: 6px;
   -moz-border-radius-topleft: 6px;
 }
@@ -105,9 +105,9 @@ Pagination styling for page indexing
 .pagination-large ul > li:last-child > a,
 .pagination-large ul > li:last-child > span {
   -webkit-border-top-right-radius: 6px;
-          border-top-right-radius: 6px;
+  border-top-right-radius: 6px;
   -webkit-border-bottom-right-radius: 6px;
-          border-bottom-right-radius: 6px;
+  border-bottom-right-radius: 6px;
   -moz-border-radius-topright: 6px;
   -moz-border-radius-bottomright: 6px;
 }
@@ -117,9 +117,9 @@ Pagination styling for page indexing
 .pagination-mini ul > li:first-child > span,
 .pagination-small ul > li:first-child > span {
   -webkit-border-bottom-left-radius: 3px;
-          border-bottom-left-radius: 3px;
+  border-bottom-left-radius: 3px;
   -webkit-border-top-left-radius: 3px;
-          border-top-left-radius: 3px;
+  border-top-left-radius: 3px;
   -moz-border-radius-bottomleft: 3px;
   -moz-border-radius-topleft: 3px;
 }
@@ -129,9 +129,9 @@ Pagination styling for page indexing
 .pagination-mini ul > li:last-child > span,
 .pagination-small ul > li:last-child > span {
   -webkit-border-top-right-radius: 3px;
-          border-top-right-radius: 3px;
+  border-top-right-radius: 3px;
   -webkit-border-bottom-right-radius: 3px;
-          border-bottom-right-radius: 3px;
+  border-bottom-right-radius: 3px;
   -moz-border-radius-topright: 3px;
   -moz-border-radius-bottomright: 3px;
 }
@@ -177,8 +177,8 @@ Pagination styling for page indexing
   background-color: #fff;
   border: 1px solid #ddd;
   -webkit-border-radius: 15px;
-     -moz-border-radius: 15px;
-          border-radius: 15px;
+  -moz-border-radius: 15px;
+  border-radius: 15px;
 }
 
 .pager li > a:hover,
@@ -205,5 +205,3 @@ Pagination styling for page indexing
   cursor: default;
   background-color: #fff;
 }
-
-

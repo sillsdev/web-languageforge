@@ -13,7 +13,7 @@ class LexBaseViewDtoTest extends TestCase
         $environ = new LexiconMongoTestEnvironment();
         $environ->clean();
 
-        $userId = $environ->createUser('User', 'Name', 'name@example.com');
+        $userId = $environ->createUser("User", "Name", "name@example.com");
         $user = new UserModel($userId);
         $user->role = SystemRoles::USER;
 
@@ -22,22 +22,25 @@ class LexBaseViewDtoTest extends TestCase
 
         $project->addUser($userId, ProjectRoles::CONTRIBUTOR);
         $user->addProject($projectId);
-        $user->interfaceLanguageCode = 'th';
+        $user->interfaceLanguageCode = "th";
         $user->write();
         $project->write();
 
         $dto = LexBaseViewDto::encode($projectId, $userId);
 
         // test for a few default values
-        $this->assertEquals('en', $dto['config']['inputSystems']['en']['tag']);
-        $this->assertTrue($dto['config']['tasks']['dbe']['visible']);
-        $this->assertEquals('fields', $dto['config']['entry']['type'], 'dto config is not valid');
-        $this->assertEquals('Word', $dto['config']['entry']['fields']['lexeme']['label']);
-        $this->assertEquals('Word', $dto['config']['entry']['fields']['lexeme']['label']);
-        $this->assertEquals('Part of Speech', $dto['config']['entry']['fields']['senses']['fields']['partOfSpeech']['label']);
-        $this->assertTrue($dto['config']['roleViews']['contributor']['fields']['lexeme']['show']);
-        $this->assertTrue($dto['config']['roleViews']['contributor']['showTasks']['dbe']);
-        $this->assertEquals('th', $dto['interfaceConfig']['languageCode']);
-        $this->assertEquals('English', $dto['interfaceConfig']['selectLanguages']['options']['en']['option']);
+        $this->assertEquals("en", $dto["config"]["inputSystems"]["en"]["tag"]);
+        $this->assertTrue($dto["config"]["tasks"]["dbe"]["visible"]);
+        $this->assertEquals("fields", $dto["config"]["entry"]["type"], "dto config is not valid");
+        $this->assertEquals("Word", $dto["config"]["entry"]["fields"]["lexeme"]["label"]);
+        $this->assertEquals("Word", $dto["config"]["entry"]["fields"]["lexeme"]["label"]);
+        $this->assertEquals(
+            "Part of Speech",
+            $dto["config"]["entry"]["fields"]["senses"]["fields"]["partOfSpeech"]["label"]
+        );
+        $this->assertTrue($dto["config"]["roleViews"]["contributor"]["fields"]["lexeme"]["show"]);
+        $this->assertTrue($dto["config"]["roleViews"]["contributor"]["showTasks"]["dbe"]);
+        $this->assertEquals("th", $dto["interfaceConfig"]["languageCode"]);
+        $this->assertEquals("English", $dto["interfaceConfig"]["selectLanguages"]["options"]["en"]["option"]);
     }
 }

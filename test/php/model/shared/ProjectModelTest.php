@@ -17,7 +17,7 @@ class ProjectModelTest extends TestCase
         $model = new ProjectModel();
         $model->language = "SomeLanguage";
         $model->projectName = "SomeProject";
-        $model->projectCode = 'project_code';
+        $model->projectCode = "project_code";
         //$model->users->refs = array('1234');
         $id = $model->write();
         $this->assertNotNull($id);
@@ -25,8 +25,8 @@ class ProjectModelTest extends TestCase
         $this->assertEquals($model->id->asString(), $id);
         $otherModel = new ProjectModel($id);
         $this->assertEquals($id, $otherModel->id->asString());
-        $this->assertEquals('SomeLanguage', $otherModel->language);
-        $this->assertEquals('SomeProject', $otherModel->projectName);
+        $this->assertEquals("SomeLanguage", $otherModel->language);
+        $this->assertEquals("SomeProject", $otherModel->projectName);
         //$this->assertEqual(array('1234'), $otherModel->users->refs);
 
         self::$savedProjectId = $id;
@@ -46,9 +46,9 @@ class ProjectModelTest extends TestCase
         $environ = new MongoTestEnvironment();
 
         // setup user and projects
-        $userId = $environ->createUser('jsmith', 'joe smith', 'joe@email.com');
+        $userId = $environ->createUser("jsmith", "joe smith", "joe@email.com");
         $userModel = new UserModel($userId);
-        $projectModel = $environ->createProject('new project', 'newProjCode');
+        $projectModel = $environ->createProject("new project", "newProjCode");
         $projectId = $projectModel->id->asString();
 
         // create the reference
@@ -69,9 +69,9 @@ class ProjectModelTest extends TestCase
         $environ = new MongoTestEnvironment();
 
         // setup user and projects
-        $userId = $environ->createUser('jsmith', 'joe smith', 'joe@email.com');
+        $userId = $environ->createUser("jsmith", "joe smith", "joe@email.com");
         $userModel = new UserModel($userId);
-        $projectModel = $environ->createProject('new project', 'newProjCode');
+        $projectModel = $environ->createProject("new project", "newProjCode");
         $projectId = $projectModel->id->asString();
 
         // create the reference
@@ -104,8 +104,8 @@ class ProjectModelTest extends TestCase
         $environ = new MongoTestEnvironment();
 
         // setup user and projects
-        $userId = $environ->createUser('jsmith', 'joe smith', 'joe@email.com');
-        $projectModel = $environ->createProject('new project', 'newProjCode');
+        $userId = $environ->createUser("jsmith", "joe smith", "joe@email.com");
+        $projectModel = $environ->createProject("new project", "newProjCode");
 
         $projectModel->addUser($userId, ProjectRoles::CONTRIBUTOR);
         $this->assertEquals(1, count($projectModel->users));
@@ -116,9 +116,9 @@ class ProjectModelTest extends TestCase
     public function testProjectListUsers_TwoUsers_ListHasDetails()
     {
         $environ = new MongoTestEnvironment();
-        $userId1 = $environ->createUser('user1', 'User One', 'user1@example.com');
+        $userId1 = $environ->createUser("user1", "User One", "user1@example.com");
         $um1 = new UserModel($userId1);
-        $userId2 = $environ->createUser('user2', 'User Two', 'user2@example.com');
+        $userId2 = $environ->createUser("user2", "User Two", "user2@example.com");
         $um2 = new UserModel($userId2);
         $project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
@@ -144,25 +144,24 @@ class ProjectModelTest extends TestCase
         $this->assertEquals(
             [
                 [
-                  'email' => 'user1@example.com',
-                  'name' => 'User One',
-                  'username' => 'user1',
-                  'id' => $userId1,
-                  'role' => ProjectRoles::CONTRIBUTOR,
-                  'avatar_ref' => 'user1.png'
+                    "email" => "user1@example.com",
+                    "name" => "User One",
+                    "username" => "user1",
+                    "id" => $userId1,
+                    "role" => ProjectRoles::CONTRIBUTOR,
+                    "avatar_ref" => "user1.png",
                 ],
                 [
-                  'email' => 'user2@example.com',
-                  'name' => 'User Two',
-                  'username' => 'user2',
-                  'id' => $userId2,
-                  'role' => ProjectRoles::CONTRIBUTOR,
-                  'avatar_ref' => 'user2.png'
-                ]
+                    "email" => "user2@example.com",
+                    "name" => "User Two",
+                    "username" => "user2",
+                    "id" => $userId2,
+                    "role" => ProjectRoles::CONTRIBUTOR,
+                    "avatar_ref" => "user2.png",
+                ],
             ],
             $result->entries
         );
-
     }
 
     public function testRemove_RemovesProject()
@@ -180,9 +179,9 @@ class ProjectModelTest extends TestCase
     public function testDatabaseName_Ok()
     {
         $project = new ProjectModel();
-        $project->projectCode = 'Some Project';
+        $project->projectCode = "Some Project";
         $result = $project->databaseName();
-        $this->assertEquals('sf_some_project', $result);
+        $this->assertEquals("sf_some_project", $result);
     }
 
     public function testHasRight_Exception()
@@ -225,9 +224,9 @@ class ProjectModelTest extends TestCase
     {
         $environ = new MongoTestEnvironment();
         $environ->clean();
-        $userId = $environ->createUser('user1', 'user1', 'user1');
+        $userId = $environ->createUser("user1", "user1", "user1");
         $user = new UserModel($userId);
-        $project = $environ->createProject('testProject', 'testProjCode');
+        $project = $environ->createProject("testProject", "testProjCode");
         $project->addUser($userId, ProjectRoles::CONTRIBUTOR);
         $projectId = $project->write();
         $user->addProject($project->id->asString());

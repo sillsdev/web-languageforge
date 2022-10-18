@@ -45,21 +45,26 @@ class LiftImport
      * @param boolean $deleteMatchingEntry
      * @return LiftImport
      */
-    public function merge($liftFilePath, $projectModel, $mergeRule = LiftMergeRule::CREATE_DUPLICATES, $skipSameModTime = true, $deleteMatchingEntry = false)
-    {
-        ini_set('max_execution_time', 180); // Sufficient time to import webster.  TODO Make this async CP 2014-10
+    public function merge(
+        $liftFilePath,
+        $projectModel,
+        $mergeRule = LiftMergeRule::CREATE_DUPLICATES,
+        $skipSameModTime = true,
+        $deleteMatchingEntry = false
+    ) {
+        ini_set("max_execution_time", 180); // Sufficient time to import webster.  TODO Make this async CP 2014-10
 
         $entryList = new LexEntryListModel($projectModel);
         $entryList->read();
         $hasExistingData = $entryList->count != 0;
 
-        $savedInputSystems = array();
-        if (! $hasExistingData) {
+        $savedInputSystems = [];
+        if (!$hasExistingData) {
             $projectModel->config->clearAllInputSystems();
 
             // save and clear input systems
             $savedInputSystems = $projectModel->inputSystems->getArrayCopy();
-            $projectModel->inputSystems->exchangeArray(array());
+            $projectModel->inputSystems->exchangeArray([]);
         }
 
         $reader = new \XMLReader();
@@ -70,26 +75,28 @@ class LiftImport
         $this->report = new ImportErrorReport();
         $this->liftImportNodeError = new LiftImportNodeError(LiftImportNodeError::FILE, basename($liftFilePath));
         $liftRangeDecoder = new LiftRangeDecoder($projectModel);
-        $liftRangeFiles = array(); // Key: filenames. Value: parsed files.
-        $liftRanges = array(); // Key: @id attributes of <range> elements. Value: parsed <range> elements.
+        $liftRangeFiles = []; // Key: filenames. Value: parsed files.
+        $liftRanges = []; // Key: @id attributes of <range> elements. Value: parsed <range> elements.
         $liftFolderPath = dirname($liftFilePath);
 
         while ($reader->read()) {
-
             // Read LIFT ranges in the header of the LIFT file
-            if ($reader->nodeType == \XMLReader::ELEMENT && $reader->localName == 'range') {
+            if ($reader->nodeType == \XMLReader::ELEMENT && $reader->localName == "range") {
                 $node = $reader->expand();
                 $range = null;
                 $rangeImportNodeError = null;
-                $rangeId = $node->attributes->getNamedItem('id')->textContent;
-                $rangeHrefAttr = $node->attributes->getNamedItem('href');
+                $rangeId = $node->attributes->getNamedItem("id")->textContent;
+                $rangeHrefAttr = $node->attributes->getNamedItem("href");
                 if ($rangeHrefAttr) {
                     $rangeHref = $rangeHrefAttr->textContent;
                     $hrefPath = parse_url($rangeHref, PHP_URL_PATH);
                     $rangeFilename = basename($hrefPath);
                     $rangeFilePath = null;
-                    $rangeImportNodeError = new LiftRangeImportNodeError(LiftRangeImportNodeError::FILE, $rangeFilename);
-                    if (! array_key_exists($rangeFilename, $liftRangeFiles)) {
+                    $rangeImportNodeError = new LiftRangeImportNodeError(
+                        LiftRangeImportNodeError::FILE,
+                        $rangeFilename
+                    );
+                    if (!array_key_exists($rangeFilename, $liftRangeFiles)) {
                         // Haven't parsed the .lift-ranges file yet. We'll assume it is alongside the .lift file.
                         $rangeFilePath = $liftFolderPath . "/" . $rangeFilename;
                         if (file_exists($rangeFilePath)) {
@@ -128,45 +135,45 @@ class LiftImport
             }
 
             // Read the custom 'fields' spec in the header of the LIFT file
-            if ($reader->nodeType == \XMLReader::ELEMENT && $reader->localName == 'fields') {
+            if ($reader->nodeType == \XMLReader::ELEMENT && $reader->localName == "fields") {
                 $isInFieldsSectionOfLift = true;
-                $this->liftDecoder->liftFields = array();
+                $this->liftDecoder->liftFields = [];
                 while ($isInFieldsSectionOfLift && $reader->read()) {
-                    if ($reader->nodeType == \XMLReader::ELEMENT && $reader->localName == 'field') {
+                    if ($reader->nodeType == \XMLReader::ELEMENT && $reader->localName == "field") {
                         $node = $reader->expand();
                         $sxeNode = self::domNode_to_sxeNode($node);
-                        $LiftFieldTag = (string) $sxeNode['tag'];
-                        $liftField = array();
+                        $LiftFieldTag = (string) $sxeNode["tag"];
+                        $liftField = [];
                         /** @var \SimpleXMLElement $element */
                         foreach ($sxeNode as $element) {
-                            if ($element->getName() === 'form') {
-                                $inputSystemTag = (string) $element['lang'];
+                            if ($element->getName() === "form") {
+                                $inputSystemTag = (string) $element["lang"];
                                 $liftField[$inputSystemTag] = (string) $element->{'text'};
                             }
                         }
                         $this->liftDecoder->liftFields[$LiftFieldTag] = $liftField;
-                    } elseif ($reader->nodeType == \XMLReader::END_ELEMENT && $reader->localName == 'fields') {
+                    } elseif ($reader->nodeType == \XMLReader::END_ELEMENT && $reader->localName == "fields") {
                         $isInFieldsSectionOfLift = false;
                     }
                 }
             }
 
             // Read an entry node
-            if ($reader->nodeType == \XMLReader::ELEMENT && $reader->localName == 'entry') {
+            if ($reader->nodeType == \XMLReader::ELEMENT && $reader->localName == "entry") {
                 $this->stats->importEntries++;
                 $node = $reader->expand();
                 $sxeNode = self::domNode_to_sxeNode($node);
 
-                $guid = $reader->getAttribute('guid');
-                $existingEntry = $entryList->searchEntriesFor('guid', $guid);
+                $guid = $reader->getAttribute("guid");
+                $existingEntry = $entryList->searchEntriesFor("guid", $guid);
                 if ($existingEntry) {
-                    $entry = new LexEntryModel($projectModel, $existingEntry['id']);
-                    $dateModified = $reader->getAttribute('dateModified');
-                    if (self::differentModTime($dateModified, $entry->authorInfo->modifiedDate) || ! $skipSameModTime) {
+                    $entry = new LexEntryModel($projectModel, $existingEntry["id"]);
+                    $dateModified = $reader->getAttribute("dateModified");
+                    if (self::differentModTime($dateModified, $entry->authorInfo->modifiedDate) || !$skipSameModTime) {
                         if ($mergeRule == LiftMergeRule::CREATE_DUPLICATES) {
                             $entry = new LexEntryModel($projectModel);
                             $this->readEntryWithErrorReport($sxeNode, $entry, $mergeRule);
-                            $entry->guid = '';
+                            $entry->guid = "";
                             $entry->write();
                             $this->stats->entriesDuplicated++;
                         } else {
@@ -175,14 +182,18 @@ class LiftImport
                                 $entry->write();
                                 $this->stats->entriesMerged++;
                             } elseif (isset($sxeNode->attributes()->{'dateDeleted'}) && $deleteMatchingEntry) {
-                                LexEntryModel::remove($projectModel, $existingEntry['id']);
+                                LexEntryModel::remove($projectModel, $existingEntry["id"]);
                                 $this->stats->entriesDeleted++;
                             }
                         }
                     } else {
                         // skip because same mod time and skip enabled
-                        if (! isset($sxeNode->{'lexical-unit'}) && isset($sxeNode->attributes()->{'dateDeleted'}) && $deleteMatchingEntry) {
-                            LexEntryModel::remove($projectModel, $existingEntry['id']);
+                        if (
+                            !isset($sxeNode->{'lexical-unit'}) &&
+                            isset($sxeNode->attributes()->{'dateDeleted'}) &&
+                            $deleteMatchingEntry
+                        ) {
+                            LexEntryModel::remove($projectModel, $existingEntry["id"]);
                             $this->stats->entriesDeleted++;
                         }
                     }
@@ -200,7 +211,7 @@ class LiftImport
         $reader->close();
 
         // put back saved input systems if none found in the imported data
-        if (! $hasExistingData && $projectModel->inputSystems->count() <= 0) {
+        if (!$hasExistingData && $projectModel->inputSystems->count() <= 0) {
             $projectModel->inputSystems->exchangeArray($savedInputSystems);
         }
 
@@ -208,8 +219,13 @@ class LiftImport
         if ($mergeRule != LiftMergeRule::IMPORT_LOSES) {
             foreach ($liftRanges as $liftRangeCode => $liftRange) {
                 // add everything except semantic domains
-                if (strpos($liftRangeCode, 'semantic-domain') === false) {
-                    self::rangeToOptionList($projectModel, $liftRangeCode, LexConfig::flexOptionlistName($liftRangeCode), $liftRange);
+                if (strpos($liftRangeCode, "semantic-domain") === false) {
+                    self::rangeToOptionList(
+                        $projectModel,
+                        $liftRangeCode,
+                        LexConfig::flexOptionlistName($liftRangeCode),
+                        $liftRange
+                    );
                 }
             }
         }
@@ -228,7 +244,7 @@ class LiftImport
     {
         $dateModified = UniversalTimestamp::fromWhatever($importDateModified);
 
-        return ($dateModified->asMilliseconds() != $entryDateModified->asMilliseconds());
+        return $dateModified->asMilliseconds() != $entryDateModified->asMilliseconds();
     }
 
     /**
@@ -239,7 +255,8 @@ class LiftImport
      * @param string $mergeRule (use LiftMergeRule const)
      * @throws \Exception
      */
-    private function readEntryWithErrorReport($sxeNode, $entry, $mergeRule = LiftMergeRule::CREATE_DUPLICATES) {
+    private function readEntryWithErrorReport($sxeNode, $entry, $mergeRule = LiftMergeRule::CREATE_DUPLICATES)
+    {
         try {
             $this->liftDecoder->readEntry($sxeNode, $entry, $mergeRule);
             $this->liftImportNodeError->addSubnodeError($this->liftDecoder->getImportNodeError());
@@ -257,7 +274,7 @@ class LiftImport
      */
     public function getReport()
     {
-        return  $this->report;
+        return $this->report;
     }
 
     /**
@@ -269,16 +286,21 @@ class LiftImport
      * @param LiftRange $liftRange
      * @param string $interfaceLang
      */
-    public static function rangeToOptionList($projectModel, $optionListCode, $optionListName, $liftRange, $interfaceLang = 'en')
-    {
+    public static function rangeToOptionList(
+        $projectModel,
+        $optionListCode,
+        $optionListName,
+        $liftRange,
+        $interfaceLang = "en"
+    ) {
         $optionList = new LexOptionListModel($projectModel);
-        $optionList->readByProperty('code', $optionListCode);
+        $optionList->readByProperty("code", $optionListCode);
         $optionList->code = $optionListCode;
         $optionList->name = $optionListName;
         $optionList->canDelete = false;
 
         // start with an empty list
-        $optionList->items->exchangeArray(array());
+        $optionList->items->exchangeArray([]);
 
         foreach ($liftRange->rangeElements as $id => $elem) {
             if ($elem->label && array_key_exists($interfaceLang, $elem->label)) {
@@ -306,10 +328,15 @@ class LiftImport
      * @throws \Exception
      * @return LiftImport
      */
-    public function importZip($zipFilePath, $projectModel, $mergeRule = LiftMergeRule::IMPORT_WINS, $skipSameModTime = false, $deleteMatchingEntry = false)
-    {
+    public function importZip(
+        $zipFilePath,
+        $projectModel,
+        $mergeRule = LiftMergeRule::IMPORT_WINS,
+        $skipSameModTime = false,
+        $deleteMatchingEntry = false
+    ) {
         $assetsFolderPath = $projectModel->getAssetsFolderPath();
-        $extractFolderPath = $assetsFolderPath . '/initialUpload_' . mt_rand();
+        $extractFolderPath = $assetsFolderPath . "/initialUpload_" . mt_rand();
         $this->report = new ImportErrorReport();
         $zipNodeError = new ZipImportNodeError(ZipImportNodeError::FILE, basename($zipFilePath));
         try {
@@ -319,7 +346,7 @@ class LiftImport
             $dirIter = new \RecursiveDirectoryIterator($extractFolderPath);
             $iterIter = new \RecursiveIteratorIterator($dirIter);
             $liftIter = new \RegexIterator($iterIter, '/\.lift$/', \RegexIterator::MATCH);
-            $liftFilePaths = array();
+            $liftFilePaths = [];
             foreach ($liftIter as $file) {
                 $liftFilePaths[] = $file->getPathname();
             }
@@ -333,13 +360,13 @@ class LiftImport
             }
 
             // Import subfolders
-            foreach (glob($extractFolderPath . '/*', GLOB_ONLYDIR) as $folderPath) {
+            foreach (glob($extractFolderPath . "/*", GLOB_ONLYDIR) as $folderPath) {
                 $folderName = basename($folderPath);
                 switch ($folderName) {
-                    case 'pictures':
-                    case 'audio':
-                    case 'others':
-                    case 'WritingSystems':
+                    case "pictures":
+                    case "audio":
+                    case "others":
+                    case "WritingSystems":
                         $assetsPath = $assetsFolderPath . "/" . $folderName;
                         if (file_exists($folderPath) && is_dir($folderPath)) {
                             FileUtilities::copyFolderTreeNormalize($folderPath, $assetsPath);
@@ -376,7 +403,8 @@ class LiftImport
      * @param string $destDir
      * @throws \Exception
      */
-    public static function extractZip($zipFilePath, $destDir) {
+    public static function extractZip($zipFilePath, $destDir)
+    {
         // Use absolute path for archive file
         $realpathResult = realpath($zipFilePath);
         if ($realpathResult) {
@@ -390,11 +418,11 @@ class LiftImport
 
         $basename = basename($zipFilePath);
         $pathinfo = pathinfo($basename);
-        $extension_1 = isset($pathinfo['extension']) ? $pathinfo['extension'] : 'NOEXT';
+        $extension_1 = isset($pathinfo["extension"]) ? $pathinfo["extension"] : "NOEXT";
         // Handle .tar.gz, .tar.bz2, etc. by checking if there's another extension "inside" the first one
-        $basename_without_ext = $pathinfo['filename'];
+        $basename_without_ext = $pathinfo["filename"];
         $pathinfo = pathinfo($basename_without_ext);
-        $extension_2 = isset($pathinfo['extension']) ? $pathinfo['extension'] : 'NOEXT';
+        $extension_2 = isset($pathinfo["extension"]) ? $pathinfo["extension"] : "NOEXT";
         // $extension_2 will be 'tar' if the file was a .tar.gz, .tar.bz2, etc.
         if ($extension_2 == "tar") {
             // We don't handle tarball formats... yet.
@@ -402,11 +430,11 @@ class LiftImport
         }
         switch ($extension_1) {
             case "zip":
-                $cmd = 'unzip ' . escapeshellarg($zipFilePath) . " -d " . escapeshellarg($destDir);
+                $cmd = "unzip " . escapeshellarg($zipFilePath) . " -d " . escapeshellarg($destDir);
                 break;
             case "zipx":
             case "7z":
-                $cmd = '7z x ' . escapeshellarg($zipFilePath) . " -o" . escapeshellarg($destDir);
+                $cmd = "7z x " . escapeshellarg($zipFilePath) . " -o" . escapeshellarg($destDir);
                 break;
             default:
                 throw new \Exception("Sorry, the ." . $extension_1 . " format isn't allowed");
@@ -418,11 +446,11 @@ class LiftImport
 
         // ensure non-roman filesnames are returned
         $cmd = 'LANG="C.UTF-8" ' . $cmd;
-        $output = array();
+        $output = [];
         $retcode = 0;
         exec($cmd, $output, $retcode);
         if ($retcode) {
-            if (($retcode != 1) || ($retcode == 1 && strstr(end($output), 'failed setting times/attribs') == false)) {
+            if ($retcode != 1 || ($retcode == 1 && strstr(end($output), "failed setting times/attribs") == false)) {
                 throw new \Exception("Uncompressing archive file failed: " . print_r($output, true));
             }
         }
@@ -430,7 +458,7 @@ class LiftImport
         // If the .zip contained just one top-level folder with all contents below that folder,
         // "promote" the contents up one level so that $destDir contains all the .zip's contents.
         $destFilesAfterUnpacking = scandir($destDir);
-        if (count($destFilesAfterUnpacking) == count($destFilesBeforeUnpacking)+1) {
+        if (count($destFilesAfterUnpacking) == count($destFilesBeforeUnpacking) + 1) {
             $diff = array_values(array_diff($destFilesAfterUnpacking, $destFilesBeforeUnpacking));
             $zipTopLevel = $diff[0];
             if (is_dir($destDir . "/" . $zipTopLevel)) {

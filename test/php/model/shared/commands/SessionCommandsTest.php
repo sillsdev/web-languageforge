@@ -27,7 +27,7 @@ class SessionTestEnvironment
         $this->website = $environ->website;
 
         $this->project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $this->userId = $environ->createUser('test_user', 'Test User', 'test_user@example.com');
+        $this->userId = $environ->createUser("test_user", "Test User", "test_user@example.com");
         $this->projectId = $this->project->id->asString();
     }
 
@@ -38,10 +38,10 @@ class SessionTestEnvironment
     {
         return new MongoTestEnvironment();
     }
-
 }
 
-class LfSessionTestEnvironment extends SessionTestEnvironment {
+class LfSessionTestEnvironment extends SessionTestEnvironment
+{
     protected function getEnviron(): MongoTestEnvironment
     {
         return new LexiconMongoTestEnvironment();
@@ -50,7 +50,6 @@ class LfSessionTestEnvironment extends SessionTestEnvironment {
 
 class SessionCommandsTest extends TestCase
 {
-
     /**
      * @throws Exception
      */
@@ -61,35 +60,35 @@ class SessionCommandsTest extends TestCase
         $data = SessionCommands::getSessionData($environ->projectId, $environ->userId, $environ->website);
 
         // Session data should contain a userId but not a projectId
-        $this->assertArrayHasKey('userId', $data);
-        $this->assertTrue(is_string($data['userId']));
-        $this->assertEquals($environ->userId, $data['userId']);
+        $this->assertArrayHasKey("userId", $data);
+        $this->assertTrue(is_string($data["userId"]));
+        $this->assertEquals($environ->userId, $data["userId"]);
 
         // Session data should also contain "site", a string...
-        $this->assertArrayHasKey('baseSite', $data);
-        $this->assertTrue(is_string($data['baseSite']));
+        $this->assertArrayHasKey("baseSite", $data);
+        $this->assertTrue(is_string($data["baseSite"]));
         // ... and "fileSizeMax", an integer
-        $this->assertArrayHasKey('fileSizeMax', $data);
-        $this->assertTrue(is_integer($data['fileSizeMax']));
+        $this->assertArrayHasKey("fileSizeMax", $data);
+        $this->assertTrue(is_integer($data["fileSizeMax"]));
 
         // Session data should contain projectSettings, an array with only interFaceConfig
-        $this->assertArrayHasKey('projectSettings', $data);
-        $this->assertTrue(is_array($data['projectSettings']));
-        $this->assertCount(1, $data['projectSettings']);
-        $this->assertArrayHasKey('interfaceConfig', $data['projectSettings']);
+        $this->assertArrayHasKey("projectSettings", $data);
+        $this->assertTrue(is_array($data["projectSettings"]));
+        $this->assertCount(1, $data["projectSettings"]);
+        $this->assertArrayHasKey("interfaceConfig", $data["projectSettings"]);
 
         // Session data should not contain project, an associative array
-        $this->assertArrayNotHasKey('project', $data);
+        $this->assertArrayNotHasKey("project", $data);
 
         // Session data should contain user site rights, an array of integers
-        $this->assertArrayHasKey('userSiteRights', $data);
-        $this->assertTrue(is_array($data['userSiteRights']));
+        $this->assertArrayHasKey("userSiteRights", $data);
+        $this->assertTrue(is_array($data["userSiteRights"]));
         // ... which should not be empty
-        $this->assertFalse(empty($data['userSiteRights']));
-        $this->assertTrue(is_integer($data['userSiteRights'][0]));
+        $this->assertFalse(empty($data["userSiteRights"]));
+        $this->assertTrue(is_integer($data["userSiteRights"][0]));
 
         // Session data should contain user project rights, an array of integers
-        $this->assertArrayNotHasKey('userProjectRights', $data);
+        $this->assertArrayNotHasKey("userProjectRights", $data);
     }
 
     /**
@@ -103,11 +102,10 @@ class SessionCommandsTest extends TestCase
         $data = SessionCommands::getSessionData($environ->projectId, $environ->userId, $environ->website);
 
         // Session data should contain user project rights, an array of integers
-        $this->assertArrayHasKey('userProjectRights', $data);
-        $this->assertTrue(is_array($data['userProjectRights']));
+        $this->assertArrayHasKey("userProjectRights", $data);
+        $this->assertTrue(is_array($data["userProjectRights"]));
         // ... which should not be empty once the user has been assigned to the project
-        $this->assertFalse(empty($data['userProjectRights']));
-        $this->assertTrue(is_integer($data['userProjectRights'][0]));
+        $this->assertFalse(empty($data["userProjectRights"]));
+        $this->assertTrue(is_integer($data["userProjectRights"][0]));
     }
-
 }

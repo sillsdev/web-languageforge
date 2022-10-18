@@ -1,18 +1,21 @@
 {
-    "short_name": "Language Forge",
-    "name": "Language Forge",
-    "start_url": "/app/projects",
-    "background_color": "#104060",
-    "theme_color": "#0a2440",
-    "display": "fullscreen",
-    "description": "Collaborative web-based dictionary building that syncs with FLEx",
-    "iarc_rating_id": "d082fb89-410a-4736-94ab-a2bac7ecf2c5",
-    "orientation": "portrait-primary",
-    "categories": ["productivity"],
-    "related_applications": [{
+  "short_name": "Language Forge",
+  "name": "Language Forge",
+  "start_url": "/app/projects",
+  "background_color": "#104060",
+  "theme_color": "#0a2440",
+  "display": "fullscreen",
+  "description": "Collaborative web-based dictionary building that syncs with FLEx",
+  "iarc_rating_id": "d082fb89-410a-4736-94ab-a2bac7ecf2c5",
+  "orientation": "portrait-primary",
+  "categories": ["productivity"],
+  "related_applications": [
+    {
       "platform": "play",
-      "id": "org.sil.languageforgeweb" }],
-    "shortcuts": [
+      "id": "org.sil.languageforgeweb"
+    }
+  ],
+  "shortcuts": [
     {
       "name": "List Projects",
       "short_name": "Projects",
@@ -28,31 +31,31 @@
       "icons": [{ "src": "/appManifest/images/lf-logo-circle-192-xxxhdpi.png", "sizes": "192x192" }]
     }
   ],
-    "icons": [
-      {
-        "src": "images/lf-logo-48-mdpi.png",
-        "type": "image/png",
-        "sizes": "48x48"
-      },
-      {
-        "src": "images/lf-logo-96-xhdpi.png",
-        "type": "image/png",
-        "sizes": "96x96"
-      },
-      {
-        "src": "images/lf-logo-144-xxhdpi.png",
-        "type": "image/png",
-        "sizes": "144x144"
-      },
-      {
-        "src": "images/lf-logo-circle-192-xxxhdpi.png",
-        "type": "image/png",
-        "sizes": "192x192"
-      },
-      {
-        "src": "images/lf-logo-circle-512-xxxxxhdpi.png",
-        "type": "image/png",
-        "sizes": "512x512"
-      }
-    ]
+  "icons": [
+    {
+      "src": "images/lf-logo-48-mdpi.png",
+      "type": "image/png",
+      "sizes": "48x48"
+    },
+    {
+      "src": "images/lf-logo-96-xhdpi.png",
+      "type": "image/png",
+      "sizes": "96x96"
+    },
+    {
+      "src": "images/lf-logo-144-xxhdpi.png",
+      "type": "image/png",
+      "sizes": "144x144"
+    },
+    {
+      "src": "images/lf-logo-circle-192-xxxhdpi.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "images/lf-logo-circle-512-xxxxxhdpi.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
 }

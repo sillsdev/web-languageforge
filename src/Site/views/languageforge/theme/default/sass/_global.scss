@@ -1,11 +1,10 @@
-@import '../../../../../../../node_modules/bootstrap/scss/functions';
-@import '../../../../../../../node_modules/bootstrap/scss/variables';
-@import '../../../../../../../node_modules/bootstrap/scss/mixins';
+@import "../../../../../../../node_modules/bootstrap/scss/functions";
+@import "../../../../../../../node_modules/bootstrap/scss/variables";
+@import "../../../../../../../node_modules/bootstrap/scss/mixins";
 
 .modal-select-language .modal-footer {
   text-align: initial;
 }
-
 
 @include media-breakpoint-down(sm) {
   .btn span {
@@ -70,7 +69,8 @@
   .btn span {
     display: none;
   }
-  #shareBtn, #settingsBtn {
+  #shareBtn,
+  #settingsBtn {
     padding-right: 0;
 
     span {
@@ -172,7 +172,8 @@
           display: block;
           font-size: 20px;
         }
-        &:after, span {
+        &:after,
+        span {
           display: none;
         }
       }
@@ -277,15 +278,15 @@
     margin-right: 6px;
     border: 1px solid white;
 
-
-    i.fa, span {
+    i.fa,
+    span {
       line-height: 24px;
       font-size: 1rem;
     }
   }
 
   #settingsBtn::after {
-    display:none;
+    display: none;
   }
 
   #shareBtn {
@@ -293,8 +294,8 @@
     margin-left: 6px;
     border: 1px solid white;
 
-
-    i.fa, span {
+    i.fa,
+    span {
       line-height: 24px;
       font-size: 1rem;
     }
@@ -304,4 +305,3 @@
 .notices button.close {
   margin-right: 0.5em;
 }
-

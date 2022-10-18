@@ -18,7 +18,7 @@ class ArrayOf extends \ArrayObject
     private $_generator;
 
     // This is here to force client code using the older implementation to have a fatal error allowing us to identify code that needs upgrading. CP 2013-12
-    private /** @noinspection PhpUnusedPrivateFieldInspection */ $data;
+    /** @noinspection PhpUnusedPrivateFieldInspection */ private $data;
 
     public function generate($data = null)
     {
@@ -34,15 +34,15 @@ class ArrayOf extends \ArrayObject
 
     public function offsetGet($index)
     {
-        CodeGuard::checkTypeAndThrow($index, 'integer');
+        CodeGuard::checkTypeAndThrow($index, "integer");
 
         return parent::offsetGet($index);
     }
 
     public function offsetSet($index, $newval)
     {
-        if ($index != NULL) {
-            CodeGuard::checkTypeAndThrow($index, 'integer');
+        if ($index != null) {
+            CodeGuard::checkTypeAndThrow($index, "integer");
         }
         parent::offsetSet($index, $newval);
     }

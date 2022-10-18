@@ -18,11 +18,11 @@ class LexOptionListCommands
      */
     public static function updateList($projectId, $params)
     {
-        CodeGuard::checkTypeAndThrow($params, 'array');
+        CodeGuard::checkTypeAndThrow($params, "array");
         $project = new LexProjectModel($projectId);
         ProjectCommands::checkIfArchivedAndThrow($project);
-        if (array_key_exists('id', $params) && $params['id'] != '') {
-            $optionlist = new LexOptionListModel($project, $params['id']);
+        if (array_key_exists("id", $params) && $params["id"] != "") {
+            $optionlist = new LexOptionListModel($project, $params["id"]);
         } else {
             $optionlist = new LexOptionListModel($project);
         }
@@ -30,5 +30,4 @@ class LexOptionListCommands
         JsonDecoder::decode($optionlist, $params);
         return $optionlist->write();
     }
-
 }

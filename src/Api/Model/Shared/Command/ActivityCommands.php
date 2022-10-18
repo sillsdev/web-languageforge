@@ -22,8 +22,8 @@ use Api\Model\Shared\UnreadQuestionModel;
 class ActivityCommands
 {
     // constants used in updateScore and updateEntryCommentScore
-    const INCREASE_SCORE = 'increase';
-    const DECREASE_SCORE = 'decrease';
+    const INCREASE_SCORE = "increase";
+    const DECREASE_SCORE = "decrease";
 
     /**
      * @param ProjectModel $projectModel
@@ -58,7 +58,7 @@ class ActivityCommands
         $activity->entryRef->id = $entry->id->asString();
         $user = new UserModel($userId);
         $activity->userRef->id = $userId;
-        if ($action == 'update') {
+        if ($action == "update") {
             $activity->action = ActivityModel::UPDATE_ENTRY;
             $title = LexEntryCommands::getEntryLexeme($projectModel->id->asString(), $entry->id->asString());
         } else {
@@ -66,7 +66,7 @@ class ActivityCommands
             try {
                 $title = LexEntryCommands::getEntryLexeme($projectModel->id->asString(), $entry->id->asString());
             } catch (\Exception $ex) {
-                $title = '';
+                $title = "";
             }
         }
 
@@ -116,27 +116,36 @@ class ActivityCommands
     {
         $activity = new ActivityModel($projectModel);
         $entry = new LexEntryModel($projectModel, $entryId);
-        if ($mode === 'update') {
+        if ($mode === "update") {
             $userId = $commentModel->authorInfo->modifiedByUserRef->asString();
         } else {
             $userId = $commentModel->authorInfo->createdByUserRef->asString();
         }
         $user = new UserModel($userId);
-        $activity->action = ($mode == 'update') ? ActivityModel::UPDATE_LEX_COMMENT : ActivityModel::ADD_LEX_COMMENT;
+        $activity->action = $mode == "update" ? ActivityModel::UPDATE_LEX_COMMENT : ActivityModel::ADD_LEX_COMMENT;
         $activity->userRef->id = $userId;
         $activity->entryRef->id = $entryId;
         $activity->addContent(ActivityModel::ENTRY, $entry->nameForActivityLog());
         $activity->addContent(ActivityModel::LEX_COMMENT, $commentModel->content);
         $activity->addContent(ActivityModel::LEX_COMMENT_CONTEXT, $commentModel->contextGuid);
         $activity->addContent(ActivityModel::LEX_COMMENT_FIELD_VALUE, $commentModel->regarding->fieldValue);
-        $label = self::prepareActivityLabel($commentModel->contextGuid, $commentModel->regarding->fieldNameForDisplay, $entry);
-        if (! empty($label)) {
+        $label = self::prepareActivityLabel(
+            $commentModel->contextGuid,
+            $commentModel->regarding->fieldNameForDisplay,
+            $entry
+        );
+        if (!empty($label)) {
             $activity->addContent(ActivityModel::LEX_COMMENT_LABEL, $label);
         }
         $activity->addContent(ActivityModel::USER, $user->username);
         $activityId = $activity->write();
         UnreadActivityModel::markUnreadForProjectMembers($activityId, $projectModel);
-        UnreadLexCommentModel::markUnreadForProjectMembers($commentModel->id->asString(), $projectModel, $entryId, $userId);
+        UnreadLexCommentModel::markUnreadForProjectMembers(
+            $commentModel->id->asString(),
+            $projectModel,
+            $entryId,
+            $userId
+        );
 
         return $activityId;
     }
@@ -163,15 +172,24 @@ class ActivityCommands
         $activity->addContent(ActivityModel::LEX_COMMENT, $commentModel->content);
         $activity->addContent(ActivityModel::LEX_COMMENT_CONTEXT, $commentModel->contextGuid);
         $activity->addContent(ActivityModel::LEX_COMMENT_FIELD_VALUE, $commentModel->regarding->fieldValue);
-        $label = self::prepareActivityLabel($commentModel->contextGuid, $commentModel->regarding->fieldNameForDisplay, $entry);
-        if (! empty($label)) {
+        $label = self::prepareActivityLabel(
+            $commentModel->contextGuid,
+            $commentModel->regarding->fieldNameForDisplay,
+            $entry
+        );
+        if (!empty($label)) {
             $activity->addContent(ActivityModel::LEX_COMMENT_LABEL, $label);
         }
         $activity->addContent(ActivityModel::USER, $user->username);
         $activity->addContent(ActivityModel::USER_RELATED, $author->username);
         $activityId = $activity->write();
         UnreadActivityModel::markUnreadForProjectMembers($activityId, $projectModel);
-        UnreadLexCommentModel::markUnreadForProjectMembers($commentModel->id->asString(), $projectModel, $entryId, $userId);
+        UnreadLexCommentModel::markUnreadForProjectMembers(
+            $commentModel->id->asString(),
+            $projectModel,
+            $entryId,
+            $userId
+        );
 
         return $activityId;
     }
@@ -209,14 +227,23 @@ class ActivityCommands
         $activity->addContent(ActivityModel::LEX_COMMENT_CONTEXT, $commentModel->contextGuid);
         $activity->addContent(ActivityModel::LEX_COMMENT_FIELD_VALUE, $commentModel->regarding->fieldValue);
         $activity->addContent(ActivityModel::LEX_COMMENT_STATUS, $commentModel->status);
-        $label = self::prepareActivityLabel($commentModel->contextGuid, $commentModel->regarding->fieldNameForDisplay, $entry);
-        if (! empty($label)) {
+        $label = self::prepareActivityLabel(
+            $commentModel->contextGuid,
+            $commentModel->regarding->fieldNameForDisplay,
+            $entry
+        );
+        if (!empty($label)) {
             $activity->addContent(ActivityModel::LEX_COMMENT_LABEL, $label);
         }
         $activity->addContent(ActivityModel::USER, $user->username);
         $activityId = $activity->write();
         UnreadActivityModel::markUnreadForProjectMembers($activityId, $projectModel);
-        UnreadLexCommentModel::markUnreadForProjectMembers($commentModel->id->asString(), $projectModel, $entryId, $userId);
+        UnreadLexCommentModel::markUnreadForProjectMembers(
+            $commentModel->id->asString(),
+            $projectModel,
+            $entryId,
+            $userId
+        );
 
         return $activityId;
     }
@@ -229,22 +256,33 @@ class ActivityCommands
      * @return string activity id
      * @throws \Exception
      */
-    public static function updateEntryCommentScore($projectModel, $entryId, $commentModel, $mode = ActivityCommands::INCREASE_SCORE)
-    {
+    public static function updateEntryCommentScore(
+        $projectModel,
+        $entryId,
+        $commentModel,
+        $mode = ActivityCommands::INCREASE_SCORE
+    ) {
         $activity = new ActivityModel($projectModel);
         $entry = new LexEntryModel($projectModel, $entryId);
         $userId = $commentModel->authorInfo->createdByUserRef->asString();
         // We do NOT record who clicked the "Like" button in the activity log, so the only user ID here is the author of the comment.
         $user = new UserModel($userId);
-        $activity->action = ($mode == ActivityCommands::INCREASE_SCORE) ? ActivityModel::LEX_COMMENT_INCREASE_SCORE : ActivityModel::LEX_COMMENT_DECREASE_SCORE;
+        $activity->action =
+            $mode == ActivityCommands::INCREASE_SCORE
+                ? ActivityModel::LEX_COMMENT_INCREASE_SCORE
+                : ActivityModel::LEX_COMMENT_DECREASE_SCORE;
         $activity->userRef->id = $userId;
         $activity->entryRef->id = $entryId;
         $activity->addContent(ActivityModel::ENTRY, $entry->nameForActivityLog());
         $activity->addContent(ActivityModel::LEX_COMMENT, $commentModel->content);
         $activity->addContent(ActivityModel::LEX_COMMENT_CONTEXT, $commentModel->contextGuid);
         $activity->addContent(ActivityModel::LEX_COMMENT_FIELD_VALUE, $commentModel->regarding->fieldValue);
-        $label = self::prepareActivityLabel($commentModel->contextGuid, $commentModel->regarding->fieldNameForDisplay, $entry);
-        if (! empty($label)) {
+        $label = self::prepareActivityLabel(
+            $commentModel->contextGuid,
+            $commentModel->regarding->fieldNameForDisplay,
+            $entry
+        );
+        if (!empty($label)) {
             $activity->addContent(ActivityModel::LEX_COMMENT_LABEL, $label);
         }
         $activity->addContent(ActivityModel::USER, $user->username);
@@ -263,10 +301,15 @@ class ActivityCommands
      * @return string activity id
      * @throws \Exception
      */
-    public static function updateReplyToEntryComment($projectModel, $entryId, $commentModel, $replyModel, $mode = "update")
-    {
+    public static function updateReplyToEntryComment(
+        $projectModel,
+        $entryId,
+        $commentModel,
+        $replyModel,
+        $mode = "update"
+    ) {
         // "user" is the one doing the current activity, and "userRelated" the one whose previous activity is being responded to.
-        if ($mode === 'update') {
+        if ($mode === "update") {
             $userId = $replyModel->authorInfo->modifiedByUserRef->asString();
             $userRelatedId = $commentModel->authorInfo->modifiedByUserRef->asString();
         } else {
@@ -277,7 +320,7 @@ class ActivityCommands
         $user = new UserModel($userId);
         $userRelated = new UserModel($userRelatedId);
         $activity = new ActivityModel($projectModel);
-        $activity->action = ($mode == 'update') ? ActivityModel::UPDATE_LEX_REPLY : ActivityModel::ADD_LEX_REPLY;
+        $activity->action = $mode == "update" ? ActivityModel::UPDATE_LEX_REPLY : ActivityModel::ADD_LEX_REPLY;
         $activity->userRef->id = $userId;
         $activity->userRefRelated->id = $userRelatedId;
         $activity->entryRef->id = $entryId;
@@ -287,8 +330,12 @@ class ActivityCommands
         $activity->addContent(ActivityModel::LEX_COMMENT_CONTEXT, $commentModel->contextGuid);
         $activity->addContent(ActivityModel::LEX_COMMENT_FIELD_VALUE, $commentModel->regarding->fieldValue);
         $activity->addContent(ActivityModel::LEX_REPLY, $replyModel->content);
-        $label = self::prepareActivityLabel($commentModel->contextGuid, $commentModel->regarding->fieldNameForDisplay, $entry);
-        if (! empty($label)) {
+        $label = self::prepareActivityLabel(
+            $commentModel->contextGuid,
+            $commentModel->regarding->fieldNameForDisplay,
+            $entry
+        );
+        if (!empty($label)) {
             $activity->addContent(ActivityModel::LEX_COMMENT_LABEL, $label);
         }
         $activity->addContent(ActivityModel::USER, $user->username);
@@ -327,8 +374,12 @@ class ActivityCommands
         $activity->addContent(ActivityModel::LEX_COMMENT_CONTEXT, $commentModel->contextGuid);
         $activity->addContent(ActivityModel::LEX_COMMENT_FIELD_VALUE, $commentModel->regarding->fieldValue);
         $activity->addContent(ActivityModel::LEX_REPLY, $replyModel->content);
-        $label = self::prepareActivityLabel($commentModel->contextGuid, $commentModel->regarding->fieldNameForDisplay, $entry);
-        if (! empty($label)) {
+        $label = self::prepareActivityLabel(
+            $commentModel->contextGuid,
+            $commentModel->regarding->fieldNameForDisplay,
+            $entry
+        );
+        if (!empty($label)) {
             $activity->addContent(ActivityModel::LEX_COMMENT_LABEL, $label);
         }
         $activity->addContent(ActivityModel::USER, $user->username);
@@ -367,21 +418,21 @@ class ActivityCommands
     private static function prepareActivityLabel($contextGuid, $fieldLabel, LexEntryModel $entry)
     {
         if (empty($contextGuid) || empty($fieldLabel)) {
-            return $fieldLabel ?? '';
+            return $fieldLabel ?? "";
         }
-        $senseGuid = '';
-        $exampleGuid = '';
-        $parts = explode(' ', trim($contextGuid));
+        $senseGuid = "";
+        $exampleGuid = "";
+        $parts = explode(" ", trim($contextGuid));
         $resultParts = [];
         foreach ($parts as $part) {
-            if (StringUtil::startsWith($part, 'sense#')) {
-                $senseGuid = substr($part, strlen('sense#'));
-            } else if (StringUtil::startsWith($part, 'example#')) {
-                $exampleGuid = substr($part, strlen('example#'));
+            if (StringUtil::startsWith($part, "sense#")) {
+                $senseGuid = substr($part, strlen("sense#"));
+            } elseif (StringUtil::startsWith($part, "example#")) {
+                $exampleGuid = substr($part, strlen("example#"));
             }
         }
         // Find 1-based position of sense and example, if needed for this field
-        if (! empty($senseGuid)) {
+        if (!empty($senseGuid)) {
             $sensePosition = 0;
             foreach ($entry->senses as $sense) {
                 /** @var LexSense $sense */
@@ -400,7 +451,6 @@ class ActivityCommands
             }
         }
         $resultParts[] = $fieldLabel;
-        return implode('|', $resultParts);
+        return implode("|", $resultParts);
     }
-
 }

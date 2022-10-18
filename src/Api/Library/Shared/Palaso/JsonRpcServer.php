@@ -50,75 +50,88 @@ class JsonRpcServer
      * @return array|null
      * @throws \Exception
      */
-    public static function handle(Request $request, Application $app, $api) {
+    public static function handle(Request $request, Application $app, $api)
+    {
         // user-defined error handler to catch annoying php errors and throw them as exceptions
         set_error_handler(function ($errno, $errstr, $errfile, $errline) {
             throw new ErrorHandler($errstr, 0, $errno, $errfile, $errline);
         }, E_ALL);
 
         // checks if a JSON-RPC request has been received
-        if ($_SERVER['REQUEST_METHOD'] != 'POST' ||
-            empty($_SERVER['CONTENT_TYPE']) ||
-             (strrpos($_SERVER['CONTENT_TYPE'], "application/json") === false &&
-                 strrpos($_SERVER['CONTENT_TYPE'], "application/xml") === false)
+        if (
+            $_SERVER["REQUEST_METHOD"] != "POST" ||
+            empty($_SERVER["CONTENT_TYPE"]) ||
+            (strrpos($_SERVER["CONTENT_TYPE"], "application/json") === false &&
+                strrpos($_SERVER["CONTENT_TYPE"], "application/xml") === false)
         ) {
-            throw new \Exception("Not a JSON-RPC request: ct: '" . @$_SERVER['CONTENT_TYPE'] . "'");
+            throw new \Exception("Not a JSON-RPC request: ct: '" . @$_SERVER["CONTENT_TYPE"] . "'");
         }
 
         // executes the task on local object
         try {
             // TODO: refactor to use an error dto
-            $api->checkPermissions($request->request->get('method'));
-            if (method_exists($api, $request->request->get('method'))) {
-                $orderedParams = InternationalUtility::arrayNormalize($request->request->get('params')['orderedParams']);
-                $api->checkPermissionsWithParams($request->request->get('method'), $orderedParams);
-                $result = call_user_func_array([$api, $request->request->get('method')], $orderedParams);
+            $api->checkPermissions($request->request->get("method"));
+            if (method_exists($api, $request->request->get("method"))) {
+                $orderedParams = InternationalUtility::arrayNormalize(
+                    $request->request->get("params")["orderedParams"]
+                );
+                $api->checkPermissionsWithParams($request->request->get("method"), $orderedParams);
+                $result = call_user_func_array([$api, $request->request->get("method")], $orderedParams);
                 $response = [
-                    'jsonrpc' => '2.0',
-                    'id' => $request->request->get('id'),
-                    'result' => $result,
-                    'error' => NULL
+                    "jsonrpc" => "2.0",
+                    "id" => $request->request->get("id"),
+                    "result" => $result,
+                    "error" => null,
                 ];
             } else {
                 $response = [
-                    'jsonrpc' => '2.0',
-                    'id' => $request->request->get('id'),
-                    'result' => NULL,
-                    'error' => [
-                        'type' => 'UnknownMethod',
-                        'message' => sprintf("unknown method '%s' on class '%s'",
-                            $request->request->get('method'), get_class($api))
-                    ]
+                    "jsonrpc" => "2.0",
+                    "id" => $request->request->get("id"),
+                    "result" => null,
+                    "error" => [
+                        "type" => "UnknownMethod",
+                        "message" => sprintf(
+                            "unknown method '%s' on class '%s'",
+                            $request->request->get("method"),
+                            get_class($api)
+                        ),
+                    ],
                 ];
             }
         } catch (\Exception $e) {
             $response = [
-                'id' => $request->request->get('id'),
-                'result' => NULL,
-                'error' => [
-                    'type' => get_class($e),
-                    'message' => $e->getMessage() . " line " . $e->getLine() . " " . $e->getFile() . " " .
-                        CodeGuard::getStackTrace($e->getTrace())
-                ]
+                "id" => $request->request->get("id"),
+                "result" => null,
+                "error" => [
+                    "type" => get_class($e),
+                    "message" =>
+                        $e->getMessage() .
+                        " line " .
+                        $e->getLine() .
+                        " " .
+                        $e->getFile() .
+                        " " .
+                        CodeGuard::getStackTrace($e->getTrace()),
+                ],
             ];
             // Don't include filenames and line numbers in errors we report to the user
             if ($e instanceof ResourceNotAvailableException) {
-                $response['error']['type'] = 'ResourceNotAvailableException';
-                $response['error']['message'] = $e->getMessage();
+                $response["error"]["type"] = "ResourceNotAvailableException";
+                $response["error"]["message"] = $e->getMessage();
             } elseif ($e instanceof UserNotAuthenticatedException) {
-                $response['error']['type'] = 'UserNotAuthenticatedException';
-                $response['error']['message'] = $e->getMessage();
+                $response["error"]["type"] = "UserNotAuthenticatedException";
+                $response["error"]["message"] = $e->getMessage();
             } elseif ($e instanceof UserUnauthorizedException) {
-                $response['error']['type'] = 'UserUnauthorizedException';
-                $response['error']['message'] = $e->getMessage();
+                $response["error"]["type"] = "UserUnauthorizedException";
+                $response["error"]["message"] = $e->getMessage();
             }
-            $message = '';
+            $message = "";
             $message .= $e->getMessage() . "\n";
             $message .= $e->getTraceAsString() . "\n";
             error_log($message);
         }
 
-        if (!$request->request->get('id')) {
+        if (!$request->request->get("id")) {
             // notifications don't want response
             return null;
         }

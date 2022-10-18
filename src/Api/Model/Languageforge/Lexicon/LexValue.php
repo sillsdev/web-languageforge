@@ -4,7 +4,7 @@ namespace Api\Model\Languageforge\Lexicon;
 
 class LexValue
 {
-    public function __construct($value = '')
+    public function __construct($value = "")
     {
         $this->value($value);
     }
@@ -22,7 +22,8 @@ class LexValue
         $this->value = \Normalizer::normalize($value);
     }
 
-    public function __toString() {
+    public function __toString()
+    {
         return $this->value;
     }
 }

@@ -14,7 +14,7 @@ class CommunicateDelivery implements DeliveryInterface
      * @param string $content
      * @param string $htmlContent
      */
-    public function sendEmail($from, $to, $subject, $content, $htmlContent = '')
+    public function sendEmail($from, $to, $subject, $content, $htmlContent = "")
     {
         Email::send($from, $to, $subject, $content, $htmlContent);
     }
@@ -37,11 +37,11 @@ class CommunicateHelper
      */
     public static function templateFromFile($fileName)
     {
-        $options = array(
-            'cache' => APPPATH . 'cache',
-        );
+        $options = [
+            "cache" => APPPATH . "cache",
+        ];
 
-        $loader = new \Twig\Loader\FilesystemLoader(APPPATH . 'Site/views');
+        $loader = new \Twig\Loader\FilesystemLoader(APPPATH . "Site/views");
         $twig = new \Twig\Environment($loader, $options);
         $template = $twig->loadTemplate($fileName);
 
@@ -55,11 +55,11 @@ class CommunicateHelper
      */
     public static function templateFromString($templateCode)
     {
-        $options = array(
-            'cache' => APPPATH . 'cache',
-        );
+        $options = [
+            "cache" => APPPATH . "cache",
+        ];
 
-        $loader = new \Twig\Loader\ArrayLoader(array());
+        $loader = new \Twig\Loader\ArrayLoader([]);
         $twig = new \Twig\Environment($loader, $options);
         $template = $twig->createTemplate($templateCode);
 
@@ -90,8 +90,14 @@ class CommunicateHelper
      * @param string $htmlContent
      * @param DeliveryInterface $delivery
      */
-    public static function deliverEmail($from, $to, $subject, $content, $htmlContent = '', DeliveryInterface $delivery = null)
-    {
+    public static function deliverEmail(
+        $from,
+        $to,
+        $subject,
+        $content,
+        $htmlContent = "",
+        DeliveryInterface $delivery = null
+    ) {
         // Create our default delivery mechanism if one is not passed in.
         if ($delivery == null) {
             $delivery = new CommunicateDelivery();

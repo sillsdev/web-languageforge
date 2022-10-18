@@ -13,14 +13,16 @@ class ArrayDiff extends DiffBase
     /** @var Array */
     public $item;
 
-    public function __construct(Array $diff) {
-        $this->kind = 'A';
-        $this->path = $diff['path'];
-        $this->idx = $diff['index'];
-        $this->item = $diff['item'];
+    public function __construct(array $diff)
+    {
+        $this->kind = "A";
+        $this->path = $diff["path"];
+        $this->idx = $diff["index"];
+        $this->item = $diff["item"];
     }
 
-    public function getValue() {
-        return $this->item['rhs'];
+    public function getValue()
+    {
+        return $this->item["rhs"];
     }
 }

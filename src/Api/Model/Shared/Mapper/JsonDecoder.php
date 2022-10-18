@@ -13,7 +13,7 @@ class JsonDecoder
      */
     public static function is_assoc($array)
     {
-        return (bool) count(array_filter(array_keys($array), 'is_string'));
+        return (bool) count(array_filter(array_keys($array), "is_string"));
     }
 
     /**
@@ -23,7 +23,7 @@ class JsonDecoder
      * @param string $id
      * @throws \Exception
      */
-    public static function decode($model, $values, $id = '')
+    public static function decode($model, $values, $id = "")
     {
         $decoder = new JsonDecoder();
         $decoder->_decode($model, $values, $id);
@@ -38,12 +38,12 @@ class JsonDecoder
      */
     protected function _decode($model, $values, $id)
     {
-        CodeGuard::checkTypeAndThrow($values, 'array');
+        CodeGuard::checkTypeAndThrow($values, "array");
         $propertiesToIgnore = $this->getPrivateAndReadOnlyProperties($model);
         foreach ($this->getProperties($model) as $property => $value) {
-            if (is_a($value, 'Api\Model\Shared\Mapper\Id') && get_class($value) == 'Api\Model\Shared\Mapper\Id') {
-                 $this->decodeId($property, $model, $values, $id);
-                 continue;
+            if (is_a($value, "Api\Model\Shared\Mapper\Id") && get_class($value) == "Api\Model\Shared\Mapper\Id") {
+                $this->decodeId($property, $model, $values, $id);
+                continue;
             }
             if (!array_key_exists($property, $values) || in_array($property, $propertiesToIgnore)) {
                 continue;
@@ -51,20 +51,20 @@ class JsonDecoder
             if ($value === false) {
                 $value = $model->{$property}; // To force the lazy evaluation to create the property.
             }
-            if (is_a($value, 'Api\Model\Shared\Mapper\IdReference')) {
+            if (is_a($value, "Api\Model\Shared\Mapper\IdReference")) {
                 $this->decodeIdReference($property, $model, $values);
-            } elseif (is_a($value, 'Api\Model\Shared\Mapper\ArrayOf')) {
+            } elseif (is_a($value, "Api\Model\Shared\Mapper\ArrayOf")) {
                 $this->decodeArrayOf($property, $model->{$property}, $values[$property]);
-            } elseif (is_a($value, 'Api\Model\Shared\Mapper\MapOf')) {
+            } elseif (is_a($value, "Api\Model\Shared\Mapper\MapOf")) {
                 $this->decodeMapOf($property, $model->{$property}, $values[$property]);
-            } elseif (is_a($value, 'DateTime')) {
+            } elseif (is_a($value, "DateTime")) {
                 $this->decodeDateTime($model->{$property}, $values[$property]);
-            } elseif (is_a($value, 'Litipk\Jiffy\UniversalTimestamp')) {
+            } elseif (is_a($value, "Litipk\Jiffy\UniversalTimestamp")) {
                 $this->decodeUniversalTimestamp($model->{$property}, $values[$property]);
-            } elseif (is_a($value, 'Api\Model\Shared\Mapper\ReferenceList')) {
+            } elseif (is_a($value, "Api\Model\Shared\Mapper\ReferenceList")) {
                 $this->decodeReferenceList($model->{$property}, $values[$property]);
             } elseif (is_object($value)) {
-                $this->_decode($model->{$property}, $values[$property], '');
+                $this->_decode($model->{$property}, $values[$property], "");
             } else {
                 if (is_array($values[$property])) {
                     throw new \Exception("Must not decode array in '" . get_class($model) . "->" . $property . "'");
@@ -74,7 +74,7 @@ class JsonDecoder
         }
 
         // support for nested MapOf
-        if (is_a($model, 'Api\Model\Shared\Mapper\MapOf')) {
+        if (is_a($model, "Api\Model\Shared\Mapper\MapOf")) {
             $this->decodeMapOf($id, $model, $values);
         }
 
@@ -101,10 +101,13 @@ class JsonDecoder
      * @param array $values
      * @param string $id
      */
-    public function decodeId($key, $model, $values,
+    public function decodeId(
+        $key,
+        $model,
+        $values,
         /** @noinspection PhpUnusedParameterInspection (used by inherited function) */
-        $id)
-    {
+        $id
+    ) {
         $model->$key = new Id($values[$key]);
     }
 
@@ -119,11 +122,11 @@ class JsonDecoder
         if ($data == null) {
             $data = [];
         }
-        CodeGuard::checkTypeAndThrow($data, 'array');
+        CodeGuard::checkTypeAndThrow($data, "array");
         $propertiesToKeep = [];
 
         // check if array item class has any private, read-only or recursive properties
-        if (get_class($this) != 'Api\Model\Shared\Mapper\MongoDecoder' && $model->hasGenerator()) {
+        if (get_class($this) != "Api\Model\Shared\Mapper\MongoDecoder" && $model->hasGenerator()) {
             $arrayItem = $model->generate();
             $propertiesToKeep = $this->getPrivateAndReadOnlyProperties($arrayItem);
             $propertiesToKeep = $this->getRecursiveProperties($arrayItem, $propertiesToKeep);
@@ -136,7 +139,10 @@ class JsonDecoder
 
                 // put back private, read-only and recursive properties into new object that was just generated
                 foreach ($propertiesToKeep as $property) {
-                    if (array_key_exists($index, $oldModelArray) && property_exists($oldModelArray[$index], $property)) {
+                    if (
+                        array_key_exists($index, $oldModelArray) &&
+                        property_exists($oldModelArray[$index], $property)
+                    ) {
                         if (is_object($oldModelArray[$index]->{$property})) {
                             $object->{$property} = clone $oldModelArray[$index]->{$property};
                         } else {
@@ -144,7 +150,7 @@ class JsonDecoder
                         }
                     }
                 }
-                $this->_decode($object, $item, '');
+                $this->_decode($object, $item, "");
                 $model[] = $object;
             } else {
                 if (is_array($item)) {
@@ -163,14 +169,14 @@ class JsonDecoder
      */
     public function decodeMapOf($key, $model, $data)
     {
-        if (is_null($data) || !is_array($data) && get_class($data) == 'stdClass') {
+        if (is_null($data) || (!is_array($data) && get_class($data) == "stdClass")) {
             $data = [];
         }
-        CodeGuard::checkTypeAndThrow($data, 'array');
+        CodeGuard::checkTypeAndThrow($data, "array");
         $propertiesToKeep = [];
 
         // check if array item class has any private, read-only or recursive properties
-        if (get_class($this) != 'Api\Model\Shared\Mapper\MongoDecoder' && $model->hasGenerator()) {
+        if (get_class($this) != "Api\Model\Shared\Mapper\MongoDecoder" && $model->hasGenerator()) {
             foreach ($data as $itemKey => $item) {
                 $mapItem = $model->generate($item);
                 $propertiesToKeep = $this->getPrivateAndReadOnlyProperties($mapItem, $propertiesToKeep);
@@ -185,7 +191,10 @@ class JsonDecoder
 
                 // put back private, read-only and recursive properties into new object that was just generated
                 foreach ($propertiesToKeep as $property) {
-                    if (array_key_exists($itemKey, $oldModelArray) && property_exists($oldModelArray[$itemKey], $property)) {
+                    if (
+                        array_key_exists($itemKey, $oldModelArray) &&
+                        property_exists($oldModelArray[$itemKey], $property)
+                    ) {
                         if (is_object($oldModelArray[$itemKey]->{$property})) {
                             $object->{$property} = clone $oldModelArray[$itemKey]->{$property};
                         } else {
@@ -213,13 +222,13 @@ class JsonDecoder
     public function decodeReferenceList($model, $data)
     {
         $model->refs = [];
-        if (array_key_exists('refs', $data)) {
+        if (array_key_exists("refs", $data)) {
             // This likely came from an API client, who shouldn't be sending this.
             return;
         }
         $refsArray = $data;
         foreach ($refsArray as $objectId) {
-            CodeGuard::checkTypeAndThrow($objectId, 'string');
+            CodeGuard::checkTypeAndThrow($objectId, "string");
             array_push($model->refs, new Id((string) $objectId));
         }
     }
@@ -251,12 +260,12 @@ class JsonDecoder
      */
     private function getPrivateAndReadOnlyProperties($model, $properties = [])
     {
-        if (get_class($this) != 'Api\Model\Shared\Mapper\MongoDecoder') {
-            if (method_exists($model, 'getPrivateProperties')) {
-                $properties = array_merge($properties, (array)$model->getPrivateProperties());
+        if (get_class($this) != "Api\Model\Shared\Mapper\MongoDecoder") {
+            if (method_exists($model, "getPrivateProperties")) {
+                $properties = array_merge($properties, (array) $model->getPrivateProperties());
             }
-            if (method_exists($model, 'getReadOnlyProperties')) {
-                $properties = array_merge($properties, (array)$model->getReadOnlyProperties());
+            if (method_exists($model, "getReadOnlyProperties")) {
+                $properties = array_merge($properties, (array) $model->getReadOnlyProperties());
             }
         }
 
@@ -270,16 +279,19 @@ class JsonDecoder
      */
     private function getRecursiveProperties($model, $properties = [])
     {
-        if (get_class($this) != 'Api\Model\Shared\Mapper\MongoDecoder') {
+        if (get_class($this) != "Api\Model\Shared\Mapper\MongoDecoder") {
             foreach ($this->getProperties($model) as $property => $value) {
                 if ($value === false) {
                     $value = $model->{$property}; // To force the lazy evaluation to create the property.
                 }
 
                 if (is_object($value)) {
-                    if (get_class($value) == 'Api\Model\Shared\Mapper\ArrayOf' && !in_array($property, $properties)) {
+                    if (get_class($value) == "Api\Model\Shared\Mapper\ArrayOf" && !in_array($property, $properties)) {
                         $properties[] = $property;
-                    } elseif (get_class($value) == 'Api\Model\Shared\Mapper\MapOf' && !in_array($property, $properties)) {
+                    } elseif (
+                        get_class($value) == "Api\Model\Shared\Mapper\MapOf" &&
+                        !in_array($property, $properties)
+                    ) {
                         $properties[] = $property;
                     }
                 }
@@ -296,7 +308,7 @@ class JsonDecoder
     private function getProperties($model)
     {
         $properties = get_object_vars($model);
-        if (method_exists($model, 'getLazyProperties')) {
+        if (method_exists($model, "getLazyProperties")) {
             $properties = array_merge($properties, $model->getLazyProperties());
         }
 

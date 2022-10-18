@@ -1,10 +1,12 @@
-[{"key":"adj", "value":"Adjective (adj)"},
-{"key":"prep", "value": "Preposition (prep)"},
-{"key":"adv", "value": "Adverb (adv)"},
-{"key":"cla", "value": "Classifier (cla)"},
-{"key":"num", "value": "Numeral (num)"},
-{"key":"n", "value": "Noun (n)"},
-{"key":"nprop", "value": "Proper Noun (nprop)"},
-{"key":"p", "value": "Particle (p)"},
-{"key":"pro", "value": "Pronoun (pro)"},
-{"key":"v", "value": "Verb (v)"}]
+[
+  { "key": "adj", "value": "Adjective (adj)" },
+  { "key": "prep", "value": "Preposition (prep)" },
+  { "key": "adv", "value": "Adverb (adv)" },
+  { "key": "cla", "value": "Classifier (cla)" },
+  { "key": "num", "value": "Numeral (num)" },
+  { "key": "n", "value": "Noun (n)" },
+  { "key": "nprop", "value": "Proper Noun (nprop)" },
+  { "key": "p", "value": "Particle (p)" },
+  { "key": "pro", "value": "Pronoun (pro)" },
+  { "key": "v", "value": "Verb (v)" }
+]

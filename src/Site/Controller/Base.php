@@ -17,25 +17,26 @@ use Symfony\Component\Security\Acl\Exception\Exception;
 
 class Base
 {
-    public function __construct() {
+    public function __construct()
+    {
         $this->website = Website::get();
-        $this->_appName = '';
-        $this->data['isAdmin'] = false;
-        $this->data['projects'] = [];
-        $this->data['smallAvatarUrl'] = '';
-        $this->data['userName'] = '';
-        $this->data['version'] = VERSION;
-        $this->data['useMinifiedJs'] = (ENVIRONMENT == 'production');
-        $this->data['http_host'] = $_SERVER['HTTP_HOST'];
+        $this->_appName = "";
+        $this->data["isAdmin"] = false;
+        $this->data["projects"] = [];
+        $this->data["smallAvatarUrl"] = "";
+        $this->data["userName"] = "";
+        $this->data["version"] = VERSION;
+        $this->data["useMinifiedJs"] = ENVIRONMENT == "production";
+        $this->data["http_host"] = $_SERVER["HTTP_HOST"];
 
-        $this->data['jsFiles'] = [];
-        $this->data['jsNotMinifiedFiles'] = [];
-        $this->data['cssFiles'] = [];
-        $this->data['vendorFilesJs'] = [];
-        $this->data['vendorFilesCss'] = [];
-        $this->data['vendorFilesMinJs'] = [];
-        $this->data['isAngular2'] = false;
-        $this->data['themeColor'] = '';
+        $this->data["jsFiles"] = [];
+        $this->data["jsNotMinifiedFiles"] = [];
+        $this->data["cssFiles"] = [];
+        $this->data["vendorFilesJs"] = [];
+        $this->data["vendorFilesCss"] = [];
+        $this->data["vendorFilesMinJs"] = [];
+        $this->data["isAngular2"] = false;
+        $this->data["themeColor"] = "";
     }
 
     /** @var array data used to render templates */
@@ -65,9 +66,10 @@ class Base
      * @param Application $app
      * @throws Exception Of unknown type or origin. Try/catch extracted to calling functions July 2019.
      */
-    protected function setupBaseVariables(Application $app) {
+    protected function setupBaseVariables(Application $app)
+    {
         $this->_isLoggedIn = $this->isLoggedIn($app);
-        $this->data['isLoggedIn'] = $this->_isLoggedIn;
+        $this->data["isLoggedIn"] = $this->_isLoggedIn;
         if ($this->_isLoggedIn) {
             $this->_userId = SilexSessionHelper::getUserId($app);
 
@@ -89,74 +91,75 @@ class Base
      * @return Response
      * @throws \Exception
      */
-    protected function renderPage(Application $app, $viewName) {
+    protected function renderPage(Application $app, $viewName)
+    {
         // TODO: move to app_dependencies once bootstrap4 migration is complete
-        $sassDir = $this->getThemePath() . '/sass';
+        $sassDir = $this->getThemePath() . "/sass";
         if (!file_exists($sassDir)) {
-            $sassDir = $this->getThemePath('default') . '/sass';
+            $sassDir = $this->getThemePath("default") . "/sass";
         }
         $this->addCssFiles($sassDir, [], false);
 
-        $this->addJavascriptFiles('angular-app/bellows/_js_module_definitions');
-        $this->addJavascriptFiles('angular-app/bellows/js', ['vendor', 'assets']);
-        $this->addJavascriptFiles('angular-app/bellows/directive');
+        $this->addJavascriptFiles("angular-app/bellows/_js_module_definitions");
+        $this->addJavascriptFiles("angular-app/bellows/js", ["vendor", "assets"]);
+        $this->addJavascriptFiles("angular-app/bellows/directive");
 
         // Add general Angular app dependencies
         $dependencies = $this->getAngularAppDependencies();
-        foreach ($dependencies['js'] as $dependencyFilePath) {
-            $this->data['vendorFilesJs'][] = $dependencyFilePath;
+        foreach ($dependencies["js"] as $dependencyFilePath) {
+            $this->data["vendorFilesJs"][] = $dependencyFilePath;
         }
-        foreach ($dependencies['min'] as $dependencyFilePath) {
-            $this->data['vendorFilesMinJs'][] = $dependencyFilePath;
+        foreach ($dependencies["min"] as $dependencyFilePath) {
+            $this->data["vendorFilesMinJs"][] = $dependencyFilePath;
         }
-        foreach ($dependencies['css'] as $dependencyFilePath) {
-            $this->data['vendorFilesCss'][] = $dependencyFilePath;
+        foreach ($dependencies["css"] as $dependencyFilePath) {
+            $this->data["vendorFilesCss"][] = $dependencyFilePath;
         }
 
-        $this->data['faviconPath'] = $this->getFilePath('image/favicon.ico');
+        $this->data["faviconPath"] = $this->getFilePath("image/favicon.ico");
 
-        $this->data['themeColor'] = '#0a2440';
+        $this->data["themeColor"] = "#0a2440";
 
         $this->populateHeaderMenuViewdata();
 
         if (empty($this->data)) {
-            $app->abort(404, 'Error: cannot render without data');
+            $app->abort(404, "Error: cannot render without data");
         }
 
         try {
-            return $app['twig']->render($viewName.'.html.twig', $this->data);
+            return $app["twig"]->render($viewName . ".html.twig", $this->data);
         } catch (\Twig\Loader\ErrorLoader $e) {
             $app->abort(404, "Page not found: $viewName.twig\n" . $e->getMessage() . "\n" . $e->getTraceAsString());
         }
 
-        return new Response('Should not get here', 500);
+        return new Response("Should not get here", 500);
     }
 
-    protected function populateHeaderMenuViewdata() {
-        $this->data['isAdmin'] = false;
+    protected function populateHeaderMenuViewdata()
+    {
+        $this->data["isAdmin"] = false;
 
         // setup specific variables for header
-        $this->data['isLoggedIn'] = $this->_isLoggedIn;
+        $this->data["isLoggedIn"] = $this->_isLoggedIn;
 
         $featuredProjectList = new FeaturedProjectListModel();
         $featuredProjectList->read();
-        $this->data['featuredProjects'] = $featuredProjectList->entries;
+        $this->data["featuredProjects"] = $featuredProjectList->entries;
 
         if ($this->_isLoggedIn) {
             if ($this->_user->role) {
-                $this->data['isAdmin'] = SystemRoles::hasRight($this->_user->role, Domain::USERS + Operation::CREATE);
+                $this->data["isAdmin"] = SystemRoles::hasRight($this->_user->role, Domain::USERS + Operation::CREATE);
             }
-            $this->data['userName'] = $this->_user->username;
-            $this->data['userId'] = $this->_userId;
-            if ($this->_user->avatar_ref && substr($this->_user->avatar_ref, 0, 4) === 'http')
-            {
-                $this->data['smallAvatarUrl'] = $this->_user->avatar_ref;
+            $this->data["userName"] = $this->_user->username;
+            $this->data["userId"] = $this->_userId;
+            if ($this->_user->avatar_ref && substr($this->_user->avatar_ref, 0, 4) === "http") {
+                $this->data["smallAvatarUrl"] = $this->_user->avatar_ref;
             } else {
-                $this->data['smallAvatarUrl'] = '/Site/views/shared/image/avatar/' . $this->_user->avatar_ref;
+                $this->data["smallAvatarUrl"] = "/Site/views/shared/image/avatar/" . $this->_user->avatar_ref;
             }
             $projects = $this->_user->listProjects($this->website->domain);
-            $this->data['projects_count'] = $projects->count;
-            $this->data['projects'] = $projects->entries;
+            $this->data["projects_count"] = $projects->count;
+            $this->data["projects"] = $projects->entries;
         }
     }
 
@@ -166,18 +169,19 @@ class Base
      */
     protected function isLoggedIn(Application $app)
     {
-        return $app['security.authorization_checker']->isGranted('IS_AUTHENTICATED_REMEMBERED');
+        return $app["security.authorization_checker"]->isGranted("IS_AUTHENTICATED_REMEMBERED");
     }
 
-    protected function getThemePath($theme = "") {
-        if (! $theme) {
+    protected function getThemePath($theme = "")
+    {
+        if (!$theme) {
             $theme = $this->website->theme;
         }
-        if (! file_exists('Site/views/'.$this->website->base.'/theme/'.$theme)) {
-            $theme = 'default';
+        if (!file_exists("Site/views/" . $this->website->base . "/theme/" . $theme)) {
+            $theme = "default";
         }
 
-        return 'Site/views/'.$this->website->base.'/theme/'.$theme;
+        return "Site/views/" . $this->website->base . "/theme/" . $theme;
     }
 
     /**
@@ -185,11 +189,12 @@ class Base
      * @return string
      * @throws \Exception
      */
-    protected function getFilePath(string $filename) {
+    protected function getFilePath(string $filename)
+    {
         $themePath = $this->getThemePath();
         $filePath = $themePath . DIRECTORY_SEPARATOR . $filename;
         if (!file_exists($filePath)) {
-            $themePath = $this->getThemePath('default');
+            $themePath = $this->getThemePath("default");
             $filePath = $themePath . DIRECTORY_SEPARATOR . $filename;
             if (!file_exists($filePath)) {
                 throw new \Exception(__FILE__ . ' - filename doesn\'t exist: ' . $filename);
@@ -198,15 +203,18 @@ class Base
         return DIRECTORY_SEPARATOR . $filePath;
     }
 
-    protected function addJavascriptFilesToBeMinified($folder, $exclude = []) {
-        self::addFiles('js', $folder, $this->data['jsFiles'], $exclude, true);
+    protected function addJavascriptFilesToBeMinified($folder, $exclude = [])
+    {
+        self::addFiles("js", $folder, $this->data["jsFiles"], $exclude, true);
     }
 
-    protected function addJavascriptFilesNotMinified($folder, $exclude = []) {
-        self::addFiles('js', $folder, $this->data['jsNotMinifiedFiles'], $exclude, true);
+    protected function addJavascriptFilesNotMinified($folder, $exclude = [])
+    {
+        self::addFiles("js", $folder, $this->data["jsNotMinifiedFiles"], $exclude, true);
     }
 
-    protected function addJavascriptFiles($folder, $excludedFromMinification = []) {
+    protected function addJavascriptFiles($folder, $excludedFromMinification = [])
+    {
         $this->addJavascriptFilesToBeMinified($folder, $excludedFromMinification);
         foreach ($excludedFromMinification as $excludeFolder) {
             $notMinifiedPath = "$folder/$excludeFolder";
@@ -214,20 +222,23 @@ class Base
         }
     }
 
-    protected function addCssFiles($dir, $exclude = [], $atEnd = true) {
-        self::addFiles('css', $dir, $this->data['cssFiles'], $exclude, $atEnd);
+    protected function addCssFiles($dir, $exclude = [], $atEnd = true)
+    {
+        self::addFiles("css", $dir, $this->data["cssFiles"], $exclude, $atEnd);
     }
 
-    private static function ext($filename) {
+    private static function ext($filename)
+    {
         return pathinfo($filename, PATHINFO_EXTENSION);
     }
 
-    private static function addFiles($ext, $dir, &$result, $exclude, $atEnd) {
-        array_push($exclude, 'excluded/');
+    private static function addFiles($ext, $dir, &$result, $exclude, $atEnd)
+    {
+        array_push($exclude, "excluded/");
         if (is_dir($dir)) {
             $files = scandir($dir);
             foreach ($files as $file) {
-                $filepath = $dir . '/' . $file;
+                $filepath = $dir . "/" . $file;
                 foreach ($exclude as $ex) {
                     if (strpos($filepath, $ex)) {
                         continue 2;
@@ -241,7 +252,7 @@ class Base
                             array_unshift($result, $filepath);
                         }
                     }
-                } elseif ($file != '..' && $file != '.') {
+                } elseif ($file != ".." && $file != ".") {
                     self::addFiles($ext, $filepath, $result, $exclude, $atEnd);
                 }
             }
@@ -263,7 +274,8 @@ class Base
      *
      * @return array
      */
-    protected function getAngularAppDependencies() {
+    protected function getAngularAppDependencies()
+    {
         /* TODO: This is an Angular1 function; rename appropriately. */
         $jsonData = json_decode(file_get_contents(APPPATH . "app_dependencies.json"), true);
         $jsFilesToReturn = [];
@@ -280,7 +292,7 @@ class Base
                     $jsFile = [$jsFile];
                 }
                 foreach ($jsFile as $file) {
-                    if (StringUtil::endsWith($file, '.js')) {
+                    if (StringUtil::endsWith($file, ".js")) {
                         $file = "$path/$file";
                     } else {
                         $file = "$path/$file.js";
@@ -300,7 +312,7 @@ class Base
                     $jsMinFile = [$jsMinFile];
                 }
                 foreach ($jsMinFile as $file) {
-                    if (StringUtil::endsWith($file, '.js')) {
+                    if (StringUtil::endsWith($file, ".js")) {
                         $jsMinFilesToReturn[] = "$path/$file";
                     } else {
                         $jsMinFilesToReturn[] = "$path/$file.min.js";
@@ -312,7 +324,7 @@ class Base
                     $jsMinFile = [$jsMinFile];
                 }
                 foreach ($jsMinFile as $file) {
-                    if (StringUtil::endsWith($file, '.js')) {
+                    if (StringUtil::endsWith($file, ".js")) {
                         $jsMinFilesToReturn[] = "$path/$file";
                     } elseif (file_exists("$path/$file.min.js")) {
                         $jsMinFilesToReturn[] = "$path/$file.min.js";
@@ -322,7 +334,6 @@ class Base
                 }
             } elseif (array_key_exists("cssFile", $properties)) {
                 // don't add any min files because this contains a css key
-
             } else {
                 $jsMinFilesToReturn[] = "$path/$itemName.min.js";
             }
@@ -334,7 +345,7 @@ class Base
                     $cssFile = [$cssFile];
                 }
                 foreach ($cssFile as $file) {
-                    if (StringUtil::endsWith($file, '.css')) {
+                    if (StringUtil::endsWith($file, ".css")) {
                         $cssFilesToReturn[] = "$path/$file";
                     } else {
                         $cssFilesToReturn[] = "$path/$file.css";
@@ -349,5 +360,4 @@ class Base
         }
         return ["js" => $jsFilesToReturn, "min" => $jsMinFilesToReturn, "css" => $cssFilesToReturn];
     }
-
 }

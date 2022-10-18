@@ -17,9 +17,9 @@ class UserListProjectModel extends MapperListModel
     public function __construct($projectId)
     {
         parent::__construct(
-                UserModelMongoMapper::instance(),
-                array('isInvited' => array('$ne' => true), 'projects' => array('$in' => array(MongoMapper::mongoID($projectId)))),
-                array('username', 'email', 'name', 'avatar_ref') // TODO Stop exposing email this way
+            UserModelMongoMapper::instance(),
+            ["isInvited" => ['$ne' => true], "projects" => ['$in' => [MongoMapper::mongoID($projectId)]]],
+            ["username", "email", "name", "avatar_ref"] // TODO Stop exposing email this way
         );
     }
 }

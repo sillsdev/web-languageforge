@@ -7,31 +7,27 @@ use PHPUnit\Framework\TestCase;
 
 class TestCodec extends UserModel
 {
-    public function __construct($id = '')
+    public function __construct($id = "")
     {
-        $this->fruitsMap = new MapOf(
-            function ($data) {
-                if (array_key_exists('numOfSlices', $data)) {
-                    return new Apple();
-                } elseif (array_key_exists('peelThickness', $data)) {
-                    return new Orange();
-                } else {
-                    return new Fruit();
-                }
+        $this->fruitsMap = new MapOf(function ($data) {
+            if (array_key_exists("numOfSlices", $data)) {
+                return new Apple();
+            } elseif (array_key_exists("peelThickness", $data)) {
+                return new Orange();
+            } else {
+                return new Fruit();
             }
-        );
+        });
 
-        $this->fruitsArray = new ArrayOf(
-            function ($data) {
-                if (array_key_exists('numOfSlices', $data)) {
-                    return new Apple();
-                } elseif (array_key_exists('peelThickness', $data)) {
-                    return new Orange();
-                } else {
-                    return new Fruit();
-                }
+        $this->fruitsArray = new ArrayOf(function ($data) {
+            if (array_key_exists("numOfSlices", $data)) {
+                return new Apple();
+            } elseif (array_key_exists("peelThickness", $data)) {
+                return new Orange();
+            } else {
+                return new Fruit();
             }
-        );
+        });
         parent::__construct($id);
     }
 
@@ -64,15 +60,15 @@ class MongoEncoderDecoderTest extends TestCase
         $apple1->numOfSlices = 1;
         $apple2 = new Apple();
         $apple2->numOfSlices = 2;
-        $codecTest->fruitsMap['apple1'] = $apple1;
-        $codecTest->fruitsMap['apple2'] = $apple2;
+        $codecTest->fruitsMap["apple1"] = $apple1;
+        $codecTest->fruitsMap["apple2"] = $apple2;
         $id = $codecTest->write();
 
         $codecTest2 = new TestCodec($id);
-        $this->assertArrayHasKey('apple1', $codecTest2->fruitsMap);
-        $this->assertArrayHasKey('apple2', $codecTest2->fruitsMap);
-        $this->assertEquals(1, $codecTest2->fruitsMap['apple1']->numOfSlices);
-        $this->assertEquals(2, $codecTest2->fruitsMap['apple2']->numOfSlices);
+        $this->assertArrayHasKey("apple1", $codecTest2->fruitsMap);
+        $this->assertArrayHasKey("apple2", $codecTest2->fruitsMap);
+        $this->assertEquals(1, $codecTest2->fruitsMap["apple1"]->numOfSlices);
+        $this->assertEquals(2, $codecTest2->fruitsMap["apple2"]->numOfSlices);
     }
 
     public function testMapOf_TwoClasses_Works()
@@ -81,16 +77,16 @@ class MongoEncoderDecoderTest extends TestCase
         $apple = new Apple();
         $apple->numOfSlices = 5;
         $orange = new Orange();
-        $orange->peelThickness = 'thick';
-        $codecTest->fruitsMap['apple'] = $apple;
-        $codecTest->fruitsMap['orange'] = $orange;
+        $orange->peelThickness = "thick";
+        $codecTest->fruitsMap["apple"] = $apple;
+        $codecTest->fruitsMap["orange"] = $orange;
         $id = $codecTest->write();
 
         $codecTest2 = new TestCodec($id);
-        $this->assertArrayHasKey('apple', $codecTest2->fruitsMap);
-        $this->assertArrayHasKey('orange', $codecTest2->fruitsMap);
-        $this->assertEquals(5, $codecTest2->fruitsMap['apple']->numOfSlices);
-        $this->assertEquals('thick', $codecTest2->fruitsMap['orange']->peelThickness);
+        $this->assertArrayHasKey("apple", $codecTest2->fruitsMap);
+        $this->assertArrayHasKey("orange", $codecTest2->fruitsMap);
+        $this->assertEquals(5, $codecTest2->fruitsMap["apple"]->numOfSlices);
+        $this->assertEquals("thick", $codecTest2->fruitsMap["orange"]->peelThickness);
     }
 
     public function testArrayOf_OneClass_Works()
@@ -105,8 +101,8 @@ class MongoEncoderDecoderTest extends TestCase
         $id = $codecTest->write();
 
         $codecTest2 = new TestCodec($id);
-        $this->assertTrue(is_a($codecTest2->fruitsArray[0], 'Apple'));
-        $this->assertTrue(is_a($codecTest2->fruitsArray[1], 'Apple'));
+        $this->assertTrue(is_a($codecTest2->fruitsArray[0], "Apple"));
+        $this->assertTrue(is_a($codecTest2->fruitsArray[1], "Apple"));
         $this->assertEquals(1, $codecTest2->fruitsArray[0]->numOfSlices);
         $this->assertEquals(2, $codecTest2->fruitsArray[1]->numOfSlices);
     }
@@ -117,15 +113,15 @@ class MongoEncoderDecoderTest extends TestCase
         $apple = new Apple();
         $apple->numOfSlices = 5;
         $orange = new Orange();
-        $orange->peelThickness = 'thick';
+        $orange->peelThickness = "thick";
         $codecTest->fruitsArray[] = $apple;
         $codecTest->fruitsArray[] = $orange;
         $id = $codecTest->write();
 
         $codecTest2 = new TestCodec($id);
-        $this->assertTrue(is_a($codecTest2->fruitsArray[0], 'Apple'));
-        $this->assertTrue(is_a($codecTest2->fruitsArray[1], 'Orange'));
+        $this->assertTrue(is_a($codecTest2->fruitsArray[0], "Apple"));
+        $this->assertTrue(is_a($codecTest2->fruitsArray[1], "Orange"));
         $this->assertEquals(5, $codecTest2->fruitsArray[0]->numOfSlices);
-        $this->assertEquals('thick', $codecTest2->fruitsArray[1]->peelThickness);
+        $this->assertEquals("thick", $codecTest2->fruitsArray[1]->peelThickness);
     }
 }

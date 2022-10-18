@@ -12,11 +12,12 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
-Use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class AuthUserProvider implements UserProviderInterface
 {
-    public function __construct(Website $website = null) {
+    public function __construct(Website $website = null)
+    {
         $this->website = $website;
     }
 
@@ -27,17 +28,19 @@ class AuthUserProvider implements UserProviderInterface
      * @param string $usernameOrEmail
      * @return UserWithId
      */
-    public function loadUserByUsername($usernameOrEmail) {
-
+    public function loadUserByUsername($usernameOrEmail)
+    {
         $user = new UserModelWithPassword();
         $user->readByUsernameOrEmail($usernameOrEmail);
 
-        if ($user->id->asString() == '') {
+        if ($user->id->asString() == "") {
             throw new UsernameNotFoundException();
         }
         if (!$user->active) {
             // TODO: Get this error msg to propogate to Auth::setupAuthView
-            throw new UsernameNotFoundException(sprintf('Username "%s" access denied on "%s".', $usernameOrEmail, $this->website->domain));
+            throw new UsernameNotFoundException(
+                sprintf('Username "%s" access denied on "%s".', $usernameOrEmail, $this->website->domain)
+            );
         }
 
         /*
@@ -62,25 +65,29 @@ class AuthUserProvider implements UserProviderInterface
      * @param UserInterface $user
      * @return UserInterface $user
      */
-    public function refreshUser(UserInterface $user) {
-        if (! $user instanceof UserWithId) {
+    public function refreshUser(UserInterface $user)
+    {
+        if (!$user instanceof UserWithId) {
             throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', get_class($user)));
         }
 
         return $this->loadUserByUsername($user->getUsername());
     }
 
-    public function supportsClass($class) {
-        return $class === 'Site\Model\UserWithId';
+    public function supportsClass($class)
+    {
+        return $class === "Site\Model\UserWithId";
     }
 
     public static function getSiteRoles(UserModel $user, Website $website)
     {
-        $roles = array('ROLE_'.$user->role);
-        if ($user->siteRole and
+        $roles = ["ROLE_" . $user->role];
+        if (
+            $user->siteRole and
             $user->siteRole->offsetExists($website->domain) and
-            $user->siteRole[$website->domain] !== SiteRoles::NONE) {
-            $roles[] = 'ROLE_SITE_'.$user->siteRole[$website->domain];
+            $user->siteRole[$website->domain] !== SiteRoles::NONE
+        ) {
+            $roles[] = "ROLE_SITE_" . $user->siteRole[$website->domain];
         }
         return $roles;
     }

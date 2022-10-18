@@ -12,11 +12,10 @@ class SmsQueueModel extends MapperListModel
      */
     public function __construct($databaseName)
     {
-        $this->entries = new MapOf(function () use ($databaseName) { return new SmsModel($databaseName); });
-        parent::__construct(
-            SmsMongoMapper::connect($databaseName),
-            array()
-        );
+        $this->entries = new MapOf(function () use ($databaseName) {
+            return new SmsModel($databaseName);
+        });
+        parent::__construct(SmsMongoMapper::connect($databaseName), []);
     }
 
     /**
@@ -24,7 +23,7 @@ class SmsQueueModel extends MapperListModel
      */
     public function readNew()
     {
-        $query = array('state' => array('$in' => array(SmsModel::SMS_NEW)));
+        $query = ["state" => ['$in' => [SmsModel::SMS_NEW]]];
         $this->_mapper->readListAsModels($this, $query);
     }
 }
