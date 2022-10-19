@@ -42,11 +42,6 @@ jobs:
           node-version: '16.14.0'
           cache: 'npm'
       -
-        name: Build app
-        run: |
-          npm ci
-          docker-compose build app
-      -
         name: Get installed Playwright version
         id: playwright-version
         # https://github.com/microsoft/playwright/issues/7249#issuecomment-1201476980
@@ -67,7 +62,7 @@ jobs:
       -
         name: Playwright E2E Tests
         # see https://playwright.dev/docs/ci#github-actions
-        run: make playwright-tests
+        run: make playwright-tests-ci
 
       -
         name: Upload test results
