@@ -197,7 +197,7 @@ services:
       # exposed this to host for admin tools
       - 27017:27017
     volumes:
-      - ./db/init.js:/docker-entrypoint-initdb.d/init.js
+      - ./docker/db/init.js:/docker-entrypoint-initdb.d/init.js
       - lf-mongo-data:/data/db
     restart: always
     environment:
