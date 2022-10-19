@@ -48,9 +48,12 @@
                 <div data-ng-repeat="project in visibleProjects">
                     <div class="row align-items-center mb-3" data-ng-class="{active: $ctrl.isSelected(project)}">
                         <div class="col-md-4">
-                            <a data-ng-show="$ctrl.isInProject(project)" data-ng-href="/projects/{{project.projectCode}}">
+                            <a data-ng-show="$ctrl.isInProject(project)" data-ng-href="/app/lexicon/{{project.id}}">
                                 <span class="larger-text">{{project.projectName}}</span></a>
+                            <a data-ng-show="$ctrl.isInProject(project)" data-ng-href="/projects/{{project.projectCode}}">
+                                <span>(Dashboard)</span></a>
                             <span data-ng-show="!$ctrl.isInProject(project)" class="larger-text">{{project.projectName}}</span>
+                            <small class="text-muted"> {{project.projectCode}}</small>
                         </div>
                         <div class="col-7 col-md-5" data-ng-show="$ctrl.rights.canEditProjects">
                             <small class="text-muted">{{$ctrl.projectTypeNames[project.appName]}}</small>
