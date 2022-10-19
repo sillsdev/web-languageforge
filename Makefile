@@ -9,9 +9,11 @@ start: build
 dev: start
 	docker compose up -d ui-builder
 
+.PHONY: playwright-tests-ci
+playwright-tests-ci: npm-ci playwright-tests
+
 .PHONY: playwright-tests
 playwright-tests:
-
     # stop any containers that are running
 	docker compose down
 
@@ -68,6 +70,10 @@ next-dev: build
 .PHONY: build-next
 build-next:
 	docker compose build next-proxy next-app
+
+.PHONY: npm-ci
+npm-ci:
+	npm ci
 
 .PHONY: clean
 clean:
