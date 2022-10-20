@@ -38,7 +38,7 @@ jobs:
       -
         run: |
           docker --version
-          docker-compose --version
+          docker compose version
       -
         name: Establish image name
         id: image
@@ -62,8 +62,8 @@ jobs:
       -
         name: Build legacy app
         run: |
-          docker-compose build --build-arg ENVIRONMENT=production --build-arg BUILD_VERSION=${{ steps.image.outputs.TAG_APP }} app
-          docker-compose run --rm app cat /var/www/html/build-version.txt /var/www/html/version.php
+          docker compose build --build-arg ENVIRONMENT=production --build-arg BUILD_VERSION=${{ steps.image.outputs.TAG_APP }} app
+          docker compose run --rm app cat /var/www/html/build-version.txt /var/www/html/version.php
       -
         name: Build "next" images
         run: make build-next
@@ -73,7 +73,7 @@ jobs:
       # -
       #   name: E2E Tests
       #   run: |
-      #     docker-compose -f docker-compose.yml up -d app-for-playwright
+      #     docker compose -f docker-compose.yml up -d app-for-playwright
       #     npx playwright install chromium
       #     npx playwright test
       -

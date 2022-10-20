@@ -29,7 +29,7 @@
   // Uncomment the next line if you want to keep your containers running after VS Code shuts down.
   // "shutdownAction": "none",
 
-  "initializeCommand": "cd docker && docker-compose build --build-arg ENVIRONMENT=development app && docker-compose build --build-arg ENVIRONMENT=development app-for-e2e test-e2e && docker-compose up -d app-for-e2e",
+  "initializeCommand": "cd docker && docker compose build --build-arg ENVIRONMENT=development app && docker compose build --build-arg ENVIRONMENT=development app-for-e2e test-e2e && docker compose up -d app-for-e2e",
 
   // Uncomment the next line to run commands after the container is created - for example installing docker.
   "onCreateCommand": "apk add docker"
