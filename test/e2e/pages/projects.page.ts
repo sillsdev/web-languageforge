@@ -137,7 +137,7 @@ export class ProjectsPage {
 
   async findProjectRow(projectName: string): Promise<Locator> {
     await this.goto();
-    const rowLocator = this.page.locator(`css=[data-ng-class="{active: $ctrl.isSelected(project)}"]:has(span:has-text("${projectName}"))`);
+    const rowLocator = this.page.locator(`.project:has(span:has-text("${projectName}"))`);
     if (await rowLocator.count() == 1) {
       return rowLocator;
     }
@@ -145,15 +145,14 @@ export class ProjectsPage {
   }
 
   async projectIsLinked(projectName: string): Promise<boolean> {
-    const rowLocator: Locator = await this.findProjectRow(projectName);
-    expect(rowLocator).not.toBeUndefined();
-    return rowLocator.locator('a').isVisible();
+    const projectLink = await this.projectLinkLocator(projectName);
+    return projectLink.isVisible();
   }
 
   async projectLinkLocator(projectName: string): Promise<Locator> {
     const rowLocator: Locator = await this.findProjectRow(projectName);
     expect(rowLocator).not.toBeUndefined();
-    return rowLocator.locator('a');
+    return rowLocator.locator(`a:has-text("${projectName}")`);
   }
 
   async projectHasAddTechSupportButton(projectName: string): Promise<boolean> {
