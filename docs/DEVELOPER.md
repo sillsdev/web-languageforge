@@ -121,7 +121,7 @@ The easiest way to get the `TEST_SPECS` variable set up correctly is to go into 
 1. `make e2e-tests`
 
 To quickly re-run the tests without going through the `make build` process, you can restart the `app-for-e2e` container and run the tests as follows:
-`docker-compose restart app-for-e2e && docker-compose run -e TEST_SPECS= test-e2e` where the relative path to the test spec file is optionally given after the `=` sign.
+`docker compose restart app-for-e2e && docker compose run -e TEST_SPECS= test-e2e` where the relative path to the test spec file is optionally given after the `=` sign.
 
 ### Running Unit Tests
 
