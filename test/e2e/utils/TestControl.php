@@ -34,7 +34,7 @@ use Palaso\Utilities\FileUtilities;
 use Api\Library\Shared\Website;
 use Silex\Application;
 
-require_once APPPATH . 'vendor/autoload.php';
+require_once APPPATH . "vendor/autoload.php";
 
 class TestControl
 {
@@ -59,7 +59,8 @@ class TestControl
         // Do nothing; all methods are allowed
     }
 
-    public function checkPermissionsWithParams($methodName, $params = null) {
+    public function checkPermissionsWithParams($methodName, $params = null)
+    {
         // Do nothing; all methods are allowed
     }
 
@@ -67,40 +68,42 @@ class TestControl
 
     public function check_test_api()
     {
-        return ['api_is_working' => true];
+        return ["api_is_working" => true];
     }
 
     public function create_user($username, $humanName = null, $password = null, $email = null)
     {
-        if (! $password) {
-            $password = 'x';
+        if (!$password) {
+            $password = "x";
         }
-        if (! $email) {
-            $email = $username . '@example.com';
+        if (!$email) {
+            $email = $username . "@example.com";
         }
-        if (! $humanName) {
-            $humanName = ucwords(str_replace('_', ' ', $username));
+        if (!$humanName) {
+            $humanName = ucwords(str_replace("_", " ", $username));
         }
 
         // TODO: Handle this with MongoStore instead of through Commands library
-        $userId = UserCommands::createUser([
-            'name' => $humanName,
-            'email' => $email,
-            'password' => $password
-        ],
+        $userId = UserCommands::createUser(
+            [
+                "name" => $humanName,
+                "email" => $email,
+                "password" => $password,
+            ],
             $this->website
         );
 
-        UserCommands::updateUser([
-            'id' => $userId,
-            'name' => $humanName,
-            'email' => $email,
-            'username' => $username,
-            'password' => $password,
-            'active' => true,
-            'languageDepotUsername' => $username,
-            'role' => strpos($username, 'admin') === false ? SystemRoles::USER : SystemRoles::SYSTEM_ADMIN,
-        ],
+        UserCommands::updateUser(
+            [
+                "id" => $userId,
+                "name" => $humanName,
+                "email" => $email,
+                "username" => $username,
+                "password" => $password,
+                "active" => true,
+                "languageDepotUsername" => $username,
+                "role" => strpos($username, "admin") === false ? SystemRoles::USER : SystemRoles::SYSTEM_ADMIN,
+            ],
             $this->website
         );
 
@@ -114,27 +117,31 @@ class TestControl
             $user->changePassword($password);
             return $user->write();
         }
-        return '';
+        return "";
     }
 
     public function reset_projects()
     {
         $db = MongoStore::connect(DATABASE);
-        $db->dropCollection('projects');
+        $db->dropCollection("projects");
         return true;
     }
 
-    public function init_test_project($projectCode = null, $projectName = null, $ownerUsername = null, $memberUsernames = [])
-    {
-        if (! $projectCode) {
-            $projectCode = 'test_project';
+    public function init_test_project(
+        $projectCode = null,
+        $projectName = null,
+        $ownerUsername = null,
+        $memberUsernames = []
+    ) {
+        if (!$projectCode) {
+            $projectCode = "test_project";
         }
-        if (! $projectName) {
-            $projectName = 'Test Project';
+        if (!$projectName) {
+            $projectName = "Test Project";
         }
 
         $owner = new UserModel();
-        $ownerId = '';
+        $ownerId = "";
         if ($owner->readByUserName($ownerUsername)) {
             $ownerId = $owner->id->asString();
         } else {
@@ -142,8 +149,8 @@ class TestControl
         }
 
         $db = MongoStore::connect(DATABASE);
-        $coll = $db->selectCollection('projects');
-        $coll->deleteMany([ 'projectCode' => $projectCode ]);
+        $coll = $db->selectCollection("projects");
+        $coll->deleteMany(["projectCode" => $projectCode]);
         $projectModel = new ProjectModel();
         $projectModel->projectName = $projectName;
         $projectModel->projectCode = $projectCode;
@@ -174,7 +181,7 @@ class TestControl
         return $projectModel->id->asString();
     }
 
-    public function add_writing_system_to_project($projectCode, $langTag, $abbr = '', $name = '')
+    public function add_writing_system_to_project($projectCode, $langTag, $abbr = "", $name = "")
     {
         $project = ProjectModel::getByProjectCode($projectCode);
         $project->addInputSystem($langTag, $abbr, $name);
@@ -185,29 +192,29 @@ class TestControl
     public function add_audio_visual_file_to_project($projectCode, $tmpFilePath)
     {
         $project = ProjectModel::getByProjectCode($projectCode);
-        $response = TestControl::uploadMediaFile($project, 'audio', $tmpFilePath);
+        $response = TestControl::uploadMediaFile($project, "audio", $tmpFilePath);
         return JsonEncoder::encode($response);
     }
 
     public function add_picture_file_to_project($projectCode, $tmpFilePath)
     {
         $project = ProjectModel::getByProjectCode($projectCode);
-        $response = TestControl::uploadMediaFile($project, 'sense-image', $tmpFilePath);
+        $response = TestControl::uploadMediaFile($project, "sense-image", $tmpFilePath);
         return JsonEncoder::encode($response);
     }
 
     public static function uploadMediaFile($project, $mediaType, $tmpFilePath)
     {
-        if ($mediaType != 'audio' && $mediaType != 'sense-image') {
+        if ($mediaType != "audio" && $mediaType != "sense-image") {
             throw new \Exception("Unsupported upload type.");
         }
-        if (! $tmpFilePath) {
+        if (!$tmpFilePath) {
             throw new \Exception("No file given.");
         }
 
         // make the folders if they don't exist
         $project->createAssetsFolders();
-        $folderPath = $mediaType == 'audio' ? $project->getAudioFolderPath() : $project->getImageFolderPath();
+        $folderPath = $mediaType == "audio" ? $project->getAudioFolderPath() : $project->getImageFolderPath();
 
         // move uploaded file from tmp location to assets
         $filename = FileUtilities::replaceSpecialCharacters(\basename($tmpFilePath));
@@ -220,13 +227,16 @@ class TestControl
         if ($moveOk && $tmpFilePath) {
             $data = new MediaResult();
             $assetsPath = $project->getAssetsRelativePath();
-            $data->path = $mediaType == 'audio' ? $project->getAudioFolderPath($assetsPath) : $project->getImageFolderPath($assetsPath);
+            $data->path =
+                $mediaType == "audio"
+                    ? $project->getAudioFolderPath($assetsPath)
+                    : $project->getImageFolderPath($assetsPath);
             // NOTE: $data->fileName needs capital N so it will match what the real upload(Audio/Image)File functions return
             $data->fileName = $filename;
             $response->result = true;
         } else {
             $data = new ErrorResult();
-            $data->errorType = 'UserMessage';
+            $data->errorType = "UserMessage";
             $data->errorMessage = "$filename could not be saved to the right location. Contact your Site Administrator.";
             $response->result = false;
         }
@@ -237,21 +247,21 @@ class TestControl
 
     public function add_user_to_project($projectCode, $username, $role = null)
     {
-        if (! $role) {
+        if (!$role) {
             $role = ProjectRoles::CONTRIBUTOR;
         }
-        if ($role === 'manager') {
+        if ($role === "manager") {
             // Make allowances for a common mistake in role name
             $role = ProjectRoles::MANAGER;
         }
 
         $user = new UserModel();
-        if (! $user->readByUserName($username)) {
+        if (!$user->readByUserName($username)) {
             return false;
         }
 
         $project = ProjectModel::getByProjectCode($projectCode);
-        if (! $project) {
+        if (!$project) {
             return false;
         }
 
@@ -262,30 +272,41 @@ class TestControl
         return true;
     }
 
-    public function add_custom_field(string $projectCode, string $customFieldName, string $parentField = 'entry', string $customFieldType = 'MultiString', $extraOptions = null)
-    {
-        error_log('add_custom_field');
-        $prefix = 'customField_' . $parentField . '_';
+    public function add_custom_field(
+        string $projectCode,
+        string $customFieldName,
+        string $parentField = "entry",
+        string $customFieldType = "MultiString",
+        $extraOptions = null
+    ) {
+        error_log("add_custom_field");
+        $prefix = "customField_" . $parentField . "_";
         if (\strpos($customFieldName, $prefix) !== 0) {
             $customFieldName = $prefix . $customFieldName;
         }
         $project = ProjectModel::getByProjectCode($projectCode);
         error_log($project->id->asString());
-        switch($parentField) {
-            case 'entry': $config = $project->config->entry; break;
-            case 'senses': $config = $project->config->entry->fields[LexConfig::SENSES_LIST]; break;
-            case 'examples': $config = $project->config->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST]; break;
+        switch ($parentField) {
+            case "entry":
+                $config = $project->config->entry;
+                break;
+            case "senses":
+                $config = $project->config->entry->fields[LexConfig::SENSES_LIST];
+                break;
+            case "examples":
+                $config = $project->config->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST];
+                break;
         }
         $config->fieldOrder->ensureValueExists($customFieldName);
-        if (! array_key_exists($customFieldName, $config->fields)) {
-            switch($customFieldType) {
+        if (!array_key_exists($customFieldName, $config->fields)) {
+            switch ($customFieldType) {
                 case "ReferenceAtom":
                     $config->fields[$customFieldName] = new LexConfigOptionList();
-                    $config->fields[$customFieldName]->listCode = $extraOptions['listCode'];
+                    $config->fields[$customFieldName]->listCode = $extraOptions["listCode"];
                     break;
                 case "ReferenceCollection":
                     $config->fields[$customFieldName] = new LexConfigMultiOptionList();
-                    $config->fields[$customFieldName]->listCode = $extraOptions['listCode'];
+                    $config->fields[$customFieldName]->listCode = $extraOptions["listCode"];
                     break;
                 case "OwningAtom":
                     $config->fields[$customFieldName] = new LexConfigMultiParagraph();
@@ -293,27 +314,33 @@ class TestControl
                 default:
                     $config->fields[$customFieldName] = new LexConfigMultiText();
                     $config->fields[$customFieldName]->inputSystems = new ArrayOf();
-                    if ($extraOptions['inputSystems']) {
-                        foreach ($extraOptions['inputSystems'] as $ws) {
+                    if ($extraOptions["inputSystems"]) {
+                        foreach ($extraOptions["inputSystems"] as $ws) {
                             $config->fields[$customFieldName]->inputSystems->ensureValueExists($ws);
                         }
                     }
-            };
-            $label = str_replace($prefix, '', $customFieldName);
-            $config->fields[$customFieldName]->label = str_replace(' ', '_', $label);
+            }
+            $label = str_replace($prefix, "", $customFieldName);
+            $config->fields[$customFieldName]->label = str_replace(" ", "_", $label);
             $config->fields[$customFieldName]->hideIfEmpty = false;
         }
         // PHP copies objects by value, not reference, so now we have to write the config back
-        switch($parentField) {
-            case 'entry': $project->config->entry = $config; break;
-            case 'senses': $project->config->entry->fields[LexConfig::SENSES_LIST] = $config; break;
-            case 'examples': $project->config->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST] = $config; break;
+        switch ($parentField) {
+            case "entry":
+                $project->config->entry = $config;
+                break;
+            case "senses":
+                $project->config->entry->fields[LexConfig::SENSES_LIST] = $config;
+                break;
+            case "examples":
+                $project->config->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST] = $config;
+                break;
         }
 
         // Now make the custom field visible in all views
         foreach ($project->config->roleViews as $role => $roleView) {
             if (!array_key_exists($customFieldName, $roleView->fields)) {
-                if ($customFieldType == 'MultiUnicode' || $customFieldType == 'MultiString') {
+                if ($customFieldType == "MultiUnicode" || $customFieldType == "MultiString") {
                     $roleView->fields[$customFieldName] = new LexViewMultiTextFieldConfig();
                 } else {
                     $roleView->fields[$customFieldName] = new LexViewFieldConfig();
@@ -323,7 +350,7 @@ class TestControl
         }
         foreach ($project->config->userViews as $userId => $userView) {
             if (!array_key_exists($customFieldName, $userView->fields)) {
-                if ($customFieldType == 'MultiUnicode' || $customFieldType == 'MultiString') {
+                if ($customFieldType == "MultiUnicode" || $customFieldType == "MultiString") {
                     $userView->fields[$customFieldName] = new LexViewMultiTextFieldConfig();
                 } else {
                     $userView->fields[$customFieldName] = new LexViewFieldConfig();
@@ -345,9 +372,10 @@ class TestControl
         return $entry->write();
     }
 
-    public function get_project_json(string $projectCode) {
+    public function get_project_json(string $projectCode)
+    {
         $db = MongoStore::connect(DATABASE);
-        $project = $db->projects->findOne(['projectCode' => $projectCode]);
+        $project = $db->projects->findOne(["projectCode" => $projectCode]);
         return $project;
     }
 }

@@ -12,19 +12,21 @@ use Api\Model\Shared\Rights\ProjectRoles;
 
 class SilexSessionHelper
 {
-    public static function getUserId(Application $app) {
-        $userId = '';
-        $silexUser = $app['security.token_storage']->getToken()->getUser();
-        if (is_object($silexUser) && get_class($silexUser) == 'Site\Model\UserWithId') {
+    public static function getUserId(Application $app)
+    {
+        $userId = "";
+        $silexUser = $app["security.token_storage"]->getToken()->getUser();
+        if (is_object($silexUser) && get_class($silexUser) == "Site\Model\UserWithId") {
             /** @var UserWithId $silexUser */
             $userId = $silexUser->getUserId();
         }
         return $userId;
     }
 
-    public static function getProjectId(Application $app, Website $website, $projectId = '') {
-        if ($projectId == '') {
-            $projectId = $app['session']->get('projectId');
+    public static function getProjectId(Application $app, Website $website, $projectId = "")
+    {
+        if ($projectId == "") {
+            $projectId = $app["session"]->get("projectId");
         }
         if (!$projectId) {
             $userId = self::getUserId($app);
@@ -34,34 +36,37 @@ class SilexSessionHelper
         return $projectId;
     }
 
-    public static function requireValidProjectIdForThisWebsite(Application $app, Website $website, $projectId) {
+    public static function requireValidProjectIdForThisWebsite(Application $app, Website $website, $projectId)
+    {
         $projectId = self::getProjectId($app, $website, $projectId);
-        if ($projectId != '' && ProjectModel::projectExistsOnWebsite($projectId, $website)) {
-
+        if ($projectId != "" && ProjectModel::projectExistsOnWebsite($projectId, $website)) {
             // ensure project is not archived
             $projectModel = ProjectModel::getById($projectId);
             if ($projectModel->isArchived) {
-
                 // if project is archived, only system admins can access the project
                 $userId = self::getUserId($app);
                 if ($userId) {
                     $user = new UserModel($userId);
                     if ($user->role != SystemRoles::SYSTEM_ADMIN) {
-                        $user->lastUsedProjectId = '';
+                        $user->lastUsedProjectId = "";
                         $user->write();
-                        $app['session']->set('projectId', '');
+                        $app["session"]->set("projectId", "");
                         throw new UserUnauthorizedException("Archived Project.  Access Denied.");
                     }
                 }
             }
         } else {
-            $app['session']->set('projectId', '');
+            $app["session"]->set("projectId", "");
             throw new UserUnauthorizedException("Project does not exist on this site.");
         }
         return $projectId;
     }
 
-    public static function requireValidProjectIdForThisWebsiteAndValidateUserMembership(Application $app, Website $website, $projectId) {
+    public static function requireValidProjectIdForThisWebsiteAndValidateUserMembership(
+        Application $app,
+        Website $website,
+        $projectId
+    ) {
         $projectId = self::requireValidProjectIdForThisWebsite($app, $website, $projectId);
         $userId = self::getUserId($app);
         if ($userId) {
@@ -80,13 +85,13 @@ class SilexSessionHelper
                 $user->lastUsedProjectId = $projectId;
                 $user->write();
             } else {
-                $user->lastUsedProjectId = '';
+                $user->lastUsedProjectId = "";
                 $user->write();
-                $app['session']->set('projectId', '');
+                $app["session"]->set("projectId", "");
                 throw new UserUnauthorizedException("User is not a member of this project.  Access Denied.");
             }
         } else {
-            $app['session']->set('projectId', '');
+            $app["session"]->set("projectId", "");
             throw new UserUnauthorizedException("Login required to access this project.");
         }
         return $projectId;

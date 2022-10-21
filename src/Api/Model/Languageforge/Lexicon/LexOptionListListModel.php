@@ -13,7 +13,7 @@ class LexOptionListListModel extends MapperListModel
         /** @var MongoMapper $instance */
         static $instance = null;
         if (null === $instance || $instance->databaseName() != $databaseName) {
-            $instance = new MongoMapper($databaseName, 'optionlists');
+            $instance = new MongoMapper($databaseName, "optionlists");
         }
 
         return $instance;
@@ -26,10 +26,10 @@ class LexOptionListListModel extends MapperListModel
     public function __construct($project, $newerThanTimestamp = null)
     {
         if (!is_null($newerThanTimestamp)) {
-            $startDate = new UTCDateTime(1000*$newerThanTimestamp);
-            parent::__construct( self::mapper($project->databaseName()), array('dateModified'=> array('$gte' => $startDate)), array());
+            $startDate = new UTCDateTime(1000 * $newerThanTimestamp);
+            parent::__construct(self::mapper($project->databaseName()), ["dateModified" => ['$gte' => $startDate]], []);
         } else {
-            parent::__construct( self::mapper($project->databaseName()), array('name' => array('$regex' => '')));
+            parent::__construct(self::mapper($project->databaseName()), ["name" => ['$regex' => ""]]);
         }
     }
 }

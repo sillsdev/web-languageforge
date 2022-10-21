@@ -4,7 +4,6 @@ version: '3.5'
 services:
   ui-builder:
     build:
-      context: ..
       dockerfile: docker/ui-builder/Dockerfile
     image: lf-ui-builder
     container_name: lf-ui-builder
@@ -13,20 +12,19 @@ services:
       - lf-ui-dist:/data/src/dist
 
       # for developer convenience volume map
-      - ../webpack.config.js:/data/webpack.config.js
-      - ../webpack-dev.config.js:/data/webpack-dev.config.js
-      - ../webpack-prd.config.js:/data/webpack-prd.config.js
-      - ../package.json:/data/package.json
-      - ../package-lock.json:/data/package-lock.json
+      - ./webpack.config.js:/data/webpack.config.js
+      - ./webpack-dev.config.js:/data/webpack-dev.config.js
+      - ./webpack-prd.config.js:/data/webpack-prd.config.js
+      - ./package.json:/data/package.json
+      - ./package-lock.json:/data/package-lock.json
 
       # needed these volume maps so changes to typescript/scss would be reflected in running app, actually rebundled and output to dist which is then shared to the app container.
-      - ../src/angular-app:/data/src/angular-app
-      - ../src/sass:/data/src/sass
-      - ../src/Site/views/languageforge/theme/default/sass:/data/src/Site/views/languageforge/theme/default/sass
+      - ./src/angular-app:/data/src/angular-app
+      - ./src/sass:/data/src/sass
+      - ./src/Site/views/languageforge/theme/default/sass:/data/src/Site/views/languageforge/theme/default/sass
 
   app:
     build:
-      context: ..
       dockerfile: docker/app/Dockerfile
       args:
         - ENVIRONMENT=development
@@ -68,17 +66,17 @@ services:
       - lf-ui-dist:/var/www/html/dist
 
       # for developer convenience
-      - ../src/index.php:/var/www/src/index.php
-      - ../src/config.php:/var/www/src/config.php
-      - ../src/Api:/var/www/src/Api
-      - ../src/Site:/var/www/src/Site
+      - ./src/index.php:/var/www/src/index.php
+      - ./src/config.php:/var/www/src/config.php
+      - ./src/Api:/var/www/src/Api
+      - ./src/Site:/var/www/src/Site
 
       # needed this volume mapping so changes to partials would be reflected in running app.
-      - ../src/angular-app:/var/www/src/angular-app
+      - ./src/angular-app:/var/www/src/angular-app
 
   lfmerge:
     build:
-      context: lfmerge
+      context: docker/lfmerge
       dockerfile: Dockerfile
       args:
         - ENVIRONMENT=development
@@ -126,7 +124,7 @@ services:
       - lf-caddy-config:/config
 
       # for developer convenience
-      - ./ssl/Caddyfile:/etc/caddy/Caddyfile
+      - ./docker/ssl/Caddyfile:/etc/caddy/Caddyfile
 
   next-proxy-dev:
     image: caddy
@@ -143,11 +141,11 @@ services:
       - NEXT_APP=next-app-dev:3000
     volumes:
       # for developer convenience
-      - ./next-app/dev/Caddyfile:/etc/caddy/Caddyfile
+      - ./docker/next-app/dev/Caddyfile:/etc/caddy/Caddyfile
 
   next-app-dev:
     build:
-      context: ../next-app
+      context: next-app
       dockerfile: ../docker/next-app/dev/Dockerfile
     image: lf-next-app-dev
     container_name: lf-next-app-dev
@@ -156,12 +154,12 @@ services:
     command: npm run dev-w-host
     volumes:
       # for developer convenience
-      - ../next-app/src:/app/src
-      - ../next-app/static:/app/static
+      - ./next-app/src:/app/src
+      - ./next-app/static:/app/static
 
   next-proxy:
     build:
-      context: next-app
+      context: docker/next-app
       dockerfile: Dockerfile.proxy
     image: lf-next-proxy
     container_name: lf-next-proxy
@@ -175,7 +173,7 @@ services:
 
   next-app:
     build:
-      context: ../next-app
+      context: next-app
       dockerfile: ../docker/next-app/Dockerfile.next-app
     image: lf-next-app
     container_name: lf-next-app
@@ -199,7 +197,7 @@ services:
       # exposed this to host for admin tools
       - 27017:27017
     volumes:
-      - ./db/init.js:/docker-entrypoint-initdb.d/init.js
+      - ./docker/db/init.js:/docker-entrypoint-initdb.d/init.js
       - lf-mongo-data:/data/db
     restart: always
     environment:
@@ -228,7 +226,7 @@ services:
       - MYSQL_PASSWORD=not-a-secret
       - MYSQL_ROOT_PASSWORD=also-not-a-secret
     volumes:
-      - ./test-ld/schemas-and-data.sql:/docker-entrypoint-initdb.d/schemas-and-data.sql
+      - ./docker/test-ld/schemas-and-data.sql:/docker-entrypoint-initdb.d/schemas-and-data.sql
 
   ld-api:
     image: sillsdev/web-languagedepot-api
@@ -247,7 +245,6 @@ services:
 
   test-e2e:
     build:
-      context: ..
       dockerfile: docker/test-e2e/Dockerfile
       args:
         - ENVIRONMENT=development
@@ -265,20 +262,19 @@ services:
     command: sh -c "/wait && /run.sh"
     volumes:
       # for developer convenience
-      - ../src:/data/src
-      - ../typings:/data/typings
-      - ../webpack.config.js:/data/webpack.config.js
-      - ../webpack-dev.config.js:/data/webpack-dev.config.js
-      - ../webpack-prd.config.js:/data/webpack-prd.config.js
-      - ../package.json:/data/package.json
-      - ../package-lock.json:/data/package-lock.json
+      - ./src:/data/src
+      - ./typings:/data/typings
+      - ./webpack.config.js:/data/webpack.config.js
+      - ./webpack-dev.config.js:/data/webpack-dev.config.js
+      - ./webpack-prd.config.js:/data/webpack-prd.config.js
+      - ./package.json:/data/package.json
+      - ./package-lock.json:/data/package-lock.json
 # uncomment on dev machine for convenience but don't commit - it messes up the e2e test run by
 # clobbering the JS files produced by tsc in the built image.
 #      - ../test:/data/test
 
   app-for-e2e:
     build:
-      context: ..
       dockerfile: docker/app-for-e2e/Dockerfile
     image: app-for-e2e
     container_name: app-for-e2e
@@ -300,7 +296,6 @@ services:
 
   app-for-playwright:
     build:
-      context: ..
       dockerfile: docker/app/Dockerfile
       args:
         - ENVIRONMENT=development
@@ -328,12 +323,11 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
-      - ../test/e2e/utils/TestControl.php:/var/www/src/Api/Service/TestControl.php
-      - ../test/e2e/shared-files:/tmp/e2e-shared-files
+      - ./test/e2e/utils/TestControl.php:/var/www/src/Api/Service/TestControl.php
+      - ./test/e2e/shared-files:/tmp/e2e-shared-files
 
   test-php:
     build:
-      context: ..
       dockerfile: docker/test-php/Dockerfile
     image: test-php
     container_name: test-php
@@ -357,9 +351,9 @@ services:
     command: sh -c "/wait && /run.sh"
     volumes:
       # for developer convenience
-      - ../test:/var/www/test
-      - ../src/Api:/var/www/src/Api
-      - ../src/Site:/var/www/src/Site
+      - ./test:/var/www/test
+      - ./src/Api:/var/www/src/Api
+      - ./src/Site:/var/www/src/Site
 
 volumes:
   lf-caddy-config:

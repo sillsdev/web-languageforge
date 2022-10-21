@@ -5,7 +5,6 @@ use PHPUnit\Framework\TestCase;
 
 class LexMultiValueTest extends TestCase
 {
-
     public function doTest(array $one, array $two, array $expectedDifferences)
     {
         $multiValue1 = LexMultiValue::createFromArray($one);
@@ -20,7 +19,7 @@ class LexMultiValueTest extends TestCase
         $two = ["two"];
         $expectedDifferences = [
             "this" => json_encode($one),
-            "other" => json_encode($two)
+            "other" => json_encode($two),
         ];
         $this->doTest($one, $two, $expectedDifferences);
     }
@@ -31,7 +30,7 @@ class LexMultiValueTest extends TestCase
         $two = ["one", "two"];
         $expectedDifferences = [
             "this" => json_encode($one),
-            "other" => json_encode($two)
+            "other" => json_encode($two),
         ];
         $this->doTest($one, $two, $expectedDifferences);
     }
@@ -42,7 +41,7 @@ class LexMultiValueTest extends TestCase
         $two = ["one"];
         $expectedDifferences = [
             "this" => json_encode($one),
-            "other" => json_encode($two)
+            "other" => json_encode($two),
         ];
         $this->doTest($one, $two, $expectedDifferences);
     }
@@ -53,7 +52,7 @@ class LexMultiValueTest extends TestCase
         $two = ["two", "one"];
         $expectedDifferences = [
             "this" => json_encode($one),
-            "other" => json_encode($two)
+            "other" => json_encode($two),
         ];
         $this->doTest($one, $two, $expectedDifferences);
     }

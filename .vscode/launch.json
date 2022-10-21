@@ -31,9 +31,7 @@
       "sourceMapPathOverrides": {
         "webpack:///./*": "${workspaceFolder}/src/angular-app/*"
       },
-      "runtimeArgs": [
-        "--remote-debugging-port=9222"
-      ]
+      "runtimeArgs": ["--remote-debugging-port=9222"]
     }
   ]
 }

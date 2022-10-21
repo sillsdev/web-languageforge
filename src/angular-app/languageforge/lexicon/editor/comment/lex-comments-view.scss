@@ -1,7 +1,7 @@
-@import '../../../../../Site/views/languageforge/theme/default/sass/variables';
-@import '../../../../../../node_modules/bootstrap/scss/functions';
-@import '../../../../../../node_modules/bootstrap/scss/variables';
-@import '../../../../../../node_modules/bootstrap/scss/mixins';
+@import "../../../../../Site/views/languageforge/theme/default/sass/variables";
+@import "../../../../../../node_modules/bootstrap/scss/functions";
+@import "../../../../../../node_modules/bootstrap/scss/variables";
+@import "../../../../../../node_modules/bootstrap/scss/mixins";
 
 #lexAppEditView {
   display: flex;
@@ -11,7 +11,7 @@
   }
 }
 
-.container-sticky{
+.container-sticky {
   position: sticky;
   top: 0px;
   z-index: 3;
@@ -50,7 +50,7 @@
         left: -12px;
       }
       .commentListContainer {
-        > div:nth-child(n+2) {
+        > div:nth-child(n + 2) {
           .card-title {
             display: none;
           }
@@ -59,7 +59,8 @@
     }
     .comments-search-container {
       position: relative;
-      input, select {
+      input,
+      select {
         background-color: $WildSand;
         border-radius: 0;
         color: $Eden;

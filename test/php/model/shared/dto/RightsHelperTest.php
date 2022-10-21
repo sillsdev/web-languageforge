@@ -30,58 +30,58 @@ class RightsHelperTest extends TestCase
     {
         $this->expectException(Exception::class);
 
-        $userId = self::$environ->createUser('user', 'user', 'user@user.com', SystemRoles::USER);
+        $userId = self::$environ->createUser("user", "user", "user@user.com", SystemRoles::USER);
         $rh = new RightsHelper($userId, null, self::$environ->website);
 
-        $rh->userCanAccessMethod('bogusMethodName', array());
+        $rh->userCanAccessMethod("bogusMethodName", []);
 
         // nothing runs in the current test function after an exception. IJH 2014-11
     }
 
     public function testUserCanAccessMethod_projectSettings_projectManager_true()
     {
-        $userId = self::$environ->createUser('user', 'user', 'user@user.com', SystemRoles::USER);
+        $userId = self::$environ->createUser("user", "user", "user@user.com", SystemRoles::USER);
         $user = new UserModel($userId);
-        $project = self::$environ->createProject('projectForTest', 'projTestCode');
+        $project = self::$environ->createProject("projectForTest", "projTestCode");
         $projectId = $project->id->asString();
         $project->addUser($userId, ProjectRoles::MANAGER);
-        $project->appName = 'lexicon';
+        $project->appName = "lexicon";
         $project->write();
         $user->addProject($projectId);
         $user->write();
         $project = ProjectModel::getById($projectId);
         $rh = new RightsHelper($userId, $project, self::$environ->website);
-        $result = $rh->userCanAccessMethod('project_settings', array());
+        $result = $rh->userCanAccessMethod("project_settings", []);
         $this->assertTrue($result);
     }
 
     public function testUserCanAccessMethod_projectSettings_projectMember_false()
     {
-        $userId = self::$environ->createUser('user', 'user', 'user@user.com', SystemRoles::USER);
+        $userId = self::$environ->createUser("user", "user", "user@user.com", SystemRoles::USER);
         $user = new UserModel($userId);
-        $project = self::$environ->createProject('projectForTest', 'projTestCode');
+        $project = self::$environ->createProject("projectForTest", "projTestCode");
         $projectId = $project->id->asString();
         $project->addUser($userId, ProjectRoles::CONTRIBUTOR);
-        $project->appName = 'lexicon';
+        $project->appName = "lexicon";
         $project->write();
         $user->addProject($projectId);
         $user->write();
         $project = ProjectModel::getById($projectId);
         $rh = new RightsHelper($userId, $project, self::$environ->website);
-        $result = $rh->userCanAccessMethod('project_settings', array());
+        $result = $rh->userCanAccessMethod("project_settings", []);
         $this->assertFalse($result);
     }
 
     public function testUserCanAccessMethod_projectPageDto_NotAMember_false()
     {
-        $userId = self::$environ->createUser('user', 'user', 'user@user.com', SystemRoles::USER);
-        $project = self::$environ->createProject('projectForTest', 'projTestCode');
-        $project->appName = 'lexicon';
+        $userId = self::$environ->createUser("user", "user", "user@user.com", SystemRoles::USER);
+        $project = self::$environ->createProject("projectForTest", "projTestCode");
+        $project->appName = "lexicon";
         $project->write();
         $projectId = $project->id->asString();
         $project = ProjectModel::getById($projectId);
         $rh = new RightsHelper($userId, $project, self::$environ->website);
-        $result = $rh->userCanAccessMethod('project_pageDto', array());
+        $result = $rh->userCanAccessMethod("project_pageDto", []);
         $this->assertFalse($result);
     }
 }

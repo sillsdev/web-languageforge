@@ -10,13 +10,15 @@ class DeletedDiff extends DiffBase
     /** @var mixed */
     public $oldData;
 
-    public function __construct(Array $diff) {
-        $this->kind = 'D';
-        $this->path = $diff['path'];
-        $this->oldData = $diff['lhs'];
+    public function __construct(array $diff)
+    {
+        $this->kind = "D";
+        $this->path = $diff["path"];
+        $this->oldData = $diff["lhs"];
     }
 
-    public function getValue() {
+    public function getValue()
+    {
         return null;
     }
 }

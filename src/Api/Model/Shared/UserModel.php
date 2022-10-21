@@ -14,27 +14,50 @@ use Api\Model\Shared\Rights\SystemRoles;
 
 class UserModel extends MapperModel
 {
-    const COMMUNICATE_VIA_SMS   = 'sms';
-    const COMMUNICATE_VIA_EMAIL = 'email';
-    const COMMUNICATE_VIA_BOTH  = 'both';
+    const COMMUNICATE_VIA_SMS = "sms";
+    const COMMUNICATE_VIA_EMAIL = "email";
+    const COMMUNICATE_VIA_BOTH = "both";
 
-    const GENDER_MALE = 'Male';
-    const GENDER_FEMALE = 'Female';
+    const GENDER_MALE = "Male";
+    const GENDER_FEMALE = "Female";
 
     /**
      * List of properties accessible by context
      */
-    const PUBLIC_ACCESSIBLE =
-        ['username', 'name', 'email'];
-    const USER_PROFILE_ACCESSIBLE =
-        ['avatar_color', 'avatar_shape', 'avatar_ref', 'mobile_phone', 'communicate_via',
-         'name', 'email', 'username', 'age', 'gender', 'interfaceLanguageCode'];
-    const ADMIN_ACCESSIBLE =
-        ['username', 'name', 'email', 'role', 'active', 'isInvited',
-         'avatar_color', 'avatar_shape', 'avatar_ref', 'mobile_phone', 'communicate_via',
-         'name', 'age', 'gender', 'interfaceLanguageCode', 'languageDepotUsername'];
+    const PUBLIC_ACCESSIBLE = ["username", "name", "email"];
+    const USER_PROFILE_ACCESSIBLE = [
+        "avatar_color",
+        "avatar_shape",
+        "avatar_ref",
+        "mobile_phone",
+        "communicate_via",
+        "name",
+        "email",
+        "username",
+        "age",
+        "gender",
+        "interfaceLanguageCode",
+    ];
+    const ADMIN_ACCESSIBLE = [
+        "username",
+        "name",
+        "email",
+        "role",
+        "active",
+        "isInvited",
+        "avatar_color",
+        "avatar_shape",
+        "avatar_ref",
+        "mobile_phone",
+        "communicate_via",
+        "name",
+        "age",
+        "gender",
+        "interfaceLanguageCode",
+        "languageDepotUsername",
+    ];
 
-    public function __construct($id = '')
+    public function __construct($id = "")
     {
         $this->id = new Id();
         $this->projects = new ReferenceList();
@@ -54,7 +77,7 @@ class UserModel extends MapperModel
          * with ADMIN_ACCESSIBLE
          */
 
-        $this->setReadOnlyProp('projects');
+        $this->setReadOnlyProp("projects");
 
         parent::__construct(UserModelMongoMapper::instance(), $id);
     }
@@ -71,7 +94,6 @@ class UserModel extends MapperModel
 
     /** @var string Full Name (this is optional profile information) */
     public $name;
-
 
     /** @var string An unconfirmed email address for this user */
     public $emailPending;
@@ -225,13 +247,13 @@ class UserModel extends MapperModel
      */
     public function getCurrentProjectId($site)
     {
-        $projectId = '';
+        $projectId = "";
         if ($this->lastUsedProjectId) {
             $projectId = $this->lastUsedProjectId;
         } else {
             $projectList = $this->listProjects($site);
             if (count($projectList->entries) > 0) {
-                $projectId = $projectList->entries[0]['id'];
+                $projectId = $projectList->entries[0]["id"];
             }
         }
         return $projectId;
@@ -281,7 +303,6 @@ class UserModel extends MapperModel
         }
     }
 
-
     /**
      * Returns true if the email or username already exists in a user account
      * @param string $emailOrUsername
@@ -304,7 +325,7 @@ class UserModel extends MapperModel
      */
     public function readByUserName($username)
     {
-        return $this->readByProperty('username', $username);
+        return $this->readByProperty("username", $username);
     }
 
     /**
@@ -313,7 +334,7 @@ class UserModel extends MapperModel
      */
     public function readByEmail($email)
     {
-        return $this->readByProperty('email', strtolower($email));
+        return $this->readByProperty("email", strtolower($email));
     }
 
     /**
@@ -322,7 +343,7 @@ class UserModel extends MapperModel
      */
     public function readByUsernameOrEmail($usernameOrEmail)
     {
-        if (strpos($usernameOrEmail, '@') !== false) {
+        if (strpos($usernameOrEmail, "@") !== false) {
             return $this->readByEmail($usernameOrEmail);
         } else {
             return $this->readByUserName($usernameOrEmail);
@@ -353,7 +374,7 @@ class UserModel extends MapperModel
         $systemRightsArray = SystemRoles::getRightsArray($this->role);
         $mergeArray = array_merge($siteRightsArray, $systemRightsArray);
 
-        return (array_values(array_unique($mergeArray)));
+        return array_values(array_unique($mergeArray));
     }
 
     /**
@@ -377,16 +398,16 @@ class UserModel extends MapperModel
             $interval = $today->diff($this->validationExpirationDate);
 
             if ($consumeKey) {
-                $this->validationKey = '';
+                $this->validationKey = "";
                 $this->validationExpirationDate = new \DateTime();
             }
 
             if ($this->emailPending) {
                 $this->email = $this->emailPending;
-                $this->emailPending = '';
+                $this->emailPending = "";
             }
 
-            $intervalSeconds = ($interval->d * 86400) + ($interval->h * 3600) + ($interval->m * 60) + $interval->s;
+            $intervalSeconds = $interval->d * 86400 + $interval->h * 3600 + $interval->m * 60 + $interval->s;
             if ($intervalSeconds > 0 && $interval->invert == 0) {
                 return true;
             }
@@ -402,7 +423,7 @@ class UserModel extends MapperModel
      */
     public function setValidation($days)
     {
-        $this->validationKey = sha1(microtime(true).mt_rand(10000,90000));
+        $this->validationKey = sha1(microtime(true) . mt_rand(10000, 90000));
         $today = new \DateTime();
         $this->validationExpirationDate = $today->add(new \DateInterval("P${days}D"));
 
@@ -420,11 +441,11 @@ class UserModel extends MapperModel
             $interval = $today->diff($this->resetPasswordExpirationDate);
 
             if ($consumeKey) {
-                $this->resetPasswordKey = '';
+                $this->resetPasswordKey = "";
                 $this->resetPasswordExpirationDate = new \DateTime();
             }
 
-            $intervalSeconds = ($interval->d * 86400) + ($interval->h * 3600) + ($interval->m * 60) + $interval->s;
+            $intervalSeconds = $interval->d * 86400 + $interval->h * 3600 + $interval->m * 60 + $interval->s;
             if ($intervalSeconds > 0 && $interval->invert == 0) {
                 return true;
             }
@@ -440,7 +461,7 @@ class UserModel extends MapperModel
      */
     public function setForgotPassword($days)
     {
-        $this->resetPasswordKey = sha1(microtime(true).mt_rand(10000,90000));
+        $this->resetPasswordKey = sha1(microtime(true) . mt_rand(10000, 90000));
         $today = new \DateTime();
         $this->resetPasswordExpirationDate = $today->add(new \DateInterval("P${days}D"));
 
@@ -452,15 +473,15 @@ class UserModel extends MapperModel
      */
     public function setUniqueUsernameFromString($usernameBase)
     {
-        if (strpos($usernameBase, '@') !== FALSE) {
-            $usernameBase = substr($usernameBase, 0, strpos($usernameBase, '@'));
+        if (strpos($usernameBase, "@") !== false) {
+            $usernameBase = substr($usernameBase, 0, strpos($usernameBase, "@"));
         }
         $usernameBase = strtolower($usernameBase);
         // remove unwanted characters from username
-        $usernameBase = preg_replace('/[-.,;+=_\/"\'# ]+/', '', $usernameBase);
-        $usernameBase = rtrim($usernameBase, '0..9');
+        $usernameBase = preg_replace('/[-.,;+=_\/"\'# ]+/', "", $usernameBase);
+        $usernameBase = rtrim($usernameBase, "0..9");
         $potentialUsername = $usernameBase;
-        for ($i=1; $i<1000; $i++) {
+        for ($i = 1; $i < 1000; $i++) {
             $u = new UserModel();
             if (!$u->readByUserName($potentialUsername)) {
                 break;
@@ -473,7 +494,7 @@ class UserModel extends MapperModel
 
 class ProjectProperties
 {
-    public function __construct($interfaceLanguageCode = '')
+    public function __construct($interfaceLanguageCode = "")
     {
         $this->interfaceLanguageCode = $interfaceLanguageCode;
     }

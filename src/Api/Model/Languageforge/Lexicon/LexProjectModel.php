@@ -16,27 +16,25 @@ use Palaso\Utilities\FileUtilities;
 
 class LexProjectModel extends LfProjectModel
 {
-    public function __construct($id = '')
+    public function __construct($id = "")
     {
         $this->appName = LfProjectModel::LEXICON_APP;
-        $this->rolesClass = 'Api\Model\Languageforge\Lexicon\LexRoles';
-        $this->inputSystems = new MapOf(
-            function() {
-                return new InputSystem();
-            }
-        );
+        $this->rolesClass = "Api\Model\Languageforge\Lexicon\LexRoles";
+        $this->inputSystems = new MapOf(function () {
+            return new InputSystem();
+        });
 
         $this->config = new LexConfiguration();
         $this->sendReceiveProject = new SendReceiveProjectModel();
 
         $this->lastSyncedDate = UniversalTimestamp::fromSecondsTimestamp(0);
-        $this->setReadOnlyProp('lastSyncedDate');
+        $this->setReadOnlyProp("lastSyncedDate");
         $this->lastEntryModifiedDate = UniversalTimestamp::fromSecondsTimestamp(1);
-        $this->setReadOnlyProp('lastEntryModifiedDate');
+        $this->setReadOnlyProp("lastEntryModifiedDate");
 
         // default values
-        $this->inputSystems['en'] = new InputSystem('en', 'English', 'en');
-        $this->inputSystems['th'] = new InputSystem('th', 'Thai', 'th');
+        $this->inputSystems["en"] = new InputSystem("en", "English", "en");
+        $this->inputSystems["th"] = new InputSystem("th", "Thai", "th");
         $this->languageCode = $this->config->entry->fields[LexConfig::LEXEME]->inputSystems[0];
 
         // This must be last, the constructor reads data in from the database which must overwrite the defaults above.
@@ -70,14 +68,14 @@ class LexProjectModel extends LfProjectModel
      * @param string $abbr
      * @param string $name
      */
-    public function addInputSystem($tag, $abbr = '', $name = '')
+    public function addInputSystem($tag, $abbr = "", $name = "")
     {
         static $languages = null;
         if (!array_key_exists($tag, $this->inputSystems)) {
-            if (! $abbr) {
+            if (!$abbr) {
                 $abbr = $tag;
             }
-            if (! $name) {
+            if (!$name) {
                 $name = $tag;
                 if (!$languages) {
                     $languages = new LanguageData();
@@ -98,9 +96,9 @@ class LexProjectModel extends LfProjectModel
     public function getPublicSettings($userId)
     {
         $settings = parent::getPublicSettings($userId);
-        $settings['currentUserRole'] = $this->users[$userId]->role;
-        $settings['hasSendReceive'] = $this->hasSendReceive();
-        $settings['lastSyncedDate'] = $this->lastSyncedDate->asDateTimeInterface()->format(\DateTime::RFC2822);
+        $settings["currentUserRole"] = $this->users[$userId]->role;
+        $settings["hasSendReceive"] = $this->hasSendReceive();
+        $settings["lastSyncedDate"] = $this->lastSyncedDate->asDateTimeInterface()->format(\DateTime::RFC2822);
 
         return array_merge($settings, LexBaseViewDto::encode($this->id->asString(), $userId));
     }
@@ -110,7 +108,7 @@ class LexProjectModel extends LfProjectModel
      */
     public function hasSendReceive()
     {
-        return ($this->sendReceiveProjectIdentifier) ? true : false;
+        return $this->sendReceiveProjectIdentifier ? true : false;
     }
 
     /**
@@ -119,7 +117,7 @@ class LexProjectModel extends LfProjectModel
     public function initializeNewProject()
     {
         // setup default option lists
-        $jsonFilePath = APPPATH . 'json/languageforge/lexicon/partOfSpeech.json';
+        $jsonFilePath = APPPATH . "json/languageforge/lexicon/partOfSpeech.json";
         LexOptionListModel::CreateFromJson($this, LexConfig::POS, $jsonFilePath);
 
         // Semantic Domains are delivered to the client as a javascript variable.
@@ -134,8 +132,8 @@ class LexProjectModel extends LfProjectModel
      */
     public function getImageFolderPath($assetsFolderPath = null)
     {
-        $assetsFolderPath || $assetsFolderPath = $this->getAssetsFolderPath();
-        return $assetsFolderPath . DIRECTORY_SEPARATOR . 'pictures';
+        $assetsFolderPath || ($assetsFolderPath = $this->getAssetsFolderPath());
+        return $assetsFolderPath . DIRECTORY_SEPARATOR . "pictures";
     }
 
     /**
@@ -144,8 +142,8 @@ class LexProjectModel extends LfProjectModel
      */
     public function getAudioFolderPath($assetsFolderPath = null)
     {
-        $assetsFolderPath || $assetsFolderPath = $this->getAssetsFolderPath();
-        return $assetsFolderPath . DIRECTORY_SEPARATOR . 'audio';
+        $assetsFolderPath || ($assetsFolderPath = $this->getAssetsFolderPath());
+        return $assetsFolderPath . DIRECTORY_SEPARATOR . "audio";
     }
 
     public function createAssetsFolders()
@@ -155,10 +153,10 @@ class LexProjectModel extends LfProjectModel
         if ($this->hasSendReceive()) {
             $projectWorkPath = $this->getSendReceiveWorkFolder();
 
-            $srImagePath = $projectWorkPath . DIRECTORY_SEPARATOR . 'LinkedFiles' . DIRECTORY_SEPARATOR . 'Pictures';
+            $srImagePath = $projectWorkPath . DIRECTORY_SEPARATOR . "LinkedFiles" . DIRECTORY_SEPARATOR . "Pictures";
             $this->moveExistingFilesAndCreateSymlink($srImagePath, $assetImagePath);
 
-            $srAudioPath = $projectWorkPath . DIRECTORY_SEPARATOR . 'LinkedFiles' . DIRECTORY_SEPARATOR . 'AudioVisual';
+            $srAudioPath = $projectWorkPath . DIRECTORY_SEPARATOR . "LinkedFiles" . DIRECTORY_SEPARATOR . "AudioVisual";
             $this->moveExistingFilesAndCreateSymlink($srAudioPath, $assetAudioPath);
         } else {
             FileUtilities::createAllFolders($assetImagePath);
@@ -183,7 +181,9 @@ class LexProjectModel extends LfProjectModel
     public function getSendReceiveWorkFolder()
     {
         if ($this->hasSendReceive()) {
-            return SendReceiveCommands::getLFMergePaths()->workPath . DIRECTORY_SEPARATOR . strtolower($this->projectCode);
+            return SendReceiveCommands::getLFMergePaths()->workPath .
+                DIRECTORY_SEPARATOR .
+                strtolower($this->projectCode);
         }
         return null;
     }
@@ -224,13 +224,15 @@ class LexProjectModel extends LfProjectModel
 
         if (!is_null($this->projectCode)) {
             $projectFilename = strtolower($this->projectCode);
-            $stateFilename = strtolower($this->projectCode) . '.state';
+            $stateFilename = strtolower($this->projectCode) . ".state";
             $lfmergePaths = SendReceiveCommands::getLFMergePaths();
 
-            foreach($lfmergePaths as $key => $path) {
+            foreach ($lfmergePaths as $key => $path) {
                 if (!is_null($path)) {
                     if ($key == "workPath") {
-                        FileUtilities::removeFolderAndAllContents($lfmergePaths->workPath . DIRECTORY_SEPARATOR . $projectFilename);
+                        FileUtilities::removeFolderAndAllContents(
+                            $lfmergePaths->workPath . DIRECTORY_SEPARATOR . $projectFilename
+                        );
                     }
 
                     if (file_exists($path . DIRECTORY_SEPARATOR . $projectFilename)) {
@@ -244,5 +246,4 @@ class LexProjectModel extends LfProjectModel
             }
         }
     }
-
 }

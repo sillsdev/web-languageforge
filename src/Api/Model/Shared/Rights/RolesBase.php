@@ -26,7 +26,7 @@ class RolesBase
      */
     protected static function _hasRight($rightsArray, $role, $right)
     {
-        CodeGuard::checkNotFalseAndThrow($role, 'role');
+        CodeGuard::checkNotFalseAndThrow($role, "role");
         if (!array_key_exists($role, $rightsArray)) {
             $result = false;
         } else {
@@ -45,12 +45,11 @@ class RolesBase
      */
     protected static function _getRightsArray($rightsArray, $role)
     {
-        CodeGuard::checkNotFalseAndThrow($role, 'role');
+        CodeGuard::checkNotFalseAndThrow($role, "role");
         if (!array_key_exists($role, $rightsArray)) {
             throw new \Exception("Role '$role' does not exist.");
         }
 
         return $rightsArray[$role];
     }
-
 }

@@ -2,4 +2,6 @@
 
 namespace Api\Model\Languageforge\Lexicon\Config;
 
-class LexTaskAddGrammar extends LexTask {}
+class LexTaskAddGrammar extends LexTask
+{
+}

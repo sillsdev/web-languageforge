@@ -46,7 +46,7 @@ class UserCommands
      */
     public static function banUser($id)
     {
-        CodeGuard::checkEmptyAndThrow($id, 'id');
+        CodeGuard::checkEmptyAndThrow($id, "id");
 
         $user = new UserModel($id);
         $user->active = false;
@@ -61,26 +61,26 @@ class UserCommands
      */
     public static function updateUser($params, $website)
     {
-        $user = new UserModel($params['id']);
+        $user = new UserModel($params["id"]);
 
-        $checkUsername = '';
-        $checkEmail = '';
-        if (array_key_exists('username', $params)) {
-            $checkUsername = UserCommands::sanitizeInput($params['username']);
-            $params['username'] = $checkUsername;
+        $checkUsername = "";
+        $checkEmail = "";
+        if (array_key_exists("username", $params)) {
+            $checkUsername = UserCommands::sanitizeInput($params["username"]);
+            $params["username"] = $checkUsername;
         }
-        if (array_key_exists('email', $params)) {
-            $checkEmail = UserCommands::sanitizeInput($params['email']);
-            $params['email'] = $checkEmail;
+        if (array_key_exists("email", $params)) {
+            $checkEmail = UserCommands::sanitizeInput($params["email"]);
+            $params["email"] = $checkEmail;
         }
 
-        if (UserCommands::checkUniqueIdentity($user, $checkUsername, $checkEmail) != 'ok') {
+        if (UserCommands::checkUniqueIdentity($user, $checkUsername, $checkEmail) != "ok") {
             return null;
         }
 
         $user->setProperties(UserModel::ADMIN_ACCESSIBLE, $params);
-        if (array_key_exists('siteRole', $params)) {
-            $user->siteRole->exchangeArray($params['siteRole']);
+        if (array_key_exists("siteRole", $params)) {
+            $user->siteRole->exchangeArray($params["siteRole"]);
         }
         if (!$user->hasRoleOnSite($website) && $website->allowSignupFromOtherSites) {
             $user->siteRole[$website->domain] = $website->userDefaultSiteRole;
@@ -100,38 +100,38 @@ class UserCommands
      */
     public static function updateUserProfile($params, $userId, $website, DeliveryInterface $delivery = null)
     {
-        $params['id'] = $userId;
+        $params["id"] = $userId;
         $user = new UserModel($userId);
 
-        $checkUsername = '';
-        $checkEmail = '';
+        $checkUsername = "";
+        $checkEmail = "";
         $isNewUsername = false;
         $isNewEmail = false;
-        if (array_key_exists('username', $params)) {
-            $checkUsername = UserCommands::sanitizeInput($params['username']);
-            $params['username'] = $checkUsername;
-            $isNewUsername = $user->username != $params['username'];
+        if (array_key_exists("username", $params)) {
+            $checkUsername = UserCommands::sanitizeInput($params["username"]);
+            $params["username"] = $checkUsername;
+            $isNewUsername = $user->username != $params["username"];
         }
-        if (array_key_exists('email', $params)) {
-            $checkEmail = UserCommands::sanitizeInput($params['email']);
-            $params['email'] = $checkEmail;
-            $isNewEmail = $user->email != $params['email'];
+        if (array_key_exists("email", $params)) {
+            $checkEmail = UserCommands::sanitizeInput($params["email"]);
+            $params["email"] = $checkEmail;
+            $isNewEmail = $user->email != $params["email"];
         }
 
         // don't allow the following keys to be persisted
-        if (array_key_exists('role', $params)) {
-            unset($params['role']);
+        if (array_key_exists("role", $params)) {
+            unset($params["role"]);
         }
 
-        $result =  UserCommands::checkUniqueIdentity($user, $checkUsername, $checkEmail);
-        if ($result == 'ok') {
+        $result = UserCommands::checkUniqueIdentity($user, $checkUsername, $checkEmail);
+        if ($result == "ok") {
             $user->setProperties(UserModel::USER_PROFILE_ACCESSIBLE, $params);
             $userId = $user->write();
             if ($isNewEmail) {
                 Communicate::sendVerifyEmail($user, $website, $delivery);
             }
             if ($isNewUsername) {
-                return 'login';
+                return "login";
             }
             return $userId;
         }
@@ -145,10 +145,10 @@ class UserCommands
      */
     public static function deleteUsers($userIds)
     {
-        CodeGuard::checkTypeAndThrow($userIds, 'array');
+        CodeGuard::checkTypeAndThrow($userIds, "array");
         $count = 0;
         foreach ($userIds as $userId) {
-            CodeGuard::checkTypeAndThrow($userId, 'string');
+            CodeGuard::checkTypeAndThrow($userId, "string");
             $userModel = new UserModel($userId);
             $userModel->remove();
             $count++;
@@ -169,16 +169,16 @@ class UserCommands
         $projectListModel->read();
         $projectList = [];
         foreach ($projectListModel->entries as $p) {
-            $projectList[$p['id']] = $p;
+            $projectList[$p["id"]] = $p;
         }
 
         foreach ($list->entries as $key => $item) {
-            if (array_key_exists('projects', $item)) {
-                $projectIds = $item['projects'];
-                $list->entries[$key]['projects'] = [];
+            if (array_key_exists("projects", $item)) {
+                $projectIds = $item["projects"];
+                $list->entries[$key]["projects"] = [];
                 foreach ($projectIds as $id) {
-                    if (array_key_exists((string)$id, $projectList)) {
-                        $list->entries[$key]['projects'][] = $projectList[(string)$id];
+                    if (array_key_exists((string) $id, $projectList)) {
+                        $list->entries[$key]["projects"][] = $projectList[(string) $id];
                     }
                 }
             }
@@ -186,11 +186,9 @@ class UserCommands
 
         // Default sort on username (currently needed to sort on Site Admin because MongoDB doesn't do case insensitive sorts)
         usort($list->entries, function ($a, $b) {
-            $sortOn = 'username';
-            if (array_key_exists($sortOn, $a) &&
-                array_key_exists($sortOn, $b)
-            ) {
-                return (strtolower($a[$sortOn]) > strtolower($b[$sortOn])) ? 1 : -1;
+            $sortOn = "username";
+            if (array_key_exists($sortOn, $a) && array_key_exists($sortOn, $b)) {
+                return strtolower($a[$sortOn]) > strtolower($b[$sortOn]) ? 1 : -1;
             } else {
                 return 0;
             }
@@ -205,7 +203,7 @@ class UserCommands
      * @param Website website
      * @return UserTypeaheadModel
      */
-    public static function userTypeaheadList($term, $projectIdToExclude = '', $website)
+    public static function userTypeaheadList($term, $projectIdToExclude = "", $website)
     {
         $list = new UserTypeaheadModel($term, $projectIdToExclude, $website);
         $list->read();
@@ -224,7 +222,8 @@ class UserCommands
     {
         if ($userId != $currentUserId) {
             $currentUserModel = new UserModel($currentUserId);
-            if (!SiteRoles::hasRight($currentUserModel->siteRole, Domain::USERS + Operation::EDIT) &&
+            if (
+                !SiteRoles::hasRight($currentUserModel->siteRole, Domain::USERS + Operation::EDIT) &&
                 !SystemRoles::hasRight($currentUserModel->role, Domain::USERS + Operation::EDIT)
             ) {
                 throw new UserUnauthorizedException();
@@ -244,7 +243,7 @@ class UserCommands
      */
     public static function sanitizeInput($field)
     {
-        return strtolower(str_replace(' ', '.', $field));
+        return strtolower(str_replace(" ", ".", $field));
     }
 
     /**
@@ -254,28 +253,28 @@ class UserCommands
      * @param string $updatedEmail
      * @return string
      */
-    public static function checkUniqueIdentity($user, $updatedUsername = '', $updatedEmail = '')
+    public static function checkUniqueIdentity($user, $updatedUsername = "", $updatedEmail = "")
     {
-        $result = 'ok';
+        $result = "ok";
         $updatedUsername = UserCommands::sanitizeInput($updatedUsername);
         $updatedEmail = UserCommands::sanitizeInput($updatedEmail);
         $anotherUser = new UserModel();
 
         // Check for unique non-blank updated username
-        if (!empty($updatedUsername) &&
-            ($user->username != $updatedUsername) &&
-            $anotherUser->readByUserName($updatedUsername)) {
-            $result = 'usernameExists';
+        if (
+            !empty($updatedUsername) &&
+            $user->username != $updatedUsername &&
+            $anotherUser->readByUserName($updatedUsername)
+        ) {
+            $result = "usernameExists";
         }
 
         // Check for unique updated email address
-        if (!empty($updatedEmail) &&
-            ($user->email != $updatedEmail) &&
-            $anotherUser->readByEmail($updatedEmail)) {
-            if ($result == 'usernameExists') {
-                $result = 'usernameAndEmailExists';
+        if (!empty($updatedEmail) && $user->email != $updatedEmail && $anotherUser->readByEmail($updatedEmail)) {
+            if ($result == "usernameExists") {
+                $result = "usernameAndEmailExists";
             } else {
-                $result = 'emailExists';
+                $result = "emailExists";
             }
         }
 
@@ -292,11 +291,11 @@ class UserCommands
     public static function createUser($params, $website)
     {
         $captchaInfo = [];
-        $captchaInfo['code'] = $params['captcha'] = 'captcha';
-        if (self::register($params, $website, $captchaInfo) == 'login') {
-          $user = new UserModel();
-          $user->readByUsernameOrEmail($params['email']);
-          return $user->id->asString();
+        $captchaInfo["code"] = $params["captcha"] = "captcha";
+        if (self::register($params, $website, $captchaInfo) == "login") {
+            $user = new UserModel();
+            $user->readByUsernameOrEmail($params["email"]);
+            return $user->id->asString();
         }
         return false;
     }
@@ -316,7 +315,7 @@ class UserCommands
         $user = new UserModel();
         $username = UserCommands::sanitizeInput($username);
         $user->name = $username;
-        if (UserCommands::checkUniqueIdentity($user, $username, '') == 'ok') {
+        if (UserCommands::checkUniqueIdentity($user, $username, "") == "ok") {
             $user->username = $username;
             $user->role = SystemRoles::USER;
             $user->siteRole[$website->domain] = $website->userDefaultSiteRole;
@@ -324,10 +323,10 @@ class UserCommands
             $userId = $user->write();
 
             // Make 7 digit password
-            $characters = 'ABCDEFGHIJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';
-            $password = '';
+            $characters = "ABCDEFGHIJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789";
+            $password = "";
             while (strlen($password) < 7) {
-                $password .= substr($characters, rand() % (strlen($characters)), 1);
+                $password .= substr($characters, rand() % strlen($characters), 1);
             }
             $userWithPassword = new UserModelWithPassword($userId);
             $userWithPassword->setPassword($password);
@@ -341,9 +340,8 @@ class UserCommands
             $dto = new CreateSimpleDto($userId, $password);
 
             return $dto->encode();
-        }
-        else {
-            throw new \Exception('This username is already associated with another account');
+        } else {
+            throw new \Exception("This username is already associated with another account");
         }
     }
 
@@ -359,20 +357,20 @@ class UserCommands
      */
     public static function register($params, $website, $captchaInfo, DeliveryInterface $delivery = null)
     {
-        $email = self::sanitizeInput($params['email']);
-        CodeGuard::checkEmptyAndThrow($email, 'email');
+        $email = self::sanitizeInput($params["email"]);
+        CodeGuard::checkEmptyAndThrow($email, "email");
 
-        if (strtolower($captchaInfo['code']) != strtolower($params['captcha'])) {
+        if (strtolower($captchaInfo["code"]) != strtolower($params["captcha"])) {
             return "captchaFail";
         }
 
         if (UserModel::userExists($email)) {
             $user = new UserModelWithPassword();
-            $user->readByProperty('email', $email);
+            $user->readByProperty("email", $email);
             if ($user->isInvited) {
-                $user->setPassword($params['password']);
-                $user->name = $params['name'];
-                $user->setUniqueUsernameFromString($params['name']);
+                $user->setPassword($params["password"]);
+                $user->name = $params["name"];
+                $user->setUniqueUsernameFromString($params["name"]);
                 $user->isInvited = false;
                 $user->active = true;
                 $user->write();
@@ -380,7 +378,7 @@ class UserCommands
                 Communicate::sendWelcomeToWebsite($user, $website, $delivery);
                 Communicate::sendVerifyEmail($user, $website, $delivery);
                 return "login";
-            } else if ($user->verifyPassword($params['password'])) {
+            } elseif ($user->verifyPassword($params["password"])) {
                 $userId = $user->id->asString();
                 $user = new UserModel($userId);
                 if ($user->hasRoleOnSite($website)) {
@@ -402,10 +400,10 @@ class UserCommands
         $user = new UserModel();
         $user->email = $user->emailPending = $email;
         $user->active = true;
-        $user->name = $params['name'];
-        $user->setUniqueUsernameFromString($params['name']);
-        if (isset($params['avatar_ref'])) {
-            $user->avatar_ref = $params['avatar_ref'];
+        $user->name = $params["name"];
+        $user->setUniqueUsernameFromString($params["name"]);
+        if (isset($params["avatar_ref"])) {
+            $user->avatar_ref = $params["avatar_ref"];
         }
         $user->role = SystemRoles::USER;
         $user->siteRole[$website->domain] = $website->userDefaultSiteRole;
@@ -413,7 +411,7 @@ class UserCommands
 
         // Write the password
         $userPassword = new UserModelWithPassword($userId);
-        $userPassword->setPassword($params['password']);
+        $userPassword->setPassword($params["password"]);
         $userPassword->write();
 
         UserCommands::addUserToDefaultProject($userId, $website);
@@ -433,10 +431,10 @@ class UserCommands
      */
     public static function registerOAuthUser($params, $website, DeliveryInterface $delivery = null)
     {
-        $email = self::sanitizeInput($params['email']);
-        CodeGuard::checkEmptyAndThrow($email, 'email');
-        $username = self::sanitizeInput($params['username']);
-        CodeGuard::checkEmptyAndThrow($username, 'username');
+        $email = self::sanitizeInput($params["email"]);
+        CodeGuard::checkEmptyAndThrow($email, "email");
+        $username = self::sanitizeInput($params["username"]);
+        CodeGuard::checkEmptyAndThrow($username, "username");
 
         if (UserModel::userExists($username)) {
             return "usernameNotAvailable";
@@ -445,10 +443,10 @@ class UserCommands
         $user = new UserModel();
         $user->email = $email;
         $user->active = true;
-        $user->name = $params['name'];
+        $user->name = $params["name"];
         $user->username = $username;
-        if (isset($params['avatar_ref'])) {
-            $user->avatar_ref = $params['avatar_ref'];
+        if (isset($params["avatar_ref"])) {
+            $user->avatar_ref = $params["avatar_ref"];
         }
         $user->role = SystemRoles::USER;
         $user->siteRole[$website->domain] = $website->userDefaultSiteRole;
@@ -474,7 +472,8 @@ class UserCommands
      * @param Website $website
      * @throws \Exception
      */
-    public static function addUserToDefaultProject($userId, Website $website) {
+    public static function addUserToDefaultProject($userId, Website $website)
+    {
         $user = new UserModel($userId);
         $project = ProjectModel::getDefaultProject($website);
         if ($project) {
@@ -487,31 +486,31 @@ class UserCommands
 
     public static function getCaptchaData(Session $session)
     {
-        srand(microtime(True) * 100);
+        srand(microtime(true) * 100);
         $captchaData = [
-            'items' => [
+            "items" => [
                 [
-                    'name' => 'Blue Square',
-                    'imgSrc' => '/Site/views/shared/image/captcha/kajrtakzl.png'
+                    "name" => "Blue Square",
+                    "imgSrc" => "/Site/views/shared/image/captcha/kajrtakzl.png",
                 ],
                 [
-                    'name' => 'Yellow Circle',
-                    'imgSrc' => '/Site/views/shared/image/captcha/ljfhadgur.png'
+                    "name" => "Yellow Circle",
+                    "imgSrc" => "/Site/views/shared/image/captcha/ljfhadgur.png",
                 ],
                 [
-                    'name' => 'Red Triangle',
-                    'imgSrc' => '/Site/views/shared/image/captcha/poietymnv.png'
-                ]
+                    "name" => "Red Triangle",
+                    "imgSrc" => "/Site/views/shared/image/captcha/poietymnv.png",
+                ],
             ],
-            'expectedItemName' => 'Yellow Circle',
+            "expectedItemName" => "Yellow Circle",
         ];
-        $captchaInfo = ['code' => 1];
-        $index = rand(0, count($captchaData['items']) - 1);
-        $captchaInfo['code'] = $index;
-        $session->set('captcha_info', $captchaInfo);
-        $captchaData['expectedItemName'] = $captchaData['items'][$index]['name'];
-        foreach ($captchaData['items'] as &$item) {
-            unset($item['name']);
+        $captchaInfo = ["code" => 1];
+        $index = rand(0, count($captchaData["items"]) - 1);
+        $captchaInfo["code"] = $index;
+        $session->set("captcha_info", $captchaInfo);
+        $captchaData["expectedItemName"] = $captchaData["items"][$index]["name"];
+        foreach ($captchaData["items"] as &$item) {
+            unset($item["name"]);
         }
 
         return $captchaData;
@@ -535,11 +534,13 @@ class UserCommands
         DeliveryInterface $delivery = null,
         $roleKey = null
     ) {
-        $invitedUserId = '';
+        $invitedUserId = "";
         $invitingUser = new UserModel($invitingUserId);
         $project = new ProjectModel($projectId);
         $toEmail = UserCommands::sanitizeInput($toEmail);
-        if ($roleKey === null) $roleKey = ProjectRoles::CONTRIBUTOR;
+        if ($roleKey === null) {
+            $roleKey = ProjectRoles::CONTRIBUTOR;
+        }
 
         $invitedUser = new UserModel();
         if (!$invitedUser->readByEmail($toEmail)) {
@@ -584,10 +585,14 @@ class UserCommands
         $invitees = $project->listInvitees();
         $members = $project->listUsers();
 
-        $userIsAuthorized = $userIsAuthorized &&
-            ($invitingUserRole === ProjectRoles::MANAGER || ($project->allowSharing && $project->userIsMember($invitingUserId)));
+        $userIsAuthorized =
+            $userIsAuthorized &&
+            ($invitingUserRole === ProjectRoles::MANAGER ||
+                ($project->allowSharing && $project->userIsMember($invitingUserId)));
 
-        if (!$userIsAuthorized) throw new \Exception("User does not have permission to invite someone of that role (or invalid roleKey).");
+        if (!$userIsAuthorized) {
+            throw new \Exception("User does not have permission to invite someone of that role (or invalid roleKey).");
+        }
 
         // Add the user to the project, if they are not already a member
         if (!$project->userIsMember($invitedUser->id->asString())) {
@@ -630,7 +635,7 @@ class UserCommands
         $project->write();
 
         $admin = new UserModel($project->ownerRef->asString());
-        if ($admin->email != '') {
+        if ($admin->email != "") {
             Communicate::sendJoinRequest($newUser, $admin, $project, $website, $delivery);
             Communicate::sendJoinRequestConfirmation($newUser, $project, $website, $delivery);
         }
@@ -665,7 +670,7 @@ class UserCommands
         }
 
         $admin = new UserModel($project->ownerRef->asString());
-        if ($admin->email != '') {
+        if ($admin->email != "") {
             Communicate::sendJoinRequestAccepted($newUser, $project, $website, $delivery);
         }
 

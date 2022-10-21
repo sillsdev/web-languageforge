@@ -12,54 +12,54 @@ use Palaso\Utilities\CodeGuard;
 class ActivityModel extends MapperModel
 {
     // constants describing Actions
-    const ADD_COMMENT = 'add_comment';
-    const UPDATE_COMMENT = 'update_comment';
-    const ADD_ANSWER = 'add_answer';
-    const UPDATE_ANSWER = 'update_answer';
-    const ADD_TEXT = 'add_text';
-    const ADD_QUESTION = 'add_question';
-    const CHANGE_STATE_OF_QUESTION = 'change_state_of_question';
-    const INCREASE_SCORE = 'increase_score';
-    const DECREASE_SCORE = 'decrease_score';
-    const ADD_USER_TO_PROJECT = 'add_user_to_project';
-    const UNKNOWN = 'unknown';
-    const ADD_ENTRY = 'add_entry';
-    const UPDATE_ENTRY = 'update_entry';
-    const DELETE_ENTRY = 'delete_entry';
-    const ADD_LEX_COMMENT = 'add_lex_comment';
-    const UPDATE_LEX_COMMENT = 'update_lex_comment';
-    const DELETE_LEX_COMMENT = 'delete_lex_comment';
-    const UPDATE_LEX_COMMENT_STATUS = 'update_lex_comment_status';
-    const LEX_COMMENT_INCREASE_SCORE = 'lexCommentIncreaseScore';
-    const LEX_COMMENT_DECREASE_SCORE = 'lexCommentDecreaseScore';
-    const ADD_LEX_REPLY = 'add_lex_reply';
-    const UPDATE_LEX_REPLY = 'update_lex_reply';
-    const DELETE_LEX_REPLY = 'delete_lex_reply';
+    const ADD_COMMENT = "add_comment";
+    const UPDATE_COMMENT = "update_comment";
+    const ADD_ANSWER = "add_answer";
+    const UPDATE_ANSWER = "update_answer";
+    const ADD_TEXT = "add_text";
+    const ADD_QUESTION = "add_question";
+    const CHANGE_STATE_OF_QUESTION = "change_state_of_question";
+    const INCREASE_SCORE = "increase_score";
+    const DECREASE_SCORE = "decrease_score";
+    const ADD_USER_TO_PROJECT = "add_user_to_project";
+    const UNKNOWN = "unknown";
+    const ADD_ENTRY = "add_entry";
+    const UPDATE_ENTRY = "update_entry";
+    const DELETE_ENTRY = "delete_entry";
+    const ADD_LEX_COMMENT = "add_lex_comment";
+    const UPDATE_LEX_COMMENT = "update_lex_comment";
+    const DELETE_LEX_COMMENT = "delete_lex_comment";
+    const UPDATE_LEX_COMMENT_STATUS = "update_lex_comment_status";
+    const LEX_COMMENT_INCREASE_SCORE = "lexCommentIncreaseScore";
+    const LEX_COMMENT_DECREASE_SCORE = "lexCommentDecreaseScore";
+    const ADD_LEX_REPLY = "add_lex_reply";
+    const UPDATE_LEX_REPLY = "update_lex_reply";
+    const DELETE_LEX_REPLY = "delete_lex_reply";
 
     // content types for use with the addContent method
-    const PROJECT = 'project';
-    const TEXT = 'text';
-    const QUESTION = 'question';
-    const ANSWER = 'answer';
-    const COMMENT = 'comment';
-    const LEX_COMMENT = 'lexComment';
-    const LEX_COMMENT_CONTEXT = 'lexCommentContext';
-    const LEX_COMMENT_LABEL = 'lexCommentLabel';
-    const LEX_COMMENT_FIELD_VALUE = 'lexCommentFieldValue';
-    const LEX_COMMENT_STATUS = 'lexCommentStatus';
-    const LEX_REPLY = 'lexReply';
+    const PROJECT = "project";
+    const TEXT = "text";
+    const QUESTION = "question";
+    const ANSWER = "answer";
+    const COMMENT = "comment";
+    const LEX_COMMENT = "lexComment";
+    const LEX_COMMENT_CONTEXT = "lexCommentContext";
+    const LEX_COMMENT_LABEL = "lexCommentLabel";
+    const LEX_COMMENT_FIELD_VALUE = "lexCommentFieldValue";
+    const LEX_COMMENT_STATUS = "lexCommentStatus";
+    const LEX_REPLY = "lexReply";
     // USER and USER_RELATED usage: USER is the one doing the current activity. USER_RELATED, if present, is the one whose previous activity is being acted on.
     // E.g., when replying to someone else's comment on a lexical entry, USER_RELATED is the one who made the original comment, and USER is the one making the reply.
-    const USER = 'user';
-    const USER_RELATED = 'userRelated';
-    const ENTRY = 'entry';
-    const FIELD_LABEL = 'fieldLabel';
+    const USER = "user";
+    const USER_RELATED = "userRelated";
+    const ENTRY = "entry";
+    const FIELD_LABEL = "fieldLabel";
 
     /**
      * @param ProjectModel $projectModel
      * @param string $id
      */
-    public function __construct($projectModel, $id = '')
+    public function __construct($projectModel, $id = "")
     {
         $this->id = new Id();
         $this->projectRef = new IdReference($projectModel->id->asString());
@@ -115,8 +115,10 @@ class ActivityModel extends MapperModel
      */
     public function addContent($type, $content)
     {
-        if (is_null($content)) return;  // Just ignore null content instead of throwing an exception
-        CodeGuard::checkTypeAndThrow($content, 'string');
+        if (is_null($content)) {
+            return;
+        } // Just ignore null content instead of throwing an exception
+        CodeGuard::checkTypeAndThrow($content, "string");
         $this->actionContent[$type] = $content;
     }
 
@@ -171,5 +173,4 @@ class ActivityModel extends MapperModel
                 return [];
         }
     }
-
 }

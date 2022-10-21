@@ -21,24 +21,24 @@ class LexCommentCommandsTest extends TestCase
         $environ->clean();
 
         $project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $userId = $environ->createUser('joe', 'joe', 'joe');
+        $userId = $environ->createUser("joe", "joe", "joe");
 
         $commentContent = "My first comment";
 
-        $regarding = array(
-            'field' => 'lexeme',
-            'fieldValue' => 'Word 1',
-            'fieldNameForDisplay' => 'Word',
-            'inputSystemAbbreviation' => 'th',
-            'inputSystem' => 'th',
-        );
+        $regarding = [
+            "field" => "lexeme",
+            "fieldValue" => "Word 1",
+            "fieldNameForDisplay" => "Word",
+            "inputSystemAbbreviation" => "th",
+            "inputSystem" => "th",
+        ];
 
-        $data = array(
-            'id' => '',
-            'content' => $commentContent,
-            'regarding' => $regarding,
-            'contextGuid' => 'lexeme.th'
-        );
+        $data = [
+            "id" => "",
+            "content" => $commentContent,
+            "regarding" => $regarding,
+            "contextGuid" => "lexeme.th",
+        ];
 
         $commentList = new LexCommentListModel($project);
         $commentList->read();
@@ -49,10 +49,10 @@ class LexCommentCommandsTest extends TestCase
         $commentList->read();
         $this->assertEquals(1, $commentList->count);
         $commentArray = $commentList->entries[0];
-        $this->assertEquals($commentContent, $commentArray['content']);
-        $this->assertEquals($regarding, $commentArray['regarding']);
-        $this->assertEquals(0, $commentArray['score'] ?? 0);
-        $this->assertEquals('open', $commentArray['status']);
+        $this->assertEquals($commentContent, $commentArray["content"]);
+        $this->assertEquals($regarding, $commentArray["regarding"]);
+        $this->assertEquals(0, $commentArray["score"] ?? 0);
+        $this->assertEquals("open", $commentArray["status"]);
     }
 
     public function testUpdateComment_ExistingComment_CommentUpdated()
@@ -61,36 +61,36 @@ class LexCommentCommandsTest extends TestCase
         $environ->clean();
 
         $project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $userId = $environ->createUser('joe', 'joe', 'joe');
+        $userId = $environ->createUser("joe", "joe", "joe");
 
-        $regarding = array(
-            'field' => 'lexeme',
-            'fieldValue' => 'Word 1',
-            'inputSystem' => 'th',
-            'word' => '',
-            'meaning' => ''
-        );
-        $data = array(
-            'id' => '',
-            'content' => 'hi there!',
-            'regarding' => $regarding,
-            'contextGuid' => 'lexeme.th'
-        );
+        $regarding = [
+            "field" => "lexeme",
+            "fieldValue" => "Word 1",
+            "inputSystem" => "th",
+            "word" => "",
+            "meaning" => "",
+        ];
+        $data = [
+            "id" => "",
+            "content" => "hi there!",
+            "regarding" => $regarding,
+            "contextGuid" => "lexeme.th",
+        ];
         $commentId = LexCommentCommands::updateComment($project->id->asString(), $userId, $environ->website, $data);
 
         $newCommentContent = "My first comment";
 
-        $data = array(
-            'id' => $commentId,
-            'content' => $newCommentContent,
-        );
+        $data = [
+            "id" => $commentId,
+            "content" => $newCommentContent,
+        ];
         LexCommentCommands::updateComment($project->id->asString(), $userId, $environ->website, $data);
 
         $comment = new LexCommentModel($project, $commentId);
 
         $this->assertEquals($newCommentContent, $comment->content);
         $this->assertEquals(0, $comment->score);
-        $this->assertEquals('open', $comment->status);
+        $this->assertEquals("open", $comment->status);
     }
 
     public function testUpdateReply_NewReply_ReplyAdded()
@@ -99,37 +99,43 @@ class LexCommentCommandsTest extends TestCase
         $environ->clean();
 
         $project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $userId = $environ->createUser('joe', 'joe', 'joe');
+        $userId = $environ->createUser("joe", "joe", "joe");
 
-        $regarding = array(
-            'field' => 'lexeme',
-            'fieldValue' => 'Word 1',
-            'inputSystem' => 'th',
-            'word' => '',
-            'meaning' => ''
-        );
-        $data = array(
-            'id' => '',
-            'content' => 'hi there!',
-            'regarding' => $regarding,
-            'contextGuid' => 'lexeme.th'
-        );
+        $regarding = [
+            "field" => "lexeme",
+            "fieldValue" => "Word 1",
+            "inputSystem" => "th",
+            "word" => "",
+            "meaning" => "",
+        ];
+        $data = [
+            "id" => "",
+            "content" => "hi there!",
+            "regarding" => $regarding,
+            "contextGuid" => "lexeme.th",
+        ];
         $commentId = LexCommentCommands::updateComment($project->id->asString(), $userId, $environ->website, $data);
         $comment = new LexCommentModel($project, $commentId);
-        $replyData = array(
-            'id' => '',
-            'content' => 'my first reply'
-        );
+        $replyData = [
+            "id" => "",
+            "content" => "my first reply",
+        ];
 
         $this->assertCount(0, $comment->replies);
 
-        $replyId = LexCommentCommands::updateReply($project->id->asString(), $userId, $environ->website, $commentId, $replyData);
+        $replyId = LexCommentCommands::updateReply(
+            $project->id->asString(),
+            $userId,
+            $environ->website,
+            $commentId,
+            $replyData
+        );
         $comment = new LexCommentModel($project, $commentId);
 
         $reply = $comment->getReply($replyId);
 
         $this->assertCount(1, $comment->replies);
-        $this->assertEquals($replyData['content'], $reply->content);
+        $this->assertEquals($replyData["content"], $reply->content);
     }
 
     public function testUpdateReply_ExistingReply_ReplyAdded()
@@ -138,48 +144,54 @@ class LexCommentCommandsTest extends TestCase
         $environ->clean();
 
         $project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $userId = $environ->createUser('joe', 'joe', 'joe');
+        $userId = $environ->createUser("joe", "joe", "joe");
 
-        $regarding = array(
-            'field' => 'lexeme',
-            'fieldValue' => 'Word 1',
-            'inputSystem' => 'th',
-            'word' => '',
-            'meaning' => ''
-        );
-        $data = array(
-            'id' => '',
-            'content' => 'hi there!',
-            'regarding' => $regarding,
-            'contextGuid' => 'lexeme.th'
-        );
+        $regarding = [
+            "field" => "lexeme",
+            "fieldValue" => "Word 1",
+            "inputSystem" => "th",
+            "word" => "",
+            "meaning" => "",
+        ];
+        $data = [
+            "id" => "",
+            "content" => "hi there!",
+            "regarding" => $regarding,
+            "contextGuid" => "lexeme.th",
+        ];
         $commentId = LexCommentCommands::updateComment($project->id->asString(), $userId, $environ->website, $data);
         $comment = new LexCommentModel($project, $commentId);
-        $replyData = array(
-            'id' => '',
-            'content' => 'my first reply'
-        );
+        $replyData = [
+            "id" => "",
+            "content" => "my first reply",
+        ];
 
         // add two replies
         LexCommentCommands::updateReply($project->id->asString(), $userId, $environ->website, $commentId, $replyData);
-        $replyId = LexCommentCommands::updateReply($project->id->asString(), $userId, $environ->website, $commentId, $replyData);
+        $replyId = LexCommentCommands::updateReply(
+            $project->id->asString(),
+            $userId,
+            $environ->website,
+            $commentId,
+            $replyData
+        );
 
         $comment = new LexCommentModel($project, $commentId);
         $reply = $comment->getReply($replyId);
 
-        $this->assertEquals($replyData['content'], $reply->content);
+        $this->assertEquals($replyData["content"], $reply->content);
 
-        $replyData = array(
-            'id' => $replyId,
-            'content' => 'an updated reply'
-        );
+        $replyData = [
+            "id" => $replyId,
+            "content" => "an updated reply",
+        ];
 
         LexCommentCommands::updateReply($project->id->asString(), $userId, $environ->website, $commentId, $replyData);
         $comment = new LexCommentModel($project, $commentId);
         $reply = $comment->getReply($replyId);
 
         $this->assertCount(2, $comment->replies);
-        $this->assertEquals($replyData['content'], $reply->content);
+        $this->assertEquals($replyData["content"], $reply->content);
     }
 
     public function testDeleteComment_CommentMarkedDeletedAndNotInList()
@@ -188,21 +200,21 @@ class LexCommentCommandsTest extends TestCase
         $environ->clean();
 
         $project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $userId = $environ->createUser('joe', 'joe', 'joe');
+        $userId = $environ->createUser("joe", "joe", "joe");
 
-        $regarding = array(
-            'field' => 'lexeme',
-            'fieldValue' => 'Word 1',
-            'inputSystem' => 'th',
-            'word' => '',
-            'meaning' => ''
-        );
-        $data = array(
-            'id' => '',
-            'content' => 'hi there!',
-            'regarding' => $regarding,
-            'contextGuid' => 'lexeme.th'
-        );
+        $regarding = [
+            "field" => "lexeme",
+            "fieldValue" => "Word 1",
+            "inputSystem" => "th",
+            "word" => "",
+            "meaning" => "",
+        ];
+        $data = [
+            "id" => "",
+            "content" => "hi there!",
+            "regarding" => $regarding,
+            "contextGuid" => "lexeme.th",
+        ];
         $commentId = LexCommentCommands::updateComment($project->id->asString(), $userId, $environ->website, $data);
         $comment = new LexCommentModel($project, $commentId);
         $this->assertFalse($comment->isDeleted);
@@ -226,31 +238,37 @@ class LexCommentCommandsTest extends TestCase
         $environ->clean();
 
         $project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $userId = $environ->createUser('joe', 'joe', 'joe');
+        $userId = $environ->createUser("joe", "joe", "joe");
 
-        $regarding = array(
-            'field' => 'lexeme',
-            'fieldValue' => 'Word 1',
-            'inputSystem' => 'th',
-            'word' => '',
-            'meaning' => ''
-        );
-        $data = array(
-            'id' => '',
-            'content' => 'hi there!',
-            'regarding' => $regarding,
-            'contextGuid' => 'lexeme.th'
-        );
+        $regarding = [
+            "field" => "lexeme",
+            "fieldValue" => "Word 1",
+            "inputSystem" => "th",
+            "word" => "",
+            "meaning" => "",
+        ];
+        $data = [
+            "id" => "",
+            "content" => "hi there!",
+            "regarding" => $regarding,
+            "contextGuid" => "lexeme.th",
+        ];
         $commentId = LexCommentCommands::updateComment($project->id->asString(), $userId, $environ->website, $data);
         $comment = new LexCommentModel($project, $commentId);
-        $replyData = array(
-            'id' => '',
-            'content' => 'my first reply'
-        );
+        $replyData = [
+            "id" => "",
+            "content" => "my first reply",
+        ];
 
         // add two replies
         LexCommentCommands::updateReply($project->id->asString(), $userId, $environ->website, $commentId, $replyData);
-        $replyId = LexCommentCommands::updateReply($project->id->asString(), $userId, $environ->website, $commentId, $replyData);
+        $replyId = LexCommentCommands::updateReply(
+            $project->id->asString(),
+            $userId,
+            $environ->website,
+            $commentId,
+            $replyData
+        );
 
         $comment = new LexCommentModel($project, $commentId);
 
@@ -268,21 +286,21 @@ class LexCommentCommandsTest extends TestCase
         $environ->clean();
 
         $project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $userId = $environ->createUser('joe', 'joe', 'joe');
+        $userId = $environ->createUser("joe", "joe", "joe");
 
-        $regarding = array(
-            'field' => 'lexeme',
-            'fieldValue' => 'Word 1',
-            'inputSystem' => 'th',
-            'word' => '',
-            'meaning' => ''
-        );
-        $data = array(
-            'id' => '',
-            'content' => 'hi there!',
-            'regarding' => $regarding,
-            'contextGuid' => 'lexeme.th'
-        );
+        $regarding = [
+            "field" => "lexeme",
+            "fieldValue" => "Word 1",
+            "inputSystem" => "th",
+            "word" => "",
+            "meaning" => "",
+        ];
+        $data = [
+            "id" => "",
+            "content" => "hi there!",
+            "regarding" => $regarding,
+            "contextGuid" => "lexeme.th",
+        ];
         $commentId = LexCommentCommands::updateComment($project->id->asString(), $userId, $environ->website, $data);
         $comment = new LexCommentModel($project, $commentId);
 
@@ -303,33 +321,33 @@ class LexCommentCommandsTest extends TestCase
         $environ->clean();
 
         $project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $userId = $environ->createUser('joe', 'joe', 'joe');
+        $userId = $environ->createUser("joe", "joe", "joe");
 
-        $regarding = array(
-            'field' => 'lexeme',
-            'fieldValue' => 'Word 1',
-            'inputSystem' => 'th',
-            'word' => '',
-            'meaning' => ''
-        );
-        $data = array(
-            'id' => '',
-            'content' => 'hi there!',
-            'regarding' => $regarding,
-            'contextGuid' => 'lexeme.th'
-        );
+        $regarding = [
+            "field" => "lexeme",
+            "fieldValue" => "Word 1",
+            "inputSystem" => "th",
+            "word" => "",
+            "meaning" => "",
+        ];
+        $data = [
+            "id" => "",
+            "content" => "hi there!",
+            "regarding" => $regarding,
+            "contextGuid" => "lexeme.th",
+        ];
         $commentId = LexCommentCommands::updateComment($project->id->asString(), $userId, $environ->website, $data);
         $comment = new LexCommentModel($project, $commentId);
 
         $this->assertEquals(LexCommentModel::STATUS_OPEN, $comment->status);
 
         // save data for rest of this test
-        self::$save['project'] = $project;
-        self::$save['environ'] = $environ;
-        self::$save['commentId'] = $commentId;
-        self::$save['comment'] = $comment;
+        self::$save["project"] = $project;
+        self::$save["environ"] = $environ;
+        self::$save["commentId"] = $commentId;
+        self::$save["comment"] = $comment;
 
-        LexCommentCommands::updateCommentStatus($project->id->asString(), $commentId, 'malicious code; rm -rf');
+        LexCommentCommands::updateCommentStatus($project->id->asString(), $commentId, "malicious code; rm -rf");
 
         // nothing runs in the current test function after an exception. IJH 2014-11
     }
@@ -338,9 +356,9 @@ class LexCommentCommandsTest extends TestCase
      */
     public function testUpdateCommentStatus_InvalidStatus()
     {
-        self::$save['comment'] = new LexCommentModel(self::$save['project'], self::$save['commentId']);
+        self::$save["comment"] = new LexCommentModel(self::$save["project"], self::$save["commentId"]);
 
-        $this->assertEquals(LexCommentModel::STATUS_OPEN, self::$save['comment']->status);
+        $this->assertEquals(LexCommentModel::STATUS_OPEN, self::$save["comment"]->status);
     }
 
     public function testPlusOneComment_UserFirstTime_IncreasedScore()
@@ -349,22 +367,22 @@ class LexCommentCommandsTest extends TestCase
         $environ->clean();
 
         $project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $user1Id = $environ->createUser('joe', 'joe', 'joe');
-        $user2Id = $environ->createUser('jim', 'jim', 'jim');
+        $user1Id = $environ->createUser("joe", "joe", "joe");
+        $user2Id = $environ->createUser("jim", "jim", "jim");
 
-        $regarding = array(
-            'field' => 'lexeme',
-            'fieldValue' => 'Word 1',
-            'inputSystem' => 'th',
-            'word' => '',
-            'meaning' => ''
-        );
-        $data = array(
-            'id' => '',
-            'content' => 'hi there!',
-            'regarding' => $regarding,
-            'contextGuid' => 'lexeme.th'
-        );
+        $regarding = [
+            "field" => "lexeme",
+            "fieldValue" => "Word 1",
+            "inputSystem" => "th",
+            "word" => "",
+            "meaning" => "",
+        ];
+        $data = [
+            "id" => "",
+            "content" => "hi there!",
+            "regarding" => $regarding,
+            "contextGuid" => "lexeme.th",
+        ];
         $commentId = LexCommentCommands::updateComment($project->id->asString(), $user1Id, $environ->website, $data);
         $comment = new LexCommentModel($project, $commentId);
 
@@ -382,21 +400,21 @@ class LexCommentCommandsTest extends TestCase
         $environ->clean();
 
         $project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $user1Id = $environ->createUser('joe', 'joe', 'joe');
+        $user1Id = $environ->createUser("joe", "joe", "joe");
 
-        $regarding = array(
-            'field' => 'lexeme',
-            'fieldValue' => 'Word 1',
-            'inputSystem' => 'th',
-            'word' => '',
-            'meaning' => ''
-        );
-        $data = array(
-            'id' => '',
-            'content' => 'hi there!',
-            'regarding' => $regarding,
-            'contextGuid' => 'lexeme.th'
-        );
+        $regarding = [
+            "field" => "lexeme",
+            "fieldValue" => "Word 1",
+            "inputSystem" => "th",
+            "word" => "",
+            "meaning" => "",
+        ];
+        $data = [
+            "id" => "",
+            "content" => "hi there!",
+            "regarding" => $regarding,
+            "contextGuid" => "lexeme.th",
+        ];
         $commentId = LexCommentCommands::updateComment($project->id->asString(), $user1Id, $environ->website, $data);
         $comment = new LexCommentModel($project, $commentId);
 

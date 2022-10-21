@@ -15,7 +15,8 @@ use stdClass;
 
 class ProjectInsightsDto
 {
-    public static function singleProjectInsights($id, $website) {
+    public static function singleProjectInsights($id, $website)
+    {
         $appName = ProjectInsightsDto::appName($website);
         $project = new LexProjectModel($id);
 
@@ -36,16 +37,16 @@ class ProjectInsightsDto
         } catch (\Exception $e) {
             # there appears to be a dangling owner ref in our data
             $owner = [
-                'username' => 'unknown',
-                'email' => 'unknown',
-                'name' => 'unknown',
-                'role' => 'unknown',
+                "username" => "unknown",
+                "email" => "unknown",
+                "name" => "unknown",
+                "role" => "unknown",
             ];
         }
-        $projectData->ownerUserName = $owner['username'];
-        $projectData->ownerEmail = $owner['email'];
-        $projectData->ownerName = $owner['name'];
-        $projectData->ownerRole = $owner['role'];
+        $projectData->ownerUserName = $owner["username"];
+        $projectData->ownerEmail = $owner["email"];
+        $projectData->ownerName = $owner["name"];
+        $projectData->ownerRole = $owner["role"];
 
         // user data
         $projectData->userCount = count($project->users);
@@ -59,12 +60,19 @@ class ProjectInsightsDto
         foreach ($project->users as $user) {
             // LF projects have LF-specific roles, but SF projects do not, so LF roles are a superset of SF roles
             $role = $user->role;
-            if ($role === ProjectRoles::MANAGER) $projectData->managers++;
-            else if ($role === ProjectRoles::CONTRIBUTOR) $projectData->contributors++;
-            else if ($role === ProjectRoles::TECH_SUPPORT) $projectData->techSupport++;
-            else if ($role === ProjectRoles::NONE) $projectData->noRole++;
-            else if ($role === LexRoles::OBSERVER) $observers++;
-            else if ($role === LexRoles::OBSERVER_WITH_COMMENT) $commenters++;
+            if ($role === ProjectRoles::MANAGER) {
+                $projectData->managers++;
+            } elseif ($role === ProjectRoles::CONTRIBUTOR) {
+                $projectData->contributors++;
+            } elseif ($role === ProjectRoles::TECH_SUPPORT) {
+                $projectData->techSupport++;
+            } elseif ($role === ProjectRoles::NONE) {
+                $projectData->noRole++;
+            } elseif ($role === LexRoles::OBSERVER) {
+                $observers++;
+            } elseif ($role === LexRoles::OBSERVER_WITH_COMMENT) {
+                $commenters++;
+            }
         }
 
         // activity data
@@ -76,14 +84,17 @@ class ProjectInsightsDto
         $recentUsers = [];
         $lastActivityDate = null;
         foreach ($projectActivity->entries as $event) {
-            if (array_key_exists('userRef', $event)) {
-                $userId = (string) $event['userRef'];
+            if (array_key_exists("userRef", $event)) {
+                $userId = (string) $event["userRef"];
                 $users[$userId] = array_key_exists($userId, $users) ? $users[$userId] + 1 : 1;
-                if ($event['date']->toDateTime() > date_create()->modify('-180 days')) {
+                if ($event["date"]->toDateTime() > date_create()->modify("-180 days")) {
                     $recentUsers[$userId] = true;
-                };
+                }
             }
-            $lastActivityDate = $lastActivityDate === null ? $event['date']->toDateTime() : max($event['date']->toDateTime(), $lastActivityDate);
+            $lastActivityDate =
+                $lastActivityDate === null
+                    ? $event["date"]->toDateTime()
+                    : max($event["date"]->toDateTime(), $lastActivityDate);
         }
         $projectData->activeUsers = 0;
         foreach ($users as $actvityCount) {
@@ -96,7 +107,9 @@ class ProjectInsightsDto
 
         // lf-specific data
         if ($appName === LfProjectModel::LEXICON_APP) {
-            $projectData->lastEntryModifiedDate = $project->lastEntryModifiedDate->asDateTimeInterface()->format(\DateTime::RFC2822);
+            $projectData->lastEntryModifiedDate = $project->lastEntryModifiedDate
+                ->asDateTimeInterface()
+                ->format(\DateTime::RFC2822);
             $projectData->commenters = $commenters;
             $projectData->observers = $observers;
             $projectData->languageCode = $project->languageCode;
@@ -105,7 +118,9 @@ class ProjectInsightsDto
             $entryList->readCounts();
             $projectData->entries = $entryList->count;
 
-            $entriesWithPictures = new LexEntryList($project, ['senses.pictures' => ['$exists' => true, '$not' => ['$size' => 0]]]);
+            $entriesWithPictures = new LexEntryList($project, [
+                "senses.pictures" => ['$exists' => true, '$not' => ['$size' => 0]],
+            ]);
             $entriesWithPictures->readCounts();
             $projectData->pictures = $entriesWithPictures->count;
 
@@ -113,7 +128,9 @@ class ProjectInsightsDto
             $commentList->readCounts();
             $projectData->comments = $commentList->count;
 
-            $projectData->lastSyncedDate = $project->lastSyncedDate ? $project->lastSyncedDate->asDateTimeInterface()->format(\DateTime::RFC2822) : null;
+            $projectData->lastSyncedDate = $project->lastSyncedDate
+                ? $project->lastSyncedDate->asDateTimeInterface()->format(\DateTime::RFC2822)
+                : null;
             $projectData->inputSystems = count($project->inputSystems);
         }
 
@@ -132,14 +149,17 @@ class ProjectInsightsDto
         $insights->projectList = [];
 
         foreach ($projectList->entries as $project) {
-            if ($project['appName'] !== $appName) continue;
-            $insights->projectList[] = ProjectInsightsDto::singleProjectInsights($project['id'], $website);
+            if ($project["appName"] !== $appName) {
+                continue;
+            }
+            $insights->projectList[] = ProjectInsightsDto::singleProjectInsights($project["id"], $website);
         }
         return $insights;
     }
 
-    public static function csvInsights($website) {
-        $filePointer = fopen('php://memory', 'r+');
+    public static function csvInsights($website)
+    {
+        $filePointer = fopen("php://memory", "r+");
         self::writeInsightsToCsvFilePointer($website, $filePointer);
         rewind($filePointer);
         $csv = stream_get_contents($filePointer);
@@ -147,21 +167,25 @@ class ProjectInsightsDto
         return $csv;
     }
 
-    public static function csvInsightsToFile($website, $filename) {
-        $filePointer = fopen($filename, 'w');
+    public static function csvInsightsToFile($website, $filename)
+    {
+        $filePointer = fopen($filename, "w");
         $count = self::writeInsightsToCsvFilePointer($website, $filePointer);
         fclose($filePointer);
         print "Wrote $count insights to CSV file $filename\n";
     }
 
-    private static function writeInsightsToCsvFilePointer($website, $filePointer) {
+    private static function writeInsightsToCsvFilePointer($website, $filePointer)
+    {
         $insights = ProjectInsightsDto::allProjectInsights($website);
 
         // convert camelCase properties to sentence case for table headings
-        $properties = array_key_exists(0, $insights->projectList) ? array_keys(get_object_vars($insights->projectList[0])) : [];
+        $properties = array_key_exists(0, $insights->projectList)
+            ? array_keys(get_object_vars($insights->projectList[0]))
+            : [];
         $headings = [];
         foreach ($properties as $property) {
-            $headings[] = ucfirst(strtolower(join(' ', preg_split('/(?=[A-Z])/', $property))));
+            $headings[] = ucfirst(strtolower(join(" ", preg_split("/(?=[A-Z])/", $property))));
         }
 
         // in order to get automatic escaping of CSV we have to write to a "file"
@@ -172,7 +196,8 @@ class ProjectInsightsDto
         return count($insights->projectList);
     }
 
-    private static function appName($website) {
+    private static function appName($website)
+    {
         return LfProjectModel::LEXICON_APP;
     }
 }
@@ -186,7 +211,7 @@ class ActivityListModel extends MapperListModel
 {
     public function __construct($project)
     {
-        parent::__construct(new MongoMapper($project->databaseName(), 'activity'), [], ['userRef', 'date']);
+        parent::__construct(new MongoMapper($project->databaseName(), "activity"), [], ["userRef", "date"]);
     }
 }
 
@@ -194,13 +219,14 @@ class LexEntryList extends MapperListModel
 {
     public function __construct($project, $query = [])
     {
-        parent::__construct(new MongoMapper($project->databaseName(), 'lexicon'), ['isDeleted' => false] + $query);
+        parent::__construct(new MongoMapper($project->databaseName(), "lexicon"), ["isDeleted" => false] + $query);
     }
 }
 
 class LexCommentList extends MapperListModel
 {
-    public function __construct($project) {
-        parent::__construct(new MongoMapper($project->databaseName(), 'lexiconComments'), ['isDeleted' => false]);
+    public function __construct($project)
+    {
+        parent::__construct(new MongoMapper($project->databaseName(), "lexiconComments"), ["isDeleted" => false]);
     }
 }

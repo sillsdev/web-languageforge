@@ -17,9 +17,9 @@ class InviteeListProjectModel extends MapperListModel
     public function __construct($projectId)
     {
         parent::__construct(
-                UserModelMongoMapper::instance(),
-                array('isInvited' => true, 'projects' => array('$in' => array(MongoMapper::mongoID($projectId)))),
-                array('username', 'email', 'name')
+            UserModelMongoMapper::instance(),
+            ["isInvited" => true, "projects" => ['$in' => [MongoMapper::mongoID($projectId)]]],
+            ["username", "email", "name"]
         );
     }
 }

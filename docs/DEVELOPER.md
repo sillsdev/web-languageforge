@@ -1,29 +1,33 @@
-# Developer Guide #
+# Developer Guide
 
-Welcome!  We're glad that you are interested in helping develop Language Forge.
+Welcome! We're glad that you are interested in helping develop Language Forge.
 
-  - [Development Environment Quick Start](#development-environment-quick-start)
-    - [Supported Development Environments](#supported-development-environments)
-    - [Project Setup](#project-setup)
-    - [Running the App Locally](#running-the-app-locally)
-    - [Mobile Device Testing on a Branch](#mobile-device-testing-on-a-branch)
-  - [Tests](#tests)
-    - [Running Playwright E2E Tests](#running-playwright-e2e-tests)
-    - [Running Protractor E2E Tests](#running-protractor-e2e-tests)
-    - [Running Unit Tests](#running-unit-tests)
-  - [Other commands](#other-commands)
-    - [Cleanup](#cleanup)
-    - [Running dev](#running-dev)
-  - [Debugging](#debugging)
-    - [PHP Application Debugging](#php-application-debugging)
-    - [PHP Tests Debugging](#php-tests-debugging)
-    - [E2E Tests Debugging](#e2e-tests-debugging)
-  - [Style Guides](#style-guides)
-    - [PHP](#php)
-    - [JavaScript](#javascript)
-    - [Angular & TypeScript](#angular--typescript)
+<details>
+  <summary>Table of contents</summary>
 
-## Development Environment Quick Start ##
+- [Development Environment Quick Start](#development-environment-quick-start)
+  - [Supported Development Environments](#supported-development-environments)
+  - [Project Setup](#project-setup)
+  - [Running the App Locally](#running-the-app-locally)
+  - [Mobile device testing on a branch](#mobile-device-testing-on-a-branch)
+- [Tests](#tests)
+  - [Running Playwright E2E Tests](#running-playwright-e2e-tests)
+  - [Running Protractor E2E Tests](#running-protractor-e2e-tests)
+  - [Running Unit Tests](#running-unit-tests)
+- [Other Commands](#other-commands)
+  - [Cleanup](#cleanup)
+  - [Running dev](#running-dev)
+- [Debugging](#debugging)
+  - [PHP Application Debugging](#php-application-debugging)
+  - [PHP Tests Debugging](#php-tests-debugging)
+  - [E2E Tests Debugging](#e2e-tests-debugging)
+- [Style Guides](#style-guides)
+  - [PHP](#php)
+  - [JavaScript](#javascript)
+  - [Angular & TypeScript](#angular--typescript)
+  </details>
+
+## Development Environment Quick Start
 
 ### Supported Development Environments
 
@@ -34,37 +38,37 @@ On Windows, the project should be opened with the [Remote - WSL](https://marketp
 ### Project Setup
 
 1. Install [Docker](https://www.docker.com/get-started).
-    1. Linux users will need some additional steps. Visit https://docs.docker.com/compose/install for info on installing the engine and compose.
-    2. Windows users, use Ubuntu (WSL) and follow the instructions at https://docs.docker.com/engine/install/ubuntu/. Then:
-        1. Start docker: `sudo service docker start`.
-        2. Permit your user (and not just "sudo") to contact the Docker daemon: `sudo usermod -aG docker yourUsername && sudo chmod 666 /var/run/docker.sock`.
-        3. (Optional) Configure docker to start on boot: `printf '[boot]\ncommand="service docker start"\n' | sudo tee /etc/wsl.conf` (assuming `/etc/wsl.conf` is currently unused).
-3. Install [Make](https://www.gnu.org/software/make/): `sudo apt install make`.
-4. Install [Node 16.14.0](https://nodejs.org/en/download/).  We recommend using [nvm](https://github.com/nvm-sh/nvm#installation-and-update).
-5. Clone the repo: `git clone https://github.com/sillsdev/web-languageforge`.
-    1. Windows users, be sure to clone the project to the WSL file system (to keep VS Code, Git and the file system in sync)
+   1. Linux users will need some additional steps. Visit https://docs.docker.com/compose/install for info on installing the engine and compose.
+   2. Windows users, use Ubuntu (WSL) and follow the instructions at https://docs.docker.com/engine/install/ubuntu/. Then:
+      1. Start docker: `sudo service docker start`.
+      2. Permit your user (and not just "sudo") to contact the Docker daemon: `sudo usermod -aG docker yourUsername && sudo chmod 666 /var/run/docker.sock`.
+      3. (Optional) Configure docker to start on boot: `printf '[boot]\ncommand="service docker start"\n' | sudo tee /etc/wsl.conf` (assuming `/etc/wsl.conf` is currently unused).
+2. Install [Make](https://www.gnu.org/software/make/): `sudo apt install make`.
+3. Install [Node 16.14.0](https://nodejs.org/en/download/). We recommend using [nvm](https://github.com/nvm-sh/nvm#installation-and-update).
+4. Clone the repo: `git clone https://github.com/sillsdev/web-languageforge`.
+   1. Windows users, be sure to clone the project to the WSL file system (to keep VS Code, Git and the file system in sync)
 
 ### Running the App Locally
 
-> Note: `make` rules can be run directly from the `docker` directory or with `npm run make` from any project sub-directory.
+1. `make`
+2. Within any browser, navigate to https://localhost
+3. Continue through any certificate warnings
+4. You should see a landing page, click "Login"
+5. Use `admin` and `password` to login
 
-1. `npm run make` or `cd docker && make`
-1. Within any browser, navigate to https://localhost
-1. Continue through any certificate warnings
-1. You should see a landing page, click "Login"
-1. Use `admin` and `password` to login
+Note: The application is accessible via HTTP or HTTPS. HTTPS is required for service-worker functionality.
 
-Note: The application is accessible via HTTP or HTTPS.  HTTPS is required for service-worker functionality.
+### Mobile device testing on a branch
 
-### Mobile device testing on a branch ###
+Sometimes there may be a need to hit the locally running app from a device other than the machine the app is running on. In order to do that, you'll need to do the following:
 
-Sometimes there may be a need to hit the locally running app from a device other than the machine the app is running on.  In order to do that, you'll need to do the following:
-### If your machine's firewall is already configured for external access e.g. you use Docker Desktop ###
+**If your machine's firewall is already configured for external access e.g. you use Docker Desktop**
 
 1. Figure out your local ip address
-1. Access the app via http at that address
+2. Access the app via http at that address
 
 On a Mac for example:
+
 ```
 ifconfig | grep broadcast
 	inet 192.168.161.99 netmask 0xfffffc00 broadcast 192.168.163.255
@@ -74,7 +78,7 @@ then hit `http://192.168.161.99` from your phone or other device on the same net
 
 NOTE: disabling cache on your device may not be trivial, you'll either need to wipe the site settings on your device's browser or you'll need to do it via USB debugging.
 
-### If your machine's firewall is not configured for external port 80/443 access, you can use ngrok ###
+**If your machine's firewall is not configured for external port 80/443 access, you can use ngrok**
 
 [Here](https://gist.github.com/SalahHamza/799cac56b8c2cd20e6bfeb8886f18455) are instructions for installing ngrok on WSL (Linux Subsystem for Windows).
 [Here](https://ngrok.com/download) are instructions for installing ngrok on Windows, Mac OS, Linux, or Docker.
@@ -95,7 +99,7 @@ ngrok will return two URLs, one http and one https, that contain what is being s
 ### Running Protractor E2E Tests
 
 1. `make e2e-tests` (⚠️ these do not work on Apple Silicon at this time)
-1. Individual test results will appear in your terminal but if you'd like to watch them in real-time, simply VNC into the running tests via `localhost:5900`, e.g., Mac OSX users simply `open vnc://localhost:5900` and use `secret` as the password.  Other operating systems may require installing a separate VNC Viewer tool.
+1. Individual test results will appear in your terminal but if you'd like to watch them in real-time, simply VNC into the running tests via `localhost:5900`, e.g., Mac OSX users simply `open vnc://localhost:5900` and use `secret` as the password. Other operating systems may require installing a separate VNC Viewer tool.
 
 To run a single E2E spec file, put its path (relative to the repo root) into the `TEST_SPECS` environment variable (don't forget to `export` it), or pass it as an option to `make e2e-tests` as follows:
 
@@ -117,7 +121,7 @@ The easiest way to get the `TEST_SPECS` variable set up correctly is to go into 
 1. `make e2e-tests`
 
 To quickly re-run the tests without going through the `make build` process, you can restart the `app-for-e2e` container and run the tests as follows:
-`docker-compose restart app-for-e2e && docker-compose run -e TEST_SPECS= test-e2e` where the relative path to the test spec file is optionally given after the `=` sign.
+`docker compose restart app-for-e2e && docker compose run -e TEST_SPECS= test-e2e` where the relative path to the test spec file is optionally given after the `=` sign.
 
 ### Running Unit Tests
 
@@ -134,16 +138,17 @@ To quickly re-run the tests without going through the `make build` process, you 
 ### Running dev
 
 1. `make dev` will start the legacy app in development mode, i.e. changes to source code will immediately be reflected in the locally running app.
-1. `make next-dev` will start the next app in development mode, i.e. changes to source code will immediately be reflected in the locally running app.  Access non-ssl: http://localhost
-> TODO: There is a desire to consolidate these into a single use case, `make dev`.
+1. `make next-dev` will start the next app in development mode, i.e. changes to source code will immediately be reflected in the locally running app. Access non-ssl: http://localhost
+   > TODO: There is a desire to consolidate these into a single use case, `make dev`.
 
-## Debugging ##
+## Debugging
 
 > Launch configurations for Chrome and PHP debugging are defined in `.vscode/launch.json`.
 
-### PHP Application Debugging ###
+### PHP Application Debugging
 
 To debug the Language Forge application locally, follow these steps:
+
 - run `make` or `make dev`
 - In VS Code, set a breakpoint on a line of code that should be executed
 - Click on the `Run and Debug` area of VS Code, then click the green play icon next to `XDebug` in the configuration dropdown.
@@ -155,15 +160,18 @@ To debug the Language Forge application locally, follow these steps:
 
 A [tutorial on YouTube is available showing how to use XDebug and VSCode](https://www.youtube.com/watch?v=nKh5DHViKlA) to debug the LF back-end application.
 
-### PHP Tests Debugging ###
+### PHP Tests Debugging
 
 To debug the PHP tests, follow these steps:
+
 - uncomment the 3 lines in the docker-compose.yml file related to XDebug under the service section `test-php`:
+
 ```
        - XDEBUG_MODE=develop,debug
      extra_hosts:
        - "host.docker.internal:host-gateway
 ```
+
 - In VS Code, set a breakpoint on a line of code in one of the PHP tests (in the `test/php` folder)
 - Click on the `Run and Debug` area of VS Code, then click the green play icon next to `XDebug` in the configuration dropdown.
 
@@ -177,7 +185,7 @@ A [tutorial on YouTube is available showing how to use XDebug and VSCode](https:
 
 Additional considerations:
 
-If you encounter errors such as VSCode cannot find a file in the path "vendor", these source files are not available to VSCode as they are running inside Docker.  If you want to debug vendor libraries (not required), you will have to use Composer to download dependencies and put them in your source tree.
+If you encounter errors such as VSCode cannot find a file in the path "vendor", these source files are not available to VSCode as they are running inside Docker. If you want to debug vendor libraries (not required), you will have to use Composer to download dependencies and put them in your source tree.
 
 ### E2E Tests Debugging
 
@@ -208,14 +216,13 @@ If you edit files in the `src` or `data` folders of the test container, these ch
 
 After a minute or two, your source or test changes should be applied and you should see the result of your changes when you run the E2E tests again.
 
+## Style Guides
 
-## Style Guides ##
-
-### PHP 
+### PHP
 
 PHP code conforms to [PSR-2](http://www.php-fig.org/psr/psr-2/).
 
-- Add `php-cs-fixer` globally installed with *composer* (http://cs.sensiolabs.org/). Here is how to add it to **PhpStorm** (https://hackernoon.com/how-to-configure-phpstorm-to-use-php-cs-fixer-1844991e521f). Use it with the parameters `fix --verbose "$FileDir$/$FileName$"`.
+- Add `php-cs-fixer` globally installed with _composer_ (http://cs.sensiolabs.org/). Here is how to add it to **PhpStorm** (https://hackernoon.com/how-to-configure-phpstorm-to-use-php-cs-fixer-1844991e521f). Use it with the parameters `fix --verbose "$FileDir$/$FileName$"`.
 
 ### JavaScript
 
@@ -223,7 +230,7 @@ JavaScript code conforms to [AirBNB JS style guide](https://github.com/airbnb/ja
 
 - Using PhpStorm with JSCS helps a lot with automating this (see the section below on PhpStorm [Coding Standard and Style](#coding-standard-and-style)).
 
-### Angular & TypeScript ###
+### Angular & TypeScript
 
 Our front-end and E2E tests are written in [**TypeScript**](https://www.typescriptlang.org).
 

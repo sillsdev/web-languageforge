@@ -8,12 +8,12 @@ use LazyProperty\LazyPropertiesTrait;
 class LexParagraph extends ObjectForEncoding
 {
     use LazyPropertiesTrait;
-    public function __construct($guid = '', $styleName = '')
+    public function __construct($guid = "", $styleName = "")
     {
-        $this->setReadOnlyProp('guid');
+        $this->setReadOnlyProp("guid");
         $this->guid = Guid::makeValid($guid);
-        $this->setPrivateProp('styleName');
-        $this->initLazyProperties(['content', 'styleName'], false);
+        $this->setPrivateProp("styleName");
+        $this->initLazyProperties(["content", "styleName"], false);
         if ($styleName) {
             $this->styleName = $styleName;
         }
@@ -23,15 +23,16 @@ class LexParagraph extends ObjectForEncoding
     {
         switch ($name) {
             default:
-                return 'string';
+                return "string";
         }
     }
 
-    protected function createProperty(string $name) {
+    protected function createProperty(string $name)
+    {
         switch ($this->getPropertyType($name)) {
-            case 'string':
+            case "string":
             default:
-                return '';
+                return "";
         }
     }
 

@@ -13,7 +13,7 @@ class LexMultiText extends MapOf
 {
     public function __construct()
     {
-        parent::__construct('Api\Model\Languageforge\Lexicon\generateLexValue');
+        parent::__construct("Api\Model\Languageforge\Lexicon\generateLexValue");
     }
 
     public function form($inputSystem, $value)
@@ -25,7 +25,7 @@ class LexMultiText extends MapOf
         }
     }
 
-    public function appendForm($inputSystem, $value, $separator = '; ')
+    public function appendForm($inputSystem, $value, $separator = "; ")
     {
         if (array_key_exists($inputSystem, $this)) {
             $oldValue = $this[$inputSystem]->value;
@@ -48,20 +48,24 @@ class LexMultiText extends MapOf
     public function differences(LexMultiText $otherMultiText)
     {
         $result = [];
-        $thisArr  = $this->getArrayCopy();
+        $thisArr = $this->getArrayCopy();
         $otherArr = $otherMultiText->getArrayCopy();
-        $thisKeys  = array_keys($thisArr);
+        $thisKeys = array_keys($thisArr);
         $otherKeys = array_keys($otherArr);
         $allKeys = array_unique(array_merge($thisKeys, $otherKeys));
-        foreach ($allKeys as $key)
-        {
-            $thisValue  = isset($this[$key]) && isset($this[$key]->value) ? (string)$this[$key] : "";
-            $otherValue = isset($otherMultiText[$key]) && isset($otherMultiText[$key]->value) ? (string)$otherMultiText[$key] : "";
-            if ($thisValue == $otherValue) continue;
+        foreach ($allKeys as $key) {
+            $thisValue = isset($this[$key]) && isset($this[$key]->value) ? (string) $this[$key] : "";
+            $otherValue =
+                isset($otherMultiText[$key]) && isset($otherMultiText[$key]->value)
+                    ? (string) $otherMultiText[$key]
+                    : "";
+            if ($thisValue == $otherValue) {
+                continue;
+            }
             $result[] = [
                 "inputSystem" => $key,
                 "this" => $thisValue,
-                "other" => $otherValue
+                "other" => $otherValue,
             ];
         }
         return $result;

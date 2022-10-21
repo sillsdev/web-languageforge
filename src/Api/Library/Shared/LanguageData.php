@@ -20,7 +20,7 @@ class LanguageData extends MapOf
 {
     public function __construct()
     {
-        parent::__construct('_LanguageFunctor');
+        parent::__construct("_LanguageFunctor");
 
         if (is_null(self::$_data)) {
             $this->read();
@@ -34,8 +34,10 @@ class LanguageData extends MapOf
 
     public function read()
     {
-        $json = file_get_contents(APPPATH . 'angular-app/bellows/core/input-systems/input-systems-languages.generated-data.ts');
-        $json = str_replace(";", "", substr($json, strpos($json, '[')));
+        $json = file_get_contents(
+            APPPATH . "angular-app/bellows/core/input-systems/input-systems-languages.generated-data.ts"
+        );
+        $json = str_replace(";", "", substr($json, strpos($json, "[")));
         $arr = json_decode($json, true);
 
         foreach ($arr as $obj) {
@@ -50,10 +52,10 @@ class LanguageData extends MapOf
         }
 
         // add the unlisted language if it doesn't already exist
-        $unlisted = new Language('Unlisted Language', 'qaa');
-        $unlisted->country[] = '?';
+        $unlisted = new Language("Unlisted Language", "qaa");
+        $unlisted->country[] = "?";
         $unlistedCode = $unlisted->code->three;
-        if (! array_key_exists($unlistedCode, $this)) {
+        if (!array_key_exists($unlistedCode, $this)) {
             $this[$unlistedCode] = $unlisted;
         }
     }
@@ -65,7 +67,7 @@ class LanguageData extends MapOf
      */
     public static function getCode($tag)
     {
-        $tokens = explode('-', $tag);
+        $tokens = explode("-", $tag);
 
         return $tokens[0];
     }
@@ -74,7 +76,8 @@ class LanguageData extends MapOf
      * @param string $tag
      * @return Language
      */
-    public function getLanguage($tag) {
+    public function getLanguage($tag)
+    {
         $code = self::getCode($tag);
         return $this[$code];
     }
@@ -82,7 +85,7 @@ class LanguageData extends MapOf
 
 class LanguageCode
 {
-    public function __construct($codeThree = '')
+    public function __construct($codeThree = "")
     {
         $this->three = $codeThree;
     }
@@ -96,7 +99,7 @@ class LanguageCode
 
 class Language
 {
-    public function __construct($name = '', $codeThree = '')
+    public function __construct($name = "", $codeThree = "")
     {
         $this->name = $name;
         $this->code = new LanguageCode($codeThree);

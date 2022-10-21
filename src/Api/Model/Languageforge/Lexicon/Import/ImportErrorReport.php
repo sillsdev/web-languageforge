@@ -4,10 +4,9 @@ namespace Api\Model\Languageforge\Lexicon\Import;
 
 class ImportErrorReport
 {
-
     public function __construct()
     {
-        $this->nodeErrors = array();
+        $this->nodeErrors = [];
     }
 
     /** @var ImportNodeError[] */
@@ -24,10 +23,10 @@ class ImportErrorReport
 
     public function toString()
     {
-        $msg = '';
+        $msg = "";
         foreach ($this->nodeErrors as $nodeError) {
             if ($nodeError->hasErrors()) {
-                $msg .= 'While ' . $nodeError->toString() . "\n";
+                $msg .= "While " . $nodeError->toString() . "\n";
             }
         }
         return $msg;
@@ -35,10 +34,10 @@ class ImportErrorReport
 
     public function toFormattedString()
     {
-        $msg = '';
+        $msg = "";
         foreach ($this->nodeErrors as $nodeError) {
             if ($nodeError->hasErrors()) {
-                $msg .= 'While ' . $nodeError->toFormattedString();
+                $msg .= "While " . $nodeError->toFormattedString();
             }
         }
         return $msg;
@@ -46,12 +45,12 @@ class ImportErrorReport
 
     public function toHtml()
     {
-        $html = '<dl>';
+        $html = "<dl>";
         foreach ($this->nodeErrors as $nodeError) {
             if ($nodeError->hasErrors()) {
-                $html .= '<dt>While ' . $nodeError->toHtml();
+                $html .= "<dt>While " . $nodeError->toHtml();
             }
         }
-        return $html . '</dl>';
+        return $html . "</dl>";
     }
 }

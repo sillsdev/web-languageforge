@@ -17,12 +17,12 @@ use Palaso\Utilities\FileUtilities;
 
 class MongoTestEnvironment
 {
-    public function __construct($domain = 'languageforge.org')
+    public function __construct($domain = "languageforge.org")
     {
         $this->db = MongoStore::connect(DATABASE);
         $this->website = Website::get($domain);
-        if (! isset($this->uploadFilePaths)) {
-            $this->uploadFilePaths = array();
+        if (!isset($this->uploadFilePaths)) {
+            $this->uploadFilePaths = [];
         }
     }
 
@@ -42,7 +42,7 @@ class MongoTestEnvironment
     public function clean()
     {
         foreach ($this->db->listCollections() as $collectionInfo) {
-            if ($collectionInfo->getName() != 'system.indexes') {
+            if ($collectionInfo->getName() != "system.indexes") {
                 $collection = $this->db->selectCollection($collectionInfo->getName());
                 $collection->drop();
             }
@@ -57,7 +57,7 @@ class MongoTestEnvironment
      * @param array $fields
      * @return MongoCursor
      */
-    public function find($collection, $query, $fields = array())
+    public function find($collection, $query, $fields = [])
     {
         $collection = $this->db->selectCollection($collection);
 
@@ -95,17 +95,17 @@ class MongoTestEnvironment
      * @param string $appName
      * @return ProjectModel
      */
-    public function createProject($name, $code, $appName = '')
+    public function createProject($name, $code, $appName = "")
     {
         $projectModel = new ProjectModel();
         $projectModel->projectName = $name;
         $projectModel->projectCode = $code;
         $projectModel->isArchived = false;
         $projectModel->siteName = $this->website->domain;
-        if ($appName != '') {
+        if ($appName != "") {
             $projectModel->appName = $appName;
         } else {
-            $projectModel->appName = 'lexicon';
+            $projectModel->appName = "lexicon";
         }
         $this->cleanProjectEnvironment($projectModel);
         $projectModel->write();
@@ -133,7 +133,7 @@ class MongoTestEnvironment
         $projectDb = MongoStore::connect($project->databaseName());
 
         foreach ($projectDb->listCollections() as $collectionInfo) {
-            if ($collectionInfo->getName() != 'system.indexes') {
+            if ($collectionInfo->getName() != "system.indexes") {
                 $collection = $projectDb->selectCollection($collectionInfo->getName());
                 $collection->drop();
             }
@@ -141,7 +141,7 @@ class MongoTestEnvironment
 
         // clean up assets folder
         $folderPath = $project->getAssetsFolderPath();
-        $cleanupFiles = glob($folderPath . '/*');
+        $cleanupFiles = glob($folderPath . "/*");
         foreach ($cleanupFiles as $cleanupFile) {
             @unlink($cleanupFile);
         }
@@ -166,7 +166,7 @@ class MongoTestEnvironment
     public static function usxSample()
     {
         global $rootPath;
-        $testFilePath = $rootPath . 'test/common/usx/043JHN.usx';
+        $testFilePath = $rootPath . "test/common/usx/043JHN.usx";
         $usx = file_get_contents($testFilePath);
 
         return $usx;
@@ -175,7 +175,7 @@ class MongoTestEnvironment
     public static function usxSampleWithNotes()
     {
         global $rootPath;
-        $testFilePath = $rootPath . 'test/common/usx/CEV_PSA001.usx';
+        $testFilePath = $rootPath . "test/common/usx/CEV_PSA001.usx";
         $usx = file_get_contents($testFilePath);
 
         return $usx;
@@ -188,9 +188,9 @@ class MongoTestEnvironment
      * @param string $byKey
      * @return array<unknown>
      */
-    public static function indexItemsBy($items, $byKey = 'guid')
+    public static function indexItemsBy($items, $byKey = "guid")
     {
-        $indexes = array();
+        $indexes = [];
         foreach ($items as $item) {
             $indexes[$item[$byKey]] = $item;
         }
@@ -207,9 +207,9 @@ class MongoTestEnvironment
      */
     public function uploadTextAudioFile($filePathToCopy, $fileName, $textId)
     {
-        $_FILES['file'] = array();
-        $_FILES['file']['name'] = $fileName;
-        $_POST['textId'] = $textId;
+        $_FILES["file"] = [];
+        $_FILES["file"]["name"] = $fileName;
+        $_POST["textId"] = $textId;
 
         return $this->copyTestUploadFile($filePathToCopy);
     }
@@ -223,8 +223,8 @@ class MongoTestEnvironment
      */
     public function uploadFile($filePathToCopy, $fileName)
     {
-        $_FILES['file'] = array();
-        $_FILES['file']['name'] = $fileName;
+        $_FILES["file"] = [];
+        $_FILES["file"]["name"] = $fileName;
 
         return $this->copyTestUploadFile($filePathToCopy);
     }
@@ -240,7 +240,7 @@ class MongoTestEnvironment
         $fileName = basename($filePath);
         $tmpFilePath = sys_get_temp_dir() . "/CopyOf$fileName";
         copy($filePath, $tmpFilePath);
-        if (! array_key_exists($tmpFilePath, $this->uploadFilePaths)) {
+        if (!array_key_exists($tmpFilePath, $this->uploadFilePaths)) {
             $this->uploadFilePaths[] = $tmpFilePath;
         }
 
@@ -264,11 +264,11 @@ class MongoTestEnvironment
     public function cleanupTestUploadFiles()
     {
         foreach ($this->uploadFilePaths as $uploadFilePath) {
-            if (file_exists($uploadFilePath) and ! is_dir($uploadFilePath)) {
+            if (file_exists($uploadFilePath) and !is_dir($uploadFilePath)) {
                 @unlink($uploadFilePath);
             }
         }
-        $this->uploadFilePaths = array();
+        $this->uploadFilePaths = [];
     }
 
     public function fixJson($input)
@@ -289,7 +289,7 @@ class LexiconMongoTestEnvironment extends MongoTestEnvironment
 {
     public function __construct()
     {
-        parent::__construct('languageforge.org');
+        parent::__construct("languageforge.org");
     }
 
     /** @var LexProjectModel */
@@ -301,7 +301,7 @@ class LexiconMongoTestEnvironment extends MongoTestEnvironment
      * @param string $appName - included only to make the signature the same as the parent
      * @return LexProjectModel
      */
-    public function createProject($name, $code , $appName = '')
+    public function createProject($name, $code, $appName = "")
     {
         $projectModel = new TestableLexProjectModel();
         $projectModel->projectName = $name;
@@ -318,7 +318,7 @@ class LexiconMongoTestEnvironment extends MongoTestEnvironment
     {
         new UserModel();
 
-        $userId = $this->createUser($userName, $userName, 'user@example.com');
+        $userId = $this->createUser($userName, $userName, "user@example.com");
         $user = new UserModel($userId);
         $user->addProject($projectId);
         $user->write();
@@ -339,13 +339,18 @@ class LexiconMongoTestEnvironment extends MongoTestEnvironment
      * @param bool $deleteMatchingEntry
      * @return string $tmpFilePath
      */
-    public function uploadLiftFile($liftXml, $fileName, $mergeRule, $skipSameModTime = false, $deleteMatchingEntry = false)
-    {
-        $_FILES['file'] = array();
-        $_FILES['file']['name'] = $fileName;
-        $_POST['mergeRule'] = $mergeRule;
-        $_POST['skipSameModTime'] = $skipSameModTime;
-        $_POST['deleteMatchingEntry'] = $deleteMatchingEntry;
+    public function uploadLiftFile(
+        $liftXml,
+        $fileName,
+        $mergeRule,
+        $skipSameModTime = false,
+        $deleteMatchingEntry = false
+    ) {
+        $_FILES["file"] = [];
+        $_FILES["file"]["name"] = $fileName;
+        $_POST["mergeRule"] = $mergeRule;
+        $_POST["skipSameModTime"] = $skipSameModTime;
+        $_POST["deleteMatchingEntry"] = $deleteMatchingEntry;
 
         return $this->createTestLiftFile($liftXml, $fileName);
     }
@@ -361,7 +366,7 @@ class LexiconMongoTestEnvironment extends MongoTestEnvironment
     {
         $liftFilePath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $fileName;
         file_put_contents($liftFilePath, $liftXml);
-        if (! array_key_exists($liftFilePath, $this->uploadFilePaths)) {
+        if (!array_key_exists($liftFilePath, $this->uploadFilePaths)) {
             $this->uploadFilePaths[] = $liftFilePath;
         }
 
@@ -379,13 +384,12 @@ class LexiconMongoTestEnvironment extends MongoTestEnvironment
     }
 }
 
-
 class SemDomMongoTestEnvironment extends MongoTestEnvironment
 {
     public function __construct()
     {
         $this->semdomVersion = self::TESTVERSION;
-        parent::__construct('languageforge.org');
+        parent::__construct("languageforge.org");
     }
 
     const TESTVERSION = 1000;
@@ -401,29 +405,35 @@ class SemDomMongoTestEnvironment extends MongoTestEnvironment
     /** @var SemDomTransProjectModel */
     public $targetProject;
 
-    private static function _englishProjectExists() {
+    private static function _englishProjectExists()
+    {
         if (self::$englishProject) {
             $englishProject = new SemDomTransProjectModel();
-            $englishProject->readByCode('en', self::TESTVERSION);
-            if ($englishProject->id->asString() != '') {
+            $englishProject->readByCode("en", self::TESTVERSION);
+            if ($englishProject->id->asString() != "") {
                 return true;
             }
         }
         return false;
     }
 
-    public function getEnglishProjectAndCreateIfNecessary() {
+    public function getEnglishProjectAndCreateIfNecessary()
+    {
         if (!self::_englishProjectExists()) {
-            $lang = 'en';
+            $lang = "en";
             $this->cleanPreviousProject($lang);
             $projectCode = SemDomTransProjectModel::projectCode($lang, self::TESTVERSION);
-            $project = $this->createProject("English ($lang) Semantic Domain Base Project", $projectCode, LfProjectModel::SEMDOMTRANS_APP);
+            $project = $this->createProject(
+                "English ($lang) Semantic Domain Base Project",
+                $projectCode,
+                LfProjectModel::SEMDOMTRANS_APP
+            );
             $projectModel = new SemDomTransProjectModel($project->id->asString());
             $projectModel->languageIsoCode = $lang;
             $projectModel->isSourceLanguage = true;
             $projectModel->semdomVersion = self::TESTVERSION;
 
-            $englishXmlFilePath = TestPhpPath . 'model/languageforge/semdomtrans/testFiles/SemDom_en_sample.xml';
+            $englishXmlFilePath = TestPhpPath . "model/languageforge/semdomtrans/testFiles/SemDom_en_sample.xml";
             $projectModel->importFromFile($englishXmlFilePath, true);
             $projectModel->write();
             self::$englishProject = $projectModel;
@@ -431,7 +441,8 @@ class SemDomMongoTestEnvironment extends MongoTestEnvironment
         return self::$englishProject;
     }
 
-    public function cleanPreviousProject($languageCode) {
+    public function cleanPreviousProject($languageCode)
+    {
         $p = new SemDomTransProjectModel();
         $p->readByCode($languageCode, self::TESTVERSION);
         if (!Id::isEmpty($p->id)) {
@@ -446,13 +457,22 @@ class SemDomMongoTestEnvironment extends MongoTestEnvironment
         $p->remove();
     }
 
-    public function clean() {
+    public function clean()
+    {
         self::$englishProject = null;
         parent::clean();
     }
 
-    public function createSemDomProject($languageCode, $languageName, $userId) {
-        $projectId = SemDomTransProjectCommands::createProject($languageCode, $languageName, false, $userId, $this->website, self::TESTVERSION);
+    public function createSemDomProject($languageCode, $languageName, $userId)
+    {
+        $projectId = SemDomTransProjectCommands::createProject(
+            $languageCode,
+            $languageName,
+            false,
+            $userId,
+            $this->website,
+            self::TESTVERSION
+        );
         return new SemDomTransProjectModel($projectId);
     }
 }

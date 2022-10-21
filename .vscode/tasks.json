@@ -1,67 +1,61 @@
 {
-    // See https://go.microsoft.com/fwlink/?LinkId=733558
-    // for the documentation about the tasks.json format
-    "version": "2.0.0",
-    "tasks": [
-      {
-        "label": "webpack",
-        "type": "shell",
-        "windows": {
-          "command": "bash -c 'npm run webpack'"
-        },
-        "linux": {
-          "command": "npm run webpack"
-        },
-        "problemMatcher": "$awesometsc",
-        "group": {
-          "kind": "build",
-          "isDefault": true
-        },
-        "presentation": {
-          "reveal": "silent"
-        }
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "webpack",
+      "type": "shell",
+      "windows": {
+        "command": "bash -c 'npm run webpack'"
       },
-      {
-        "label": "webpack-watch",
-        "type": "shell",
-        "isBackground": true,
-        "windows": {
-          "command": "bash -c 'npm run webpack:watch'"
-        },
-        "linux": {
-          "command": "npm run webpack:watch"
-        },
-        "presentation": {
-          "reveal": "silent"
-        },
-        "problemMatcher": []
+      "linux": {
+        "command": "npm run webpack"
       },
-      {
-        "label": "npm install",
-        "type": "shell",
-        "windows": {
-          "command": "bash -c 'npm install'"
-        },
-        "linux": {
-          "command": "npm install"
-        },
-        "presentation": {
-          "reveal": "silent"
-        },
-        "problemMatcher": []
+      "problemMatcher": "$awesometsc",
+      "group": {
+        "kind": "build",
+        "isDefault": true
       },
-      {
-        "label": "Reset E2E tests",
-        "type": "process",
-        "command": "docker-compose",
-        "args": [
-          "restart",
-          "app-for-e2e"
-        ],
-        "options": {
-          "cwd": "docker"
-        },
-        "problemMatcher": []
+      "presentation": {
+        "reveal": "silent"
       }
-    ]
-  }
+    },
+    {
+      "label": "webpack-watch",
+      "type": "shell",
+      "isBackground": true,
+      "windows": {
+        "command": "bash -c 'npm run webpack:watch'"
+      },
+      "linux": {
+        "command": "npm run webpack:watch"
+      },
+      "presentation": {
+        "reveal": "silent"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "npm install",
+      "type": "shell",
+      "windows": {
+        "command": "bash -c 'npm install'"
+      },
+      "linux": {
+        "command": "npm install"
+      },
+      "presentation": {
+        "reveal": "silent"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Reset E2E tests",
+      "type": "process",
+      "command": "docker",
+      "args": ["compose", "restart", "app-for-e2e"],
+      "problemMatcher": []
+    }
+  ]
+}

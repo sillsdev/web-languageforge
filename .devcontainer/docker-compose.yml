@@ -24,7 +24,7 @@ services:
       # To transfer custom launch.json and so on
       - ./test-e2e/.vscode:/data/.vscode:cached
 
-      # Forwards the local Docker socket to the container so we can do things like `docker-compose restart app-for-e2e`
+      # Forwards the local Docker socket to the container so we can do things like `docker compose restart app-for-e2e`
       - /var/run/docker.sock:/var/run/docker.sock
 
       # So that any changes you make in the E2E test files while debugging will also be changed in the Git repo

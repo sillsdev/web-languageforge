@@ -20,14 +20,14 @@ class LexProjectDtoTest extends TestCase
 
     public function testEncode_Project_DtoCorrect()
     {
-        $userId = self::$environ->createUser('User', 'Name', 'name@example.com');
+        $userId = self::$environ->createUser("User", "Name", "name@example.com");
         $user = new UserModel($userId);
         $user->role = SystemRoles::USER;
 
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
-        $project->interfaceLanguageCode = 'en';
-        $project->projectCode = 'lf';
+        $project->interfaceLanguageCode = "en";
+        $project->projectCode = "lf";
         $project->featured = true;
 
         $project->addUser($userId, ProjectRoles::CONTRIBUTOR);
@@ -38,25 +38,25 @@ class LexProjectDtoTest extends TestCase
         $dto = LexProjectDto::encode($projectId);
 
         // test for a few default values
-        $this->assertEquals('en', $dto['project']['interfaceLanguageCode']);
-        $this->assertEquals('lf', $dto['project']['projectCode']);
-        $this->assertTrue($dto['project']['featured']);
-        $this->assertArrayNotHasKey('sendReceive', $dto['project']);
+        $this->assertEquals("en", $dto["project"]["interfaceLanguageCode"]);
+        $this->assertEquals("lf", $dto["project"]["projectCode"]);
+        $this->assertTrue($dto["project"]["featured"]);
+        $this->assertArrayNotHasKey("sendReceive", $dto["project"]);
     }
 
     public function testEncode_ProjectWithSendReceive_DtoCorrect()
     {
-        $userId = self::$environ->createUser('User', 'Name', 'name@example.com');
+        $userId = self::$environ->createUser("User", "Name", "name@example.com");
         $user = new UserModel($userId);
         $user->role = SystemRoles::USER;
 
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
-        $project->interfaceLanguageCode = 'en';
-        $project->projectCode = 'lf';
+        $project->interfaceLanguageCode = "en";
+        $project->projectCode = "lf";
         $project->featured = true;
-        $project->sendReceiveProjectIdentifier = 'test-sr-identifier';
-        $project->sendReceiveProject = new SendReceiveProjectModel('test-sr-name', '', 'manager');
+        $project->sendReceiveProjectIdentifier = "test-sr-identifier";
+        $project->sendReceiveProject = new SendReceiveProjectModel("test-sr-name", "", "manager");
 
         $project->addUser($userId, ProjectRoles::CONTRIBUTOR);
         $user->addProject($projectId);
@@ -66,9 +66,9 @@ class LexProjectDtoTest extends TestCase
         $dto = LexProjectDto::encode($projectId);
 
         // test for a few default values
-        $this->assertEquals('en', $dto['project']['interfaceLanguageCode']);
-        $this->assertEquals('lf', $dto['project']['projectCode']);
-        $this->assertTrue($dto['project']['featured']);
-        $this->assertEquals('test-sr-identifier', $dto['project']['sendReceive']['project']['identifier']);
+        $this->assertEquals("en", $dto["project"]["interfaceLanguageCode"]);
+        $this->assertEquals("lf", $dto["project"]["projectCode"]);
+        $this->assertTrue($dto["project"]["featured"]);
+        $this->assertEquals("test-sr-identifier", $dto["project"]["sendReceive"]["project"]["identifier"]);
     }
 }

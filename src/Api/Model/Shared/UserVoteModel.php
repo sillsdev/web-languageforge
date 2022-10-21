@@ -19,7 +19,7 @@ class UserVoteModel extends UserRelationModel
         $this->votes = new ArrayOf(function () {
             return new Vote();
         });
-        parent::__construct('vote', $userId, $projectId);
+        parent::__construct("vote", $userId, $projectId);
         $this->read();
     }
 
@@ -29,15 +29,15 @@ class UserVoteModel extends UserRelationModel
     /** @var ArrayOf IdReference */
     public $votes;
 
-    public function read($id = '')
+    public function read($id = "")
     {
         $mapper = self::mapper();
-        $exists = $mapper->readByProperties($this, array(
-            'type' => 'vote',
-            'userRef' => MongoMapper::mongoID($this->userRef->asString()),
-            'projectRef' => MongoMapper::mongoID($this->projectRef->asString()),
-            'questionRef' => MongoMapper::mongoID($this->questionRef->asString())
-        ));
+        $exists = $mapper->readByProperties($this, [
+            "type" => "vote",
+            "userRef" => MongoMapper::mongoID($this->userRef->asString()),
+            "projectRef" => MongoMapper::mongoID($this->projectRef->asString()),
+            "questionRef" => MongoMapper::mongoID($this->questionRef->asString()),
+        ]);
     }
 
     /**
@@ -48,7 +48,7 @@ class UserVoteModel extends UserRelationModel
     {
         $vote = new Vote();
         $vote->answerRef->id = $answerId;
-        if (in_array($vote, (array)$this->votes)) {
+        if (in_array($vote, (array) $this->votes)) {
             return;
         }
         $this->votes[] = $vote;
@@ -77,7 +77,7 @@ class UserVoteModel extends UserRelationModel
     {
         $vote = new Vote();
         $vote->answerRef->id = $answerId;
-        if (in_array($vote, (array)$this->votes)) {
+        if (in_array($vote, (array) $this->votes)) {
             return true;
         }
         return false;

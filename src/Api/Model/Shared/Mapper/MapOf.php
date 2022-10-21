@@ -18,7 +18,7 @@ class MapOf extends \ArrayObject
     private $_generator;
 
     // This is here to force client code using the older implementation to have a fatal error allowing us to identify code that needs upgrading. CP 2013-12
-    private /** @noinspection PhpUnusedPrivateFieldInspection */ $data;
+    /** @noinspection PhpUnusedPrivateFieldInspection */ private $data;
 
     public function generate($data = null)
     {
@@ -34,14 +34,14 @@ class MapOf extends \ArrayObject
 
     public function offsetGet($index)
     {
-        CodeGuard::checkTypeAndThrow($index, 'string');
+        CodeGuard::checkTypeAndThrow($index, "string");
 
         return parent::offsetGet($index);
     }
 
     public function offsetSet($index, $newval)
     {
-        CodeGuard::checkTypeAndThrow($index, 'string');
+        CodeGuard::checkTypeAndThrow($index, "string");
         parent::offsetSet($index, $newval);
     }
 }

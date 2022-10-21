@@ -9,8 +9,8 @@ use Api\Model\Languageforge\Semdomtrans\SemDomTransStatus;
 use Api\Model\Languageforge\Semdomtrans\SemDomTransTranslatedForm;
 use Api\Model\Shared\Mapper\ArrayOf;
 
-class SemDomXMLImporter {
-
+class SemDomXMLImporter
+{
     private $_projectModel;
 
     private $_xml;
@@ -21,7 +21,7 @@ class SemDomXMLImporter {
 
     private $_isEnglish;
 
-//    private $_outputFile;
+    //    private $_outputFile;
 
     /**
      *
@@ -29,22 +29,23 @@ class SemDomXMLImporter {
      * @param SemDomTransProjectModel $projectModel
      * @param bool $testMode
      */
-    public function __construct($xmlfilepath, $projectModel, $testMode = true, $isEnglish = true) {
-
+    public function __construct($xmlfilepath, $projectModel, $testMode = true, $isEnglish = true)
+    {
         $this->_xml = simplexml_load_file($xmlfilepath);
         $this->_projectModel = $projectModel;
-        $this->_runForReal = ! $testMode;
+        $this->_runForReal = !$testMode;
         $this->_lang = $projectModel->languageIsoCode;
         $this->_isEnglish = $isEnglish;
         //$this->_outputFile =  fopen(APPPATH . "resources/languageforge/semdomtrans/GoogleTranslateHarvester/" . $projectModel->languageIsoCode. "UnprocessedList.txt","w");
     }
 
-    public function run($english = true) {
-        $possibilities = $this->_isEnglish ?
-            $this->_xml->SemanticDomainList->CmPossibilityList->Possibilities
+    public function run($english = true)
+    {
+        $possibilities = $this->_isEnglish
+            ? $this->_xml->SemanticDomainList->CmPossibilityList->Possibilities
             : $this->_xml->xpath("List[@field='SemanticDomainList']")[0]->Possibilities;
 
-        foreach($possibilities->children() as $domainNode) {
+        foreach ($possibilities->children() as $domainNode) {
             $this->_processDomainNode($domainNode);
         }
     }
@@ -54,11 +55,12 @@ class SemDomXMLImporter {
      * @param XmlPath $xmlPath
      * @return string
      */
-    public function _getPathVal($xmlPath) {
+    public function _getPathVal($xmlPath)
+    {
         if ($xmlPath) {
-            $val = (string)$xmlPath[0];
+            $val = (string) $xmlPath[0];
         } else {
-            $val= "";
+            $val = "";
         }
         return $val;
     }
@@ -75,38 +77,39 @@ class SemDomXMLImporter {
      */
     private function _processDomainNode($domainNode)
     {
-        $guid = (string)$domainNode['guid'];
+        $guid = (string) $domainNode["guid"];
 
         // retrieve name
         $name = $this->_getPathVal($domainNode->xpath("Name/AUni[@ws='{$this->_lang}']"));
-//        fwrite($this->_outputFile, $name . "\n");
+        //        fwrite($this->_outputFile, $name . "\n");
 
         // retrieve abbrevation
         $abbreviation = $this->_getPathVal($domainNode->xpath("Abbreviation/AUni[@ws='en']"));
 
         //retrieve description
-        $description = $this->_getPathVal($domainNode->xpath("Description/AStr[@ws='{$this->_lang}']")[0]->xpath("Run[@ws='{$this->_lang}']"));
-//        fwrite($this->_outputFile, $description . "\n");
+        $description = $this->_getPathVal(
+            $domainNode->xpath("Description/AStr[@ws='{$this->_lang}']")[0]->xpath("Run[@ws='{$this->_lang}']")
+        );
+        //        fwrite($this->_outputFile, $description . "\n");
 
         $questions = new ArrayOf(function () {
             return new SemDomTransQuestion();
-        });      
+        });
         $searchKeys = new ArrayOf(function () {
             return new SemDomTransTranslatedForm();
-        });      
+        });
 
         // process question
-        if (property_exists($domainNode, 'Questions'))
-        {
+        if (property_exists($domainNode, "Questions")) {
             $questionsXML = $domainNode->Questions->children();
 
             // parse nested questions
-            foreach($questionsXML as $questionXML) {
+            foreach ($questionsXML as $questionXML) {
                 $question = $this->_getPathVal($questionXML->xpath("Question/AUni[@ws='{$this->_lang}']"));
-//                fwrite($this->_outputFile, $question . "\n");
+                //                fwrite($this->_outputFile, $question . "\n");
 
                 $terms = $this->_getPathVal($questionXML->xpath("ExampleWords/AUni[@ws='{$this->_lang}']"));
-//                fwrite($this->_outputFile, $terms . "\n");
+                //                fwrite($this->_outputFile, $terms . "\n");
 
                 $q = new SemDomTransQuestion($question, $terms);
                 $sk = new SemDomTransTranslatedForm($terms);
@@ -117,7 +120,7 @@ class SemDomXMLImporter {
                 }
 
                 // if question terms is non-empty in XML file, set as approved
-                if ($terms != '') {
+                if ($terms != "") {
                     $q->terms->status = SemDomTransStatus::Approved;
                     $sk->status = SemDomTransStatus::Approved;
                 }
@@ -129,7 +132,7 @@ class SemDomXMLImporter {
 
         // assume that we are not matching up with guids
         $itemModel = new SemDomTransItemModel($this->_projectModel);
-        $itemModel->readByProperty('xmlGuid', $guid);
+        $itemModel->readByProperty("xmlGuid", $guid);
 
         $itemModel->xmlGuid = $guid;
         $itemModel->name = new SemDomTransTranslatedForm($name);
@@ -158,7 +161,7 @@ class SemDomXMLImporter {
         //print "Processed $abbreviation $name\n";
 
         // recurse on sub-domains
-        if (property_exists($domainNode, 'SubPossibilities')) {
+        if (property_exists($domainNode, "SubPossibilities")) {
             foreach ($domainNode->SubPossibilities->children() as $subDomainNode) {
                 $this->_processDomainNode($subDomainNode);
             }

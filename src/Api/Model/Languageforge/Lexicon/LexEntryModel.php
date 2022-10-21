@@ -21,20 +21,20 @@ function generateSense()
 
 function generateCustomField($data)
 {
-    CodeGuard::checkTypeAndThrow($data, 'array');
-    if (array_key_exists('type', $data)) {
-        switch ($data['type']) {
+    CodeGuard::checkTypeAndThrow($data, "array");
+    if (array_key_exists("type", $data)) {
+        switch ($data["type"]) {
             case LexConfig::MULTIPARAGRAPH:
                 return new LexMultiParagraph();
             default:
-                $type = $data['type'];
+                $type = $data["type"];
                 throw new \Exception("Cannot generate unknown custom field type: $type");
         }
-    } elseif (array_key_exists('value', $data)) {
+    } elseif (array_key_exists("value", $data)) {
         return new LexValue();
-    } elseif (array_key_exists('values', $data)) {
+    } elseif (array_key_exists("values", $data)) {
         return new LexMultiValue();
-    } elseif (array_key_exists('paragraphs', $data)) {
+    } elseif (array_key_exists("paragraphs", $data)) {
         return new LexMultiParagraph();
     } else {
         return new LexMultiText();
@@ -49,36 +49,39 @@ class LexEntryModel extends MapperModel
      * @param ProjectModel $projectModel
      * @param string $id
      */
-    public function __construct($projectModel, $id = '')
+    public function __construct($projectModel, $id = "")
     {
-        $this->setPrivateProp('guid');
-        $this->setPrivateProp('dirtySR');
-        $this->setPrivateProp('mercurialSha');
-        $this->setReadOnlyProp('authorInfo');
-        $this->setRearrangeableProp('senses');
+        $this->setPrivateProp("guid");
+        $this->setPrivateProp("dirtySR");
+        $this->setPrivateProp("mercurialSha");
+        $this->setReadOnlyProp("authorInfo");
+        $this->setRearrangeableProp("senses");
 
-        $this->initLazyProperties([
-            'lexeme',
-            'senses',
-            'authorInfo',
-            'citationForm',
-            'customFields',
-            'entryBibliography',
-            'entryRestrictions',
-            'environments',
-            'etymology',
-            'etymologyGloss',
-            'etymologyComment',
-            'etymologySource',
-            'literalMeaning',
-            'location',
-            'morphologyType',
-            'note',
-            'pronunciation',
-            'cvPattern',
-            'tone',
-            'summaryDefinition'
-        ], false);
+        $this->initLazyProperties(
+            [
+                "lexeme",
+                "senses",
+                "authorInfo",
+                "citationForm",
+                "customFields",
+                "entryBibliography",
+                "entryRestrictions",
+                "environments",
+                "etymology",
+                "etymologyGloss",
+                "etymologyComment",
+                "etymologySource",
+                "literalMeaning",
+                "location",
+                "morphologyType",
+                "note",
+                "pronunciation",
+                "cvPattern",
+                "tone",
+                "summaryDefinition",
+            ],
+            false
+        );
 
         $this->isDeleted = false;
         $this->id = new Id();
@@ -177,7 +180,7 @@ class LexEntryModel extends MapperModel
         /** @var LexEntryMongoMapper $instance */
         static $instance = null;
         if (null === $instance || $instance->databaseName() != $databaseName) {
-            $instance = new LexEntryMongoMapper($databaseName, 'lexicon');
+            $instance = new LexEntryMongoMapper($databaseName, "lexicon");
         }
 
         return $instance;
@@ -186,51 +189,57 @@ class LexEntryModel extends MapperModel
     protected function getPropertyType($name)
     {
         switch ($name) {
-            case 'senses':
-                return 'ArrayOf(LexSense)';
-            case 'customFields':
-                return 'MapOf(CustomField)';
-            case 'authorInfo':
-                return 'LexAuthorInfo';
+            case "senses":
+                return "ArrayOf(LexSense)";
+            case "customFields":
+                return "MapOf(CustomField)";
+            case "authorInfo":
+                return "LexAuthorInfo";
 
-            case 'lexeme':
-            case 'citationForm':
-            case 'entryBibliography':
-            case 'entryRestrictions':
-            case 'pronunciation':
-            case 'cvPattern':
-            case 'tone':
-            case 'etymology':
-            case 'etymologyGloss':
-            case 'etymologyComment':
-            case 'etymologySource':
-            case 'literalMeaning':
-            case 'note':  // TODO Notes need to be an array, and more capable than a multi-text. Notes have types. CP 2014-10
-            case 'summaryDefinition':
-                return 'LexMultiText';
-            case 'environments':
-                return 'LexMultiValue';
-            case 'location':
-                return 'LexValue';
-            case 'morphologyType':
+            case "lexeme":
+            case "citationForm":
+            case "entryBibliography":
+            case "entryRestrictions":
+            case "pronunciation":
+            case "cvPattern":
+            case "tone":
+            case "etymology":
+            case "etymologyGloss":
+            case "etymologyComment":
+            case "etymologySource":
+            case "literalMeaning":
+            case "note": // TODO Notes need to be an array, and more capable than a multi-text. Notes have types. CP 2014-10
+            case "summaryDefinition":
+                return "LexMultiText";
+            case "environments":
+                return "LexMultiValue";
+            case "location":
+                return "LexValue";
+            case "morphologyType":
             default:
-                return 'string';
+                return "string";
         }
     }
 
     protected function createProperty($name)
     {
         switch ($this->getPropertyType($name)) {
-            case 'ArrayOf(LexSense)': return new ArrayOf('Api\Model\Languageforge\Lexicon\generateSense');
-            case 'MapOf(CustomField)': return new MapOf('Api\Model\Languageforge\Lexicon\generateCustomField');
-            case 'LexAuthorInfo': return new LexAuthorInfo();
-            case 'LexMultiText': return new LexMultiText();
-            case 'LexMultiValue': return new LexMultiValue();
-            case 'LexValue': return new LexValue();
+            case "ArrayOf(LexSense)":
+                return new ArrayOf("Api\Model\Languageforge\Lexicon\generateSense");
+            case "MapOf(CustomField)":
+                return new MapOf("Api\Model\Languageforge\Lexicon\generateCustomField");
+            case "LexAuthorInfo":
+                return new LexAuthorInfo();
+            case "LexMultiText":
+                return new LexMultiText();
+            case "LexMultiValue":
+                return new LexMultiValue();
+            case "LexValue":
+                return new LexValue();
 
-            case 'string':
+            case "string":
             default:
-                return '';
+                return "";
         }
     }
 
@@ -240,9 +249,9 @@ class LexEntryModel extends MapperModel
         // [ ['inputSystem' => $key, 'this' => $thisValue, 'other' => $otherValue], ... ]
         $result = [];
         foreach ($differences as $difference) {
-            $inputSystem = $difference['inputSystem'];
-            $result['oldValue.' . $propertyName . '.' . $inputSystem] = $difference['this'];
-            $result['newValue.' . $propertyName . '.' . $inputSystem] = $difference['other'];
+            $inputSystem = $difference["inputSystem"];
+            $result["oldValue." . $propertyName . "." . $inputSystem] = $difference["this"];
+            $result["newValue." . $propertyName . "." . $inputSystem] = $difference["other"];
         }
         return $result;
     }
@@ -252,8 +261,10 @@ class LexEntryModel extends MapperModel
         if (empty($difference)) {
             return [];
         }
-        return [ 'oldValue.' . $propertyName => $difference['this'],
-                 'newValue.' . $propertyName => $difference['other'] ];
+        return [
+            "oldValue." . $propertyName => $difference["this"],
+            "newValue." . $propertyName => $difference["other"],
+        ];
     }
 
     protected function getSenseDifferences($thisSenses, $otherSenses)
@@ -281,38 +292,50 @@ class LexEntryModel extends MapperModel
         foreach ($thisSensesByGuid as $guid => $thisSense) {
             /** @var LexSense $thisSense */
             $seenGuids[] = $guid;
-            $thisPosition  = $thisPositions[$guid];
-            $thisSenseId = 'senses@' . $thisPosition . '#' . $guid;
+            $thisPosition = $thisPositions[$guid];
+            $thisSenseId = "senses@" . $thisPosition . "#" . $guid;
             if (isset($otherPositions[$guid])) {
                 $otherPosition = $otherPositions[$guid];
                 if ($otherPosition !== $thisPosition) {
                     // The `moved` difference has the *old* position in the field ID and the *new* position in the value.
                     // This ensures that if a value is edited *and* moved in the same update, the field IDs for the edit
                     // and for the move will be identical.
-                    $differences['moved.' . $thisSenseId] = (string)$otherPosition;
+                    $differences["moved." . $thisSenseId] = (string) $otherPosition;
                 }
             }
             if (array_key_exists($guid, $otherSensesByGuid)) {
                 /** @var LexSense $otherSense */
                 $otherSense = $otherSensesByGuid[$guid];
-                $otherPosition = $otherPositions[$guid] ?? 0;  // Default to 0 just in case, though this *should* never be necessary
-                $otherSenseId = 'senses@' . $otherPosition . '#' . $guid;
+                $otherPosition = $otherPositions[$guid] ?? 0; // Default to 0 just in case, though this *should* never be necessary
+                $otherSenseId = "senses@" . $otherPosition . "#" . $guid;
                 $this->addFieldDifferencesFromSense($thisSense, $otherSense, $thisSenseId, $otherSenseId, $differences);
             } else {
-                $differences['deleted.' . $thisSenseId] = $thisSense->nameForActivityLog();
+                $differences["deleted." . $thisSenseId] = $thisSense->nameForActivityLog();
                 // Want "newValue" and "oldValue" for each field inside the sense as well
-                $this->addFieldDifferencesFromSense($thisSense, new LexSense(), $thisSenseId, $thisSenseId, $differences);
+                $this->addFieldDifferencesFromSense(
+                    $thisSense,
+                    new LexSense(),
+                    $thisSenseId,
+                    $thisSenseId,
+                    $differences
+                );
             }
         }
         $addedGuids = array_diff($otherGuids, $seenGuids);
         foreach ($addedGuids as $guid) {
             /** @var LexSense $otherSense */
             $otherSense = $otherSensesByGuid[$guid];
-            $otherPosition  = $otherPositions[$guid];
-            $otherSenseId = 'senses@' . $otherPosition . '#' . $guid;
-            $differences['added.' . $otherSenseId] = $otherSense->nameForActivityLog();
+            $otherPosition = $otherPositions[$guid];
+            $otherSenseId = "senses@" . $otherPosition . "#" . $guid;
+            $differences["added." . $otherSenseId] = $otherSense->nameForActivityLog();
             // Want "newValue" and "oldValue" for each field inside the sense as well
-            $this->addFieldDifferencesFromSense(new LexSense(), $otherSense, $otherSenseId, $otherSenseId, $differences);
+            $this->addFieldDifferencesFromSense(
+                new LexSense(),
+                $otherSense,
+                $otherSenseId,
+                $otherSenseId,
+                $differences
+            );
         }
 
         return $differences;
@@ -322,10 +345,10 @@ class LexEntryModel extends MapperModel
     {
         $senseDifferences = $thisSense->differences($otherSense, $thisSenseId, $otherSenseId);
         foreach ($senseDifferences as $key => $senseDifference) {
-            if (StringUtil::startsWith($key, 'this.')) {
-                $newKey = 'oldValue.' . $thisSenseId . '.' . substr($key, strlen('this.'));
-            } elseif (StringUtil::startsWith($key, 'other.')) {
-                $newKey = 'newValue.' . $thisSenseId . '.' . substr($key, strlen('other.'));
+            if (StringUtil::startsWith($key, "this.")) {
+                $newKey = "oldValue." . $thisSenseId . "." . substr($key, strlen("this."));
+            } elseif (StringUtil::startsWith($key, "other.")) {
+                $newKey = "newValue." . $thisSenseId . "." . substr($key, strlen("other."));
             } else {
                 $newKey = $key;
             }
@@ -340,7 +363,7 @@ class LexEntryModel extends MapperModel
                 return $this->lexeme[$preferredInputSystem];
             } elseif ($this->lexeme->count() > 0) {
                 foreach ($this->lexeme as $inputSystem => $content) {
-                    return (string)$content;
+                    return (string) $content;
                 }
             }
         }
@@ -349,58 +372,64 @@ class LexEntryModel extends MapperModel
                 return $this->citationForm[$preferredInputSystem];
             } elseif ($this->citationForm->count() > 0) {
                 foreach ($this->citationForm as $inputSystem => $content) {
-                    return (string)$content;
+                    return (string) $content;
                 }
             }
         }
-        return '';
+        return "";
     }
 
     public function getPropertyDifference(LexEntryModel $otherModel, string $propertyName)
     {
         $type = $this->getPropertyType($propertyName);
         switch ($type) {
-            case 'LexMultiText':
+            case "LexMultiText":
                 /** @var LexMultiText $multiText */
                 $multiText = $this->$propertyName;
                 $difference = $multiText->differences($otherModel->$propertyName);
                 return $this->convertLexMultiTextDifferences($difference, $propertyName);
-            case 'LexMultiValue':
+            case "LexMultiValue":
                 /** @var LexMultiValue $multiValue */
                 $multiValue = $this->$propertyName;
                 $difference = $multiValue->differences($otherModel->$propertyName);
                 return $this->convertDifferences($difference, $propertyName);
-            case 'LexMultiParagraph':
+            case "LexMultiParagraph":
                 /** @var LexMultiParagraph $multiParagraph */
                 $multiParagraph = $this->$propertyName;
                 $difference = $multiParagraph->differences($otherModel->$propertyName);
                 return $this->convertDifferences($difference, $propertyName);
-            case 'LexValue':
-                $thisValue  = is_null($this->$propertyName) || is_null($this->$propertyName->value) ? '' : (string)$this->$propertyName;
-                $otherValue = is_null($otherModel->$propertyName) || is_null($otherModel->$propertyName->value) ? '' : (string)$otherModel->$propertyName;
+            case "LexValue":
+                $thisValue =
+                    is_null($this->$propertyName) || is_null($this->$propertyName->value)
+                        ? ""
+                        : (string) $this->$propertyName;
+                $otherValue =
+                    is_null($otherModel->$propertyName) || is_null($otherModel->$propertyName->value)
+                        ? ""
+                        : (string) $otherModel->$propertyName;
 
                 if ($thisValue === $otherValue) {
                     return [];
                 } else {
-                    return ['oldValue.' . $propertyName => $thisValue, 'newValue.' . $propertyName => $otherValue];
+                    return ["oldValue." . $propertyName => $thisValue, "newValue." . $propertyName => $otherValue];
                 }
-            case 'string':
-                $thisValue  = $this->$propertyName;
+            case "string":
+                $thisValue = $this->$propertyName;
                 $otherValue = $otherModel->$propertyName;
                 if ($thisValue === $otherValue) {
                     return [];
                 } else {
-                    return ['oldValue.' . $propertyName => $thisValue, 'newValue.' . $propertyName => $otherValue];
+                    return ["oldValue." . $propertyName => $thisValue, "newValue." . $propertyName => $otherValue];
                 }
-            case 'ArrayOf(LexSense)':
-                $thisSenses  = $this->$propertyName;
+            case "ArrayOf(LexSense)":
+                $thisSenses = $this->$propertyName;
                 $otherSenses = $otherModel->$propertyName;
                 $result = $this->getSenseDifferences($thisSenses, $otherSenses);
                 return $result;
-            case 'MapOf(CustomField)':
+            case "MapOf(CustomField)":
                 // TODO: Implement this. Will probably have to refactor this function a bit to handle that one level of nesting
                 return [];
-            case 'LexAuthorInfo':
+            case "LexAuthorInfo":
                 // We don't put authorInfo changes in the activity log
                 return [];
             default:
@@ -412,30 +441,29 @@ class LexEntryModel extends MapperModel
     {
         // Perhaps this could be made generic enough to move to the MapperModel base class
         $properties = [
-            'lexeme',
-            'senses',
-            'authorInfo',
-            'citationForm',
-            'customFields',
-            'entryBibliography',
-            'entryRestrictions',
-            'environments',
-            'etymology',
-            'etymologyGloss',
-            'etymologyComment',
-            'etymologySource',
-            'literalMeaning',
-            'location',
-            'morphologyType',
-            'note',
-            'pronunciation',
-            'cvPattern',
-            'tone',
-            'summaryDefinition'
+            "lexeme",
+            "senses",
+            "authorInfo",
+            "citationForm",
+            "customFields",
+            "entryBibliography",
+            "entryRestrictions",
+            "environments",
+            "etymology",
+            "etymologyGloss",
+            "etymologyComment",
+            "etymologySource",
+            "literalMeaning",
+            "location",
+            "morphologyType",
+            "note",
+            "pronunciation",
+            "cvPattern",
+            "tone",
+            "summaryDefinition",
         ];
         $result = [];
-        foreach ($properties as $property)
-        {
+        foreach ($properties as $property) {
             foreach ($this->getPropertyDifference($otherModel, $property) as $key => $difference) {
                 $result[$key] = $difference;
             }
@@ -458,7 +486,11 @@ class LexEntryModel extends MapperModel
     public function searchSensesFor($propertyName, $value)
     {
         foreach ($this->senses as $index => $sense) {
-            if (isset($sense->{$propertyName}) && (trim($sense->{$propertyName}) !== '') && ($sense->{$propertyName} == $value)) {
+            if (
+                isset($sense->{$propertyName}) &&
+                trim($sense->{$propertyName}) !== "" &&
+                $sense->{$propertyName} == $value
+            ) {
                 return $index;
             }
         }
@@ -480,7 +512,7 @@ class LexEntryModel extends MapperModel
 class LexEntryMongoMapper extends MongoMapper
 {
     public $INDEXES_REQUIRED = [
-        ['key' => ['guid' => 1], 'unique' => true],
-        ['key' => ['guid' => 1, 'dirtySR' => 1], 'unique' => true]
+        ["key" => ["guid" => 1], "unique" => true],
+        ["key" => ["guid" => 1, "dirtySR" => 1], "unique" => true],
     ];
 }

@@ -15,9 +15,11 @@ class UserGenericVoteModel extends UserRelationModel
      */
     public function __construct($userId, $projectId, $namespace)
     {
-        $this->votes = new ArrayOf(function () { return new GenericVote(); } );
+        $this->votes = new ArrayOf(function () {
+            return new GenericVote();
+        });
         $this->namespace = $namespace;
-        parent::__construct('vote', $userId, $projectId);
+        parent::__construct("vote", $userId, $projectId);
         $this->read();
     }
 
@@ -27,15 +29,15 @@ class UserGenericVoteModel extends UserRelationModel
     /** @var string */
     public $namespace;
 
-    public function read($id = '')
+    public function read($id = "")
     {
         $mapper = self::mapper();
-        $mapper->readByProperties($this, array(
-                'type' => 'vote',
-                'namespace' => $this->namespace,
-                'userRef' => MongoMapper::mongoID($this->userRef->asString()),
-                'projectRef' => MongoMapper::mongoID($this->projectRef->asString())
-        ));
+        $mapper->readByProperties($this, [
+            "type" => "vote",
+            "namespace" => $this->namespace,
+            "userRef" => MongoMapper::mongoID($this->userRef->asString()),
+            "projectRef" => MongoMapper::mongoID($this->projectRef->asString()),
+        ]);
     }
 
     /**

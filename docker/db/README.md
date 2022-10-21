@@ -36,8 +36,8 @@
 
 ## Activity
 
-| username | email               | password      | project     |
-| -------- | ------------------- | ------------- | ----------- |
-| admin    | admin@example.com   | password      | all         |
-| johndoe  | jd@example.org      | languageforge | project-1   |
-| janedoe  | janedoe@example.org | languageforge | project-2   |
+| username | email               | password      | project   |
+| -------- | ------------------- | ------------- | --------- |
+| admin    | admin@example.com   | password      | all       |
+| johndoe  | jd@example.org      | languageforge | project-1 |
+| janedoe  | janedoe@example.org | languageforge | project-2 |

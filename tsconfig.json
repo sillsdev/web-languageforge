@@ -21,18 +21,13 @@
     "noImplicitAny": true,
     "outDir": "src/dist",
     "paths": {
-      "@node_modules/*": ["node_modules/*"],
+      "@node_modules/*": ["node_modules/*"]
     },
     "rootDir": "src/angular-app",
     "sourceMap": true,
     "suppressImplicitAnyIndexErrors": true,
     "target": "es5",
-    "typeRoots": [
-      "node_modules/@types",
-      "typings"
-    ]
+    "typeRoots": ["node_modules/@types", "typings"]
   },
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 }

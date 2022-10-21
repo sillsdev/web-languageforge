@@ -16,26 +16,27 @@ class Page extends Base
      */
     public function view(
         /** @noinspection PhpUnusedParameterInspection */ Request $request,
-        Application $app, $pageName
+        Application $app,
+        $pageName
     ) {
         try {
             $this->setupBaseVariables($app);
         } catch (\Exception $e) {
-            return $app->redirect('/auth/logout');
+            return $app->redirect("/auth/logout");
         }
 
         $this->setupPageVariables($app);
 
         // special case for "brochure" HTML5 homepage
-        if ($pageName == 'home') {
+        if ($pageName == "home") {
             if ($this->_isLoggedIn) {
-                return $app->redirect('/redirect/project');
+                return $app->redirect("/redirect/project");
             }
-            $homepageInAFolder = $this->getThemePath() . '/page/home';
+            $homepageInAFolder = $this->getThemePath() . "/page/home";
             if (is_dir($homepageInAFolder)) {
-                $this->data['baseDir'] = $this->getThemePath() . '/page/home';
+                $this->data["baseDir"] = $this->getThemePath() . "/page/home";
                 try {
-                    return $app['twig']->render('home/index.html.twig', $this->data);
+                    return $app["twig"]->render("home/index.html.twig", $this->data);
                 } catch (\Twig\Loader\ErrorLoader $e) {
                     $app->abort(404, "Page not found: home/index.html.twig");
                 }
@@ -45,6 +46,7 @@ class Page extends Base
         return $this->renderPage($app, $pageName);
     }
 
-    private function setupPageVariables(Application $app) {
+    private function setupPageVariables(Application $app)
+    {
     }
 }

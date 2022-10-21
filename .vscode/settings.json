@@ -1,10 +1,7 @@
 {
-  "phpunit.args": [
-    "--configuration",
-    "test/php/phpunit.xml"
-  ],
+  "phpunit.args": ["--configuration", "test/php/phpunit.xml"],
   "phpcs.composerJsonPath": "src",
   "php.suggest.basic": false,
   "git.ignoreLimitWarning": true,
-  "makefile.makeDirectory": "docker",
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
 }

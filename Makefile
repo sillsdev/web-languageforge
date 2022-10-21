@@ -9,21 +9,27 @@ start: build
 dev: start
 	docker compose up -d ui-builder
 
+.PHONY: playwright-tests-ci
+playwright-tests-ci:
+	npm ci
+	$(MAKE) playwright-tests
+
 .PHONY: playwright-tests
 playwright-tests:
+	npm install
 
     # stop any containers that are running
 	docker compose down
 
     # delete any cached session storage state files if the service isn't running
-	docker compose ps app-for-playwright > /dev/null 2>&1 || rm -f ../*-storageState.json
+	docker compose ps app-for-playwright > /dev/null 2>&1 || rm -f *-storageState.json
 
 	docker compose up -d app-for-playwright
 
     # wait until the app-for-playwright service is serving up HTTP before continuing
 	until curl localhost:3238 > /dev/null 2>&1; do sleep 1; done
 
-	cd .. && npx playwright install chromium && npx playwright test $(params)
+	npx playwright install chromium && npx playwright test $(params)
 
 .PHONY: e2e-tests
 e2e-tests:
@@ -57,7 +63,7 @@ build:
 .PHONY: scan
 # https://docs.docker.com/engine/scan
 scan:
-	docker build -t lf-app:prod -f app/Dockerfile --platform linux/amd64 ..
+	docker build -t lf-app:prod -f docker/app/Dockerfile --platform linux/amd64 .
 	docker login
 	-docker scan --accept-license lf-app:prod > docker-scan-results.txt
 

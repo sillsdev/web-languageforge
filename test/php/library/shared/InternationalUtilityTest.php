@@ -7,10 +7,10 @@ class InternationalUtilityTest extends TestCase
 {
     public function testArrayNormalize_ArrayOfString_Normalized()
     {
-        $expectedArray = ['This name "tårta" is NFC', ['nested array element']];
-        $actualArray = ['This name "tårta" is NFD', ['nested array element']];
+        $expectedArray = ['This name "tårta" is NFC', ["nested array element"]];
+        $actualArray = ['This name "tårta" is NFD', ["nested array element"]];
         $actualArrayNormalized = InternationalUtility::arrayNormalize($actualArray);
-        $actualArrayNormalized[0] = substr($actualArrayNormalized[0], 0, -1).'C';
+        $actualArrayNormalized[0] = substr($actualArrayNormalized[0], 0, -1) . "C";
 
         $this->assertTrue(Normalizer::isNormalized($expectedArray[0], Normalizer::FORM_C));
         $this->assertTrue(Normalizer::isNormalized($actualArray[0], Normalizer::FORM_D));

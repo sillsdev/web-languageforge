@@ -6,7 +6,7 @@ class Id
 {
     public $id;
 
-    public function __construct($id = '')
+    public function __construct($id = "")
     {
         $this->id = $id;
     }
@@ -23,6 +23,6 @@ class Id
 
     public function __toString()
     {
-        return empty($this->id) ? '_EmptyId_' : $this->id;
+        return empty($this->id) ? "_EmptyId_" : $this->id;
     }
 }
