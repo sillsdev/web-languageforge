@@ -1,6 +1,7 @@
 import { expect } from '@playwright/test';
 import { test } from './utils/fixtures';
 import { SignupPage } from './pages/signup.page';
+import { ProjectsPage } from './pages/projects.page';
 
 test.describe('E2E Signup app', () => {
   const constants = require('./testConstants.json');
@@ -91,13 +92,13 @@ test.describe('E2E Signup app', () => {
   });
 
   test('Can prefill email address that can\'t be changed', async () => {
-    await signupPage.goto(constants.unusedEmail);
+    await signupPage.goto({email: constants.unusedEmail});
 
     await expect(signupPage.emailInput).toBeDisabled();
   });
 
   test('Can prefill email address that already exists', async () => {
-    await signupPage.goto(constants.adminEmail);
+    await signupPage.goto({email: constants.adminEmail});
 
     await signupPage.nameInput.fill(constants.unusedName);
     await signupPage.passwordInput.fill(constants.passwordValid);
@@ -117,16 +118,14 @@ test.describe('E2E Signup app', () => {
     await signupPage.signupButton.click();
 
     // Verify new user logged in and redirected to projects page
-    await signupPage.page.waitForURL("**/app/projects");
-    expect(signupPage.page.url()).toContain('/app/projects');
+    new ProjectsPage(signupPage.page).waitForPage();
   });
 
   test('Redirects to projects page if already logged in', async ({ memberTab }) => {
     const signupPageMember = new SignupPage(memberTab);
     await Promise.all([
-      signupPageMember.page.waitForURL("**/app/projects"),
-      signupPageMember.page.goto(SignupPage.url),
+      new ProjectsPage(memberTab).waitForPage(),
+      signupPageMember.goto(),
     ]);
-    expect(signupPageMember.page.url()).toContain('/app/projects');
   });
 });

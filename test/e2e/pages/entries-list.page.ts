@@ -1,36 +1,16 @@
-import { expect, Locator, Page } from '@playwright/test';
+import { expect, Page } from '@playwright/test';
+import { Project } from '../utils/types';
+import { BasePage } from './base-page';
 
-export class EntriesListPage {
-  readonly page: Page;
-  readonly projectId: string;
+export class EntriesListPage extends BasePage {
+  readonly totalNumberOfEntries = this.page.locator('#totalNumberOfEntries');
+  readonly filterInput = this.page.locator('[placeholder="Search"]');
+  readonly filterInputClearButton = this.page.locator('.clear-search-button');
+  readonly matchCount = this.page.locator('#totalNumberOfEntries >> span');
+  readonly createNewWordButton = this.page.locator('#newWord');
 
-  readonly totalNumberOfEntries: Locator;
-
-  readonly filterInput: Locator;
-  readonly filterInputClearButton: Locator;
-  readonly matchCount: Locator;
-
-  readonly createNewWordButton: Locator;
-
-  readonly url: string;
-
-  constructor(page: Page, projectId: string) {
-    this.page = page;
-    this.projectId = projectId
-
-    this.totalNumberOfEntries = this.page.locator('#totalNumberOfEntries');
-
-    this.filterInput = this.page.locator('[placeholder="Search"]');
-    this.filterInputClearButton = this.page.locator('.clear-search-button');
-    this.matchCount = this.page.locator('#totalNumberOfEntries >> span');
-
-    this.createNewWordButton = this.page.locator('#newWord');
-
-    this.url = `/app/lexicon/${this.projectId}/#!/editor/list`;
-  }
-
-  async goto() {
-    await this.page.goto(this.url);
+  constructor(page: Page, readonly project: Project) {
+    super(page, `/app/lexicon/${project.id}/#!/editor/list`);
   }
 
   async expectTotalNumberOfEntries(nEntries: number) {

@@ -3,8 +3,6 @@ import { BasePage } from './base-page';
 
 export class NewLexProjectPage extends BasePage {
 
-  readonly newLexProjectForm = this.page.locator('#new-lex-project-form');
-
   // form controls
   readonly backButton = this.page.locator('#back-button');
   readonly nextButton = this.page.locator('#next-button');
@@ -63,14 +61,14 @@ export class NewLexProjectPage extends BasePage {
   };
 
   constructor(page: Page) {
-    super(page, '/app/lexicon/new-project');
+    super(page, '/app/lexicon/new-project', page.locator('#new-lex-project-form'));
   }
 
   async expectFormStatusHasNoError() {
     // this expect was flaky; suspicion: await and retry do not work properly with the "not" negation
-    // await expect(this.formStatus).not.toHaveClass(/alert-danger/);
+    await expect(this.formStatus).not.toHaveClass('alert-danger');
     // this regular expression finds everything not containing "alert-danger"
-    await expect(this.formStatus).toHaveClass(/^((?!alert-danger).)*$/);
+    // await expect(this.formStatus).toHaveClass(/^((?!alert-danger).)*$/);
   }
 
   async expectFormStatusHasError() {

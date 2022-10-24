@@ -5,7 +5,7 @@ import { NewLexProjectPage } from './pages/new-lex-project.page';
 import { EntriesListPage } from './pages/entries-list.page';
 import { NoticeElement } from './components/notice.component';
 
-import { Project } from './utils/types';
+import { Project, toProject } from './utils/types';
 import { initTestProject } from './utils/testSetup';
 import constants from './testConstants.json';
 
@@ -18,22 +18,6 @@ test.describe('Lexicon E2E New Project wizard app', () => {
     code: 'p00_lexicon-new-project_spec_ts',
     id: ''
   };
-  const newProject01: Project = {
-    name: 'lexicon-new-project_spec_ts New Project 1',
-    code: 'lexicon-new-project_spec_ts_new_project_1', // code as it is generated based on the project name
-    id: ''
-  };
-  const newProject02: Project = {
-    name: 'lexicon-new-project_spec_ts New Project 2',
-    code: 'lexicon-new-project_spec_ts_new_project_2', // code as it is generated based on the project name
-    id: ''
-  };
-  const newProject03: Project = {
-    name: 'lexicon-new-project_spec_ts New Project 3',
-    code: 'lexicon-new-project_spec_ts_new_project_3', // code as it is generated based on the project name
-    id: ''
-  };
-
 
   test.beforeAll(async ({ memberTab, request, manager, member }) => {
     newLexProjectPageMember = new NewLexProjectPage(memberTab);
@@ -43,20 +27,17 @@ test.describe('Lexicon E2E New Project wizard app', () => {
   test('Admin can get to wizard', async ({ adminTab }) => {
     const newLexProjectPageAdmin: NewLexProjectPage = new NewLexProjectPage(adminTab);
     await newLexProjectPageAdmin.goto();
-    await expect(newLexProjectPageAdmin.newLexProjectForm).toBeVisible();
     await expect(newLexProjectPageAdmin.chooserPage.createButton).toBeVisible();
   });
 
   test('Manager can get to wizard', async ({ managerTab }) => {
     const newLexProjectPageManager: NewLexProjectPage = new NewLexProjectPage(managerTab);
     await newLexProjectPageManager.goto();
-    await expect(newLexProjectPageManager.newLexProjectForm).toBeVisible();
     await expect(newLexProjectPageManager.chooserPage.createButton).toBeVisible();
   });
 
   test('Setup: user login and page contains a form', async () => {
     await newLexProjectPageMember.goto();
-    await expect(newLexProjectPageMember.newLexProjectForm).toBeVisible();
     await expect(newLexProjectPageMember.chooserPage.createButton).toBeVisible();
   });
 
@@ -210,6 +191,8 @@ test.describe('Lexicon E2E New Project wizard app', () => {
 
     // step 1: project name
     test.describe('New Project Name page', () => {
+      const unusedProject = toProject('Unused test project name');
+
       test('Cannot move on if name is invalid', async () => {
         await expect(newLexProjectPageMember.namePage.projectNameInput).toBeVisible();
         await expect(newLexProjectPageMember.nextButton).toBeEnabled();
@@ -246,18 +229,18 @@ test.describe('Lexicon E2E New Project wizard app', () => {
       });
 
       test('Can verify that an unused project name is available', async () => {
-        await newLexProjectPageMember.namePage.projectNameInput.fill(newProject01.name);
+        await newLexProjectPageMember.namePage.projectNameInput.fill(unusedProject.name);
         await newLexProjectPageMember.namePage.projectNameInput.press('Tab');
         await expect(newLexProjectPageMember.namePage.projectCodeOk).toBeVisible();
         await expect(newLexProjectPageMember.namePage.projectCodeExists).not.toBeVisible();
         await expect(newLexProjectPageMember.namePage.projectCodeAlphanumeric).not.toBeVisible();
-        await expect(newLexProjectPageMember.namePage.projectCodeInput).toHaveValue(newProject01.code);
+        await expect(newLexProjectPageMember.namePage.projectCodeInput).toHaveValue(unusedProject.code);
         await newLexProjectPageMember.expectFormStatusHasNoError();
       });
 
       test.describe('Project Code tests', () => {
         test.beforeEach(async () => {
-          await newLexProjectPageMember.namePage.projectNameInput.fill(newProject01.name);
+          await newLexProjectPageMember.namePage.projectNameInput.fill(unusedProject.name);
         });
 
         test('Cannot edit project code by default', async () => {
@@ -350,7 +333,7 @@ test.describe('Lexicon E2E New Project wizard app', () => {
             await expect(newLexProjectPageMember.namePage.editProjectCodeCheckbox).toBeVisible();
             await newLexProjectPageMember.namePage.editProjectCodeCheckbox.uncheck();
             await expect(newLexProjectPageMember.namePage.projectCodeInput).not.toBeVisible();
-            await expect(newLexProjectPageMember.namePage.projectCodeInput).toHaveValue(newProject01.code);
+            await expect(newLexProjectPageMember.namePage.projectCodeInput).toHaveValue(unusedProject.code);
             await newLexProjectPageMember.expectFormStatusHasNoError();
           });
         });
@@ -361,6 +344,8 @@ test.describe('Lexicon E2E New Project wizard app', () => {
     // this test is composed of multiple tests because they all depend subsequently on one another
     // step 2: initial data & step 3: verify data
     test('Can create project, initial data page with upload & verify data', async () => {
+      const newProject01 = toProject(`lexicon-new-project_spec_ts_1 - ${Date.now()}`);
+
       await newLexProjectPageMember.namePage.projectNameInput.type(newProject01.name);
       await newLexProjectPageMember.namePage.projectNameInput.press('Tab'); // trigger project code check
       await expect(newLexProjectPageMember.nextButton).toBeEnabled();
@@ -463,12 +448,14 @@ test.describe('Lexicon E2E New Project wizard app', () => {
       await newLexProjectPageMember.page.waitForURL(/editor\/entry/);
       const myRe = /(?<=(.*app\/lexicon\/))(.*)(?=(#!\/editor\/entry\/.*))/;
       newProject01.id = myRe.exec(newLexProjectPageMember.page.url())[0];
-      const entriesListPage: EntriesListPage = new EntriesListPage(newLexProjectPageMember.page, newProject01.id);
+      const entriesListPage: EntriesListPage = new EntriesListPage(newLexProjectPageMember.page, newProject01);
       await entriesListPage.expectTotalNumberOfEntries(numberOfEntriesInTestLexProjectFile);
     });
 
     // step 2: initial data & step 3: verify data
     test('Create: new empty project & can skip uploading data', async () => {
+      const newProject02 = toProject(`lexicon-new-project_spec_ts_2 - ${Date.now()}`);
+
       await newLexProjectPageMember.namePage.projectNameInput.fill(newProject02.name);
       await newLexProjectPageMember.namePage.projectNameInput.press('Tab');
       await expect(newLexProjectPageMember.namePage.projectCodeExists).not.toBeVisible();
@@ -488,6 +475,8 @@ test.describe('Lexicon E2E New Project wizard app', () => {
 
     // step 3 alternate: primary language
     test('Primary Language page', async () => {
+      const newProject03 = toProject(`lexicon-new-project_spec_ts_3 - ${Date.now()}`);
+
       await newLexProjectPageMember.namePage.projectNameInput.fill(newProject03.name)
       await newLexProjectPageMember.nextButton.click();
       await newLexProjectPageMember.nextButton.click();

@@ -26,13 +26,16 @@ const config: PlaywrightTestConfig = {
   /* Global setup for things like logging in users and saving login cookies */
   globalSetup: require.resolve('./test/e2e/utils/globalSetup'),
   /* Retry on CI only */
-  retries: process.env.CI ? 2 : 0,
+  retries: process.env.CI ? 1 : 0,
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : 1,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   outputDir: 'test-results', // referenced in pull-request.yml
   reporter: process.env.CI
     ? [['github'], ['list']]
+    // Putting the HTML report in a subdirectory of the main output directory results in a warning log
+    // stating that it will "lead to artifact loss" but the warning in this case is not accurate
+    // npx playwright show-report test-results/_html-report
     : [['html', {outputFolder: 'test-results/_html-report', open: 'never'}]],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
@@ -103,7 +106,7 @@ const config: PlaywrightTestConfig = {
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: 'docker compose up app-for-playwright',
+    command: 'make playwright-app',
     port: 3238,
     timeout: 15 * 1000,
     reuseExistingServer: true,
