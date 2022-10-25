@@ -98,7 +98,7 @@ class LexUploadCommands
 
                 $extensionlessFileName = substr($fileName, 0, strrpos($fileName, strtolower($fileExt)));
                 $fileName = "$extensionlessFileName.webm"; //$fileName ->> the converted file
-                `ffmpeg -i $tmpFilePath -acodec opus $fileName 2> /dev/null`; //original file is at the tmpFilePath. convert that file and save it to be $fileName
+                `ffmpeg -i $tmpFilePath -c:a libopus $fileName 2> /dev/null`; //original file is at the tmpFilePath. convert that file and save it to be $fileName
                 $filePath = self::mediaFilePath($folderPath, $fileNamePrefix, $fileName);
                 $moveOk = copy($fileName, $filePath);
 
