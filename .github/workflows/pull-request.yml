@@ -65,7 +65,7 @@ jobs:
         run: make playwright-tests-ci
 
       -
-        name: Upload test results
+        name: Upload Playwright test results
         if: always()
         uses: actions/upload-artifact@v2
         with:
