@@ -1,35 +1,18 @@
 import { Locator, Page } from '@playwright/test';
+import { Project } from '../utils/types';
+import { BasePage } from './base-page';
 
-type Tabs = {
-  fields: Locator;
-};
+const fieldsSelector = '[data-ng-repeat="tab in $ctrl.tabs"] >> text=Fields >> visible=true';
 
-export class ConfigurationPage {
-  readonly page: Page;
-  readonly projectId: string;
+export class ConfigurationPage extends BasePage {
 
-  readonly tabs: Tabs;
-  readonly applyButton: Locator;
+  readonly tabs = {
+    fields: this.page.locator(fieldsSelector)
+  };
+  readonly applyButton = this.page.locator('button >> text=Apply');
 
-  readonly url: string;
-
-  constructor(page: Page, projectId: string) {
-    this.page = page;
-    this.projectId = projectId;
-
-    this.tabs = {
-      fields: this.page.locator('[data-ng-repeat="tab in $ctrl.tabs"] >> text=Fields >> visible=true')
-    };
-    this.applyButton = this.page.locator('button >> text=Apply');
-
-    this.url = `/app/lexicon/${projectId}/#!/configuration`;
-  }
-
-
-  async goto() {
-    await this.page.goto(this.url);
-    // TODO: wait for an element on the page to be visible (navigation and loading pages are flaky)
-    // await this.page.waitForTimeout(3000);
+  constructor(page: Page, readonly project: Project) {
+    super(page, `/app/lexicon/${project.id}/#!/configuration`, page.locator(fieldsSelector));
   }
 
   async getTable(tableTitle: string): Promise<Locator> {

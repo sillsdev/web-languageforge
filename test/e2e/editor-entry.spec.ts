@@ -33,7 +33,7 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
     lexEntriesIds.push(await addLexEntry(request, project.code, constants.testEntry1));
     lexEntriesIds.push(await addLexEntry(request, project.code, constants.testEntry2));
     lexEntriesIds.push(await addLexEntry(request, project.code, constants.testMultipleMeaningEntry1));
-    editorPageManager = new EditorPage(managerTab, project.id, lexEntriesIds[0]);
+    editorPageManager = new EditorPage(managerTab, project);
   });
 
   test.describe('Entries List', () => {
@@ -71,17 +71,10 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
   });
 
   test.describe('Entry Editor', () => {
-    // test.beforeEach(async () => {
-    //   await editorPageManager.goto();
-    // });
 
-    // TODO: even though a timeout was added, the test still fails when run headlessly but succeeds when run in slowly in debug mode
-    test.skip('Can go from entry editor to entries list', async () => {
+    test('Can go from entry editor to entries list', async () => {
       await editorPageManager.goto();
-      await editorPageManager.page.pause();
       await editorPageManager.navigateToEntriesList();
-      // TODO: wait for an element on the page to be visible
-      await editorPageManager.page.waitForTimeout(3000);
       expect(editorPageManager.page.url()).toContain(editorPageManager.entriesListPage.url);
     });
 
@@ -247,7 +240,7 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
         let editorPageMember: EditorPage;
 
         test.beforeAll(async ({ memberTab }) => {
-          editorPageMember = new EditorPage(memberTab, project.id, lexEntriesIds[0]);
+          editorPageMember = new EditorPage(memberTab, project);
         });
 
         test('Audio input system is present, playable and has "more" control (member)', async () => {
@@ -267,7 +260,7 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
         });
 
         test('Word 2 (without audio): audio input system is not playable but has "upload" button (member)', async () => {
-          await editorPageMember.goto(lexEntriesIds[1]);
+          await editorPageMember.goto({entryId: lexEntriesIds[1]});
           const audio: Locator = editorPageMember.getSoundplayer(editorPageMember.entryCard, lexemeLabel, 'taud');
           await expect(editorPageMember.entryCard.locator(editorPageMember.audioPlayer.playIconSelector + ' >> visible=true')).toHaveCount(0);
           await expect(audio.locator(editorPageMember.audioPlayer.togglePlaybackAnchorSelector)).not.toBeVisible();
@@ -282,7 +275,7 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
         let editorPageObserver: EditorPage;
 
         test.beforeAll(async ({ member2Tab }) => {
-          editorPageObserver = new EditorPage(member2Tab, project.id, lexEntriesIds[0]);
+          editorPageObserver = new EditorPage(member2Tab, project);
         });
 
         test('Audio Input System is playable but does not have "more" control (observer)', async () => {
@@ -299,7 +292,7 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
         });
 
         test('Word 2 (without audio): audio input system is not playable and does not have "upload" button (observer)', async () => {
-          await editorPageObserver.goto(lexEntriesIds[1]);
+          await editorPageObserver.goto({entryId: lexEntriesIds[1]});
           const audio: Locator = editorPageObserver.getSoundplayer(editorPageObserver.entryCard, lexemeLabel, 'taud');
           await expect(editorPageObserver.entryCard.locator(editorPageObserver.audioPlayer.playIconSelector + ' >> visible=true')).toHaveCount(0);
           await expect(audio.locator(editorPageObserver.audioPlayer.togglePlaybackAnchorSelector)).not.toBeVisible();
@@ -350,7 +343,7 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
         });
 
         test('Navigate to other entries with left entry bar', async () => {
-          await editorPageManager.goto(lexEntriesIds[1]);
+          await editorPageManager.goto({entryId: lexEntriesIds[1]});
           await editorPageManager.page.locator('text=' + constants.testMultipleMeaningEntry1.senses[0].definition.en.value).click();
 
           await editorPageManager.page.waitForURL(
@@ -361,7 +354,7 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
         });
 
         test('Word 2 (without audio): audio input system is not playable but has "upload" button (manager)', async () => {
-          await editorPageManager.goto(lexEntriesIds[1]);
+          await editorPageManager.goto({entryId: lexEntriesIds[1]});
           await expect(editorPageManager.entryCard.locator(editorPageManager.audioPlayer.playIconSelector)).not.toBeVisible();
 
           await expect(audio.locator(editorPageManager.audioPlayer.dropdownToggleSelector)).not.toBeVisible();
@@ -382,7 +375,7 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
 
         test('Can\'t upload a non-audio file & can upload audio file', async () => {
           // to be independent from the audio deletion test above, go to entry 2 (has no audio)
-          await editorPageManager.goto(lexEntriesIds[1]);
+          await editorPageManager.goto({entryId: lexEntriesIds[1]});
           const noticeElement = new NoticeElement(editorPageManager.page);
           expect(noticeElement.notice).toHaveCount(0);
 
@@ -426,7 +419,7 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
         //   });
 
         test('Word 2: edit page has correct definition, part of speech', async () => {
-          await editorPageManager.goto(lexEntriesIds[1]);
+          await editorPageManager.goto({entryId: lexEntriesIds[1]});
           await expect(editorPageManager.getTextarea(
             editorPageManager.senseCard, 'Definition', 'en'))
             .toHaveValue(constants.testEntry2.senses[0].definition.en.value);
@@ -437,7 +430,7 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
         });
 
         test('Dictionary citation reflects example sentences and translations', async () => {
-          await editorPageManager.goto(lexEntriesIds[2]);
+          await editorPageManager.goto({entryId: lexEntriesIds[2]});
 
           await expect(editorPageManager.renderedDivs).toContainText([constants.testMultipleMeaningEntry1.senses[0].examples[0].sentence.th.value, constants.testMultipleMeaningEntry1.senses[0].examples[0].sentence.th.value]);
           await expect(editorPageManager.renderedDivs).toContainText([constants.testMultipleMeaningEntry1.senses[0].examples[0].translation.en.value, constants.testMultipleMeaningEntry1.senses[0].examples[0].translation.en.value]);
@@ -450,7 +443,7 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
         });
 
         test('Word with multiple definitions: edit page has correct definitions, parts of speech', async () => {
-          await editorPageManager.goto(lexEntriesIds[2]);
+          await editorPageManager.goto({entryId: lexEntriesIds[2]});
           await expect(editorPageManager.getTextarea(
             editorPageManager.senseCard.first(), 'Definition', 'en'))
             .toHaveValue(constants.testMultipleMeaningEntry1.senses[0].definition.en.value);
@@ -466,7 +459,7 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
         });
 
         test('Word with multiple meanings: edit page has correct example sentences, translations', async () => {
-          await editorPageManager.goto(lexEntriesIds[2]);
+          await editorPageManager.goto({entryId: lexEntriesIds[2]});
 
           await expect(editorPageManager.getTextarea(
             editorPageManager.senseCard.first().locator(editorPageManager.exampleCardSelector + ' >> nth=0'), 'Sentence', 'th'))
@@ -495,7 +488,7 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
         });
 
         test('While Show Hidden Fields has not been clicked, hidden fields are hidden if they are empty', async () => {
-          await editorPageManager.goto(lexEntriesIds[2]);
+          await editorPageManager.goto({entryId: lexEntriesIds[2]});
           expect(editorPageManager.getTextarea(
             editorPageManager.senseCard.nth(0), 'Semantics Note', 'en')).toHaveCount(0);
           expect(editorPageManager.getTextarea(
@@ -510,7 +503,7 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
         });
 
         test('Word with multiple meanings: edit page has correct general notes, sources', async () => {
-          await editorPageManager.goto(lexEntriesIds[2]);
+          await editorPageManager.goto({entryId: lexEntriesIds[2]});
           await expect(editorPageManager.getTextarea(
             editorPageManager.senseCard.nth(0), 'General Note', 'en'))
             .toHaveValue(constants.testMultipleMeaningEntry1.senses[0].generalNote.en.value);
@@ -529,7 +522,7 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
         });
 
         test('Senses can be reordered and deleted', async () => {
-          await editorPageManager.goto(lexEntriesIds[2]);
+          await editorPageManager.goto({entryId: lexEntriesIds[2]});
           await editorPageManager.senseCard.first().locator(editorPageManager.actionMenu.toggleMenuButtonSelector).first().click();
           await editorPageManager.senseCard.first().locator(editorPageManager.actionMenu.moveDownButtonSelector).first().click();
           await expect(editorPageManager.getTextarea(
@@ -620,7 +613,7 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
 
       let editorPageMember: EditorPage;
       test.beforeAll(async ({ memberTab }) => {
-        editorPageMember = new EditorPage(memberTab, project.id, lexEntriesIds[0]);
+        editorPageMember = new EditorPage(memberTab, project);
 
         // copied from above from audio tests, because also needed here
         // TODO: eventually put this code somewhere else and in only one in this file

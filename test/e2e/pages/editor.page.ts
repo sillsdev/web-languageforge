@@ -1,150 +1,97 @@
-import { Locator, Page } from '@playwright/test';
+import { expect, Locator, Page } from '@playwright/test';
+import { fail } from 'assert';
+import { Project } from '../utils/types';
+import { BasePage, GotoOptions } from './base-page';
 import { ConfigurationPage } from './configuration.page';
 import { EntriesListPage } from './entries-list.page';
 
-type LexAppToolbar = {
-  backToListButton: Locator,
-  toggleCommentsButton: Locator,
-  toggleExtraFieldsButton: Locator
-};
-
-// JeanneSonTODO: search/filter is also used in entries list so extract this
-type Search = {
-  searchInput: Locator,
-  matchCount: Locator
+export interface EditorGotoOptions extends GotoOptions {
+  entryId?: string;
 }
-
-type ActionMenu = {
-  toggleMenuButtonSelector: string,
-  deleteCardButtonSelector: string,
-  moveDownButtonSelector: string,
-  moveUpButtonSelector: string
-}
-
-type AudioPlayer = {
-  togglePlaybackAnchorSelector: string,
-  playIconSelector: string,
-  dropdownToggleSelector: string,
-  uploadButtonSelector: string,
-  downloadButtonSelector: string
-};
-
-type Dropbox = {
-  dragoverFieldSelector: string,
-  audioCancelButtonSelector: string,
-  pictureCancelButtonSelector: string,
-  browseButtonSelector: string
-};
 
 type UploadType =
     'Audio' |
     'Picture'
 ;
 
-type AudioDropdownMenu = {
-  uploadReplacementButtonSelector: string,
-  deleteAudioButtonSelector: string
-}
+export class EditorPage extends BasePage {
+  readonly entriesListPage = new EntriesListPage(this.page, this.project);
+  readonly configurationPage = new ConfigurationPage(this.page, this.project);
 
-export class EditorPage {
-  readonly page: Page;
-  readonly projectId: string;
-  readonly firstEntryId: string;
+  readonly settingsMenuLink = this.page.locator('#settings-dropdown-button');
+  readonly projectSettingsLink = this.page.locator('#dropdown-project-settings');
 
-  readonly entriesListPage: EntriesListPage;
-  readonly configurationPage: ConfigurationPage;
+  readonly lexAppToolbar = {
+    backToListButton: this.page.locator('#toListLink'),
+    toggleCommentsButton: this.page.locator('#toCommentsLink'),
+    toggleExtraFieldsButton: this.page.locator('#toggleHiddenFieldsBtn')
+  };
+  readonly renderedDivs = this.page.locator('.dc-rendered-entryContainer');
 
-  readonly lexAppToolbar: LexAppToolbar;
-  readonly renderedDivs: Locator;
+  readonly search = {
+    searchInput: this.page.locator('#editor-entry-search-entries'),
+    matchCount: this.page.locator('#totalNumberOfEntries >> span')
+  };
 
-  readonly search: Search;
+  readonly entryCard = this.page.locator('.entry-card');
+  readonly senseCard = this.page.locator('[data-ng-repeat="sense in $ctrl.model.senses"]');
+  readonly exampleCardSelector = '.dc-example';
+  readonly semanticDomainSelector = '.dc-semanticdomain-value';
 
-  readonly entryCard: Locator;
-  readonly senseCard: Locator;
-  readonly exampleCardSelector: string;
-  readonly semanticDomainSelector: string;
+  readonly actionMenu = {
+    toggleMenuButtonSelector: '.ellipsis-menu-toggle',
+    deleteCardButtonSelector: '.dropdown-item:has-text("Delete")',
+    moveDownButtonSelector: '.dropdown-item:has-text("Move Down")',
+    moveUpButtonSelector: '.dropdown-item:has-text("Move Up")'
+  };
 
-  readonly actionMenu: ActionMenu;
+  readonly compactEntryListContainer = this.page.locator('#compactEntryListContainer');
+  readonly compactEntryListItem = this.compactEntryListContainer.locator('.lexiconListItemCompact');
 
-  readonly compactEntryListContainer: Locator;
-  readonly compactEntryListItem: Locator;
+  readonly audioPlayer = {
+    togglePlaybackAnchorSelector: '[ng-click="$ctrl.togglePlayback()"]',
+    playIconSelector: 'i.fa-play',
+    dropdownToggleSelector: 'a.dropdown-toggle',
+    uploadButtonSelector: 'button.upload-audio',
+    downloadButtonSelector: 'a.buttonAppend'
+  };
 
-  readonly audioPlayer: AudioPlayer;
+  readonly dropbox = {
+    dragoverFieldSelector: '.drop-box',
+    audioCancelButtonSelector: '#audioAddCancel',
+    pictureCancelButtonSelector: '#addCancel',
+    browseButtonSelector: '#browseButton'
+  };
 
-  readonly dropbox: Dropbox;
+  readonly audioDropdownMenu = {
+    uploadReplacementButtonSelector: 'a >> text=Upload a replacement',
+    deleteAudioButtonSelector: 'a >> text=Delete'
+  };
 
-  readonly audioDropdownMenu: AudioDropdownMenu;
+  readonly addPictureButtonSelector = 'a >> text=Add Picture';
 
-  readonly addPictureButtonSelector: string;
-
-  readonly url: string;
-
-  constructor(page: Page, projectId: string, firstEntryId: string) {
-    this.page = page;
-    this.projectId = projectId;
-    this.firstEntryId = firstEntryId;
-
-    this.entriesListPage = new EntriesListPage(this.page, this.projectId);
-    this.configurationPage = new ConfigurationPage(this.page, this.projectId);
-
-    this.lexAppToolbar = {
-      backToListButton: this.page.locator('#toListLink'),
-      toggleCommentsButton: this.page.locator('#toCommentsLink'),
-      toggleExtraFieldsButton: this.page.locator('#toggleHiddenFieldsBtn')
-    };
-    this.renderedDivs = this.page.locator('.dc-rendered-entryContainer');
-
-    this.search = {
-      searchInput: this.page.locator('#editor-entry-search-entries'),
-      matchCount: this.page.locator('#totalNumberOfEntries >> span')
-    }
-
-    this.entryCard = this.page.locator('.entry-card');
-    this.senseCard = this.page.locator('[data-ng-repeat="sense in $ctrl.model.senses"]');
-    this.exampleCardSelector = '.dc-example';
-    this.semanticDomainSelector = '.dc-semanticdomain-value';
-
-    this.actionMenu = {
-      toggleMenuButtonSelector: '.ellipsis-menu-toggle',
-      deleteCardButtonSelector: '.dropdown-item:has-text("Delete")',
-      moveDownButtonSelector: '.dropdown-item:has-text("Move Down")',
-      moveUpButtonSelector: '.dropdown-item:has-text("Move Up")'
-    };
-
-    this.compactEntryListContainer = this.page.locator('#compactEntryListContainer');
-    this.compactEntryListItem = this.compactEntryListContainer.locator('.lexiconListItemCompact');
-
-    this.audioPlayer = {
-      togglePlaybackAnchorSelector: '[ng-click="$ctrl.togglePlayback()"]',
-      playIconSelector: 'i.fa-play',
-      dropdownToggleSelector: 'a.dropdown-toggle',
-      uploadButtonSelector: 'button.upload-audio',
-      downloadButtonSelector: 'a.buttonAppend'
-    };
-
-    this.dropbox = {
-      dragoverFieldSelector: '.drop-box',
-      audioCancelButtonSelector: '#audioAddCancel',
-      pictureCancelButtonSelector: '#addCancel',
-      browseButtonSelector: '#browseButton'
-    };
-
-    this.audioDropdownMenu = {
-      uploadReplacementButtonSelector: 'a >> text=Upload a replacement',
-      deleteAudioButtonSelector: 'a >> text=Delete'
-    };
-
-    this.addPictureButtonSelector = 'a >> text=Add Picture';
-
-    this.url = `/app/lexicon/${projectId}/#!/editor/entry/`;
+  constructor(page: Page, readonly project: Project) {
+    super(page, `/app/lexicon/${project.id}/`, page.locator('.words-container-title'));
   }
 
-  async goto(entryId: string = this.firstEntryId) {
-    await this.page.goto(this.url + entryId);
+  async goto(options?: EditorGotoOptions): Promise<void> {
+    await super.goto(options);
+    const entryId = options?.entryId;
+    const gotoEntry = entryId || await this.page.isVisible('[id^=entryId_]');
+    if (gotoEntry) {
+      // If we're navigating from one entry to another, then goto doesn't cause angular to load the new entry
+      // clicking is a more realistic test anyway
+      await this.page.locator(`[id^=entryId_${entryId ?? ''}]`).first().click();
+      await super.goto({waitFor: this.page.locator('.entry-card')});
+    }
+    await expect(this.page.locator('.page-name >> text=' + this.project.name)).toBeVisible();
+  }
 
-    await this.page.reload();
-    // TODO: wait for an element on the page to be visible (navigation and loading pages are flaky)
-    await this.page.waitForTimeout(3000);
+  async navigateToSettings() {
+    await expect(this.settingsMenuLink).toBeVisible();
+    await this.settingsMenuLink.click();
+    await expect(this.projectSettingsLink).toBeVisible();
+    await this.projectSettingsLink.click();
   }
 
   async navigateToEntriesList() {
@@ -204,8 +151,7 @@ export class EditorPage {
         return card.locator(this.dropbox.pictureCancelButtonSelector);
 
       default:
-        console.log('Warning: invalid upload type, something went wrong');
-        return undefined;
+        throw new Error('Warning: invalid upload type, something went wrong');
     }
   }
 

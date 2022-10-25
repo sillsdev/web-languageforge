@@ -5,9 +5,9 @@ import { initTestProject, addUserToProject } from './utils/testSetup';
 import { ProjectsPage } from './pages/projects.page';
 
 import { Project } from './utils/types';
+import { EditorPage } from './pages/editor.page';
 
 test.describe('E2E Project Settings app', () => {
-  let projectSettingsPageManager: ProjectSettingsPage;
   const projects: Project[] = [
     {
       name: 'projects_settings_spec_ts Project 01',
@@ -31,10 +31,7 @@ test.describe('E2E Project Settings app', () => {
     id: ''
   };
 
-  test.beforeAll(async ({ request, admin, member, manager, managerTab }) => {
-    projectSettingsPageManager = new ProjectSettingsPage(managerTab);
-
-    for (const project of projects) {
+  test.beforeAll(async ({ request, admin, member, manager }) => {for (const project of projects) {
       const projectId = await initTestProject(request, project.code, project.name, admin.username, [member.username]);
       project.id = projectId;
     }
@@ -42,51 +39,49 @@ test.describe('E2E Project Settings app', () => {
     project4.id = await initTestProject(request, project4.code, project4.name, manager.username, []);
   });
 
-
   // test if can change project name
-
   test('Normal user cannot access projectSettings to a project of which the user is a member', async ({ memberTab }) => {
-    const projectSettingsPage = new ProjectSettingsPage(memberTab);
-    await projectSettingsPage.gotoProjectDirectly(projects[0].id, projects[0].name);
-    await expect(projectSettingsPage.settingsMenuLink).not.toBeVisible();
+    const editorPage = new EditorPage(memberTab, projects[0]);
+    await editorPage.goto();
+    await expect(editorPage.settingsMenuLink).not.toBeVisible();
   });
 
   test('Project owner can manage project they own', async ({ adminTab }) => {
-    const projectSettingsPage = new ProjectSettingsPage(adminTab);
-    await projectSettingsPage.gotoProjectSettingsDirectly(projects[0].id, projects[0].name);
+    const projectSettingsPage = new ProjectSettingsPage(adminTab, projects[0]);
+    await projectSettingsPage.goto();
     expect(await projectSettingsPage.noticeList.count()).toBe(0);
     await projectSettingsPage.deleteTab.tabTitle.click();
     await expect(projectSettingsPage.deleteTab.deleteProjectButton).toBeVisible();
     await expect(projectSettingsPage.deleteTab.deleteProjectButton).toBeDisabled();
   });
 
+  test('Manager cannot view delete tab if not owner', async ({ admin, manager, managerTab }) => {
+    const projectSettingsPage = new ProjectSettingsPage(managerTab, projects[0])
+    await projectSettingsPage.goto();
 
-  test('Manager cannot view delete tab if not owner', async ({ manager }) => {
-    await projectSettingsPageManager.gotoProjectSettingsDirectly(projects[0].id, projects[0].name);
-    expect(await projectSettingsPageManager.projectTab.projectOwner.innerText()).not.toContain(manager.username);
-    await expect(projectSettingsPageManager.deleteTab.tabTitle).not.toBeVisible();
+    await expect(projectSettingsPage.projectTab.projectOwner).toHaveText(admin.username);
+    await expect(projectSettingsPage.projectTab.projectOwner).not.toHaveText(manager.username);
+    await expect(projectSettingsPage.deleteTab.tabTitle).not.toBeVisible();
   });
 
+  test('Manager can delete if owner', async ({managerTab}) => {
+    const projectsPage = new ProjectsPage(managerTab);
+    await projectsPage.goto();
+    expect(await projectsPage.hasProject(project4.name)).toBe(true);
+    const projectSettingsPage = new ProjectSettingsPage(managerTab, project4);
+    await projectSettingsPage.goto();
+    expect(await projectSettingsPage.countNotices()).toBe(0);
 
-  test('Manager can delete if owner', async () => {
-    await projectSettingsPageManager.projectsPage.goto();
-    const nProjects = await projectSettingsPageManager.projectsPage.countProjects();
-    await projectSettingsPageManager.gotoProjectSettingsDirectly(project4.id, project4.name); // TODO: fix this flaky line
-    expect(await projectSettingsPageManager.countNotices()).toBe(0);
+    await projectSettingsPage.deleteTab.tabTitle.click();
+    await expect(projectSettingsPage.deleteTab.deleteProjectButton).toBeVisible();
+    await expect(projectSettingsPage.deleteTab.deleteProjectButton).toBeDisabled();
+    await projectSettingsPage.deleteTab.confirmDeleteInput.fill('delete');
+    await expect(projectSettingsPage.deleteTab.deleteProjectButton).toBeEnabled();
+    await projectSettingsPage.deleteTab.deleteProjectButton.click();
+    await projectSettingsPage.deleteModal.confirm.click();
 
-    await projectSettingsPageManager.deleteTab.tabTitle.click();
-    await expect(projectSettingsPageManager.deleteTab.deleteProjectButton).toBeVisible();
-    await expect(projectSettingsPageManager.deleteTab.deleteProjectButton).toBeDisabled();
-    await projectSettingsPageManager.deleteTab.confirmDeleteInput.fill('delete');
-    await expect(projectSettingsPageManager.deleteTab.deleteProjectButton).toBeEnabled();
-    await projectSettingsPageManager.deleteTab.deleteProjectButton.click();
-    await projectSettingsPageManager.deleteModal.confirm.click();
-
-    await projectSettingsPageManager.page.waitForNavigation({ url: ProjectsPage.url });
-    //Or...
-    // await projectSettingsPageManager.page.waitForNavigation({ waitUntil: 'networkidle' });
-
-    expect(await projectSettingsPageManager.projectsPage.countProjects()).toBe(nProjects - 1);
+    await projectsPage.waitForPage();
+    expect(await projectsPage.hasProject(project4.name)).toBe(false);
   });
 
 });

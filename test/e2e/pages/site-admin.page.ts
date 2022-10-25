@@ -1,39 +1,18 @@
-import { expect, Locator, Page } from '@playwright/test';
+import { Page } from '@playwright/test';
+import { BasePage } from './base-page';
 
-type Tabs = {
-  reports: Locator;
-  archivedProjects: Locator;
-};
-
-type ArchivedProjectsTab = {
-  republishButton: Locator;
-  deleteButton: Locator;
-  projectsList: Locator;
-};
-
-export class SiteAdminPage {
-  readonly page: Page;
-  readonly pageName: Locator;
-  readonly tabs: Tabs;
-  readonly archivedProjectsTab: ArchivedProjectsTab;
-  static readonly url: string = '/app/siteadmin';
+export class SiteAdminPage extends BasePage {
+  readonly tabs = {
+    reports: this.page.locator('#useres'),
+    archivedProjects: this.page.locator('#archivedprojects')
+  };
+  readonly archivedProjectsTab = {
+    deleteButton: this.page.locator('#site-admin-delete-btn'),
+    republishButton: this.page.locator('#site-admin-republish-btn'),
+    projectsList: this.page.locator('[data-ng-repeat="project in visibleProjects"]')
+  };
 
   constructor(page: Page) {
-    this.page = page;
-    this.pageName = page.locator('.page-name >> text=Site Administration');
-    this.tabs = {
-      reports: page.locator('#useres'),
-      archivedProjects: page.locator('#archivedprojects')
-    };
-    this.archivedProjectsTab = {
-      deleteButton: page.locator('#site-admin-delete-btn'),
-      republishButton: page.locator('#site-admin-republish-btn'),
-      projectsList: page.locator('[data-ng-repeat="project in visibleProjects"]')
-    };
-  }
-
-  async goto() {
-    await this.page.goto(SiteAdminPage.url);
-    await expect(this.pageName).toBeVisible();
+    super(page, '/app/siteadmin', page.locator('.page-name >> text=Site Administration'));
   }
 }

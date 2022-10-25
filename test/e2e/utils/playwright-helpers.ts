@@ -5,10 +5,10 @@ import { expect, Locator, Page } from '@playwright/test';
  * Playwright does not hava a way to directly get the text of the selected option.
  * This function therefore works with the value.
  * @param selectElement , \<select\>
- * @param textShouldBeSelectedOption , e.g. 'Pizza Margherita' or a substring, e.g. 'Margherita'
+ * @param expectedOptionText , e.g. 'Pizza Margherita' or a substring, e.g. 'Margherita'
  */
-export async function expectOptionSelectedInSelectElement(selectElement: Locator, textShouldBeSelectedOption: string) {
-  const selectedValue: string = await selectElement.inputValue();
-  const shouldBeSelectedOption: Locator = selectElement.locator('option').filter({ hasText: textShouldBeSelectedOption });
-  await expect(shouldBeSelectedOption).toHaveAttribute('value', selectedValue);
+export async function expectOptionSelectedInSelectElement(selectElement: Locator, expectedOptionText: string) {
+  const expectedOption = selectElement.locator('option').filter({ hasText: expectedOptionText });
+  const expectedValue = await expectedOption.getAttribute('value');
+  await expect(selectElement).toHaveValue(expectedValue);
 }
