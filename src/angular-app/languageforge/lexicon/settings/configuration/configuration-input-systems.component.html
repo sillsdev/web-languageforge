@@ -1,12 +1,9 @@
+<div style="padding: 10px">
+    <small>To add input systems, please use FieldWorks (FLEx).</small>
+</div>
 <div class="row">
     <!-- Left column: input system list -->
     <div class="col-md-3">
-        <!-- control buttons -->
-        <div class="form-group">
-            <button class="btn btn-sm btn-primary" id="configuration-new-btn" data-ng-click="$ctrl.openNewLanguageModal($ctrl.suggestedLanguageCodes)">
-                <i class="fa fa-plus iconPadding"></i>New</button>
-        </div>
-
         <!-- picklist -->
         <dl class="picklists" style="height: 300px; overflow: auto;">
             <dt>Language Names</dt>
@@ -25,30 +22,6 @@
 
     <!-- Right column: input system setup -->
     <div class="col-md-9 settings-panel">
-        <!-- control buttons -->
-        <div uib-dropdown class="dropdown form-group btn-group">
-            <button uib-dropdown-toggle class="btn btn-sm btn-std pui-no-caret" id="configuration-dropdown-btn"><i class="fa fa-ellipsis-v"></i></button>
-            <div class="dropdown-menu" uib-dropdown-menu>
-                <a href class="dropdown-item" id="configuration-add-ipa-btn" tabindex="-1" data-ng-class="{disabled: $ctrl.newExists($ctrl.selects.special.optionsOrder[1])}"
-                   data-ng-click="$ctrl.addInputSystem($ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].language, $ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].inputSystem.languageName, $ctrl.selects.special.optionsOrder[1])">
-                    <i class="fa fa-plus"></i> Add IPA for
-                    <span class="notranslate">{{$ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].inputSystem.languageName}}</span></a>
-                <a href class="dropdown-item" id="configuration-add-voice-btn" tabindex="-1" data-ng-class="{disabled: $ctrl.newExists($ctrl.selects.special.optionsOrder[2])}"
-                   data-ng-click="$ctrl.addInputSystem($ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].language, $ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].inputSystem.languageName, $ctrl.selects.special.optionsOrder[2])">
-                    <i class="fa fa-plus"></i> Add Voice for
-                    <span class="notranslate">{{$ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].inputSystem.languageName}}</span></a>
-                <a href class="dropdown-item" id="configuration-add-variant-btn" tabindex="-1"
-                   data-ng-click="$ctrl.addInputSystem($ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].language, $ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].inputSystem.languageName, $ctrl.selects.special.optionsOrder[3])">
-                    <i class="fa fa-plus"></i> Add a variant of
-                    <span class="notranslate">{{$ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].inputSystem.languageName}}</span></a>
-                <div class="dropdown-divider" data-ng-show="! $ctrl.isInputSystemInUse()"></div>
-                <a href class="dropdown-item" id="configuration-remove-btn" data-ng-show="! $ctrl.isInputSystemInUse()" tabindex="-1"
-                   data-ng-click="$ctrl.removeInputSystem($ctrl.selectedInputSystemId)">
-                    <i class="fa fa-trash"></i> Remove
-                    <span class="notranslate">{{$ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].languageDisplayName()}}</span></a>
-            </div>
-        </div>
-
         <!-- settings -->
         <div class="card card-body bg-light" data-ng-show="$ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId]">
             <label class="col-form-label float-right">{{$ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].inputSystem.tag}}</label>
@@ -57,7 +30,7 @@
                 {{$ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].languageDisplayName()}}</h3>
             <!-- unlisted language name -->
             <!--suppress HtmlFormInputWithoutLabel -->
-            <input type="text" id="languageName" style="font-size: 1.35em; color: black; font-weight: 700; border: 0; height: 32px; width: 365px"
+            <input type="text" id="languageName" style="font-size: 1.35em; color: black; font-weight: 700; height: 32px; width: 365px"
                 data-ng-model="$ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].inputSystem.languageName"
                 data-ng-show="$ctrl.isUnlistedLanguage($ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].language)">
             <div class="form-group">
@@ -80,16 +53,16 @@
             </div>
             <br>
             <p class="text-warning" data-ng-show="$ctrl.isInputSystemInUse()">
-                <small>Some settings are disabled because the Input System may already be in use.</small>
+                <small>Some settings are disabled. Please edit these in Fieldworks (FLEx).</small>
             </p>
             <div class="form-group">
                 <label class="col-form-label" for="special">Special</label>
                 <div class="controls">
-                    <select class="form-control custom-select" id="special"
+                    <input type="text" class="form-control" id="special"
                         data-ng-model="$ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].special"
-                        data-ng-disabled="$ctrl.isInputSystemInUse()"
                         data-ng-change="$ctrl.specialChanged($ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].special)"
-                        data-ng-options="$ctrl.selects.special.options[key] for key in $ctrl.selects.special.optionsOrder"></select>
+                        disabled>
+                    </input>
                 </div>
             </div>
 
@@ -98,18 +71,17 @@
             <div class="form-group" data-ng-show="$ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].special == $ctrl.selects.special.optionsOrder[1]">
                 <label class="col-form-label" for="purpose">Purpose</label>
                 <div class="controls">
-                    <select class="form-control custom-select" id="purpose"
+                    <input type="text" class="form-control" id="purpose"
                         data-ng-model="$ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].purpose"
-                        data-ng-disabled="$ctrl.isInputSystemInUse()"
-                        data-ng-options="$ctrl.selects.purpose.options[key] for key in $ctrl.selects.purpose.optionsOrder">
-                        <option value="">unspecified</option></select>
+                        disabled>
+                    </input>
                 </div>
                 <label class="col-form-label" for="ipaVariant">Variant (limited to letters or numbers, no spaces)</label>
                 <div class="controls">
                     <input type="text" class="form-control" id="ipaVariant" size="25"
                           model-transform-limit="35" model-transform-no-space data-ng-trim="false"
                            data-ng-model="$ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].variantString"
-                           data-ng-disabled="$ctrl.isInputSystemInUse()">
+                           disabled>
                 </div>
             </div>
             <!-- Voice -->
@@ -119,33 +91,31 @@
                     <input type="text" class="form-control" id="voiceVariant" size="25"
                            model-transform-limit="35" model-transform-no-space data-ng-trim="false"
                            data-ng-model="$ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].variantString"
-                           data-ng-disabled="$ctrl.isInputSystemInUse()">
+                           disabled>
                 </div>
             </div>
             <!-- Script / Region / Variant -->
             <div class="form-group" data-ng-show="$ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].special == $ctrl.selects.special.optionsOrder[3]">
                 <label class="col-form-label" for="script">Script</label>
                 <div class="controls">
-                    <select class="form-control custom-select" id="script"
+                    <input type="text" class="form-control" id="script"
                         data-ng-model="$ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].script"
-                        data-ng-disabled="$ctrl.isInputSystemInUse()"
-                        data-ng-options="key as option.join(', ') for (key, option) in $ctrl.selects.script.options">
-                        <option value="">-- select a script --</option></select>
+                        disabled>
+                    </input>
                 </div>
                 <label class="col-form-label" for="region">Region</label>
                 <div class="controls">
-                    <select class="form-control custom-select" id="region"
+                    <input type="text" class="form-control" id="region"
                         data-ng-model="$ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].region"
-                        data-ng-disabled="$ctrl.isInputSystemInUse()"
-                        data-ng-options="key as option for (key, option) in $ctrl.selects.region.options">
-                        <option value="">-- select a region --</option></select>
+                        disabled>
+                    </input>
                 </div>
                 <label class="col-form-label" for="variant">Variant (limited to letters or numbers, no spaces)</label>
                 <div class="controls">
                     <input type="text" class="form-control" id="variant" size="25"
                         model-transform-limit="35" model-transform-no-space data-ng-trim="false"
                         data-ng-model="$ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].variantString"
-                        data-ng-disabled="$ctrl.isInputSystemInUse()">
+                        disabled>
                 </div>
             </div>
             </div>

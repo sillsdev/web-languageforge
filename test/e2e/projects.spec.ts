@@ -63,21 +63,20 @@ test.describe('E2E Projects List app', () => {
 
     test('Should list projects of which the user is a member', async () => {
       for (const project of projects) {
-        expect(await projectsPageMember.findProject(project.name)).not.toMatch('-1');
+        await expect(projectsPageMember.projectRow(project.name)).toBeVisible();
       }
     });
 
     test('Should not list projects the user is not a member of', async () => {
-      expect(await projectsPageMember.findProject(project4.name)).toMatch('-1');
+      await expect(projectsPageMember.projectRow(project4.name)).not.toBeVisible();
     });
 
     test('Project to which user is added shows up when page reloaded', async ({ request, member }) => {
-      const nProjects = await projectsPageMember.countProjects();
-
+      expect(await projectsPageMember.hasProject(project4.name)).toBe(false);
       await addUserToProject(request, project4.code, member.username);
       await projectsPageMember.page.reload();
       await projectsPageMember.goto();
-      expect(await projectsPageMember.countProjects()).toBe(nProjects + 1);
+      expect(await projectsPageMember.hasProject(project4.name)).toBe(true);
     });
   });
 
@@ -89,26 +88,26 @@ test.describe('E2E Projects List app', () => {
 
     test('Should list all projects', async () => {
       for (const project of [...projects, project4, project5]) {
-        expect(await projectsPageAdmin.findProject(project.name)).not.toMatch('-1');
+        await expect(projectsPageAdmin.projectRow(project.name)).toBeVisible();
       }
       // only project4 where admin is a member should be linked
       for (const project of [...projects, project5]) {
-        await expect(await projectsPageAdmin.projectLinkLocator(project.name)).not.toBeVisible();
+        await expect(projectsPageAdmin.projectLink(project.name)).not.toBeVisible();
       }
-      await expect(await projectsPageAdmin.projectLinkLocator(project4.name)).toBeVisible();
+      await expect(projectsPageAdmin.projectLink(project4.name)).toBeVisible();
     });
 
     test('Should allow admin to add him- or herself to the project as tech support if not already a manager', async () => {
       expect(await projectsPageAdmin.projectIsLinked(project5.name)).toBe(false);
       expect(await projectsPageAdmin.projectHasAddTechSupportButton(project5.name)).toBe(true);
 
-      await (await projectsPageAdmin.projectAddTechSupportButtonLocator(project5.name)).click();
+      await projectsPageAdmin.projectAddTechSupportButtonLocator(project5.name).click();
 
       const noticeElement = new NoticeElement(projectsPageAdmin.page);
       await expect(noticeElement.notice).toBeVisible();
       await expect(noticeElement.notice).toContainText(`You are now Tech Support for the '${project5.name}' project.`);
       await expect(await projectsPageAdmin.projectAddTechSupportButtonLocator(project5.name)).not.toBeVisible();
-      await expect(await projectsPageAdmin.projectLinkLocator(project5.name)).toBeVisible();
+      await expect(projectsPageAdmin.projectLink(project5.name)).toBeVisible();
 
       // admin is a contributor
       expect(await projectsPageAdmin.projectIsLinked(project4.name)).toBe(true);
@@ -120,17 +119,17 @@ test.describe('E2E Projects List app', () => {
 
     test('Admin added to project when accessing without membership', async () => {
       // this is already tested in a test above but makes the test more understandable
-      await expect(await projectsPageAdmin.projectLinkLocator(projects[2].name)).not.toBeVisible();
+      await expect(projectsPageAdmin.projectLink(projects[2].name)).not.toBeVisible();
       await gotoProjectDirectly(projectsPageAdmin.page, projects[2].id, projects[2].name);
       await projectsPageAdmin.goto();
-      await expect(await projectsPageAdmin.projectLinkLocator(projects[2].name)).toBeVisible();
+      await expect(projectsPageAdmin.projectLink(projects[2].name)).toBeVisible();
     });
 
     test('User redirected to projects app when accessing without membership', async ({ baseURL }) => {
       await projectsPageMember.page.goto('/app/lexicon/' + project5.id + '/#!/editor/list');
       // redirect
       await expect(projectsPageMember.createButton).toBeVisible();
-      expect(projectsPageMember.page.url().startsWith(baseURL + ProjectsPage.url)).toBe(true);
+      expect(projectsPageMember.page.url().startsWith(baseURL + projectsPageMember.url)).toBe(true);
     });
 
   });

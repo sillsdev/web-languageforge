@@ -56,6 +56,7 @@ test.describe('E2E Change Password app', () => {
     // await login(memberTab, memberTab.username, newPassword);
 
     const loginPage = new LoginPage(page);
+    await loginPage.goto();
     await loginPage.loginAs(member.username, newPassword);
     const pageHeader = new PageHeader(page);
     await expect(pageHeader.myProjects.button).toBeVisible(); // TODO: is flaky, fix it
