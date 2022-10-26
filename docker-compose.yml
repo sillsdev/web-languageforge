@@ -325,6 +325,10 @@ services:
     volumes:
       - ./test/e2e/utils/TestControl.php:/var/www/src/Api/Service/TestControl.php
       - ./test/e2e/shared-files:/tmp/e2e-shared-files
+      - lf-ui-dist:/var/www/html/dist
+
+      # needed this volume mapping so changes to partials would be reflected in running app (e.g. HTML)
+      - ./src/angular-app:/var/www/src/angular-app
 
   test-php:
     build:

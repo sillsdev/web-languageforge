@@ -65,50 +65,6 @@ describe('Lexicon E2E Configuration Input Systems', () => {
     expect<any>(await configPage.inputSystemsPane.moreButtonGroup.remove.isDisplayed()).toBe(false);
   });
 
-  describe('Select a new Input System Language modal', async () => {
-
-    it('can open the new language modal', async () => {
-      expect<any>(await configPage.inputSystemsPane.newButton.isEnabled()).toBe(true);
-      await configPage.inputSystemsPane.newButton.click();
-      expect<any>(await configPage.modal.selectLanguage.searchLanguageInput.isPresent()).toBe(true);
-    });
-
-    it('can search for a language', async () => {
-      expect<any>(await configPage.modal.selectLanguage.languageRows.count()).toBe(0);
-      await configPage.modal.selectLanguage.searchLanguageInput.sendKeys(firstLanguage + protractor.Key.ENTER);
-      expect<any>(await configPage.modal.selectLanguage.languageRows.first().isPresent()).toBe(true);
-      expect<any>(await configPage.modal.selectLanguage.firstLanguageName.getText()).toEqual(firstLanguage);
-      expect<any>(await configPage.modal.selectLanguage.languageRows.last().isPresent()).toBe(true);
-      expect<any>(await configPage.modal.selectLanguage.lastLanguageName.getText()).toEqual(lastLanguage);
-    });
-
-    it('can clear language search', async () => {
-      expect<any>(await configPage.modal.selectLanguage.searchLanguageInput.getAttribute('value')).toEqual(firstLanguage);
-      await configPage.modal.selectLanguage.clearSearchButton.click();
-      expect<any>(await configPage.modal.selectLanguage.searchLanguageInput.getAttribute('value')).toEqual('');
-      expect<any>(await configPage.modal.selectLanguage.languageRows.count()).toBe(0);
-    });
-
-    it('can select language', async () => {
-      await configPage.modal.selectLanguage.searchLanguageInput.sendKeys(firstLanguage + protractor.Key.ENTER);
-      expect<any>(await configPage.modal.selectLanguage.addButton.isPresent()).toBe(true);
-      expect<any>(await configPage.modal.selectLanguage.addButton.isEnabled()).toBe(false);
-      await configPage.modal.selectLanguage.languageRows.last().click();
-      expect<any>(await configPage.modal.selectLanguage.addButton.isEnabled()).toBe(true);
-      expect<any>(await configPage.modal.selectLanguage.addButton.getText()).toEqual('Add ' + lastLanguage);
-      await configPage.modal.selectLanguage.languageRows.first().click();
-      expect<any>(await configPage.modal.selectLanguage.addButton.isEnabled()).toBe(true);
-      expect<any>(await configPage.modal.selectLanguage.addButton.getText()).toEqual('Add ' + firstLanguage);
-    });
-
-    it('can add language', async () => {
-      await configPage.modal.selectLanguage.addButton.click();
-      expect<any>(await configPage.modal.selectLanguage.searchLanguageInput.isPresent()).toBe(false);
-      expect<any>(await configPage.applyButton.isEnabled()).toBe(true);
-    });
-
-  });
-
   it('new Input System is selected', async () => {
     expect<any>(await configPage.inputSystemsPane.selectedInputSystem.displayName.getText()).toEqual(firstLanguage);
     expect<any>(await configPage.inputSystemsPane.selectedInputSystem.tag.getText()).toEqual('mi');

@@ -57,8 +57,7 @@ export class ConfigurationPage {
       removeGroupButton: (groupIndex: number) => {
         return this.activePane.element(by.id('table-header'))
           .element(by.className('remove-button-group-' + groupIndex));
-      },
-      addInputSystemButton: this.activePane.element(by.id('add-input-system-btn'))
+      }
     },
     entry: {
       addGroupButton: this.activePane.element(by.id('add-group-entry-btn')),

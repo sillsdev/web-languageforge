@@ -64,14 +64,6 @@ export class InputSystemsConfigurationController implements angular.IController 
     ) {
       this.selectInputSystem(this.iscInputSystemsList[0].uuid);
     }
-
-    const addInputSystemChange = changes.iscAddInputSystem as angular.IChangesObject<boolean>;
-    if (addInputSystemChange != null && addInputSystemChange.currentValue) {
-      this.openNewLanguageModal(this.suggestedLanguageCodes);
-      this.iscOnUpdate({ $event: {
-        addInputSystem: false
-      } });
-    }
   }
 
   isInputSystemInUse(): boolean {
@@ -174,34 +166,6 @@ export class InputSystemsConfigurationController implements angular.IController 
   // noinspection JSMethodCanBeStatic
   isUnlistedLanguage(code: string): boolean {
     return (code === 'qaa');
-  }
-
-  openNewLanguageModal(suggestedLanguageCodes: any): void {
-    const modalInstance = this.$modal.open({
-      templateUrl: '/angular-app/languageforge/lexicon/shared/select-new-language.modal.html',
-      windowTopClass: 'modal-select-language',
-      controller: ['$scope', '$uibModalInstance',
-        (scope: any, $modalInstance: angular.ui.bootstrap.IModalInstanceService) => {
-          scope.selected = {
-            code: '',
-            language: {}
-          };
-          scope.add = () => {
-            $modalInstance.close(scope.selected);
-          };
-
-          scope.close = $modalInstance.dismiss;
-
-          scope.suggestedLanguageCodes = suggestedLanguageCodes;
-        }
-      ]
-    });
-
-    modalInstance.result.then((selected: any) => {
-      this.addInputSystem(selected.code, selected.language.name,
-        this.selects.special.optionsOrder[0]);
-    }, () => { });
-
   }
 
 }

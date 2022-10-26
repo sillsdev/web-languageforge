@@ -45,7 +45,6 @@ describe('Lexicon E2E Configuration Fields', () => {
     expect<any>(await configPage.applyButton.isDisplayed()).toBe(true);
     expect<any>(await configPage.applyButton.isEnabled()).toBe(false);
     await configPage.tabs.unified.click();
-    expect<any>(await configPage.unifiedPane.inputSystem.addInputSystemButton.isDisplayed()).toBe(true);
   });
 
   it('check Apply button is enabled on changes', async () => {

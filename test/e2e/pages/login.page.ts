@@ -1,29 +1,16 @@
-import { expect, Locator, Page } from '@playwright/test';
+import { Page } from '@playwright/test';
+import { BasePage } from './base-page';
 
-export class LoginPage {
-  readonly page: Page;
-  readonly usernameInput: Locator;
-  readonly passwordInput: Locator;
-  readonly submitButton: Locator;
-  static readonly url: string = '/auth/login';
+export class LoginPage extends BasePage {
+  readonly usernameInput = this.page.locator('#username');
+  readonly passwordInput = this.page.locator('#password');
+  readonly submitButton = this.page.locator('#login-submit');
 
   constructor(page: Page) {
-    this.page = page;
-    this.usernameInput = page.locator('#username');
-    this.passwordInput = page.locator('#password');
-    this.submitButton = page.locator('#login-submit')
-  }
-
-  async goto() {
-    await this.page.goto(LoginPage.url);
-    await expect(this.passwordInput).toBeVisible();
+    super(page, '/auth/login', page.locator('#password'))
   }
 
   async loginAs(username: string, password: string) {
-    // navigate to login page if not already there
-    if (! this.page.url().endsWith(LoginPage.url)) {
-      await this.page.goto(LoginPage.url);
-    }
     await this.usernameInput.fill(username);
     await this.passwordInput.fill(password);
     await this.submitButton.click();

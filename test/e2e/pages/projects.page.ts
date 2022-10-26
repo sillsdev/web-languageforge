@@ -1,4 +1,5 @@
 import { expect, Locator, Page } from '@playwright/test';
+import { BasePage } from './base-page';
 
 export type UserRoles =
   'can manage' |
@@ -7,72 +8,35 @@ export type UserRoles =
   'can view'
   ;
 
-export class ProjectsPage {
-  readonly page: Page;
-  readonly pageName: Locator;
-  readonly projectsList: Locator;
-  readonly projectNames: Locator;
+export class ProjectsPage extends BasePage {
+  readonly projectsList = this.page.locator('[data-ng-repeat="project in visibleProjects"]');
+  readonly projectNames = this.projectsList.locator('a[href^="/app/lexicon"]');
 
-  readonly projectNameLinked: string;
-  readonly projectNameUnlinked: string;
+  readonly createButton = this.page.locator('button:has-text("Start or Join a New Project")');
+  readonly createNonSRProjectButton = this.page.locator('text=Create a non-send/receive project (not recommended)'); // SR - send/receive
+  readonly projectNameInput = this.page.locator('[placeholder="eg\\:\\ My\\ Dictionary"]');
+  readonly nextButton = this.page.locator('text=Next'); // project creation: step after project name
+  readonly skipInitialDataButton = this.page.locator('text=Skip');
+  readonly selectLanguageButton = this.page.locator('a:has-text("Select")');
+  readonly searchLanguageInput = this.page.locator('[placeholder="Search"]');
+  readonly searchLanguageButton = this.page.locator('text=Search');
+  readonly addLanguageButton = this.page.locator('#select-language-add-btn');
+  readonly finalCreateButton = this.page.locator('button:has-text("Dictionary")');
 
-  readonly createButton: Locator;
-  readonly createNonSRProjectButton: Locator; // SR - send/receive
-  readonly projectNameInput: Locator;
-  readonly nextButton: Locator; // project creation: step after project name
-  readonly skipInitialDataButton: Locator;
-  readonly selectLanguageButton: Locator;
-  readonly searchLanguageInput: Locator;
-  readonly searchLanguageButton: Locator;
-  readonly addLanguageButton: Locator;
-  readonly finalCreateButton: Locator;
+  readonly shareProjectButton = this.page.locator('span:has-text("Share")');
+  readonly shareProjectEmailInput = this.page.locator('[placeholder="Email"]');
+  readonly shareProjectUserRoleDropdown = this.page.locator('role-dropdown[target="\'email_invite\'"]');
+  readonly shareProjectSendInvitationButton = this.page.locator('button[ng-click="$ctrl.sendEmailInvite()"]');
 
-  readonly shareProjectButton: Locator;
-  readonly shareProjectEmailInput: Locator;
-  readonly shareProjectUserRoleDropdown: Locator;
-  readonly shareProjectSendInvitationButton: Locator;
-
-  readonly projectsPerPageDropdown: Locator;
-  readonly addAsTechSupportBtnText: string;
-
-  static readonly url: string = '/app/projects';
+  readonly projectsPerPageDropdown = this.page.locator('select[data-ng-model="$ctrl.itemsPerPage"]');
+  readonly addAsTechSupportBtnText = 'text=Tech Support';
 
   constructor(page: Page) {
-    this.page = page;
-    this.pageName = page.locator('.page-name >> text=My Projects');
-    this.projectsList = page.locator('[data-ng-repeat="project in visibleProjects"]');
-    this.projectNames = this.projectsList.locator('a[href^="/app/lexicon"]');
-
-    this.projectNameLinked = 'projectNameLinked';
-    this.projectNameUnlinked = '';
-
-    this.createButton = page.locator('button:has-text("Start or Join a New Project")');
-    this.createNonSRProjectButton = page.locator('text=Create a non-send/receive project (not recommended)');
-    this.projectNameInput = page.locator('[placeholder="eg\\:\\ My\\ Dictionary"]');
-    this.nextButton = page.locator('text=Next');
-    this.skipInitialDataButton = page.locator('text=Skip');
-    this.selectLanguageButton = page.locator('a:has-text("Select")');
-    this.searchLanguageInput = page.locator('[placeholder="Search"]');
-    this.searchLanguageButton = page.locator('text=Search');
-    this.addLanguageButton = page.locator('#select-language-add-btn');
-    this.finalCreateButton = page.locator('button:has-text("Dictionary")');
-
-    this.shareProjectButton = page.locator('span:has-text("Share")');
-    this.shareProjectEmailInput = page.locator('[placeholder="Email"]');
-    this.shareProjectUserRoleDropdown = page.locator('role-dropdown[target="\'email_invite\'"]');
-    this.shareProjectSendInvitationButton = page.locator('button[ng-click="$ctrl.sendEmailInvite()"]');
-
-    this.projectsPerPageDropdown = page.locator('select[data-ng-model="$ctrl.itemsPerPage"]');
-    this.addAsTechSupportBtnText = 'text=Tech Support';
+    super(page, '/app/projects', page.locator('button:has-text("Start or Join a New Project")'));
   }
 
   async goto() {
-    // if url not ProjectsPage.url
-    if (! this.page.url().endsWith(ProjectsPage.url)) {
-      await this.page.goto(ProjectsPage.url);
-      //await this.page.waitForLoadState('domcontentloaded');
-    }
-    await expect(this.createButton).toBeVisible();
+    await super.goto();
     if (await this.projectsPerPageDropdown.isVisible()) {
       await this.projectsPerPageDropdown.selectOption('100');
     }
@@ -96,7 +60,7 @@ export class ProjectsPage {
 
   async addUserToProject(projectName: string, userEmail: string, userRole: UserRoles) {
     await this.goto();
-    await this.clickOnProject(projectName);
+    await this.projectLink(projectName).click();
     await this.shareProjectButton.click();
     await this.shareProjectEmailInput.fill(userEmail);
     await this.shareProjectUserRoleDropdown.click();
@@ -104,72 +68,31 @@ export class ProjectsPage {
     await this.shareProjectSendInvitationButton.click();
   }
 
-  async countProjects(): Promise<number> {
-    await expect(this.createButton).toBeVisible();
-    return await this.projectsList.count();
+  async hasProject(projectName: string): Promise<boolean> {
+    const count = await this.projectRow(projectName).count();
+    if (count > 1) {
+      throw new Error('Found multiple matching projects');
+    }
+    return count === 1;
   }
 
-  // in order to be able to run the tests in parallel, this function only counts the projects created in that test file
-  async countSpecificProjects(projects: string): Promise<number> {
-    await this.goto();
-    const nAllProjects = await this.projectNames.count();
-    let nSpecificProjects = 0;
-    for (let i = 0; i < nAllProjects; i++) {
-      const projectName = await this.projectNames.nth(i).locator('span').innerText();
-      if (projectName.includes(projects)) {
-        nSpecificProjects++;
-      }
-    }
-    return nSpecificProjects;
+  projectRow(projectName: string): Locator {
+    return this.page.locator('listview .row:has-text("' + projectName + '")');
   }
 
-  async findProject(projectName: string): Promise<string> {
-    await this.goto();
-    const foundElements = this.page.locator('span:has-text("' + projectName + '")');
-    const nFoundElements = await foundElements.count();
-    for (let i = 0; i < nFoundElements; i++) {
-      if (await foundElements.nth(i).isVisible()) {
-        return 'span:has-text("' + projectName + '") >> nth=' + i;
-      }
-    }
-    return '-1';
-  }
-
-  async findProjectRow(projectName: string): Promise<Locator> {
-    await this.goto();
-    const rowLocator = this.page.locator(`.project:has(span:has-text("${projectName}"))`);
-    if (await rowLocator.count() == 1) {
-      return rowLocator;
-    }
-    return undefined;
+  projectLink(projectName: string): Locator {
+    return this.page.locator('listview .row a:has-text("' + projectName + '")');
   }
 
   async projectIsLinked(projectName: string): Promise<boolean> {
-    const projectLink = await this.projectLinkLocator(projectName);
-    return projectLink.isVisible();
-  }
-
-  async projectLinkLocator(projectName: string): Promise<Locator> {
-    const rowLocator: Locator = await this.findProjectRow(projectName);
-    expect(rowLocator).not.toBeUndefined();
-    return rowLocator.locator(`a:has-text("${projectName}")`);
+    return this.projectLink(projectName).isVisible();
   }
 
   async projectHasAddTechSupportButton(projectName: string): Promise<boolean> {
-    const rowLocator: Locator = await this.findProjectRow(projectName);
-    expect(rowLocator).not.toBeUndefined();
-    return rowLocator.locator('text=Tech Support').isVisible();
+    return this.projectAddTechSupportButtonLocator(projectName).isVisible();
   }
 
-  async projectAddTechSupportButtonLocator(projectName: string): Promise<Locator> {
-    const rowLocator: Locator = await this.findProjectRow(projectName);
-    expect(rowLocator).not.toBeUndefined();
-    return rowLocator.locator('text=Tech Support');
-  }
-
-  async clickOnProject(projectName: string) {
-    const projectLocatorString: string = await this.findProject(projectName);
-    expect(projectLocatorString).not.toEqual('-1');
-    this.page.locator(projectLocatorString).click();
+  projectAddTechSupportButtonLocator(projectName: string): Locator {
+    return this.projectRow(projectName).locator('text=Tech Support');
   }
 }
