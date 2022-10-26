@@ -24,10 +24,6 @@ describe('Lexicon E2E Page Traversal', () => {
       await configurationPage.tabs.unified.click();
       await configurationPage.unifiedPane.inputSystem.addGroupButton.click();
       await browser.$('body').sendKeys(protractor.Key.ESCAPE);
-      await browser.wait(
-        ExpectedConditions.elementToBeClickable(configurationPage.unifiedPane.inputSystem.addInputSystemButton),
-        constants.conditionTimeout);
-      await configurationPage.unifiedPane.inputSystem.addInputSystemButton.click();
       await browser.$('body').sendKeys(protractor.Key.ESCAPE);
       await browser.wait(ExpectedConditions.elementToBeClickable(configurationPage.tabs.unified), constants.conditionTimeout);
       await configurationPage.tabs.unified.click();
