@@ -3,8 +3,6 @@ name: Build and Test
 # https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#on
 on:
   pull_request:
-  push:
-    branches: 'chore/fix-deprecated-gha-apis' #TODO: remove this line after testing on branch.
 
 env:
   DOCKER_BUILDKIT: 1
