@@ -3,6 +3,7 @@ name: Build and Test
 # https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#on
 on:
   pull_request:
+  branch: 'chore/fix-deprecated-gha-apis' #TODO: remove this line after testing on branch.
 
 env:
   DOCKER_BUILDKIT: 1
@@ -17,7 +18,7 @@ jobs:
 
     steps:
       -
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       -
         name: Unit Tests
         run: make unit-tests-ci
@@ -35,9 +36,9 @@ jobs:
 
     steps:
       -
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       -
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: '16.14.0'
           cache: 'npm'
@@ -76,9 +77,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       -
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       -
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: "16.14.0"
           cache: "npm"
@@ -91,7 +92,7 @@ jobs:
 
   #   steps:
   #     -
-  #       uses: actions/checkout@v2
+  #       uses: actions/checkout@v3
   #     -
   #       name: Build app
   #       run: make build
