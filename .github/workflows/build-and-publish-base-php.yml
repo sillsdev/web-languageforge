@@ -3,8 +3,6 @@ name: Build and publish a base PHP image for LF
 # https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#on
 on:
   workflow_dispatch:
-  push:
-    branches: 'chore/fix-deprecated-gha-apis' #TODO: remove this line after testing on branch.
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
