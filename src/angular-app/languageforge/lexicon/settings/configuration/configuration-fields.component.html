@@ -106,26 +106,22 @@
             </tr>
             <tr style="background-color: initial">
                 <td></td>
-                <th class="text-left align-middle">
-                    <button type="button" class="btn btn-std" data-ng-click="$ctrl.fccAddInputSystem()"
-                            id="add-input-system-btn" title="Add an Input System">
-                        <i class="fa fa-plus"></i>
-                    </button>
-                </th>
-                <td colspan="6"></td>
-                <!--suppress JSUnusedLocalSymbols -->
-                <td data-ng-repeat="group in $ctrl.unifiedViewModel.inputSystems.selectAllColumns.groups"></td>
-                <td></td>
-            </tr>
-            <tr style="background-color: initial; height: 2rem">
-                <td></td>
-                <th></th>
                 <td colspan="6"></td>
                 <!--suppress JSUnusedLocalSymbols -->
                 <td data-ng-repeat="group in $ctrl.unifiedViewModel.inputSystems.selectAllColumns.groups"></td>
                 <td></td>
             </tr>
         </tbody>
+        <tr style="background-color: initial; height: 4rem">
+            <td></td>
+            <th class="text-left align-top">
+                <small>To add input systems, please use FieldWorks (FLEx).</small>
+            </th>
+            <td colspan="6"></td>
+            <!--suppress JSUnusedLocalSymbols -->
+            <td data-ng-repeat="group in $ctrl.unifiedViewModel.entryFields.selectAllColumns.groups"></td>
+            <td></td>
+        </tr>
         <tbody drag-to-reorder-bind="$ctrl.unifiedViewModel.entryFields.settings">
             <tr class="table-secondary" id="entry-header">
                 <th class="text-center align-top"></th>
