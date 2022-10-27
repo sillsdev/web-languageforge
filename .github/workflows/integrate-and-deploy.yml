@@ -44,18 +44,22 @@ jobs:
         id: image
         run: |
           echo "NAMESPACE=sillsdev/web-languageforge" >> $GITHUB_OUTPUT
-          echo "{TAG_APP}=${{ inputs.image-tag-app }}" >> $GITHUB_OUTPUT
-          echo "{TAG_PROXY}=${{ inputs.image-tag-proxy }}" >> $GITHUB_OUTPUT
-          echo "{TAG_NEXT_APP}=${{ inputs.image-tag-next-app }}" >> $GITHUB_OUTPUT
-          echo "{LFMERGE_NAMESPACE}={ghcr.io/sillsdev/lfmerge}" >> $GITHUB_OUTPUT
+          echo "TAG_APP=${{ inputs.image-tag-app }}" >> $GITHUB_OUTPUT
+          echo "TAG_PROXY=${{ inputs.image-tag-proxy }}" >> $GITHUB_OUTPUT
+          echo "TAG_NEXT_APP=${{ inputs.image-tag-next-app }}" >> $GITHUB_OUTPUT
+          echo "LFMERGE_NAMESPACE=ghcr.io/sillsdev/lfmerge" >> $GITHUB_OUTPUT
 
           # Get LfMerge tag from Dockerfile, fallback to "latest" as default if that fails
           TAG_LFMERGE=$(head -n 1 docker/lfmerge/Dockerfile | cut -d: -f2)
           TAG_LFMERGE=${TAG_LFMERGE:-latest}
-          echo "{TAG_LFMERGE}={${TAG_LFMERGE}}" >> $GITHUB_OUTPUT
+          echo "{TAG_LFMERGE={${TAG_LFMERGE}}" >> $GITHUB_OUTPUT
       -
         run: |
           echo NAMESPACE=${{ steps.image.outputs.NAMESPACE }}
+          echo TAG_APP=${{ steps.image.outputs.TAG_APP }}
+          echo TAG_PROXY=${{ steps.image.outputs.TAG_PROXY }}
+          echo TAG_NEXT_APP=${{ steps.image.outputs.TAG_NEXT_APP }}
+          echo LFMERGE_NAMESPACE=${{ steps.image.outputs.LFMERGE_NAMESPACE }}
       # -
       #   uses: actions/setup-node@v3
       #   with:
