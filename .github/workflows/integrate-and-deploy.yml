@@ -52,7 +52,7 @@ jobs:
           # Get LfMerge tag from Dockerfile, fallback to "latest" as default if that fails
           TAG_LFMERGE=$(head -n 1 docker/lfmerge/Dockerfile | cut -d: -f2)
           TAG_LFMERGE=${TAG_LFMERGE:-latest}
-          echo "{TAG_LFMERGE={${TAG_LFMERGE}}" >> $GITHUB_OUTPUT
+          echo "TAG_LFMERGE=${{ TAG_LFMERGE }}" >> $GITHUB_OUTPUT
       -
         run: |
           echo NAMESPACE=${{ steps.image.outputs.NAMESPACE }}
@@ -60,6 +60,7 @@ jobs:
           echo TAG_PROXY=${{ steps.image.outputs.TAG_PROXY }}
           echo TAG_NEXT_APP=${{ steps.image.outputs.TAG_NEXT_APP }}
           echo LFMERGE_NAMESPACE=${{ steps.image.outputs.LFMERGE_NAMESPACE }}
+          echo TAG_LFMERGE=${{ steps.image.outputs.TAG_LFMERGE }}
       # -
       #   uses: actions/setup-node@v3
       #   with:
