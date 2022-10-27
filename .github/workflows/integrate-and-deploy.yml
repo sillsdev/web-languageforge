@@ -55,7 +55,7 @@ jobs:
           echo "{TAG_LFMERGE}={${TAG_LFMERGE}}" >> $GITHUB_OUTPUT
       -
         run: |
-          echo NAMESPACE=${{ steps.image.outputs.NAMESPACE }}
+          echo NAMESPACE=${{ env.NAMESPACE }}
       # -
       #   uses: actions/setup-node@v3
       #   with:
