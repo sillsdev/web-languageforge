@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - develop
+      - chore/fix-deprecated-gha-apis
 
 jobs:
   staging:

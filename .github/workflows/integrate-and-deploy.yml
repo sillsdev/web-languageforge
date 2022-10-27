@@ -34,7 +34,7 @@ jobs:
 
     steps:
       -
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       -
         run: |
           docker --version
@@ -43,17 +43,18 @@ jobs:
         name: Establish image name
         id: image
         run: |
-          echo ::set-output name=NAMESPACE::sillsdev/web-languageforge
-          echo ::set-output name=TAG_APP::${{ inputs.image-tag-app }}
-          echo ::set-output name=TAG_PROXY::${{ inputs.image-tag-proxy }}
-          echo ::set-output name=TAG_NEXT_APP::${{ inputs.image-tag-next-app }}
-          echo ::set-output name=LFMERGE_NAMESPACE::ghcr.io/sillsdev/lfmerge
+          echo "{NAMESPACE}={sillsdev/web-languageforge}" >> $GITHUB_OUTPUT
+          echo "{TAG_APP}=${{ inputs.image-tag-app }}" >> $GITHUB_OUTPUT
+          echo "{TAG_PROXY}=${{ inputs.image-tag-proxy }}" >> $GITHUB_OUTPUT
+          echo "{TAG_NEXT_APP}=${{ inputs.image-tag-next-app }}" >> $GITHUB_OUTPUT
+          echo "{LFMERGE_NAMESPACE}={ghcr.io/sillsdev/lfmerge}" >> $GITHUB_OUTPUT
+
           # Get LfMerge tag from Dockerfile, fallback to "latest" as default if that fails
           TAG_LFMERGE=$(head -n 1 docker/lfmerge/Dockerfile | cut -d: -f2)
           TAG_LFMERGE=${TAG_LFMERGE:-latest}
-          echo ::set-output name=TAG_LFMERGE::${TAG_LFMERGE}
+          echo "{TAG_LFMERGE}={${TAG_LFMERGE}}" >> $GITHUB_OUTPUT
       -
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: '16.14.0'
           cache: 'npm'
@@ -67,21 +68,21 @@ jobs:
       -
         name: Build "next" images
         run: make build-next
-      -
-        name: Unit Tests
-        run: make unit-tests-ci
+      # -
+      #   name: Unit Tests
+      #   run: make unit-tests-ci
       # -
       #   name: E2E Tests
       #   run: |
       #     docker compose -f docker-compose.yml up -d app-for-playwright
       #     npx playwright install chromium
       #     npx playwright test
-      -
-        name: Log in to Docker Hub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.image-repo-username }}
-          password: ${{ secrets.image-repo-password }}
+      # -
+      #   name: Log in to Docker Hub
+      #   uses: docker/login-action@v1
+      #   with:
+      #     username: ${{ secrets.image-repo-username }}
+      #     password: ${{ secrets.image-repo-password }}
       -
         name: Tag images
         run: |
@@ -90,27 +91,27 @@ jobs:
           docker tag lf-next-app ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG_NEXT_APP }}
       -
         run: docker images
-      -
-        name: Publish images
-        run: docker push --all-tags ${{ steps.image.outputs.NAMESPACE }}
+      # -
+      #   name: Publish images
+      #   run: docker push --all-tags ${{ steps.image.outputs.NAMESPACE }}
 
-    outputs:
-      IMAGE_APP: ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG_APP }}
-      IMAGE_PROXY: ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG_PROXY }}
-      IMAGE_NEXT_APP: ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG_NEXT_APP }}
-      IMAGE_LFMERGE: ${{ steps.image.outputs.LFMERGE_NAMESPACE }}:${{ steps.image.outputs.TAG_LFMERGE }}
+    # outputs:
+    #   IMAGE_APP: ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG_APP }}
+    #   IMAGE_PROXY: ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG_PROXY }}
+    #   IMAGE_NEXT_APP: ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG_NEXT_APP }}
+    #   IMAGE_LFMERGE: ${{ steps.image.outputs.LFMERGE_NAMESPACE }}:${{ steps.image.outputs.TAG_LFMERGE }}
 
-  deploy:
-    runs-on: [self-hosted, languageforge]
+  # deploy:
+  #   runs-on: [self-hosted, languageforge]
 
-    needs: integrate
+  #   needs: integrate
 
-    steps:
-      -
-        uses: sillsdev/common-github-actions/install-kubectl@v1
-      -
-        run: |
-          kubectl --context ${{ secrets.kube-context }} set image deployment/app app=${{ needs.integrate.outputs.IMAGE_APP }}
-          kubectl --context ${{ secrets.kube-context }} set image deployment/next-proxy next-proxy=${{ needs.integrate.outputs.IMAGE_PROXY }}
-          kubectl --context ${{ secrets.kube-context }} set image deployment/next-app next-app=${{ needs.integrate.outputs.IMAGE_NEXT_APP }}
-          kubectl --context ${{ secrets.kube-context }} set image deployment/lfmerge lfmerge=${{ needs.integrate.outputs.IMAGE_LFMERGE }}
+  #   steps:
+  #     -
+  #       uses: sillsdev/common-github-actions/install-kubectl@v1
+  #     -
+  #       run: |
+  #         kubectl --context ${{ secrets.kube-context }} set image deployment/app app=${{ needs.integrate.outputs.IMAGE_APP }}
+  #         kubectl --context ${{ secrets.kube-context }} set image deployment/next-proxy next-proxy=${{ needs.integrate.outputs.IMAGE_PROXY }}
+  #         kubectl --context ${{ secrets.kube-context }} set image deployment/next-app next-app=${{ needs.integrate.outputs.IMAGE_NEXT_APP }}
+  #         kubectl --context ${{ secrets.kube-context }} set image deployment/lfmerge lfmerge=${{ needs.integrate.outputs.IMAGE_LFMERGE }}
