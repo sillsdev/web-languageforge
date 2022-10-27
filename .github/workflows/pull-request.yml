@@ -10,16 +10,16 @@ env:
   DOCKER_BUILDKIT: 1
 
 jobs:
-  unit-tests:
-    runs-on: ubuntu-latest
+  # unit-tests:
+  #   runs-on: ubuntu-latest
 
-    permissions:
-      checks: write
-      pull-requests: write
+  #   permissions:
+  #     checks: write
+  #     pull-requests: write
 
-    steps:
-      -
-        uses: actions/checkout@v3
+  #   steps:
+  #     -
+  #       uses: actions/checkout@v3
       # -
       #   name: Unit Tests
       #   run: make unit-tests-ci
@@ -47,7 +47,7 @@ jobs:
         name: Get installed Playwright version
         id: playwright-version
         # run: echo -n "version=$(npm ls @playwright/test --json | jq --raw-output '.dependencies["@playwright/test"].version')" >> $GITHUB_OUTPUT
-        run: echo -n "version=$(npm ls @playwright/test --json)" >> $GITHUB_OUTPUT
+        run: echo -n "version={$(npm ls @playwright/test --json)}" >> $GITHUB_OUTPUT
       -
         run: echo version=${{ steps.playwright-version.outputs.version }}
   #     -
