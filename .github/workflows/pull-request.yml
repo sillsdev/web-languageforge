@@ -47,7 +47,7 @@ jobs:
         name: Get installed Playwright version
         id: playwright-version
         # run: echo -n "version=$(npm ls @playwright/test --json | jq --raw-output '.dependencies["@playwright/test"].version')" >> $GITHUB_OUTPUT
-        run: echo -n "version={$(npm ls @playwright/test --json)}" >> $GITHUB_OUTPUT
+        run: echo -n "version={$(npm ls @playwright/test --json | jq --raw-output '.dependencies["@playwright/test"].version')}" >> $GITHUB_OUTPUT
       -
         run: echo version=${{ steps.playwright-version.outputs.version }}
   #     -
