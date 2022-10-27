@@ -43,7 +43,7 @@ jobs:
         name: Establish image name
         id: image
         run: |
-          echo "{NAMESPACE}={sillsdev/web-languageforge}" >> $GITHUB_OUTPUT
+          echo "NAMESPACE=sillsdev/web-languageforge" >> $GITHUB_OUTPUT
           echo "{TAG_APP}=${{ inputs.image-tag-app }}" >> $GITHUB_OUTPUT
           echo "{TAG_PROXY}=${{ inputs.image-tag-proxy }}" >> $GITHUB_OUTPUT
           echo "{TAG_NEXT_APP}=${{ inputs.image-tag-next-app }}" >> $GITHUB_OUTPUT
@@ -55,7 +55,7 @@ jobs:
           echo "{TAG_LFMERGE}={${TAG_LFMERGE}}" >> $GITHUB_OUTPUT
       -
         run: |
-          echo NAMESPACE=${{ env.NAMESPACE }}
+          echo NAMESPACE=${{ steps.image.outputs.NAMESPACE }}
       # -
       #   uses: actions/setup-node@v3
       #   with:
