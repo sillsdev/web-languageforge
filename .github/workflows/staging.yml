@@ -10,7 +10,7 @@ on:
 jobs:
   staging:
         # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#jobsjob_iduses
-        uses: sillsdev/web-languageforge/.github/workflows/integrate-and-deploy.yml@develop
+        uses: sillsdev/web-languageforge/.github/workflows/integrate-and-deploy.yml@chore/fix-deprecated-gha-apis
         with:
           image-tag-app: develop-$(date +%Y%m%d)-${{ github.sha }}
           image-tag-proxy: develop-next-proxy-$(date +%Y%m%d)-${{ github.sha }}
