@@ -3,6 +3,8 @@ name: Build and Test
 # https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#on
 on:
   pull_request:
+  push:
+    branches: chore/fix-deprecated-gha-apis
 
 env:
   DOCKER_BUILDKIT: 1
@@ -18,17 +20,17 @@ jobs:
     steps:
       -
         uses: actions/checkout@v3
-      -
-        name: Unit Tests
-        run: make unit-tests-ci
-      -
-        name: Publish Test Results
-        uses: docker://ghcr.io/enricomi/publish-unit-test-result-action:v2
-        if: always()
-        with:
-          check_name: Unit Test Results
-          github_token: ${{ github.token }}
-          junit_files: PhpUnitTests.xml
+      # -
+      #   name: Unit Tests
+      #   run: make unit-tests-ci
+      # -
+      #   name: Publish Test Results
+      #   uses: docker://ghcr.io/enricomi/publish-unit-test-result-action:v2
+      #   if: always()
+      #   with:
+      #     check_name: Unit Test Results
+      #     github_token: ${{ github.token }}
+      #     junit_files: PhpUnitTests.xml
 
   build-app-run-e2e-tests:
     runs-on: ubuntu-latest
@@ -44,47 +46,46 @@ jobs:
       -
         name: Get installed Playwright version
         id: playwright-version
-        # https://github.com/microsoft/playwright/issues/7249#issuecomment-1201476980
-        run: echo -n "{version}={$(npm ls @playwright/test --json | jq --raw-output '.dependencies["@playwright/test"].version')}" >> $GITHUB_OUTPUT
+        run: echo -n "version=$(npm ls @playwright/test --json | jq --raw-output '.dependencies["@playwright/test"].version')" >> $GITHUB_OUTPUT
+      -
+        run: echo version=${{ steps.playwright-version.outputs.version }}
+  #     -
+  #       name: Cache playwright browsers
+  #       uses: actions/cache@v3
+  #       id: playwright-cache
+  #       with:
+  #         path: '~/.cache/ms-playwright'
+  #         # Make each playwright version use its own cache in case it uses different browser versions
+  #         # Cache entries are deleted if not accessed for 7 days
+  #         # https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows#usage-limits-and-eviction-policy
+  #         key: 'playwright-${{ steps.playwright-version.outputs.version }}'
 
-        # https://github.com/microsoft/playwright/issues/7249#issuecomment-1154603556
-      -
-        name: Cache playwright browsers
-        uses: actions/cache@v3
-        id: playwright-cache
-        with:
-          path: '~/.cache/ms-playwright'
-          # Make each playwright version use its own cache in case it uses different browser versions
-          # Cache entries are deleted if not accessed for 7 days
-          # https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows#usage-limits-and-eviction-policy
-          key: 'playwright-${{ steps.playwright-version.outputs.version }}'
+  #     -
+  #       name: Playwright E2E Tests
+  #       # see https://playwright.dev/docs/ci#github-actions
+  #       run: make playwright-tests-ci
 
-      -
-        name: Playwright E2E Tests
-        # see https://playwright.dev/docs/ci#github-actions
-        run: make playwright-tests-ci
+  #     -
+  #       name: Upload test results
+  #       if: always()
+  #       uses: actions/upload-artifact@v3
+  #       with:
+  #         name: test-results
+  #         path: test-results
 
-      -
-        name: Upload test results
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: test-results
-          path: test-results
-
-  check-code-formatting:
-    runs-on: ubuntu-latest
-    steps:
-      -
-        uses: actions/checkout@v3
-      -
-        uses: actions/setup-node@v3
-        with:
-          node-version: "16.14.0"
-          cache: "npm"
-      -
-        name: Run prettier check
-        run: npx prettier --check .
+  # check-code-formatting:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     -
+  #       uses: actions/checkout@v3
+  #     -
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: "16.14.0"
+  #         cache: "npm"
+  #     -
+  #       name: Run prettier check
+  #       run: npx prettier --check .
 
   # protractor-tests:
   #   runs-on: ubuntu-latest
