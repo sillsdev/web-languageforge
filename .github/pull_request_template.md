@@ -30,12 +30,9 @@ Please provide screenshots / animations for any change that involves the UI. Ple
 
 Please describe how to test and/or verify your changes. Provide instructions so we can reproduce. Please also provide relevant test data as necessary. These instructions will be used for QA testing below.
 
-- [ ] Test A
-- [ ] Test B
+- Test A
+- Test B
 
 ## qa.languageforge.org testing
 
-Testers: Check the box and put in a date/time to sign-off/attest the feature works as expected on qa.languageforge.org
-
-- [ ] Tester1 (YYYY-MM-DD HH:MM)
-- [ ] Tester2 (YYYY-MM-DD HH:MM)
+Testers should add his/her findings to end of the PR in a comment and include screenshots, files, etc that are beneficial.
