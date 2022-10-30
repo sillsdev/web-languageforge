@@ -79,7 +79,7 @@ jobs:
       #     npx playwright test
       -
         name: Log in to Docker Hub
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           username: ${{ secrets.image-repo-username }}
           password: ${{ secrets.image-repo-password }}
