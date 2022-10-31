@@ -81,7 +81,7 @@ clean:
 
 .PHONY: clean-powerwash
 clean-powerwash: clean
+	npx rimraf *storageState.json test-results
 	docker system prune -f --volumes
-	docker rmi -f `docker images -q "lf-*"`
-	docker image rm sillsdev/web-languageforge:base-php
+	- docker rmi -f `docker images -q "lf-*"` sillsdev/web-languageforge:base-php
 	docker builder prune -f
