@@ -167,29 +167,29 @@ export class LexiconAppController implements angular.IController {
       (document.querySelectorAll('nav.navbar-expand')[1] as HTMLElement).style.backgroundColor = backgroundColorB;
     }
 
-    let offlineMessageId: string;
+    // let offlineMessageId: string;
     Offline.on('up', () => {
       setTitle('Language Forge', '', '');
 
-      if (this.online === false) {
-        this.notice.removeById(offlineMessageId);
-        this.notice.push(this.notice.SUCCESS, 'You are back online!');
-      }
+    //   if (this.online === false) {
+        // this.notice.removeById(offlineMessageId);
+        // this.notice.push(this.notice.SUCCESS, 'You are back online!');
+    //   }
 
-      this.online = true;
+    //   this.online = true;
       this.$scope.$digest();
     });
 
     Offline.on('down', () => {
       setTitle('Language Forge Offline', '#555', '#777');
-      offlineMessageId = this.notice.push(this.notice.ERROR, 'You are offline. Some features are not available', null,
-        true, 5 * 1000);
-      this.online = false;
-      if (!/^\/editor\//.test(this.$location.path())) {
+    //   offlineMessageId = this.notice.push(this.notice.ERROR, 'You are offline. Some features are not available', null,
+        // true, 5 * 1000);
+    //   this.online = false;
+    //   if (!/^\/editor\//.test(this.$location.path())) {
         // redirect to the editor
-        this.$location.path('/editor');
-        this.notice.push(this.notice.SUCCESS, 'The dictionary editor is available offline.  Settings are not.');
-      }
+        // this.$location.path('/editor');
+        // this.notice.push(this.notice.SUCCESS, 'The dictionary editor is available offline.  Settings are not.');
+    //   }
 
       this.$scope.$digest();
     });
