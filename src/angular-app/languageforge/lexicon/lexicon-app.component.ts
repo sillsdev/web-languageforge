@@ -170,10 +170,6 @@ export class LexiconAppController implements angular.IController {
     Offline.on('up', () => {
       setTitle('Language Forge', '', '');
 
-    //   if (this.online === false) {
-        // this.notice.removeById(offlineMessageId);
-        // this.notice.push(this.notice.SUCCESS, 'You are back online!');
-    //   }
 
     //   this.online = true;
       this.$scope.$digest();
