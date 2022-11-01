@@ -171,7 +171,6 @@ export class LexiconAppController implements angular.IController {
       setTitle('Language Forge', '', '');
 
 
-    //   this.online = true;
       this.$scope.$digest();
     });
 
