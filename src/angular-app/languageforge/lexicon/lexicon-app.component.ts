@@ -176,10 +176,6 @@ export class LexiconAppController implements angular.IController {
 
     Offline.on('down', () => {
       setTitle('Language Forge Offline', '#555', '#777');
-    //   offlineMessageId = this.notice.push(this.notice.ERROR, 'You are offline. Some features are not available', null,
-        // true, 5 * 1000);
-    //   this.online = false;
-    //   if (!/^\/editor\//.test(this.$location.path())) {
         // redirect to the editor
         // this.$location.path('/editor');
         // this.notice.push(this.notice.SUCCESS, 'The dictionary editor is available offline.  Settings are not.');
