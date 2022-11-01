@@ -177,9 +177,6 @@ export class LexiconAppController implements angular.IController {
     Offline.on('down', () => {
       setTitle('Language Forge Offline', '#555', '#777');
         // redirect to the editor
-        // this.$location.path('/editor');
-        // this.notice.push(this.notice.SUCCESS, 'The dictionary editor is available offline.  Settings are not.');
-    //   }
 
       this.$scope.$digest();
     });
