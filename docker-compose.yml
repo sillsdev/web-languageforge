@@ -191,7 +191,7 @@ services:
     command: sh -c "postconf -e 'default_transport = retry:no outbound email allowed' && /run.sh"
 
   db:
-    image: mongo:4.2
+    image: mongo:4.4
     container_name: lf-db
     ports:
       # exposed this to host for admin tools
@@ -248,8 +248,8 @@ services:
       dockerfile: docker/test-e2e/Dockerfile
       args:
         - ENVIRONMENT=development
-    image: test-e2e
-    container_name: test-e2e
+    image: lf-test-e2e
+    container_name: lf-test-e2e
     depends_on:
       - db
       - app-for-e2e
@@ -276,8 +276,8 @@ services:
   app-for-e2e:
     build:
       dockerfile: docker/app-for-e2e/Dockerfile
-    image: app-for-e2e
-    container_name: app-for-e2e
+    image: lf-app-for-e2e
+    container_name: lf-app-for-e2e
     platform: linux/amd64
     depends_on:
       - db
@@ -333,8 +333,8 @@ services:
   test-php:
     build:
       dockerfile: docker/test-php/Dockerfile
-    image: test-php
-    container_name: test-php
+    image: lf-test-php
+    container_name: lf-test-php
     depends_on:
       - db
       - mail

@@ -7,19 +7,6 @@
         </select>
     </div>
     <div class="row">
-        <div class="col-12 clearfix">
-            <div class="input-group">
-               <input class="form-control" id="new-value" data-ng-model="$ctrl.newValue" data-on-enter="$ctrl.pickAddItem()" name="newValue"
-                      type="text" placeholder="new value" no-dirty-check>
-                <span class="input-group-btn">
-                    <a class="btn btn-primary add-item-to-list" href data-ng-click="$ctrl.pickAddItem()">
-                        <i class="fa fa-plus iconPadding" aria-hidden="true"></i>Add to List</a>
-                </span>
-            </div>
-        </div>
-    </div>
-    <br>
-    <div class="row">
         <div class="col-12 clearfix" drag-to-reorder-bind="$ctrl.items">
             <div data-ng-repeat="item in $ctrl.items" class="picklist-group" dtr-draggable>
                 <i class="fa fa-arrows-v" title="Drag this to re-order items"></i>
