@@ -167,7 +167,6 @@ export class LexiconAppController implements angular.IController {
       (document.querySelectorAll('nav.navbar-expand')[1] as HTMLElement).style.backgroundColor = backgroundColorB;
     }
 
-    // let offlineMessageId: string;
     Offline.on('up', () => {
       setTitle('Language Forge', '', '');
 
