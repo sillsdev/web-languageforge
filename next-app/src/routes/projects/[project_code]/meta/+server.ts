@@ -6,7 +6,7 @@ export async function get({ project_code, cookie }) {
 		{ entries, comments }
 	] = await Promise.all([
 		sf({ name: 'project_read_by_code', args: [ project_code ], cookie }),
-		sf({ name: 'lex_stats_all', args: [ project_code ], cookie }),
+		sf({ name: 'lex_stats', cookie }),
 	])
 
 	const entries_with_picture = entries.filter(has_picture)

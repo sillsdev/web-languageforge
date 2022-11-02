@@ -557,24 +557,12 @@ class Sf
         return LexProjectDto::encode($this->projectId);
     }
 
-    public function lex_stats($projectCode)
+    public function lex_stats()
     {
-        $projectModel = ProjectModel::getByProjectCode($projectCode);
+        $projectModel = ProjectModel::getById($this->projectId);
         $user = new UserModel($this->userId);
 
-        if ($user->isMemberOfProject($projectModel->id->asString())) {
-            return LexDbeDto::encode($projectModel->id->asString(), $this->userId);
-        }
-
-        throw new UserUnauthorizedException("User $this->userId is not a member of project $projectCode");
-    }
-
-    public function lex_stats_all($projectCode)
-    {
-        $projectModel = ProjectModel::getByProjectCode($projectCode);
-        $user = new UserModel($this->userId);
-
-        if ($user->isMemberOfProject($projectModel->id->asString())) {
+        if ($user->isMemberOfProject($this->projectId)) {
             return LexDbeDto::encode($projectModel->id->asString(), $this->userId, 1);
         }
 
