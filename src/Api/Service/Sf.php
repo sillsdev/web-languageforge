@@ -835,6 +835,7 @@ class Sf
             "user_calculate_username",
             "check_unique_identity",
             "session_getSessionData",
+            "set_project",
         ];
         return in_array($methodName, $methods);
     }
