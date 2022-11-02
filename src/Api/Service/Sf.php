@@ -494,12 +494,17 @@ class Sf
     public function set_project($projectCode)
     {
         $projectModel = ProjectModel::getByProjectCode($projectCode);
+        $projectId = $projectModel->id->asString();
         $user = new UserModel($this->userId);
-        if ($user->isMemberOfProject($projectModel->id->asString())) {
-            $projectId = $projectModel->id->asString();
+
+        if ($user->isMemberOfProject($projectId)) {
             $this->app["session"]->set("projectId", $projectId);
-            return $projectId;
+
+            $projectModel->id = $projectId;
+
+            return $projectModel;
         }
+
         throw new UserUnauthorizedException("User $this->userId is not a member of project $projectCode");
     }
 
@@ -566,7 +571,7 @@ class Sf
             return LexDbeDto::encode($projectModel->id->asString(), $this->userId, 1);
         }
 
-        throw new UserUnauthorizedException("User $this->userId is not a member of project $projectCode");
+        throw new UserUnauthorizedException("User $this->userId is not a member of project $projectModel->projectCode");
     }
 
     public function lex_dbeDtoFull($browserId, $offset)
