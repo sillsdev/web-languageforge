@@ -491,13 +491,20 @@ class Sf
         return ProjectCommands::readProject($id);
     }
 
-    public function project_read_by_code($projectCode)
+    public function set_project($projectCode)
     {
         $projectModel = ProjectModel::getByProjectCode($projectCode);
+        $projectId = $projectModel->id->asString();
         $user = new UserModel($this->userId);
-        if ($user->isMemberOfProject($projectModel->id->asString())) {
-            return $this->project_read($projectModel->id->asString());
+
+        if ($user->isMemberOfProject($projectId)) {
+            $this->app["session"]->set("projectId", $projectId);
+
+            $projectModel->id = $projectId;
+
+            return $projectModel;
         }
+
         throw new UserUnauthorizedException("User $this->userId is not a member of project $projectCode");
     }
 
@@ -555,28 +562,16 @@ class Sf
         return LexProjectDto::encode($this->projectId);
     }
 
-    public function lex_stats($projectCode)
+    public function lex_stats()
     {
-        $projectModel = ProjectModel::getByProjectCode($projectCode);
+        $projectModel = ProjectModel::getById($this->projectId);
         $user = new UserModel($this->userId);
 
-        if ($user->isMemberOfProject($projectModel->id->asString())) {
-            return LexDbeDto::encode($projectModel->id->asString(), $this->userId);
-        }
-
-        throw new UserUnauthorizedException("User $this->userId is not a member of project $projectCode");
-    }
-
-    public function lex_stats_all($projectCode)
-    {
-        $projectModel = ProjectModel::getByProjectCode($projectCode);
-        $user = new UserModel($this->userId);
-
-        if ($user->isMemberOfProject($projectModel->id->asString())) {
+        if ($user->isMemberOfProject($this->projectId)) {
             return LexDbeDto::encode($projectModel->id->asString(), $this->userId, 1);
         }
 
-        throw new UserUnauthorizedException("User $this->userId is not a member of project $projectCode");
+        throw new UserUnauthorizedException("User $this->userId is not a member of project $projectModel->projectCode");
     }
 
     public function lex_dbeDtoFull($browserId, $offset)
@@ -833,6 +828,7 @@ class Sf
             "user_calculate_username",
             "check_unique_identity",
             "session_getSessionData",
+            "set_project",
         ];
         return in_array($methodName, $methods);
     }
