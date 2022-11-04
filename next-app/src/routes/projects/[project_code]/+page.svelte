@@ -22,28 +22,32 @@
 	$: stats = [
 		{
 			title: 'Users',
-			value: Number(project.num_users).toLocaleString(),
+			value: project.num_users,
 			icon: PeopleIcon,
 		},
 		{
 			title: 'Entries',
-			value: Number(project.num_entries).toLocaleString(),
+			value: project.num_entries,
 			icon: NotesIcon,
+			url: `/app/lexicon/${ project.id }`,
 		},
 		{
 			title: 'Entries with audio',
-			value: Number(project.num_entries_with_audio).toLocaleString(),
+			value: project.num_entries_with_audio,
 			icon: VoiceIcon,
+			url: `/app/lexicon/${ project.id }#!/editor/entry/000000?filterBy=Audio`,
 		},
 		{
 			title: 'Entries with pictures',
-			value: Number(project.num_entries_with_pictures).toLocaleString(),
+			value: project.num_entries_with_pictures,
 			icon: ImagesIcon,
+			url: `/app/lexicon/${ project.id }#!/editor/entry/000000?filterBy=Pictures`,
 		},
 		{
 			title: 'Unresolved comments',
-			value: Number(project.num_unresolved_comments).toLocaleString(),
+			value: project.num_unresolved_comments,
 			icon: MessageAlertIcon,
+			url: `/app/lexicon/${ project.id }#!/editor/entry/000000?filterBy=Comments`,
 		},
 	]
 
@@ -67,8 +71,8 @@
 </PageHeader>
 
 <Stats class=max-w-full>
-	{#each stats as { title, value, icon }}
-		<Stats.Stat { title } { value } { icon } />
+	{#each stats as { title, value, icon, url }}
+		<Stats.Stat { title } value={ Number(value).toLocaleString() } { icon } href={ value && url } />
 	{/each}
 </Stats>
 
