@@ -17,7 +17,7 @@ flowchart TB
     lfmerge -- port 27017 --> db
     lfmerge --> ld-api
 
-    subgraph prodcution
+    subgraph production
         ssl[ssl Caddy \n ports: 80, 443]
         ssl -- port 80 --> next-proxy
 
