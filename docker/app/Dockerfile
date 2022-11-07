@@ -82,8 +82,8 @@ COPY --from=composer-builder /composer/vendor /var/www/html/vendor
 COPY docker/app/symfony-exceptions.patch /
 RUN patch -p4 -i /symfony-exceptions.patch
 
-RUN echo "${BUILD_VERSION}" > /var/www/html/build-version.txt \
-    && sed -i /var/www/html/version.php -e "s/^\\(define('VERSION', '\\).*;\$/\\1${BUILD_VERSION}'\\);/"
+RUN echo "${BUILD_VERSION}" > build-version.txt \
+    && sed -i "s/9.9.9/${BUILD_VERSION}/" version.php
 
 ENTRYPOINT [ "tini", "-g", "--" ]
 CMD [ "apache2-foreground" ]
