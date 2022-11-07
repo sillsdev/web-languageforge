@@ -65,7 +65,7 @@ jobs:
         run: docker compose build --build-arg ENVIRONMENT=production --build-arg BUILD_VERSION=${{ steps.image.outputs.TAG_APP }} app
       -
         name: Verify version stamping
-        run: docker compose run --rm app cat version.php | grep ${{ steps.image.outputs.TAG_APP }}
+        run: docker compose run --rm app cat version.php | grep GOVOLS # ${{ steps.image.outputs.TAG_APP }}
       # -
       #   name: Build "next" images
       #   run: make build-next
