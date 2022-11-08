@@ -62,9 +62,12 @@ jobs:
         run: npm ci
       -
         name: Build legacy app
+        run: docker compose build --build-arg ENVIRONMENT=production --build-arg BUILD_VERSION=${{ steps.image.outputs.TAG_APP }} app
+      -
+        name: Verify version stamping
         run: |
-          docker compose build --build-arg ENVIRONMENT=production --build-arg BUILD_VERSION=${{ steps.image.outputs.TAG_APP }} app
-          docker compose run --rm app cat /var/www/html/build-version.txt /var/www/html/version.php
+          docker compose run --rm app cat build-version.txt version.php
+          docker compose run --rm app cat version.php | grep ${{ steps.image.outputs.TAG_APP }}
       -
         name: Build "next" images
         run: make build-next
