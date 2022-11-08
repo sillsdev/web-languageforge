@@ -860,3 +860,37 @@ form.submitted .ng-invalid {
   outline: none;
   border: 3px solid #f00;
 }
+
+// approach derived from some MDN articles and https://dev.to/link2twenty/native-html-tooltips-3od1
+[data-tooltip] {
+  position: relative;
+  cursor: help;
+}
+
+[data-tooltip]::after {
+  opacity: 0;
+  pointer-events: none;
+
+  position: absolute;
+  right: 1rem;
+  top: -0.5rem;
+  z-index: 99;
+
+  content: attr(data-tooltip);
+  padding: 1rem;
+  white-space: nowrap;
+
+  border-radius: 3px;
+  box-shadow: 0 0 5px 2px rgba(100, 100, 100, 0.6);
+  background-color: whitesmoke;
+
+  transform: translateX(0);
+  transition: all 500ms cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+[data-tooltip]:hover::after {
+  opacity: 1;
+
+  transform: translateX(-1rem);
+  transition-duration: 750ms;
+}
