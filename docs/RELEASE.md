@@ -52,3 +52,11 @@ Backups will be established automatically by LTOps and utilized by LF through th
 1. Scale the app up (LTOps/App team)
 1. Test the app (App team)
 1. Communicate maintenance completion
+
+### Database upgrades
+
+Since database upgrades are so infrequent, require extra care and a brief outage, they are to be done manually:
+
+1. `make scale-down` and ensure all containers are stopped. It's also a good idea to watch the logs for the `db` container ensuring the shutdown was "clean".
+1. `make deploy-db` and ensure configs are applied to the deployment
+1. `make scale-up` and ensure all containers start back up. It's also a good idea to watch the logs for the `db` container ensuring the startup was "clean" and the new version is actually running.
