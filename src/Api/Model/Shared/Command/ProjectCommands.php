@@ -250,6 +250,34 @@ class ProjectCommands
         return $userId;
     }
 
+    public static function transferOwnership($projectId, $currentOwnerId, $newOwnerId)
+    {
+        $project = ProjectModel::getById($projectId);
+        $currentOwner = new UserModel($currentOwnerId);
+        $newOwner = new UserModel($newOwnerId);
+
+        // check if $currentOwnerid is actually the owner OR is a site admin; throw if not
+        if ($currentOwnerId != $project->ownerRef->asString() && $currentOwner->role != SystemRoles::SYSTEM_ADMIN) {
+            throw new UserUnauthorizedException("Attempted to transfer project ownership as non-owner and non-admin");
+        }
+
+        // ensure $newOwnerId is part of the project; throw if not
+        if (!$project->userIsMember($newOwnerId)) {
+            throw new UserUnauthorizedException(
+                "Attempted to transfer project ownership to a non-member of the project"
+            );
+        }
+
+        // set the project owner ref to the new owner id
+        $project->ownerRef = $newOwnerId;
+
+        // set the project role of the current owner id to be manager
+        $currentOwner->role = ProjectRoles::MANAGER;
+
+        // set the project role of the new owner id to be manager
+        $newOwner->role = ProjectRoles::MANAGER;
+    }
+
     /**
      * Removes users from the project (two-way unlink)
      * @param string $projectId

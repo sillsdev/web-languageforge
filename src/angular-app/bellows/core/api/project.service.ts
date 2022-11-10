@@ -122,6 +122,10 @@ export class ProjectService {
     return this.api.call('project_updateUserRole', [userId, role], callback);
   }
 
+  transferOwnership(currentOwnerId: string, newOwnerId: string, callback?: JsonRpcCallback){
+    return this.api.call('project_transferOwnership', [currentOwnerId, newOwnerId], callback);
+  }
+
   acceptJoinRequest(userId: string, role: string, callback?: JsonRpcCallback) {
     return this.api.call('project_acceptJoinRequest', [userId, role], callback);
   }

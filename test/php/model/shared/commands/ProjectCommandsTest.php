@@ -750,6 +750,22 @@ class ProjectCommandsTest extends TestCase
         $this->assertEquals(2, $usersDto["userCount"]);
     }
 
+    public function testTransferOwnership_ownerTransfersOwnership_ownershipTransferredSucceeded()
+    {
+    }
+
+    public function testTransferOwnership_adminTransfersOwnership_ownershipTransferredSucceeded()
+    {
+    }
+
+    public function testTransferOwnership_userIsNotOwnerOrAdmin_throwsException()
+    {
+    }
+
+    public function testTransferOwnership_newOwnerIsNotAProjectMember_throwsException()
+    {
+    }
+
     public function testUpdateUserRole_userIsAdminAndSetTechSupportRole_techSupportRoleSet()
     {
         self::$environ->clean();

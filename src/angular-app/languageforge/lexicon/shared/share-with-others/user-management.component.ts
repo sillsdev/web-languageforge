@@ -58,6 +58,13 @@ export class UserManagementController implements angular.IController {
     });
   }
 
+  onOwnershipTransfer($event: {target: Partial<User>}) {
+    this.projectService.transferOwnership(this.project.ownerRef.id, $event.target.id).then(() => {
+      this.loadMemberData();
+    });
+  }
+
+
   onSpecialRoleChanged($event: {roleDetail: RoleDetail, target: string}) {
     if ($event.target === 'anonymous_user') {
       this.project.anonymousUserRole = $event.roleDetail.role.key;
