@@ -118,3 +118,5 @@ jobs:
           kubectl --context ${{ secrets.kube-context }} set image deployment/next-proxy next-proxy=${{ needs.integrate.outputs.IMAGE_PROXY }}
           kubectl --context ${{ secrets.kube-context }} set image deployment/next-app next-app=${{ needs.integrate.outputs.IMAGE_NEXT_APP }}
           kubectl --context ${{ secrets.kube-context }} set image deployment/lfmerge lfmerge=${{ needs.integrate.outputs.IMAGE_LFMERGE }}
+          kubectl --context ${{ secrets.kube-context }} set image deployment/db
+          kubectl --context ${{ secrets.kube-context }} set image deployment/mail
