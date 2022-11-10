@@ -523,8 +523,7 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
 
         test('Senses can be reordered and deleted', async () => {
           await editorPageManager.goto({entryId: lexEntriesIds[2]});
-          await editorPageManager.senseCard.first().locator(editorPageManager.actionMenu.toggleMenuButtonSelector).first().click();
-          await editorPageManager.senseCard.first().locator(editorPageManager.actionMenu.moveDownButtonSelector).first().click();
+          await editorPageManager.senseCard.first().locator(editorPageManager.moveDownButtonSelector).first().click();
           await expect(editorPageManager.getTextarea(
             editorPageManager.senseCard.first(), 'Definition', 'en'))
             .toHaveValue(constants.testMultipleMeaningEntry1.senses[1].definition.en.value);
@@ -586,8 +585,7 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
 
           // remove new word to restore original word count
           await editorPageManager.entriesListPage.clickOnEntry(constants.testEntry3.lexeme.th.value);
-          await editorPageManager.entryCard.first().locator(editorPageManager.actionMenu.toggleMenuButtonSelector).first().click();
-          await editorPageManager.entryCard.first().locator(editorPageManager.actionMenu.deleteCardButtonSelector).first().click();
+          await editorPageManager.entryCard.first().locator(editorPageManager.deleteCardButtonSelector).first().click();
 
           const confirmModal = new ConfirmModalElement(editorPageManager.page);
           await confirmModal.confirmButton.click();
