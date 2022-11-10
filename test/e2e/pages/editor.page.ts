@@ -37,9 +37,9 @@ export class EditorPage extends BasePage {
   readonly exampleCardSelector = '.dc-example';
   readonly semanticDomainSelector = '.dc-semanticdomain-value';
 
-  readonly deleteCardButtonSelector = 'a > .fa-trash';
-  readonly moveDownButtonSelector = 'a > .fa-arrow-down';
-  readonly moveUpButtonSelector = 'a > .fa-arrow-up';
+  readonly deleteCardButtonSelector = 'a[data-ng-click^="$ctrl.delete"], a[data-ng-click^="$ctrl.remove"]';
+  readonly moveDownButtonSelector = 'a[data-ng-click="$ctrl.move($ctrl.index, 1)"]:not(.ng-hide)';
+  readonly moveUpButtonSelector = 'a[data-ng-click="$ctrl.move($ctrl.index, -1)"]:not(.ng-hide)';
 
   readonly compactEntryListContainer = this.page.locator('#compactEntryListContainer');
   readonly compactEntryListItem = this.compactEntryListContainer.locator('.lexiconListItemCompact');
