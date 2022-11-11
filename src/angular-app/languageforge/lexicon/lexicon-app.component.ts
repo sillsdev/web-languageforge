@@ -34,6 +34,7 @@ export class LexiconAppController implements angular.IController {
     'lexEditorDataService',
     'lexRightsService',
     'lexSendReceive',
+	'$window',
   ];
   constructor(private readonly $scope: angular.IScope, private readonly $location: angular.ILocationService,
               private readonly $q: angular.IQService,
@@ -43,6 +44,7 @@ export class LexiconAppController implements angular.IController {
               private readonly editorService: LexiconEditorDataService,
               private readonly rightsService: LexiconRightsService,
               private readonly sendReceive: LexiconSendReceiveService,
+			  private $window: angular.IWindowService,
              ) { }
 
   $onInit(): void {
@@ -152,8 +154,8 @@ export class LexiconAppController implements angular.IController {
   }
 
   private setupOffline(): void {
-	window.addEventListener('offline', e => setTitle('Language Forge Offline', '#555', '#777'));
-	window.addEventListener('online', e => setTitle('Language Forge', '', ''));
+	this.$window.addEventListener('offline', e => setTitle('Language Forge Offline', '#555', '#777'));
+	this.$window.addEventListener('online', e => setTitle('Language Forge', '', ''));
 
 	// setup offline.js options
     // see https://github.com/hubspot/offline for all options
