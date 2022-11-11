@@ -157,35 +157,12 @@ export class LexiconAppController implements angular.IController {
 	this.$window.addEventListener('offline', e => setTitle('Language Forge Offline', '#555', '#777'));
 	this.$window.addEventListener('online', e => setTitle('Language Forge', '', ''));
 
-	// setup offline.js options
-    // see https://github.com/hubspot/offline for all options
-    // we tell offline.js to NOT store and remake requests while the connection is down
-    // Offline.options.requests = false;
-    // Offline.options.checkOnLoad = true;
-    // Offline.options.checks = { xhr: { url: '/offlineCheck.txt' } };
-
-    // Set the page's Language Forge title, font size, and nav's background color
     function setTitle(text: string, backgroundColorA: string, backgroundColorB: string): void {
       (document.querySelector('nav .navbar-brand .website-title') as HTMLElement).textContent = text;
       (document.querySelectorAll('nav.navbar')[0] as HTMLElement).style.backgroundColor = backgroundColorA;
       (document.querySelectorAll('nav.navbar-expand')[1] as HTMLElement).style.backgroundColor = backgroundColorB;
     }
-
-    // Offline.on('up', () => {
-    //   setTitle('Language Forge', '', '');
-
-
-    //   this.$scope.$digest();
-    // });
-
-    // Offline.on('down', () => {
-    //   setTitle('Language Forge Offline', '#555', '#777');
-    //     // redirect to the editor
-
-    //   this.$scope.$digest();
-    // });
   }
-
 }
 
 export const LexiconAppComponent: angular.IComponentOptions = {
