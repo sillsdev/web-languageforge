@@ -24,7 +24,6 @@ export class LexiconAppController implements angular.IController {
   project: LexiconProject;
   rights: Rights;
 
-  private online: boolean;
   private pristineLanguageCode: string;
 
   static $inject = ['$scope', '$location',
