@@ -26,6 +26,8 @@ logs-mail:
 
 shell-app:
 	kubectl exec -it deploy/app -- sh
+shell-db:
+	kubectl exec -it deploy/db -- sh
 shell-lfmerge:
 	kubectl exec -it deploy/lfmerge -- sh
 shell-next-app:
