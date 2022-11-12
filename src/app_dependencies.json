@@ -1,6 +1,5 @@
 {
   "font-awesome": { "path": "dist/font-awesome/css", "cssFile": "font-awesome" },
   "intl-tel-input": { "path": "dist/intl-tel-input", "jsFile": "js/intlTelInput", "cssFile": "css/intlTelInput" },
-  "ng-table": { "path": "dist/ng-table", "cssFile": "ng-table.min" },
-  "offline-js": { "path": "dist/offline-js", "jsFile": "offline.min.js" }
+  "ng-table": { "path": "dist/ng-table", "cssFile": "ng-table.min" }
 }
