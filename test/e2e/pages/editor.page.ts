@@ -1,5 +1,4 @@
 import { expect, Locator, Page } from '@playwright/test';
-import { fail } from 'assert';
 import { Project } from '../utils/types';
 import { BasePage, GotoOptions } from './base-page';
 import { ConfigurationPage } from './configuration.page';
@@ -34,16 +33,13 @@ export class EditorPage extends BasePage {
   };
 
   readonly entryCard = this.page.locator('.entry-card');
-  readonly senseCard = this.page.locator('[data-ng-repeat="sense in $ctrl.model.senses"]');
+  readonly senseCard = this.page.locator('.dc-sense.card');
   readonly exampleCardSelector = '.dc-example';
   readonly semanticDomainSelector = '.dc-semanticdomain-value';
 
-  readonly actionMenu = {
-    toggleMenuButtonSelector: '.ellipsis-menu-toggle',
-    deleteCardButtonSelector: '.dropdown-item:has-text("Delete")',
-    moveDownButtonSelector: '.dropdown-item:has-text("Move Down")',
-    moveUpButtonSelector: '.dropdown-item:has-text("Move Up")'
-  };
+  readonly deleteCardButtonSelector = 'a[data-ng-click^="$ctrl.delete"], a[data-ng-click^="$ctrl.remove"]';
+  readonly moveDownButtonSelector = 'a[data-ng-click="$ctrl.move($ctrl.index, 1)"]:not(.ng-hide)';
+  readonly moveUpButtonSelector = 'a[data-ng-click="$ctrl.move($ctrl.index, -1)"]:not(.ng-hide)';
 
   readonly compactEntryListContainer = this.page.locator('#compactEntryListContainer');
   readonly compactEntryListItem = this.compactEntryListContainer.locator('.lexiconListItemCompact');
