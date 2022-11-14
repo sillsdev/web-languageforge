@@ -2,7 +2,6 @@
 
 namespace Api\Model\Shared;
 
-use Api\Library\Shared\Website;
 use Api\Model\Shared\Mapper\MapperListModel;
 use Api\Model\Shared\Mapper\MongoEncoder;
 use Api\Model\Shared\Mapper\MongoMapper;
@@ -12,10 +11,9 @@ class UserTypeaheadModel extends MapperListModel
     /**
      * @param string $term
      * @param string | array $projectIdOrIds
-     * @param Website $website
      * @param bool $include
      */
-    public function __construct($term, $projectIdOrIds = "", $website, $include = false)
+    public function __construct($term, $projectIdOrIds = "", $include = false)
     {
         $query = [
             '$or' => [
@@ -44,7 +42,7 @@ class UserTypeaheadModel extends MapperListModel
             //error_log("Query: " . print_r($query, true));
         }
         // Filter for only users on the current site
-        $encodedDomain = $website->domain;
+        $encodedDomain = "languageforge.org";
         MongoEncoder::encodeDollarDot($encodedDomain);
         $query["siteRole." . $encodedDomain] = ['$exists' => true];
         parent::__construct(UserModelMongoMapper::instance(), $query, ["username", "name", "avatarRef"]);
@@ -53,7 +51,7 @@ class UserTypeaheadModel extends MapperListModel
         // be another typeahead search with the same query term, but *including* only
         // the ones matching this project.
         if ($projectIdOrIds && !$include) {
-            $this->excludedUsers = new UserTypeaheadModel($term, $projectIdOrIds, $website, true);
+            $this->excludedUsers = new UserTypeaheadModel($term, $projectIdOrIds, true);
             $this->excludedUsers->read();
         }
         //echo("Result: " . print_r($this, true));

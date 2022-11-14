@@ -2,7 +2,6 @@
 
 namespace Api\Model\Shared\Rights;
 
-use Api\Library\Shared\Website;
 use Api\Model\Shared\Mapper\MapOf;
 
 class SiteRoles extends RolesBase
@@ -44,13 +43,12 @@ class SiteRoles extends RolesBase
     /**
      *
      * @param MapOf $roleMap
-     * @param Website $website
      * @return array
      */
-    public static function getRightsArray($roleMap, $website)
+    public static function getRightsArray($roleMap)
     {
-        if ($roleMap->offsetExists($website->domain)) {
-            return self::_getRightsArray(self::$_rights, $roleMap[$website->domain]);
+        if ($roleMap->offsetExists("languageforge.org")) {
+            return self::_getRightsArray(self::$_rights, $roleMap["languageforge.org"]);
         }
 
         return [];
@@ -65,9 +63,8 @@ class SiteRoles extends RolesBase
      */
     public static function hasRight($roleMap, $right)
     {
-        global $WEBSITE;
-        if ($roleMap->offsetExists($WEBSITE->domain)) {
-            return self::_hasRight(self::$_rights, $roleMap[$WEBSITE->domain], $right);
+        if ($roleMap->offsetExists("languageforge.org")) {
+            return self::_hasRight(self::$_rights, $roleMap["languageforge.org"], $right);
         }
 
         return false;

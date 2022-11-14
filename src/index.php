@@ -2,7 +2,6 @@
 
 use Symfony\Component\Debug\ExceptionHandler;
 use Symfony\Component\HttpFoundation\Request;
-use Api\Library\Shared\Website;
 use Sil\PhpEnv\Env; // https://github.com/silinternational/php-env#class-env-summary-of-functions
 
 require_once __DIR__ . "/vendor/autoload.php";
@@ -88,19 +87,6 @@ if (is_dir($application_folder)) {
     );
 }
 
-/*---------------------------------------------------------------
- * Website available to controllers and templates
- *---------------------------------------------------------------
- */
-
-global $WEBSITE;
-$WEBSITE = Website::get();
-if ($WEBSITE) {
-    $app["website"] = $WEBSITE;
-} else {
-    exit("Dead: could not get website instance. Please open the following file and correct this: " . self);
-}
-
 /*--------------------------------------------------------------------
  * Templates
  *--------------------------------------------------------------------
@@ -124,17 +110,15 @@ $app->register(new Silex\Provider\TwigServiceProvider(), [
         __DIR__ . "/angular-app",
 
         // pages
-        __DIR__ . "/Site/views/" . $WEBSITE->base . "/theme/" . $WEBSITE->theme . "/page",
-        __DIR__ . "/Site/views/" . $WEBSITE->base . "/theme/" . $WEBSITE->theme,
-        __DIR__ . "/Site/views/" . $WEBSITE->base . "/theme/default/page",
-        __DIR__ . "/Site/views/" . $WEBSITE->base . "/theme/default",
-        __DIR__ . "/Site/views/" . $WEBSITE->base . "/container",
-        __DIR__ . "/Site/views/" . $WEBSITE->base,
+        __DIR__ . "/Site/views/languageforge/theme/default/page",
+        __DIR__ . "/Site/views/languageforge/theme/default",
+        __DIR__ . "/Site/views/languageforge/container",
+        __DIR__ . "/Site/views/languageforge",
         __DIR__ . "/Site/views/shared/page",
         __DIR__ . "/Site/views/shared/container",
 
         // errors
-        __DIR__ . "/Site/views/" . $WEBSITE->base . "/error",
+        __DIR__ . "/Site/views/languageforge/error",
         __DIR__ . "/Site/views/shared/error",
         __DIR__ . "/Site/views",
     ],
@@ -161,8 +145,8 @@ $app["security.firewalls"] = [
         "form" => ["login_path" => "/auth/login", "check_path" => "/app/login_check"],
         "remember_me" => ["key" => Env::requireEnv("REMEMBER_ME_SECRET")],
         "logout" => ["logout_path" => "/auth/logout", "target_url" => "/auth/login", "invalidate_session" => true],
-        "users" => $app->share(function () use ($WEBSITE) {
-            return new \Site\Provider\AuthUserProvider($WEBSITE);
+        "users" => $app->share(function () {
+            return new \Site\Provider\AuthUserProvider();
         }),
     ],
 ];

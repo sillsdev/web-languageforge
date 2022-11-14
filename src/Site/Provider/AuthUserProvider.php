@@ -2,7 +2,6 @@
 
 namespace Site\Provider;
 
-use Api\Library\Shared\Website;
 use Api\Model\Shared\Rights\SiteRoles;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Shared\UserModel;
@@ -16,14 +15,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class AuthUserProvider implements UserProviderInterface
 {
-    public function __construct(Website $website = null)
-    {
-        $this->website = $website;
-    }
-
-    /** @var Website */
-    private $website;
-
     /**
      * @param string $usernameOrEmail
      * @return UserWithId
@@ -39,24 +30,10 @@ class AuthUserProvider implements UserProviderInterface
         if (!$user->active) {
             // TODO: Get this error msg to propogate to Auth::setupAuthView
             throw new UsernameNotFoundException(
-                sprintf('Username "%s" access denied on "%s".', $usernameOrEmail, $this->website->domain)
+                sprintf('Username "%s" access denied on "%s".', $usernameOrEmail, "languageforge.org")
             );
         }
-
-        /*
-        $identityCheck = UserCommands::checkIdentity($usernameOrEmail, '', $this->website);
-        if (! $identityCheck->usernameExists) {
-            throw new UsernameNotFoundException(sprintf('Username "%s" does not exist.', $usernameOrEmail));
-        }
-
-        $user->readByUserName($usernameOrEmail);
-
-        if (! $identityCheck->usernameExistsOnThisSite and $user->role != SystemRoles::SYSTEM_ADMIN) {
-            throw new AccessDeniedException(sprintf('Username "%s" not available on "%s". Use "Create an Account".', $usernameOrEmail, $this->website->domain));
-        }
-        */
-
-        $roles = AuthUserProvider::getSiteRoles($user, $this->website);
+        $roles = AuthUserProvider::getSiteRoles($user);
 
         return new UserWithId($user->username, $user->password, $user->id->asString(), $roles);
     }
@@ -79,15 +56,15 @@ class AuthUserProvider implements UserProviderInterface
         return $class === "Site\Model\UserWithId";
     }
 
-    public static function getSiteRoles(UserModel $user, Website $website)
+    public static function getSiteRoles(UserModel $user)
     {
         $roles = ["ROLE_" . $user->role];
         if (
             $user->siteRole and
-            $user->siteRole->offsetExists($website->domain) and
-            $user->siteRole[$website->domain] !== SiteRoles::NONE
+            $user->siteRole->offsetExists("languageforge.org") and
+            $user->siteRole["languageforge.org"] !== SiteRoles::NONE
         ) {
-            $roles[] = "ROLE_SITE_" . $user->siteRole[$website->domain];
+            $roles[] = "ROLE_SITE_" . $user->siteRole["languageforge.org"];
         }
         return $roles;
     }

@@ -1,6 +1,5 @@
 <?php
 
-use Api\Library\Shared\Website;
 use Api\Model\Languageforge\Lexicon\Command\SendReceiveCommands;
 use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\Languageforge\LfProjectModel;
@@ -31,9 +30,6 @@ class MongoTestEnvironment
 
     /** @var array Local store of 'uploaded' filepaths */
     protected $uploadFilePaths;
-
-    /** @var Website */
-    public $website;
 
     /**
      * Removes all the collections from the mongo database.
@@ -82,7 +78,7 @@ class MongoTestEnvironment
         $userModel->avatar_ref = $username . ".png";
         $userModel->role = $role;
         $userModel->active = true;
-        $userModel->siteRole[$this->website->domain] = $this->website->userDefaultSiteRole;
+        $userModel->siteRole[$this->website->domain] = SiteRoles::PROJECT_CREATOR;
 
         return $userModel->write();
     }
@@ -470,7 +466,6 @@ class SemDomMongoTestEnvironment extends MongoTestEnvironment
             $languageName,
             false,
             $userId,
-            $this->website,
             self::TESTVERSION
         );
         return new SemDomTransProjectModel($projectId);

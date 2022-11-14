@@ -2,7 +2,6 @@
 
 namespace Api\Model\Shared\Command;
 
-use Api\Library\Shared\Website;
 use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\UserModel;
 
@@ -11,48 +10,43 @@ class SessionCommands
     /**
      * @param string $projectId
      * @param string $userId
-     * @param Website $website
      * @param string $mockFilename
      * @return array
      * @throws \Exception
      */
-    public static function getSessionData($projectId, $userId, $website, $mockFilename = null)
+    public static function getSessionData($projectId, $userId, $mockFilename = null)
     {
         $sessionData = [];
-        $sessionData["baseSite"] = $website->base;
+        $sessionData["baseSite"] = languageforge;
 
         // VERSION is not defined when running tests
         if (defined("VERSION")) {
             $sessionData["version"] = VERSION;
         }
 
-        // ensure interfaceConfig if user is not logged in
-        // (LF only at this stage, SF using Transifex default language picker) - IJH 2018-06
-        if ($website->base == Website::LANGUAGEFORGE) {
-            $sessionData["projectSettings"] = [
-                "interfaceConfig" => [
-                    "languageCode" => "en",
-                    "selectLanguages" => [
-                        "options" => [
-                            "en" => [
-                                "name" => "English",
-                                "option" => "English",
-                            ],
+        $sessionData["projectSettings"] = [
+            "interfaceConfig" => [
+                "languageCode" => "en",
+                "selectLanguages" => [
+                    "options" => [
+                        "en" => [
+                            "name" => "English",
+                            "option" => "English",
                         ],
-                        "optionsOrder" => ["en"],
                     ],
+                    "optionsOrder" => ["en"],
                 ],
-            ];
-        }
+            ],
+        ];
 
         if ($userId) {
             $sessionData["userId"] = (string) $userId;
             $user = new UserModel($userId);
-            $sessionData["userSiteRights"] = $user->getRightsArray($website);
+            $sessionData["userSiteRights"] = $user->getRightsArray();
             $sessionData["username"] = $user->username;
         }
 
-        if ($projectId && ProjectModel::projectExistsOnWebsite($projectId, $website)) {
+        if ($projectId) {
             $project = ProjectModel::getById($projectId);
             if (array_key_exists($userId, $project->users)) {
                 $sessionData["project"] = [];

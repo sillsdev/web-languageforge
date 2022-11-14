@@ -2,7 +2,6 @@
 
 namespace Api\Model\Shared;
 
-use Api\Library\Shared\Website;
 use Api\Model\Shared\Mapper\ArrayOf;
 use Api\Model\Shared\Mapper\Id;
 use Api\Model\Shared\Mapper\IdReference;
@@ -351,13 +350,12 @@ class UserModel extends MapperModel
     }
 
     /**
-     * Returns true if the current user has $right to $website.
+     * Returns true if the current user has $right.
      * @param int $right
-     * @param Website $website
      * @return bool
      * @throws \Exception
      */
-    public function hasRight($right, $website)
+    public function hasRight($right)
     {
         $result = SiteRoles::hasRight($this->siteRole, $right) || SystemRoles::hasRight($this->role, $right);
 
@@ -365,26 +363,15 @@ class UserModel extends MapperModel
     }
 
     /**
-     * @param Website $website
      * @return array:
      */
-    public function getRightsArray($website)
+    public function getRightsArray()
     {
-        $siteRightsArray = SiteRoles::getRightsArray($this->siteRole, $website);
+        $siteRightsArray = SiteRoles::getRightsArray($this->siteRole);
         $systemRightsArray = SystemRoles::getRightsArray($this->role);
         $mergeArray = array_merge($siteRightsArray, $systemRightsArray);
 
         return array_values(array_unique($mergeArray));
-    }
-
-    /**
-     * Returns whether the user has a role on the requested website
-     * @param Website $website
-     * @return bool true if the user has any role on the website, otherwise false
-     */
-    public function hasRoleOnSite($website)
-    {
-        return $this->siteRole->offsetExists($website->domain);
     }
 
     /**

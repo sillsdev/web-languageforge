@@ -2,7 +2,6 @@
 
 namespace Api\Model\Shared;
 
-use Api\Library\Shared\Website;
 use Api\Library\Shared\Palaso\Exception\ResourceNotAvailableException;
 use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\Languageforge\Lexicon\LexRoles;
@@ -115,40 +114,6 @@ class ProjectModel extends MapperModel
 
     /** @var LexRoles */
     protected $rolesClass;
-
-    /**
-     * @param Website $website
-     * @return ProjectModel
-     * @throws \Exception
-     */
-    public static function getDefaultProject($website)
-    {
-        $project = new ProjectModel();
-        if (
-            $project->readByProperties(["projectCode" => $website->defaultProjectCode, "siteName" => $website->domain])
-        ) {
-            return ProjectModel::getById($project->id->asString());
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * @param string $projectId
-     * @param Website $website
-     * @return bool
-     * @throws \Exception
-     */
-    public static function projectExistsOnWebsite($projectId, $website)
-    {
-        $projectExists = false;
-        $projectModel = new ProjectModel();
-        if ($projectModel->exists($projectId)) {
-            $projectModel = ProjectModel::getById($projectId);
-            $projectExists = $website->domain == $projectModel->siteName;
-        }
-        return $projectExists;
-    }
 
     /**
      * (non-PHPdoc)
@@ -484,14 +449,6 @@ class ProjectModel extends MapperModel
         $folderPath = APPPATH . $this->getAssetsRelativePath();
         FileUtilities::createAllFolders($folderPath);
         return $folderPath;
-    }
-
-    /**
-     * @return Website
-     */
-    public function website()
-    {
-        return Website::get($this->siteName);
     }
 
     public function initializeNewProject()

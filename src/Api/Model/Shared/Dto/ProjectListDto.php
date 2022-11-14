@@ -2,7 +2,6 @@
 
 namespace Api\Model\Shared\Dto;
 
-use Api\Library\Shared\Website;
 use Api\Model\Shared\ProjectList_UserModel;
 use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\Rights\Domain;
@@ -14,16 +13,15 @@ class ProjectListDto
 {
     /**
      * @param string $userId
-     * @param Website $website
      * @param boolean $isArchivedList - set true to list archived projects
      * @return array - the DTO array
      */
-    public static function encode($userId, $website, $isArchivedList = false)
+    public static function encode($userId, $isArchivedList = false)
     {
         $user = new UserModel($userId);
-        $canListAllProjects = $user->hasRight(Domain::PROJECTS + Operation::VIEW, $website);
+        $canListAllProjects = $user->hasRight(Domain::PROJECTS + Operation::VIEW);
 
-        $projectList = new ProjectList_UserModel($website->domain);
+        $projectList = new ProjectList_UserModel("languageforge.org");
         if ($canListAllProjects) {
             $projectList->readAll($isArchivedList);
         } else {

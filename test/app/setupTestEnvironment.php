@@ -3,7 +3,6 @@
 require_once "e2eTestConfig.php";
 
 // use commands go here (after the e2eTestConfig)
-use Api\Library\Shared\Website;
 use Api\Model\Languageforge\Lexicon\LexRoles;
 use Api\Model\Languageforge\Lexicon\Command\LexEntryCommands;
 use Api\Model\Languageforge\Lexicon\Command\LexUploadCommands;
@@ -25,8 +24,8 @@ if (count($argv) > 1) {
     // hostname is passed in on command line
     $hostname = $argv[1];
 }
-$website = Website::get();
-$site = $website->base;
+$_SERVER["HTTP_HOST"] = $hostname;
+$site = languageforge;
 
 // start with a fresh database
 MongoStore::dropAllCollections(DATABASE);
@@ -50,147 +49,108 @@ foreach ($projectArrays as $projectName => $projectCode) {
     MongoStore::dropDB($projectModel->databaseName());
 }
 
-$adminUserId = UserCommands::createUser(
-    [
-        "name" => $constants["adminName"],
-        "email" => $constants["adminEmail"],
-        "password" => $constants["adminPassword"],
-    ],
-    $website
-);
-$adminUserId = UserCommands::updateUser(
-    [
-        "id" => $adminUserId,
-        "name" => $constants["adminName"],
-        "email" => $constants["adminEmail"],
-        "username" => $constants["adminUsername"],
-        "password" => $constants["adminPassword"],
-        "active" => true,
-        "languageDepotUsername" => "admin",
-        "role" => SystemRoles::SYSTEM_ADMIN,
-    ],
-    $website
-);
-$managerUserId = UserCommands::createUser(
-    [
-        "name" => $constants["managerName"],
-        "email" => $constants["managerEmail"],
-        "password" => $constants["managerPassword"],
-    ],
-    $website
-);
-$managerUserId = UserCommands::updateUser(
-    [
-        "id" => $managerUserId,
-        "name" => $constants["managerName"],
-        "email" => $constants["managerEmail"],
-        "username" => $constants["managerUsername"],
-        "password" => $constants["managerPassword"],
-        "active" => true,
-        "role" => SystemRoles::USER,
-    ],
-    $website
-);
-$memberUserId = UserCommands::createUser(
-    [
-        "name" => $constants["memberName"],
-        "email" => $constants["memberEmail"],
-        "password" => $constants["memberPassword"],
-    ],
-    $website
-);
-$memberUserId = UserCommands::updateUser(
-    [
-        "id" => $memberUserId,
-        "name" => $constants["memberName"],
-        "email" => $constants["memberEmail"],
-        "username" => $constants["memberUsername"],
-        "password" => $constants["memberPassword"],
-        "active" => true,
-        "role" => SystemRoles::USER,
-    ],
-    $website
-);
-$member2UserId = UserCommands::createUser(
-    [
-        "name" => $constants["member2Name"],
-        "email" => $constants["member2Email"],
-        "password" => $constants["member2Password"],
-    ],
-    $website
-);
-$member2UserId = UserCommands::updateUser(
-    [
-        "id" => $member2UserId,
-        "name" => $constants["member2Name"],
-        "email" => $constants["member2Email"],
-        "username" => $constants["member2Username"],
-        "password" => $constants["member2Password"],
-        "active" => true,
-        "role" => SystemRoles::USER,
-    ],
-    $website
-);
+$adminUserId = UserCommands::createUser([
+    "name" => $constants["adminName"],
+    "email" => $constants["adminEmail"],
+    "password" => $constants["adminPassword"],
+]);
+$adminUserId = UserCommands::updateUser([
+    "id" => $adminUserId,
+    "name" => $constants["adminName"],
+    "email" => $constants["adminEmail"],
+    "username" => $constants["adminUsername"],
+    "password" => $constants["adminPassword"],
+    "active" => true,
+    "role" => SystemRoles::SYSTEM_ADMIN,
+]);
+$managerUserId = UserCommands::createUser([
+    "name" => $constants["managerName"],
+    "email" => $constants["managerEmail"],
+    "password" => $constants["managerPassword"],
+]);
+$managerUserId = UserCommands::updateUser([
+    "id" => $managerUserId,
+    "name" => $constants["managerName"],
+    "email" => $constants["managerEmail"],
+    "username" => $constants["managerUsername"],
+    "password" => $constants["managerPassword"],
+    "active" => true,
+    "role" => SystemRoles::USER,
+]);
+$memberUserId = UserCommands::createUser([
+    "name" => $constants["memberName"],
+    "email" => $constants["memberEmail"],
+    "password" => $constants["memberPassword"],
+]);
+$memberUserId = UserCommands::updateUser([
+    "id" => $memberUserId,
+    "name" => $constants["memberName"],
+    "email" => $constants["memberEmail"],
+    "username" => $constants["memberUsername"],
+    "password" => $constants["memberPassword"],
+    "active" => true,
+    "role" => SystemRoles::USER,
+]);
+$member2UserId = UserCommands::createUser([
+    "name" => $constants["member2Name"],
+    "email" => $constants["member2Email"],
+    "password" => $constants["member2Password"],
+]);
+$member2UserId = UserCommands::updateUser([
+    "id" => $member2UserId,
+    "name" => $constants["member2Name"],
+    "email" => $constants["member2Email"],
+    "username" => $constants["member2Username"],
+    "password" => $constants["member2Password"],
+    "active" => true,
+    "role" => SystemRoles::USER,
+]);
 $expiredUserId = UserCommands::createUser(
     [
         "name" => $constants["expiredName"],
         "email" => $constants["expiredEmail"],
         "password" => $constants["memberPassword"],
-    ], // intentionally set wrong password
-    $website
+    ] // intentionally set wrong password
 );
-$expiredUserId = UserCommands::updateUser(
-    [
-        "id" => $expiredUserId,
-        "name" => $constants["expiredName"],
-        "email" => $constants["expiredEmail"],
-        "username" => $constants["expiredUsername"],
-        "password" => $constants["memberPassword"], // intentionally set wrong password
-        "active" => true,
-        "role" => SystemRoles::USER,
-    ],
-    $website
-);
+$expiredUserId = UserCommands::updateUser([
+    "id" => $expiredUserId,
+    "name" => $constants["expiredName"],
+    "email" => $constants["expiredEmail"],
+    "username" => $constants["expiredUsername"],
+    "password" => $constants["memberPassword"], // intentionally set wrong password
+    "active" => true,
+    "role" => SystemRoles::USER,
+]);
 $resetUserId = UserCommands::createUser(
     [
         "name" => $constants["resetName"],
         "email" => $constants["resetEmail"],
         "password" => $constants["memberPassword"],
-    ], // intentionally set wrong password
-    $website
+    ] // intentionally set wrong password
 );
-$resetUserId = UserCommands::updateUser(
-    [
-        "id" => $resetUserId,
-        "name" => $constants["resetName"],
-        "email" => $constants["resetEmail"],
-        "username" => $constants["resetUsername"],
-        "password" => $constants["memberPassword"], // intentionally set wrong password
-        "active" => true,
-        "role" => SystemRoles::USER,
-    ],
-    $website
-);
-$observerUserId = UserCommands::createUser(
-    [
-        "name" => $constants["observerName"],
-        "email" => $constants["observerEmail"],
-        "password" => $constants["observerPassword"],
-    ],
-    $website
-);
-$observerUserId = UserCommands::updateUser(
-    [
-        "id" => $observerUserId,
-        "name" => $constants["observerName"],
-        "email" => $constants["observerEmail"],
-        "username" => $constants["observerUsername"],
-        "password" => $constants["observerPassword"],
-        "active" => true,
-        "role" => SystemRoles::USER,
-    ],
-    $website
-);
+$resetUserId = UserCommands::updateUser([
+    "id" => $resetUserId,
+    "name" => $constants["resetName"],
+    "email" => $constants["resetEmail"],
+    "username" => $constants["resetUsername"],
+    "password" => $constants["memberPassword"], // intentionally set wrong password
+    "active" => true,
+    "role" => SystemRoles::USER,
+]);
+$observerUserId = UserCommands::createUser([
+    "name" => $constants["observerName"],
+    "email" => $constants["observerEmail"],
+    "password" => $constants["observerPassword"],
+]);
+$observerUserId = UserCommands::updateUser([
+    "id" => $observerUserId,
+    "name" => $constants["observerName"],
+    "email" => $constants["observerEmail"],
+    "username" => $constants["observerUsername"],
+    "password" => $constants["observerPassword"],
+    "active" => true,
+    "role" => SystemRoles::USER,
+]);
 
 // set forgot password with expired date
 $today = new DateTime();
@@ -211,8 +171,7 @@ $testProjectId = ProjectCommands::createProject(
     $constants["testProjectName"],
     $constants["testProjectCode"],
     $projectType,
-    $adminUserId,
-    $website
+    $adminUserId
 );
 $testProjectModel = new ProjectModel($testProjectId);
 $testProjectModel->projectCode = $constants["testProjectCode"];
@@ -223,8 +182,7 @@ $otherProjectId = ProjectCommands::createProject(
     $constants["otherProjectName"],
     $constants["otherProjectCode"],
     $projectType,
-    $managerUserId,
-    $website
+    $managerUserId
 );
 $otherProjectModel = new ProjectModel($otherProjectId);
 $otherProjectModel->projectCode = $constants["otherProjectCode"];
@@ -235,8 +193,7 @@ $fourthProjectId = ProjectCommands::createProject(
     $constants["fourthProjectName"],
     $constants["fourthProjectCode"],
     $projectType,
-    $managerUserId,
-    $website
+    $managerUserId
 );
 $fourthProjectModel = new ProjectModel($fourthProjectId);
 $fourthProjectModel->projectCode = $constants["fourthProjectCode"];
@@ -254,7 +211,6 @@ $srTestProjectId = ProjectCommands::createProject(
     $constants["srProjectCode"],
     $projectType,
     $managerUserId,
-    $website,
     $srProject
 );
 

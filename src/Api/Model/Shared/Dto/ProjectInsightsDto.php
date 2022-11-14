@@ -2,7 +2,6 @@
 
 namespace Api\Model\Shared\Dto;
 
-use Api\Library\Shared\Website;
 use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\Languageforge\Lexicon\LexRoles;
 use Api\Model\Languageforge\LfProjectModel;
@@ -15,9 +14,9 @@ use stdClass;
 
 class ProjectInsightsDto
 {
-    public static function singleProjectInsights($id, $website)
+    public static function singleProjectInsights($id)
     {
-        $appName = ProjectInsightsDto::appName($website);
+        $appName = LfProjectModel::LEXICON_APP;
         $project = new LexProjectModel($id);
 
         $projectData = new stdClass();
@@ -105,41 +104,38 @@ class ProjectInsightsDto
         $projectData->recentUsers = count($recentUsers);
         $projectData->lastActivityDate = $lastActivityDate ? $lastActivityDate->format(\DateTime::RFC2822) : null;
 
-        // lf-specific data
-        if ($appName === LfProjectModel::LEXICON_APP) {
-            $projectData->lastEntryModifiedDate = $project->lastEntryModifiedDate
-                ->asDateTimeInterface()
-                ->format(\DateTime::RFC2822);
-            $projectData->commenters = $commenters;
-            $projectData->observers = $observers;
-            $projectData->languageCode = $project->languageCode;
+        $projectData->lastEntryModifiedDate = $project->lastEntryModifiedDate
+            ->asDateTimeInterface()
+            ->format(\DateTime::RFC2822);
+        $projectData->commenters = $commenters;
+        $projectData->observers = $observers;
+        $projectData->languageCode = $project->languageCode;
 
-            $entryList = new LexEntryList($project);
-            $entryList->readCounts();
-            $projectData->entries = $entryList->count;
+        $entryList = new LexEntryList($project);
+        $entryList->readCounts();
+        $projectData->entries = $entryList->count;
 
-            $entriesWithPictures = new LexEntryList($project, [
-                "senses.pictures" => ['$exists' => true, '$not' => ['$size' => 0]],
-            ]);
-            $entriesWithPictures->readCounts();
-            $projectData->pictures = $entriesWithPictures->count;
+        $entriesWithPictures = new LexEntryList($project, [
+            "senses.pictures" => ['$exists' => true, '$not' => ['$size' => 0]],
+        ]);
+        $entriesWithPictures->readCounts();
+        $projectData->pictures = $entriesWithPictures->count;
 
-            $commentList = new LexCommentList($project);
-            $commentList->readCounts();
-            $projectData->comments = $commentList->count;
+        $commentList = new LexCommentList($project);
+        $commentList->readCounts();
+        $projectData->comments = $commentList->count;
 
-            $projectData->lastSyncedDate = $project->lastSyncedDate
-                ? $project->lastSyncedDate->asDateTimeInterface()->format(\DateTime::RFC2822)
-                : null;
-            $projectData->inputSystems = count($project->inputSystems);
-        }
+        $projectData->lastSyncedDate = $project->lastSyncedDate
+            ? $project->lastSyncedDate->asDateTimeInterface()->format(\DateTime::RFC2822)
+            : null;
+        $projectData->inputSystems = count($project->inputSystems);
 
         return $projectData;
     }
 
-    public static function allProjectInsights($website)
+    public static function allProjectInsights()
     {
-        $appName = ProjectInsightsDto::appName($website);
+        $appName = LfProjectModel::LEXICON_APP;
 
         $projectList = new ProjectListModel();
         $projectList->read();
@@ -152,32 +148,32 @@ class ProjectInsightsDto
             if ($project["appName"] !== $appName) {
                 continue;
             }
-            $insights->projectList[] = ProjectInsightsDto::singleProjectInsights($project["id"], $website);
+            $insights->projectList[] = ProjectInsightsDto::singleProjectInsights($project["id"]);
         }
         return $insights;
     }
 
-    public static function csvInsights($website)
+    public static function csvInsights()
     {
         $filePointer = fopen("php://memory", "r+");
-        self::writeInsightsToCsvFilePointer($website, $filePointer);
+        self::writeInsightsToCsvFilePointer($filePointer);
         rewind($filePointer);
         $csv = stream_get_contents($filePointer);
         fclose($filePointer);
         return $csv;
     }
 
-    public static function csvInsightsToFile($website, $filename)
+    public static function csvInsightsToFile($filename)
     {
         $filePointer = fopen($filename, "w");
-        $count = self::writeInsightsToCsvFilePointer($website, $filePointer);
+        $count = self::writeInsightsToCsvFilePointer($filePointer);
         fclose($filePointer);
         print "Wrote $count insights to CSV file $filename\n";
     }
 
-    private static function writeInsightsToCsvFilePointer($website, $filePointer)
+    private static function writeInsightsToCsvFilePointer($filePointer)
     {
-        $insights = ProjectInsightsDto::allProjectInsights($website);
+        $insights = ProjectInsightsDto::allProjectInsights();
 
         // convert camelCase properties to sentence case for table headings
         $properties = array_key_exists(0, $insights->projectList)
@@ -194,11 +190,6 @@ class ProjectInsightsDto
             fputcsv($filePointer, array_values((array) $row));
         }
         return count($insights->projectList);
-    }
-
-    private static function appName($website)
-    {
-        return LfProjectModel::LEXICON_APP;
     }
 }
 

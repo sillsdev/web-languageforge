@@ -1,6 +1,5 @@
 <?php
 
-use Api\Library\Shared\Website;
 use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Shared\UserModel;
@@ -79,8 +78,7 @@ class UserModelTest extends TestCase
         $environ->createUser("someuser", "Some User", "user@example.com");
 
         // Check no users exist on another website
-        $website = new Website("localhost", Website::LANGUAGEFORGE);
-        $model = new UserTypeaheadModel("some", "", $website);
+        $model = new UserTypeaheadModel("some", "");
         $model->read();
 
         $this->assertEquals(0, $model->count);

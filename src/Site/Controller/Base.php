@@ -4,7 +4,6 @@ namespace Site\Controller;
 
 use Api\Library\Shared\Palaso\StringUtil;
 use Api\Library\Shared\SilexSessionHelper;
-use Api\Library\Shared\Website;
 use Api\Model\Shared\FeaturedProjectListModel;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Shared\Rights\Operation;
@@ -19,7 +18,6 @@ class Base
 {
     public function __construct()
     {
-        $this->website = Website::get();
         $this->_appName = "";
         $this->data["isAdmin"] = false;
         $this->data["projects"] = [];
@@ -41,9 +39,6 @@ class Base
 
     /** @var array data used to render templates */
     public $data;
-
-    /** @var Website */
-    public $website;
 
     /** @var boolean */
     protected $_isLoggedIn;
@@ -157,7 +152,7 @@ class Base
             } else {
                 $this->data["smallAvatarUrl"] = "/Site/views/shared/image/avatar/" . $this->_user->avatar_ref;
             }
-            $projects = $this->_user->listProjects($this->website->domain);
+            $projects = $this->_user->listProjects("languageforge.org");
             $this->data["projects_count"] = $projects->count;
             $this->data["projects"] = $projects->entries;
         }

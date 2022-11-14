@@ -2,7 +2,6 @@
 
 namespace Api\Library\Shared\Script\Utility;
 
-use Api\Library\Shared\Website;
 use Api\Model\Languageforge\Lexicon\LexEntryModel;
 use Api\Model\Languageforge\Lexicon\LexOptionListModel;
 use Api\Model\Shared\Mapper\MongoStore;
@@ -31,10 +30,6 @@ class EnsureDBIndexes
         $message = "Ensure DB Indexes\n";
         ini_set("max_execution_time", 300);
         $numberOfIndexesCreated = 0;
-
-        $website = Website::get();
-        $onDevMachine = strpos($website->domain, "dev.") !== false;
-        $onLocalMachine = strrpos($website->domain, ".local") !== false;
 
         $message .= "\n-------------  Main Database:\n";
         $mainCollectionName = ProjectModelMongoMapper::instance()->getCollectionName();

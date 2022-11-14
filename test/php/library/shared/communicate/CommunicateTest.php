@@ -3,7 +3,6 @@
 use Api\Library\Shared\Communicate\DeliveryInterface;
 use Api\Library\Shared\Communicate\Communicate;
 use Api\Library\Shared\Communicate\Sms\SmsModel;
-use Api\Library\Shared\Website;
 use Api\Model\Shared\MessageModel;
 use Api\Model\Shared\UserModel;
 use Api\Model\Shared\UnreadMessageModel;
@@ -173,9 +172,8 @@ class CommunicateTest extends TestCase
         $userId = self::$environ->createUser("User", "Name", "name@example.com");
         $user = new UserModel($userId);
         $delivery = new MockCommunicateDelivery();
-        $website = Website::get();
 
-        Communicate::sendVerifyEmail($user, $website, $delivery);
+        Communicate::sendVerifyEmail($user, $delivery);
 
         // What's in the delivery?
         $senderEmail = "no-reply@" . self::$environ->website->domain;
@@ -198,10 +196,8 @@ class CommunicateTest extends TestCase
         $project->projectCode = "test_project";
         $project->write();
         $delivery = new MockCommunicateDelivery();
-        $website = Website::get();
-        $website->defaultProjectCode = "test_project";
 
-        Communicate::sendVerifyEmail($user, $website, $delivery);
+        Communicate::sendVerifyEmail($user, $delivery);
 
         // What's in the delivery?
         $senderEmail = "no-reply@" . self::$environ->website->domain;
@@ -281,7 +277,7 @@ class CommunicateTest extends TestCase
         $toUser = new UserModel($toUserId);
         $project = self::$environ->createProjectSettings(SF_TESTPROJECTCODE);
         $delivery = new MockCommunicateDelivery();
-        $project->addUser($inviterUserId, self::$environ->website->userDefaultSiteRole);
+        $project->addUser($inviterUserId, SiteRoles::PROJECT_CREATOR);
         $project->write();
         $inviterUser->addProject($project->id->asString());
         $inviterUser->write();
@@ -354,7 +350,7 @@ class CommunicateTest extends TestCase
         $user = new UserModel($userId);
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $delivery = new MockCommunicateDelivery();
-        $project->addUser($adminId, self::$environ->website->userDefaultSiteRole);
+        $project->addUser($adminId, SiteRoles::PROJECT_CREATOR);
         $project->write();
         $admin->addProject($project->id->asString());
         $admin->write();

@@ -5,7 +5,6 @@ namespace Site\Controller;
 use Api\Library\Shared\Palaso\Exception\ResourceNotAvailableException;
 use Api\Library\Shared\Palaso\Exception\UserUnauthorizedException;
 use Api\Library\Shared\SilexSessionHelper;
-use Api\Library\Shared\Website;
 use Api\Model\Languageforge\LfProjectModel;
 use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\Command\ProjectCommands;
@@ -46,7 +45,7 @@ class App extends Base
             }
         }
 
-        $model = new AppModel($app, $appName, $this->website, $projectId);
+        $model = new AppModel($app, $appName, $projectId);
         try {
             $this->setupBaseVariables($app);
             $this->setupAngularAppVariables($model);
@@ -93,15 +92,10 @@ class App extends Base
 
         if ($model->requireProject) {
             if ($model->isPublicApp) {
-                $model->projectId = SilexSessionHelper::requireValidProjectIdForThisWebsite(
-                    $model->app,
-                    $this->website,
-                    $model->projectId
-                );
+                $model->projectId = SilexSessionHelper::requireValidProjectId($model->app, $model->projectId);
             } else {
-                $model->projectId = SilexSessionHelper::requireValidProjectIdForThisWebsiteAndValidateUserMembership(
+                $model->projectId = SilexSessionHelper::requireValidProjectIdAndValidateUserMembership(
                     $model->app,
-                    $this->website,
                     $model->projectId
                 );
             }
@@ -250,29 +244,27 @@ class AppModel
      * AppModel constructor
      * @param string $appName
      * @param string $projectId
-     * @param Website $website
      * @param boolean $isPublicApp
      * @throws AppNotFoundException
      */
-    public function __construct(Application $app, $appName, $website, $projectId = "")
+    public function __construct(Application $app, $appName, $projectId = "")
     {
         $this->app = $app;
         $this->appName = $appName;
         $this->projectId = $projectId;
         $this->isPublicApp = preg_match("@^/(public|auth)/@", $app["request"]->getRequestUri()) == 1;
-        $this->determineFolderPaths($appName, $projectId, $website, $this->isPublicApp);
+        $this->determineFolderPaths($appName, $projectId, $this->isPublicApp);
     }
 
     /**
      * @param string $appName
      * @param string $projectId
-     * @param Website $website
      * @param boolean $isPublic
      * @throws AppNotFoundException
      */
-    private function determineFolderPaths($appName, $projectId, $website, $isPublic)
+    private function determineFolderPaths($appName, $projectId, $isPublic)
     {
-        $siteFolder = "angular-app/" . $website->base;
+        $siteFolder = "angular-app/" . languageforge;
         $sitePublicFolder = "$siteFolder/public";
         $bellowsFolder = "angular-app/bellows";
         $bellowsAppFolder = "$bellowsFolder/apps";

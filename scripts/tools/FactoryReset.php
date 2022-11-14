@@ -4,7 +4,6 @@
 // Assumption MONGODB_CONN for dev site has been previously set from TeamCity
 require_once "../scriptsConfig.php";
 
-use Api\Library\Shared\Website;
 use Api\Model\Shared\Command\UserCommands;
 use Api\Model\Shared\Mapper\MongoStore;
 use Api\Model\Shared\ProjectListModel;
@@ -263,7 +262,6 @@ class FactoryReset
             // No assets to restore so just create an account
             print "\nCreating local user: admin, password: password\n";
             if ($runForReal) {
-                $languageforgeWebsite = Website::get("languageforge.org");
                 $params = [
                     "username" => "admin",
                     "name" => "Admin",
@@ -271,9 +269,9 @@ class FactoryReset
                     "password" => "password",
                     "role" => SystemRoles::SYSTEM_ADMIN,
                 ];
-                $adminUserId = UserCommands::createUser($params, $languageforgeWebsite);
+                $adminUserId = UserCommands::createUser($params);
                 $params["id"] = $adminUserId;
-                UserCommands::updateUser($params, $languageforgeWebsite);
+                UserCommands::updateUser($params);
             }
         }
     }

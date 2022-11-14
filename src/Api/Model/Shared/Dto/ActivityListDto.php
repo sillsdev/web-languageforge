@@ -3,7 +3,6 @@
 namespace Api\Model\Shared\Dto;
 
 use Api\Library\Shared\Palaso\StringUtil;
-use Api\Library\Shared\Website;
 use Api\Model\Languageforge\Lexicon\Config\LexConfig;
 use Api\Model\Languageforge\Lexicon\LexEntryModel;
 use Api\Model\Languageforge\Lexicon\LexProjectModel;
@@ -30,7 +29,6 @@ class ActivityListDto
     const DELETED_FIELD = "deleted_field";
 
     /**
-     * @param Website $site
      * @return array
      */
     public static function getActivityTypes($site)

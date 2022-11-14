@@ -1,6 +1,5 @@
 <?php
 
-use Api\Library\Shared\Website;
 use Api\Model\Shared\Command\SessionCommands;
 use Api\Model\Shared\Command\ProjectCommands;
 use Api\Model\Shared\ProjectModel;
@@ -16,9 +15,6 @@ class SessionTestEnvironment
 
     /** @var string */
     public $userId;
-
-    /** @var Website */
-    public $website;
 
     public function create()
     {
