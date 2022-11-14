@@ -210,9 +210,6 @@ class RightsHelper
             case "activity_list_dto_for_current_project":
                 return $this->userHasSiteRight(Domain::PROJECTS + Operation::VIEW_OWN);
 
-            case "activity_list_dto_for_project":
-                return $this->userHasSiteRight(Domain::PROJECTS + Operation::VIEW_OWN);
-
             case "activity_list_dto_for_lexical_entry":
                 return $this->userHasProjectRight(Domain::ENTRIES + Operation::VIEW);
 
