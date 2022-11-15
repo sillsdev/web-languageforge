@@ -21,7 +21,7 @@ class LexOptionListItem
         if ($guid) $this->guid = $guid;
         $this->value = $value;
         if (is_null($key)) {
-            $this->key = $value;
+            $this->key = $guid;
         } else {
             $this->key = $key;
         }

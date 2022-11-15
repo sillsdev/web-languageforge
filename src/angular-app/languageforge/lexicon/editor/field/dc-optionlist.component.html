@@ -8,7 +8,7 @@
                 <option value="">Unknown</option>
             </select>
             <span class="uneditable-input" data-ng-hide="$ctrl.isAtEditorEntry() && $ctrl.control.rights.canEditEntry()"
-                  data-ng-bind="$ctrl.getDisplayName($ctrl.model.value)"></span>
+                  data-ng-bind="$ctrl.getDisplayName($ctrl.model.key)"></span>
         </div>
         <comment-bubble control="$ctrl.control" field="$ctrl.fieldName" input-system="" model="$ctrl.model" parent-context-guid="$ctrl.contextGuid"></comment-bubble>
     </div>
