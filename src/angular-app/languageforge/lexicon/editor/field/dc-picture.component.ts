@@ -72,7 +72,7 @@ export class FieldPictureController implements angular.IController {
     const fileName: string = this.pictures[index].fileName;
     if (fileName) {
       const deleteMsg: string = 'Are you sure you want to delete the picture <b>\'' +
-        FieldPictureController.originalFileName(fileName) + '\'</b>';
+        FieldPictureController.originalFileName(fileName) + '\'</b>?';
       this.modalService.showModalSimple('Delete Picture', deleteMsg, 'Cancel', 'Delete Picture').then(() => {
         this.pictures.splice(index, 1);
         this.lexProjectService.removeMediaFile('sense-image', fileName, result => {
