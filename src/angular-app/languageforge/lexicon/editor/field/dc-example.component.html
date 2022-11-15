@@ -6,15 +6,15 @@
 			<span class="flex-grow"></span>
 
 			<div class="mr-4">
-				<a href data-ng-show="$ctrl.index > 0" data-ng-click="$ctrl.move($ctrl.index, -1)" class="mr-1" role="button">
+				<a href data-ng-show="$ctrl.index > 0" data-ng-click="$ctrl.move($ctrl.index, -1)" class="mr-1" role="button" title="Move this example up">
 					<span class="fa fa-arrow-up"></span>
 				</a>
-				<a href data-ng-show="$ctrl.index+1 < $ctrl.numExamples()" data-ng-click="$ctrl.move($ctrl.index, 1)" class="mr-1" role="button">
+				<a href data-ng-show="$ctrl.index+1 < $ctrl.numExamples()" data-ng-click="$ctrl.move($ctrl.index, 1)" class="mr-1" role="button" title="Move this example down">
 					<span class="fa fa-arrow-down"></span>
 				</a>
 			</div>
 
-			<a href data-ng-click="$ctrl.remove($ctrl.index)" class="text-danger" role="button">
+			<a href data-ng-click="$ctrl.remove($ctrl.index)" class="text-danger" role="button" title="Delete this example">
 				<span class="fa fa-trash"></span>
 			</a>
         </div>
