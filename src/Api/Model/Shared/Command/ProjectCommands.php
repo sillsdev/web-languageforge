@@ -214,7 +214,7 @@ class ProjectCommands
      * @param string $userId
      * @param string $projectRole
      * @throws \Exception
-     * @return string $userId
+     * @return string $userId - the user that was updated
      */
     public static function updateUserRole($projectId, $userId, $projectRole = ProjectRoles::CONTRIBUTOR)
     {
@@ -250,6 +250,9 @@ class ProjectCommands
         return $userId;
     }
 
+    /**
+     * @return string the user id of the new owner
+     */
     public static function transferOwnership($projectId, $currentOwnerId, $newOwnerId)
     {
         $project = ProjectModel::getById($projectId);
@@ -270,12 +273,17 @@ class ProjectCommands
 
         // set the project owner ref to the new owner id
         $project->ownerRef = $newOwnerId;
+        $project->write();
 
         // set the project role of the current owner id to be manager
         $currentOwner->role = ProjectRoles::MANAGER;
+        $currentOwner->write();
 
         // set the project role of the new owner id to be manager
         $newOwner->role = ProjectRoles::MANAGER;
+        $newOwner->write();
+
+        return $newOwnerId;
     }
 
     /**

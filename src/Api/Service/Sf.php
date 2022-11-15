@@ -463,9 +463,9 @@ class Sf
         return ProjectCommands::updateUserRole($this->projectId, $userId, $role);
     }
 
-    public function project_transferOwnership($currentOnwerId, $newOwnerId)
+    public function project_transferOwnership($currentOwnerId, $newOwnerId)
     {
-        return ProjectCommands::transferOnwership($this->projectId, $currentOwnerId, $newOwnerId);
+        return ProjectCommands::transferOwnership($this->projectId, $currentOwnerId, $newOwnerId);
     }
 
     public function project_acceptJoinRequest($userId, $role)

@@ -192,6 +192,9 @@ class RightsHelper
                 return $this->userHasSiteRight(Domain::PROJECTS + Operation::DELETE) ||
                     $this->userHasSiteRight(Domain::PROJECTS + Operation::CREATE);
 
+            case "project_transferOwnership":
+                return $this->userHasSiteRight(Domain::PROJECTS + Operation::DELETE);
+
             case "projectcode_exists":
                 return $this->userHasSiteRight(Domain::PROJECTS + Operation::CREATE);
 

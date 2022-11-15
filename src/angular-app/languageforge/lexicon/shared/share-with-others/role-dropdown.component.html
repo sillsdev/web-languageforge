@@ -10,7 +10,7 @@
     </a>
     <div class="dropdown-divider"></div>
     <a class="dropdown-item" role="menuitem">
-      <div ng-click="$ctrl.makeOwner()">
+      <div ng-click="$ctrl.onOwnershipTransfer({$event: {target: $ctrl.target}})">
         <i class="fa fa-arrow-circle-o-up"></i>
         make owner
       </div>
