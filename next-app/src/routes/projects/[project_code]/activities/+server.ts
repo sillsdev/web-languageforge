@@ -4,23 +4,24 @@ import { sf } from '$lib/fetch/server'
 export async function GET({ params: { project_code }, request: { headers } }) {
 	const cookie = headers.get('cookie')
 
-	const activities = await get_activities({ project_code, cookie })
+	await sf({ name: 'set_project', args: [ project_code ], cookie })
+
+	const activities = await get_activities({ cookie })
 
 	return json(activities)
 }
 
 // src/Api/Model/Shared/Dto/ActivityListDto.php
 // src/Api/Model/Shared/Dto/ActivityListDto.php->ActivityListModel.__construct
-export async function get_activities({ project_code, cookie, start_date, end_date }) {
+export async function get_activities({ cookie, start_date, end_date }) {
 	const args = {
-		name: 'activity_list_dto_for_project',
+		name: 'activity_list_dto_for_current_project',
 		args: [
-			project_code,
 			{
 				startDate: start_date,
 				endDate: end_date,
 				limit: start_date || end_date ? 50 : 0,
-			}
+			},
 		],
 		cookie,
 	}
