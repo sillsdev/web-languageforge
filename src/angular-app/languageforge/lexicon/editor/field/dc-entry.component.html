@@ -1,21 +1,19 @@
 <div class="dc-entry">
     <div class="card card-outline-primary entry-card">
         <div class="card-header">
-            <div data-ng-if="$ctrl.control.rights.canDeleteEntry() && $ctrl.isAtEditorEntry()"
-                class="dropdown float-right" uib-dropdown>
-                <a class="btn ellipsis-menu-toggle pui-no-caret" uib-dropdown-toggle>
-                    <span class="fa fa-ellipsis-v"></span>
+            <div data-ng-if="$ctrl.control.rights.canDeleteEntry() && $ctrl.isAtEditorEntry()" class="d-flex align-items-center justify-content-between">
+				Entry
+
+                <a href data-ng-click="$ctrl.deleteEntry()" class="text-danger" role="button">
+                    <span class="fa fa-trash"></span>
                 </a>
-                <div class="dropdown-menu-right" uib-dropdown-menu>
-                    <a href data-ng-click="$ctrl.deleteEntry()" class="dropdown-item">Delete Entry</a>
-                </div>
             </div>
             <div class="comment-bubble-entry">
                 <comment-bubble control="$ctrl.control" field="$ctrl.fieldName" model="$ctrl.model" parent-context-guid="$ctrl.contextGuid"></comment-bubble>
             </div>
-            &nbsp;Entry
         </div>
-        <div class="card-body">
+
+		<div class="card-body">
             <dc-fieldrepeat config="$ctrl.config" model="$ctrl.model" control="$ctrl.control" parent-context-guid="$ctrl.contextGuid"></dc-fieldrepeat>
         </div>
     </div>

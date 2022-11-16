@@ -80,7 +80,7 @@ export class ProjectService {
   }
 
   list() {
-    if (navigator.onLine /* TODO use Offline.state */) {
+    if (navigator.onLine) {
       const deferred = this.$q.defer();
 
       this.api.call('project_list_dto', [], response => {
