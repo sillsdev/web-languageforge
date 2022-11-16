@@ -26,7 +26,6 @@ class SystemRoles extends RolesBase
         $rights = [];
         self::grantAllOnDomain($rights, Domain::USERS);
         self::grantAllOnDomain($rights, Domain::PROJECTS);
-        $rights[] = Domain::PROJECTS + Operation::DELETE;
         self::$_rights[self::SYSTEM_ADMIN] = $rights;
     }
 
