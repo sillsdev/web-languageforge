@@ -23,7 +23,7 @@ export class SiteAdminArchivedProjectsController implements angular.IController 
     'silNoticeService', 'modalService'];
   constructor(private projectService: ProjectService, private sessionService: SessionService,
               private notice: NoticeService, private modalService: ModalService) {}
-  
+
   $onInit() {
     this.sessionService.getSession().then((session) => {
       const hasRight = session.hasSiteRight(this.sessionService.domain.PROJECTS, this.sessionService.operation.DELETE);
