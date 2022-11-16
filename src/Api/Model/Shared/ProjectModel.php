@@ -189,8 +189,6 @@ class ProjectModel extends MapperModel
      */
     public function addUser($userId, $role)
     {
-        ProjectModelMongoMapper::instance();
-        //        $ProjectModelMongoMapper::mongoID($userId)
         $model = new ProjectRoleModel();
         $model->role = $role;
         $this->users[$userId] = $model;
