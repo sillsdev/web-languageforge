@@ -237,7 +237,6 @@ class ProjectCommands
             throw new UserUnauthorizedException("Attempted to add non-admin as Tech Support");
         }
 
-        ProjectCommands::usersDto($projectId);
         if (!$project->userIsMember($userId)) {
             ActivityCommands::addUserToProject($project, $userId);
         }
@@ -251,16 +250,18 @@ class ProjectCommands
     }
 
     /**
-     * @return string the user id of the new owner
+     * @param string $projectId
+     * @param string $currentUserId - id of the current user requesting the ownership transfer
+     * @param string $newOwnerId - the id of the user who should become the project owner
      */
-    public static function transferOwnership($projectId, $currentOwnerId, $newOwnerId)
+    public static function transferOwnership($projectId, $currentUserId, $newOwnerId)
     {
         $project = ProjectModel::getById($projectId);
-        $currentOwner = new UserModel($currentOwnerId);
+        $currentUser = new UserModel($currentUserId);
         $newOwner = new UserModel($newOwnerId);
 
-        // check if $currentOwnerid is actually the owner OR is a site admin; throw if not
-        if ($currentOwnerId != $project->ownerRef->asString() && $currentOwner->role != SystemRoles::SYSTEM_ADMIN) {
+        // check if $currentUserId is actually the owner OR is a site admin; throw if not
+        if ($currentUserId != $project->ownerRef->asString() && $currentUser->role != SystemRoles::SYSTEM_ADMIN) {
             throw new UserUnauthorizedException("Attempted to transfer project ownership as non-owner and non-admin");
         }
 
@@ -271,18 +272,19 @@ class ProjectCommands
             );
         }
 
+        //get the id of the previous owner
+        $previousOwnerId = $project->ownerRef->asString();
+
         // set the project owner ref to the new owner id
         $project->ownerRef = $newOwnerId;
-        $project->write();
 
-        // set the project role of the current owner id to be manager
-        $currentOwner->role = ProjectRoles::MANAGER;
-        $currentOwner->write();
+        // set the project role of the previous owner id to be manager
+        $project->addUser($previousOwnerId, ProjectRoles::MANAGER);
 
         // set the project role of the new owner id to be manager
-        $newOwner->role = ProjectRoles::MANAGER;
-        $newOwner->write();
+        $project->addUser($newOwnerId, ProjectRoles::MANAGER);
 
+        $project->write();
         return $newOwnerId;
     }
 

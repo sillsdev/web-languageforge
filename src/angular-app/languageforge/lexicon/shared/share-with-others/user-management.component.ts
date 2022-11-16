@@ -59,8 +59,10 @@ export class UserManagementController implements angular.IController {
   }
 
   onOwnershipTransfer($event: {target: Partial<User>}) {
-    this.projectService.transferOwnership(this.project.ownerRef.id, $event.target.id).then(() => {
+    var newOwnerId = $event.target.id;
+    this.projectService.transferOwnership(newOwnerId).then(() => {
       this.loadMemberData();
+      this.project.ownerRef.id = newOwnerId;
     });
   }
 
