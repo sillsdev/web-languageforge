@@ -3,6 +3,7 @@ import { test as base } from '@playwright/test';
 import type { Browser, Page } from '@playwright/test';
 import type { E2EUsernames } from './e2e-users';
 import constants from '../testConstants.json';
+import { getStorageStatePath } from './user-tools';
 
 export type UserDetails = {
   username: string,
@@ -21,7 +22,7 @@ function setupUserDetails(obj: UserDetails, username: E2EUsernames) {
 }
 
 const userTab = (username: E2EUsernames) => async ({ browser, browserName }: { browser: Browser, browserName: string}, use: (r: UserTab) => Promise<void>) => {
-  const storageState = `${browserName}-${username}-storageState.json`;
+  const storageState = getStorageStatePath(browserName, username);
   const context = await browser.newContext({ storageState })
   const page = await context.newPage();
   const tab = page as UserTab;

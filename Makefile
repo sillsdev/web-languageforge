@@ -25,7 +25,7 @@ playwright-tests:
 .PHONY: playwright-app
 playwright-app:
     # delete any cached session storage state files if the service isn't running
-	docker compose ps app-for-playwright > /dev/null 2>&1 || rm -f *-storageState.json
+	docker compose ps app-for-playwright > /dev/null 2>&1 || $(MAKE) clean-test
 	docker compose up -d app-for-playwright
     # wait until the app-for-playwright service is serving up HTTP before continuing
 	until curl localhost:3238 > /dev/null 2>&1; do sleep 1; done
@@ -83,9 +83,12 @@ clean:
 	docker compose down
 	docker system prune -f
 
+clean-test:
+	cd test/e2e && npx rimraf test-storage-state test-results
+
 .PHONY: clean-powerwash
 clean-powerwash: clean
-	npx rimraf *storageState.json test-results
+	$(MAKE) clean-test
 	docker system prune -f --volumes
 	- docker rmi -f `docker images -q "lf-*"` sillsdev/web-languageforge:base-php
 	docker builder prune -f

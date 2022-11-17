@@ -1,6 +1,7 @@
 import { Browser, Page } from '@playwright/test';
 import constants from '../testConstants.json';
 import type { E2EUsernames } from './e2e-users';
+import { getStorageStatePath } from './user-tools';
 
 export async function login(page: Page, username: string, password: string) {
   await page.goto('/auth/login');
@@ -34,7 +35,9 @@ export function loginAs(page: Page, name: E2EUsernames) {
   return login(page, username, password);
 }
 
-export async function getLoggedInPage(browser: Browser, name: string) {
-  const context = await browser.newContext({ storageState: `${name}-storageState.json` });
+export async function getLoggedInPage(browser: Browser, user: string) {
+  const browserName = browser.browserType().name();
+  const storageState = getStorageStatePath(browserName, user);
+  const context = await browser.newContext({ storageState });
   return await context.newPage();
 }
