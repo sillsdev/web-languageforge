@@ -1,14 +1,30 @@
-import { expect, Locator, Page } from '@playwright/test';
+import { expect, Locator } from '@playwright/test';
 
-/**
- * Check whether the option that should be selected is selected.
- * Playwright does not hava a way to directly get the text of the selected option.
- * This function therefore works with the value.
- * @param selectElement , \<select\>
- * @param expectedOptionText , e.g. 'Pizza Margherita' or a substring, e.g. 'Margherita'
- */
-export async function expectOptionSelectedInSelectElement(selectElement: Locator, expectedOptionText: string) {
-  const expectedOption = selectElement.locator('option').filter({ hasText: expectedOptionText });
-  const expectedValue = await expectedOption.getAttribute('value');
-  await expect(selectElement).toHaveValue(expectedValue);
-}
+export const toHaveSelectedOption = async (select: Locator, option: {label?: string, value?: string}) => {
+  if (option.label === undefined && option.value === undefined) {
+    throw new  Error('At least one of either label or value must be set');
+  }
+
+  const value = await select.inputValue();
+
+  if (option.value !== undefined) {
+    await expect(select).toHaveValue(option.value);
+  }
+
+  if (option.label !== undefined) {
+    const optionElem = select.locator(`option[value="${value}"]`);
+    const optionLabel = await optionElem.textContent();
+
+    if (option.label === optionLabel) {
+      return {
+        message: () => `Did not expect '${option.label}' to be selected.`,
+        pass: true,
+      };
+    } else {
+      return {
+        message: () => `Expected '${option.label}' to be selected, but was '${optionLabel}'.`,
+        pass: false,
+      };
+    }
+  }
+};

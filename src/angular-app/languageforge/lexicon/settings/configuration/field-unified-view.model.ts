@@ -422,9 +422,9 @@ export class ConfigurationFieldUnifiedViewModel {
     const userView: LexUserViewConfig = config.userViews[userId];
     if (userView != null) {
       if (userView.inputSystems && userView.inputSystems.length) {
-        inputSystemSettings.groups[groupIndex].show = userView.inputSystems.includes(tag);
+        inputSystemSettings.groups[groupIndex] = {show: userView.inputSystems.includes(tag)};
       } else {
-        inputSystemSettings.groups[groupIndex].show = true;
+        inputSystemSettings.groups[groupIndex] = {show: true};
       }
     }
   }

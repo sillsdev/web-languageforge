@@ -19,7 +19,7 @@ export abstract class BasePage {
 
   async waitForPage(): Promise<void> {
     await Promise.all([
-      this.page.waitForNavigation({ url: new RegExp(`${this.url}(#|$)`) }),
+      this.page.waitForNavigation({url: new RegExp(`${this.url}(#|$)`)}),
       this.waitFor?.waitFor(),
     ]);
   }

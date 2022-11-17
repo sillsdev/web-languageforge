@@ -15,7 +15,7 @@
     "webpack:dev:watch": "webpack -w --config webpack-dev.config.js",
     "webpack:prd": "webpack --config webpack-prd.config.js",
     "compile-test-e2e": "tsc -p test/app",
-    "test-e2e": "protractor test/app/protractorConf.js",
+    "test-e2e": "npx playwright test -c ./test/e2e/playwright.config.ts",
     "prepare": "husky install"
   },
   "license": "MIT",

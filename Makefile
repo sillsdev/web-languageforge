@@ -13,14 +13,14 @@ dev: start
 playwright-tests-ci:
 	npm ci
 	$(MAKE) playwright-app
-	npx playwright install chromium && npx playwright test
+	npx playwright install chromium && npx playwright test -c ./test/e2e/playwright.config.ts
 
 .PHONY: playwright-tests
 playwright-tests:
 	npm install
 	$(MAKE) playwright-app
 	docker compose up -d ui-builder
-	npx playwright install chromium && npx playwright test $(params)
+	npx playwright install chromium && npx playwright test -c ./test/e2e/playwright.config.ts $(params)
 
 .PHONY: playwright-app
 playwright-app:
