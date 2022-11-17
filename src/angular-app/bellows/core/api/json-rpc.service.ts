@@ -79,7 +79,6 @@ export class JsonRpcService {
       }
 
       if (typeof response.data === 'string') {
-        console.log(response.data);
         this.error.notify('RPC Error', response.data);
         return;
       }
