@@ -272,7 +272,7 @@ class ProjectCommands
             );
         }
 
-        //get the id of the previous owner
+        // get the id of the previous owner
         $previousOwnerId = $project->ownerRef->asString();
         $previousOwner = new UserModel($previousOwnerId);
 
