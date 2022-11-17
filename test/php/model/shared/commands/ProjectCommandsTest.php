@@ -759,14 +759,13 @@ class ProjectCommandsTest extends TestCase
         $newOwnerId = self::$environ->createUser("new owner", "New Owner", "newOwner@example.com");
         $previousOwner = new UserModel($previousOwnerId);
         $newOwner = new UserModel($newOwnerId);
-        $project = ProjectCommands::createProject(
+        $projectId = ProjectCommands::createProject(
             SF_TESTPROJECT,
             SF_TESTPROJECTCODE,
             LfProjectModel::LEXICON_APP,
             $previousOwnerId,
             self::$environ->website
         );
-        $projectId = $project->id->asString();
 
         // previous owner and new owner are both already members of the project. New owner doesn't have to be a manager.
         ProjectCommands::updateUserRole($projectId, $previousOwnerId, ProjectRoles::MANAGER);
@@ -799,19 +798,19 @@ class ProjectCommandsTest extends TestCase
         $previousOwner = new UserModel($previousOwnerId);
         $newOwner = new UserModel($newOwnerId);
         $adminWhoTransfersOwnership = new UserModel($adminWhoTransfersOwnershipId);
-        $project = ProjectCommands::createProject(
+        $projectId = ProjectCommands::createProject(
             SF_TESTPROJECT,
             SF_TESTPROJECTCODE,
             LfProjectModel::LEXICON_APP,
             $previousOwnerId,
             self::$environ->website
         );
-        $projectId = $project->id->asString();
 
         // admin who transfers is a system admin. previous owner and new owner are both already members of the project. New owner doesn't have to be a manager.
         ProjectCommands::updateUserRole($projectId, $previousOwnerId, ProjectRoles::MANAGER);
         ProjectCommands::updateUserRole($projectId, $newOwnerId, ProjectRoles::CONTRIBUTOR);
         $adminWhoTransfersOwnership->role = SystemRoles::SYSTEM_ADMIN;
+        $adminWhoTransfersOwnership->write();
 
         // admin transfers project ownership to the new owner
         $updatedOwnerId = ProjectCommands::transferOwnership($projectId, $adminWhoTransfersOwnershipId, $newOwnerId);
@@ -836,14 +835,13 @@ class ProjectCommandsTest extends TestCase
         $ownerId = self::$environ->createUser("owner", "Owner", "owner@example.com");
         $currentUser = new UserModel($currentUserId);
         $newOwner = new UserModel($newOwnerId);
-        $project = ProjectCommands::createProject(
+        $projectId = ProjectCommands::createProject(
             SF_TESTPROJECT,
             SF_TESTPROJECTCODE,
             LfProjectModel::LEXICON_APP,
-            ownerId,
+            $ownerId,
             self::$environ->website
         );
-        $projectId = $project->id->asString();
 
         // current user and new owner are both already members of the project. But the current user is not the owner, even though they're a manager
         ProjectCommands::updateUserRole($projectId, $currentUserId, ProjectRoles::MANAGER);
@@ -863,14 +861,13 @@ class ProjectCommandsTest extends TestCase
         $targetOwnerId = self::$environ->createUser("target owner", "Target Owner", "targetOwner@example.com");
         $owner = new UserModel($ownerId);
         $targetOwner = new UserModel($targetOwnerId);
-        $project = ProjectCommands::createProject(
+        $projectId = ProjectCommands::createProject(
             SF_TESTPROJECT,
             SF_TESTPROJECTCODE,
             LfProjectModel::LEXICON_APP,
-            ownerId,
+            $ownerId,
             self::$environ->website
         );
-        $projectId = $project->id->asString();
 
         // owner is part of the project, but the target owner is not
         ProjectCommands::updateUserRole($projectId, $ownerId, ProjectRoles::MANAGER);
