@@ -12,7 +12,6 @@ import constants from './testConstants.json';
 import { EditorPage } from './pages/editor.page';
 import { PageHeader } from './components/page-header.component';
 import { ProjectSettingsPage } from './pages/project-settings.page';
-import { expectOptionSelectedInSelectElement } from './utils/playwright-helpers';
 
 test.describe('Lexicon E2E Semantic Domains Lazy Load', () => {
   let projectsPageManager: ProjectsPage;
@@ -48,18 +47,21 @@ test.describe('Lexicon E2E Semantic Domains Lazy Load', () => {
 
     // can change Project default language to Thai
     await projectSettingsPage.goto();
-    await projectSettingsPage.setDefaultInterfaceLanguage('ภาษาไทย - semantic domain only', 'English');
-    await expectOptionSelectedInSelectElement(projectSettingsPage.projectTab.defaultInterfaceLanguageInput, 'ภาษาไทย');
+    await projectSettingsPage.setDefaultInterfaceLanguage('ภาษาไทย - semantic domain only');
+    await expect(projectSettingsPage.projectTab.defaultInterfaceLanguageInput)
+      .toHaveSelectedOption({label: 'ภาษาไทย - semantic domain only'});
     await expect(pageHeader.languageDropdownButton).toHaveText('ภาษาไทย');
 
     // should be using Thai semantic domain
     await editorPage.goto();
-    await expect(editorPage.senseCard.locator(editorPage.semanticDomainSelector).first()).toHaveText(semanticDomain1dot1Thai);
+    await expect(editorPage.senseCard.locator(editorPage.semanticDomainSelector).first())
+      .toHaveText(semanticDomain1dot1Thai);
 
     // can change Project default language back to English
     await projectSettingsPage.goto();
-    await projectSettingsPage.setDefaultInterfaceLanguage('English', 'ภาษาไทย - semantic domain only');
-    await expectOptionSelectedInSelectElement(projectSettingsPage.projectTab.defaultInterfaceLanguageInput, 'English');
+    await projectSettingsPage.setDefaultInterfaceLanguage('English');
+    await expect(projectSettingsPage.projectTab.defaultInterfaceLanguageInput)
+      .toHaveSelectedOption({label: 'English'});
     await expect(pageHeader.languageDropdownButton).toHaveText('English');
 
     // should be using English Semantic Domain
@@ -68,12 +70,14 @@ test.describe('Lexicon E2E Semantic Domains Lazy Load', () => {
 
     // can change Project default language back to Thai
     await projectSettingsPage.goto();
-    await projectSettingsPage.setDefaultInterfaceLanguage('ภาษาไทย - semantic domain only', 'English');
-    await expectOptionSelectedInSelectElement(projectSettingsPage.projectTab.defaultInterfaceLanguageInput, 'ภาษาไทย');
+    await projectSettingsPage.setDefaultInterfaceLanguage('ภาษาไทย - semantic domain only');
+    await expect(projectSettingsPage.projectTab.defaultInterfaceLanguageInput)
+      .toHaveSelectedOption({label: 'ภาษาไทย - semantic domain only'});
 
     // should be using Thai Semantic Domain
     await editorPage.goto();
-    await expect(editorPage.senseCard.locator(editorPage.semanticDomainSelector).first()).toHaveText(semanticDomain1dot1Thai);
+    await expect(editorPage.senseCard.locator(editorPage.semanticDomainSelector).first())
+      .toHaveText(semanticDomain1dot1Thai);
 
     // can change user interface language
     await expect(pageHeader.languageDropdownButton).toHaveText('ภาษาไทย');
@@ -82,11 +86,13 @@ test.describe('Lexicon E2E Semantic Domains Lazy Load', () => {
     await expect(pageHeader.languageDropdownButton).toHaveText('English');
 
     // should be using English Semantic Domain
-    await expect(editorPage.senseCard.locator(editorPage.semanticDomainSelector).first()).toHaveText(semanticDomain1dot1English);
+    await expect(editorPage.senseCard.locator(editorPage.semanticDomainSelector).first())
+      .toHaveText(semanticDomain1dot1English);
 
     // should still have Thai for Project default language
     await projectSettingsPage.goto();
-    await expect(projectSettingsPage.projectTab.defaultInterfaceLanguageInput.locator('option[selected="selected"]')).toHaveText('ภาษาไทย - semantic domain only');
+    await expect(projectSettingsPage.projectTab.defaultInterfaceLanguageInput)
+      .toHaveSelectedOption({label: 'ภาษาไทย - semantic domain only'});
 
     // user interface language should still be English
     await expect(pageHeader.languageDropdownButton).toHaveText('English');

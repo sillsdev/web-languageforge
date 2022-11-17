@@ -1,11 +1,17 @@
 import type { PlaywrightTestConfig } from '@playwright/test';
+import { expect } from '@playwright/test';
 import { devices } from '@playwright/test';
+import { toHaveSelectedOption } from './utils/playwright-helpers';
 
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
  */
 // require('dotenv').config();
+
+expect.extend({
+  toHaveSelectedOption,
+});
 
 /**
  * See https://playwright.dev/docs/test-configuration.
