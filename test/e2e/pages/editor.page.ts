@@ -3,6 +3,7 @@ import { Project } from '../utils/types';
 import { BasePage, GotoOptions } from './base-page';
 import { ConfigurationPage } from './configuration.page';
 import { EntriesListPage } from './entries-list.page';
+import { ProjectSettingsPage } from './project-settings.page';
 
 export interface EditorGotoOptions extends GotoOptions {
   entryId?: string;
@@ -67,7 +68,7 @@ export class EditorPage extends BasePage {
   readonly addPictureButtonSelector = 'a >> text=Add Picture';
 
   constructor(page: Page, readonly project: Project) {
-    super(page, `/app/lexicon/${project.id}/`, page.locator('.words-container-title'));
+    super(page, `/app/lexicon/${project.id}/`, page.locator('.words-container-title, .no-entries'));
   }
 
   async goto(options?: EditorGotoOptions): Promise<void> {
@@ -83,11 +84,16 @@ export class EditorPage extends BasePage {
     await expect(this.page.locator('.page-name >> text=' + this.project.name)).toBeVisible();
   }
 
-  async navigateToSettings() {
+  async navigateToSettings(): Promise<ProjectSettingsPage> {
     await expect(this.settingsMenuLink).toBeVisible();
     await this.settingsMenuLink.click();
     await expect(this.projectSettingsLink).toBeVisible();
-    await this.projectSettingsLink.click();
+    const projectSettingsPage = new ProjectSettingsPage(this.page, this.project);
+    await Promise.all([
+      this.projectSettingsLink.click(),
+      projectSettingsPage.waitForPage(),
+    ]);
+    return projectSettingsPage;
   }
 
   async navigateToEntriesList() {
