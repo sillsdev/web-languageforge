@@ -13,14 +13,14 @@ dev: start
 playwright-tests-ci:
 	npm ci
 	$(MAKE) playwright-app
-	npx playwright install chromium && npx playwright test
+	npx playwright install chromium && npx playwright test -c ./test/e2e/playwright.config.ts
 
 .PHONY: playwright-tests
 playwright-tests:
 	npm install
 	$(MAKE) playwright-app
 	docker compose up -d ui-builder
-	npx playwright install chromium && npx playwright test $(params)
+	npx playwright install chromium && npx playwright test -c ./test/e2e/playwright.config.ts $(params)
 
 .PHONY: playwright-app
 playwright-app:
@@ -74,6 +74,10 @@ next-dev: build
 build-next:
 	docker compose build next-proxy next-app
 
+.PHONY: build-base-php
+build-base-php:
+	docker build -t sillsdev/web-languageforge:base-php -f docker/base-php/Dockerfile .
+
 .PHONY: clean
 clean:
 	docker compose down
@@ -81,7 +85,7 @@ clean:
 
 .PHONY: clean-powerwash
 clean-powerwash: clean
+	npx rimraf *storageState.json test-results
 	docker system prune -f --volumes
-	docker rmi -f `docker images -q "lf-*"`
-	docker image rm sillsdev/web-languageforge:base-php
+	- docker rmi -f `docker images -q "lf-*"` sillsdev/web-languageforge:base-php
 	docker builder prune -f

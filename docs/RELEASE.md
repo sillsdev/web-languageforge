@@ -52,3 +52,17 @@ Backups will be established automatically by LTOps and utilized by LF through th
 1. Scale the app up (LTOps/App team)
 1. Test the app (App team)
 1. Communicate maintenance completion
+
+### Database upgrades
+
+Since database upgrades are so infrequent, require extra care and a brief outage, they are to be done manually:
+
+1. Follow the MongoDB release notes / upgrade guide for the version of Mongo you plan to upgrade to. e.g. [Mongo 5.0 standalone upgrade guide](https://www.mongodb.com/docs/manual/release-notes/5.0-upgrade-standalone/)
+1. `make scale-down` and ensure all containers are stopped. It's also a good idea to watch the logs for the `db` container ensuring the shutdown was "clean".
+1. `make deploy-db` and ensure configs are applied to the deployment
+1. `make scale-up` and ensure all containers start back up. It's also a good idea to watch the logs for the `db` container ensuring the startup was "clean" and the new version is actually running.
+1. Verify that the running MongoDB version is in fact the version you expect. Connecting to QA or PROD mongo instance using the `mongo` client should confirm this (the server version is printed when you connect). You can also check the image name of the deployment you are inspecting.
+1. Run the `db.adminCommand( { getParameter: 1, featureCompatibilityVersion: 1 } )` command to verify that feature version is set to the previous db version
+1. Ensure a recent backup of the mongo databases was successful and is available in case a restore/revert is necessary.
+1. To perform the actual upgrade run `db.adminCommand( { setFeatureCompatibilityVersion: "5.0" } )` Change the version to the desired new version number. This operation may take some time to complete as it may trigger an internal data migration on existing collections.
+1. Run the `db.adminCommand( { getParameter: 1, featureCompatibilityVersion: 1 } )` command again to verify that feature version is now set to the newly upgraded version.

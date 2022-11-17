@@ -9,7 +9,7 @@ export class ProjectSettingsPage extends BasePage {
     tabTitle: this.page.locator('text=Project Properties'),
     projectNameInput: this.page.locator('#projName'),
     defaultInterfaceLanguageInput: this.page.locator('#language'),
-    projectOwner: this.page.getByTestId('e2e-test-project-owner'),
+    projectOwner: this.page.locator('label:has-text("Project Owner") ~ div'),
     saveButton: this.page.locator('#project-settings-save-btn')
   };
   readonly deleteTab = {
@@ -23,9 +23,8 @@ export class ProjectSettingsPage extends BasePage {
     confirm: this.page.locator('div.modal-content >> text="Delete"')
   };
 
-
   constructor(page: Page, readonly project: Project) {
-    super(page, 'app/lexicon/' + project.id + '/#!/settings', page.locator('.page-name >> text=' + project.name));
+    super(page, 'app/lexicon/' + project.id + '/#!/settings', page.locator('text=Project Properties'));
   }
 
   // navigate to project without UI
@@ -45,12 +44,12 @@ export class ProjectSettingsPage extends BasePage {
     return await this.noticeList.count();
   }
 
-  async setDefaultInterfaceLanguage(toLanguage: string, fromLanguage: string) {
+  async setDefaultInterfaceLanguage(language: string) {
     await expect(this.projectTab.tabTitle).toBeVisible();
-    await expect(this.projectTab.saveButton).toBeVisible();
-    await expect(this.projectTab.defaultInterfaceLanguageInput).toBeVisible();
-    await expect(this.projectTab.defaultInterfaceLanguageInput.locator('option[selected="selected"]')).toHaveText(fromLanguage);
-    await this.projectTab.defaultInterfaceLanguageInput.selectOption({ label: toLanguage });
+    await expect(this.projectTab.saveButton).toBeEnabled();
+    // This selectOption() seems to sometimes have no effect. Potentially it has to do with the Angular state/lifecycle.
+    // The (or perhaps any) two awaits above seems to stabilise it quite well.
+    await this.projectTab.defaultInterfaceLanguageInput.selectOption({ label: language });
     await this.projectTab.saveButton.click();
   }
 }

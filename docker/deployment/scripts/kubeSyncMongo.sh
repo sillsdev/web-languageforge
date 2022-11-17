@@ -1,41 +1,39 @@
 #!/bin/bash
 
 set -e
+set -x
 
-echo Mongo Dump
-ssh mongo-xf mongodump
+PRODCONTEXT=--context='languageforge'
+QACONTEXT=--context='qa-languageforge'
+PRODSERVER=$(kubectl $PRODCONTEXT get pods --selector='app=db' -o name | sed -e s'/pod\///')
+QASERVER=$(kubectl $QACONTEXT get pods --selector='app=db' -o name | sed -e s'/pod\///')
 
-echo Remove Scripture Forge data from dump
-ssh mongo-xf rm -r dump/xforge
+echo "Mongo Dump on production"
+kubectl $PRODCONTEXT exec -c db $PRODSERVER -- bash -c "cd /data/db && mongodump"
 
-echo Create tar file of dump
-ssh mongo-xf tar -czvf mongodump.tgz dump
+echo "Create tar file of dump"
+kubectl $PRODCONTEXT exec -c db $PRODSERVER -- bash -c "cd /data/db && tar -czvf mongodump.tgz dump"
 
-echo Copy tar file to local filesystem
-scp mongo-xf:mongodump.tgz .
+echo "Copy tgz file to local filesystem"
+kubectl $PRODCONTEXT cp -c db $PRODSERVER:/data/db/mongodump.tgz .
 
-MONGOPOD=$(kubectl get pods --selector='app=db' -o name | sed -e s'/pod\///')
+echo "See how big mongo dump file is"
+ls -lh mongodump.tgz
 
-echo Copying mongodump.tgz into $MONGOPOD/data/db
-kubectl cp -c db mongodump.tgz $MONGOPOD:/data/db
+echo "Copy tgz file to QA"
+kubectl $QACONTEXT cp -c db mongodump.tgz $QASERVER:/data/db
 
-echo Untarring mongodump.tgz
-kubectl exec -c db $MONGOPOD -- bash -c "cd /data/db \
-    && tar -xvzf mongodump.tgz"
+echo "Untar mongodump.tgz on QA"
+kubectl $QACONTEXT exec -c db $QASERVER -- bash -c "cd /data/db && tar -xvzf mongodump.tgz"
 
-echo MongoRestore
-kubectl exec -c db $MONGOPOD -- bash -c "cd /data/db \
-    && mongorestore --drop dump"
+#echo "Drop and load prod data on QA"
+#kubectl $QACONTEXT exec -c db $QASERVER -- bash -c "cd /data/db && mongorestore --drop dump"
 
-echo Run Mongo migration
-kubectl exec -c db $MONGOPOD -- bash -c 'mongo scriptureforge --eval "db.projects.updateMany({}, {"\$unset": {userProperties: 1}});"'
+#echo "Clean up on PROD"
+#kubectl $PRODCONTEXT exec -c db $PRODSERVER -- bash -c "rm -r /data/db/dump && rm /data/db/mongodump.tgz"
 
-echo Clean up on mongo-xf remote
-ssh mongo-xf rm -r dump
-ssh mongo-xf rm mongodump.tgz
+#echo "Clean up on QA"
+#kubectl $QACONTEXT exec -c db $QASERVER -- bash -c "rm -r /data/db/dump && rm /data/db/mongodump.tgz"
 
-echo Clean up on lf-mongo-data volume
-kubectl exec -c db $MONGOPOD -- bash -c "rm -r /data/db/dump && rm /data/db/mongodump.tgz"
-
-echo Clean up local tarball
-rm mongodump.tgz
+#echo "Clean up local tarball"
+#rm mongodump.tgz

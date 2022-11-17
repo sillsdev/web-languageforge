@@ -67,10 +67,10 @@ export class FieldSenseController implements angular.IController {
 
   // noinspection JSUnusedGlobalSymbols
   deleteExample = (index: number): void => {
-    const deletemsg = 'Are you sure you want to delete the example <b>\' ' +
+    const deletemsg = 'Are you sure you want to delete the example <b>\'' +
       LexiconUtilityService.getExample(this.control.config, this.config.fields.examples as LexConfigFieldList,
         this.model.examples[index], 'sentence')
-      + ' \'</b>';
+      + '\'</b>?';
     this.modal.showModalSimple('Delete Example', deletemsg, 'Cancel', 'Delete Example')
       .then(() => {
         // Adding or removing examples makes for a non-delta update, so save a possible delta update first

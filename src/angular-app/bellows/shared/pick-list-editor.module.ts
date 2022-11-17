@@ -25,14 +25,6 @@ export class PickListEditorController implements angular.IController {
     }
   }
 
-  pickAddItem(): void {
-    if (this.newValue) {
-      const key = PickListEditorController.keyFromValue(this.newValue);
-      this.items.push({ key, value: this.newValue });
-      this.isDeletable[key] = true;
-      this.newValue = undefined;
-    }
-  }
 
   pickRemoveItem(index: number): void {
     delete this.isDeletable[this.items[index].key];

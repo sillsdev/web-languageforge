@@ -31,7 +31,7 @@
                             <span>My Projects</span>
                             <i class="fa fa-bars"></i>
                         </a>
-                        <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu id="myProjectDropdownMenu" aria-labelledby="myProjectDropdown">
+                        <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu id="myProjectDropdownMenu" aria-labelledby="myProjectDropdown" style="max-height: 80vh; overflow-y: auto">
                             {% verbatim %}
                             <div data-ng-switch="$ctrl.projectTypesBySite().length" data-ng-show="$ctrl.rights.canCreateProject">
                                 <div data-ng-switch-when="1">
