@@ -9,7 +9,7 @@ export class ProjectSettingsPage extends BasePage {
     tabTitle: this.page.locator('text=Project Properties'),
     projectNameInput: this.page.locator('#projName'),
     defaultInterfaceLanguageInput: this.page.locator('#language'),
-    projectOwner: this.page.getByTestId('e2e-test-project-owner'),
+    projectOwner: this.page.locator('label:has-text("Project Owner") ~ div'),
     saveButton: this.page.locator('#project-settings-save-btn')
   };
   readonly deleteTab = {
