@@ -24,7 +24,7 @@ export class UtilityService {
   }
 
   static isAudio(tag: string): boolean {
-    const tagAudioPattern = /^\w{2,3}-Zxxx-x(-\w{2,3})*-[aA][uU][dD][iI][oO]$/;
+    const tagAudioPattern = /^\w{2,3}-Zxxx-x-.*[aA][uU][dD][iI][oO]$/;
     return tagAudioPattern.test(tag);
   }
 
