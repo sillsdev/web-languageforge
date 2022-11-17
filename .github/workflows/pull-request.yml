@@ -17,37 +17,34 @@ jobs:
 
     steps:
       -
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       -
         name: Unit Tests
         run: make unit-tests-ci
       -
         name: Publish Test Results
-        uses: docker://ghcr.io/enricomi/publish-unit-test-result-action:v1
+        uses: docker://ghcr.io/enricomi/publish-unit-test-result-action:v2
         if: always()
         with:
           check_name: Unit Test Results
           github_token: ${{ github.token }}
-          files: PhpUnitTests.xml
+          junit_files: PhpUnitTests.xml
 
   build-app-run-e2e-tests:
     runs-on: ubuntu-latest
 
     steps:
       -
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       -
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: '16.14.0'
           cache: 'npm'
       -
         name: Get installed Playwright version
         id: playwright-version
-        # https://github.com/microsoft/playwright/issues/7249#issuecomment-1201476980
-        run: echo -n "::set-output name=version::$(npm ls @playwright/test --json | jq --raw-output '.dependencies["@playwright/test"].version')"
-
-        # https://github.com/microsoft/playwright/issues/7249#issuecomment-1154603556
+        run: echo -n "version=$(npm ls @playwright/test --json | jq --raw-output '.version')" >> $GITHUB_OUTPUT
       -
         name: Cache playwright browsers
         uses: actions/cache@v3
@@ -67,7 +64,7 @@ jobs:
       -
         name: Upload Playwright test results
         if: always()
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: test-results
           path: test-results
@@ -76,9 +73,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       -
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       -
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: "16.14.0"
           cache: "npm"
@@ -91,7 +88,7 @@ jobs:
 
   #   steps:
   #     -
-  #       uses: actions/checkout@v2
+  #       uses: actions/checkout@v3
   #     -
   #       name: Build app
   #       run: make build

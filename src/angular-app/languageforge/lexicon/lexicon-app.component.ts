@@ -24,7 +24,6 @@ export class LexiconAppController implements angular.IController {
   project: LexiconProject;
   rights: Rights;
 
-  private online: boolean;
   private pristineLanguageCode: string;
 
   static $inject = ['$scope', '$location',
@@ -35,6 +34,7 @@ export class LexiconAppController implements angular.IController {
     'lexEditorDataService',
     'lexRightsService',
     'lexSendReceive',
+	'$window',
   ];
   constructor(private readonly $scope: angular.IScope, private readonly $location: angular.ILocationService,
               private readonly $q: angular.IQService,
@@ -44,6 +44,7 @@ export class LexiconAppController implements angular.IController {
               private readonly editorService: LexiconEditorDataService,
               private readonly rightsService: LexiconRightsService,
               private readonly sendReceive: LexiconSendReceiveService,
+			  private $window: angular.IWindowService,
              ) { }
 
   $onInit(): void {
@@ -153,48 +154,15 @@ export class LexiconAppController implements angular.IController {
   }
 
   private setupOffline(): void {
-    // setup offline.js options
-    // see https://github.com/hubspot/offline for all options
-    // we tell offline.js to NOT store and remake requests while the connection is down
-    Offline.options.requests = false;
-    Offline.options.checkOnLoad = true;
-    Offline.options.checks = { xhr: { url: '/offlineCheck.txt' } };
+	this.$window.addEventListener('offline', e => setTitle('Language Forge Offline', '#555', '#777'));
+	this.$window.addEventListener('online', e => setTitle('Language Forge', '', ''));
 
-    // Set the page's Language Forge title, font size, and nav's background color
     function setTitle(text: string, backgroundColorA: string, backgroundColorB: string): void {
       (document.querySelector('nav .navbar-brand .website-title') as HTMLElement).textContent = text;
       (document.querySelectorAll('nav.navbar')[0] as HTMLElement).style.backgroundColor = backgroundColorA;
       (document.querySelectorAll('nav.navbar-expand')[1] as HTMLElement).style.backgroundColor = backgroundColorB;
     }
-
-    let offlineMessageId: string;
-    Offline.on('up', () => {
-      setTitle('Language Forge', '', '');
-
-      if (this.online === false) {
-        this.notice.removeById(offlineMessageId);
-        this.notice.push(this.notice.SUCCESS, 'You are back online!');
-      }
-
-      this.online = true;
-      this.$scope.$digest();
-    });
-
-    Offline.on('down', () => {
-      setTitle('Language Forge Offline', '#555', '#777');
-      offlineMessageId = this.notice.push(this.notice.ERROR, 'You are offline. Some features are not available', null,
-        true, 5 * 1000);
-      this.online = false;
-      if (!/^\/editor\//.test(this.$location.path())) {
-        // redirect to the editor
-        this.$location.path('/editor');
-        this.notice.push(this.notice.SUCCESS, 'The dictionary editor is available offline.  Settings are not.');
-      }
-
-      this.$scope.$digest();
-    });
   }
-
 }
 
 export const LexiconAppComponent: angular.IComponentOptions = {

@@ -82,7 +82,6 @@ module.exports = {
                   { from: '../../node_modules/font-awesome/', to: 'font-awesome' },
                   { from: '../../node_modules/intl-tel-input/build/', to: 'intl-tel-input' },
                   { from: '../../node_modules/jquery/dist/', to: 'jquery' },
-                  { from: '../../node_modules/offline-js/offline.min.js', to: 'offline-js' },
                   { from: '../../node_modules/zxcvbn/dist/', to: 'zxcvbn' },
                   { from: '../../node_modules/ng-table/bundles/ng-table.min.css', to: 'ng-table' },
                   { from: '../../node_modules/ng-table/bundles/ng-table.min.css.map', to: 'ng-table' },

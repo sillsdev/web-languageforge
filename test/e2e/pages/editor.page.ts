@@ -1,9 +1,9 @@
 import { expect, Locator, Page } from '@playwright/test';
-import { fail } from 'assert';
 import { Project } from '../utils/types';
 import { BasePage, GotoOptions } from './base-page';
 import { ConfigurationPage } from './configuration.page';
 import { EntriesListPage } from './entries-list.page';
+import { ProjectSettingsPage } from './project-settings.page';
 
 export interface EditorGotoOptions extends GotoOptions {
   entryId?: string;
@@ -34,16 +34,13 @@ export class EditorPage extends BasePage {
   };
 
   readonly entryCard = this.page.locator('.entry-card');
-  readonly senseCard = this.page.locator('[data-ng-repeat="sense in $ctrl.model.senses"]');
+  readonly senseCard = this.page.locator('.dc-sense.card');
   readonly exampleCardSelector = '.dc-example';
   readonly semanticDomainSelector = '.dc-semanticdomain-value';
 
-  readonly actionMenu = {
-    toggleMenuButtonSelector: '.ellipsis-menu-toggle',
-    deleteCardButtonSelector: '.dropdown-item:has-text("Delete")',
-    moveDownButtonSelector: '.dropdown-item:has-text("Move Down")',
-    moveUpButtonSelector: '.dropdown-item:has-text("Move Up")'
-  };
+  readonly deleteCardButtonSelector = 'a[data-ng-click^="$ctrl.delete"], a[data-ng-click^="$ctrl.remove"]';
+  readonly moveDownButtonSelector = 'a[data-ng-click="$ctrl.move($ctrl.index, 1)"]:not(.ng-hide)';
+  readonly moveUpButtonSelector = 'a[data-ng-click="$ctrl.move($ctrl.index, -1)"]:not(.ng-hide)';
 
   readonly compactEntryListContainer = this.page.locator('#compactEntryListContainer');
   readonly compactEntryListItem = this.compactEntryListContainer.locator('.lexiconListItemCompact');
@@ -71,7 +68,7 @@ export class EditorPage extends BasePage {
   readonly addPictureButtonSelector = 'a >> text=Add Picture';
 
   constructor(page: Page, readonly project: Project) {
-    super(page, `/app/lexicon/${project.id}/`, page.locator('.words-container-title'));
+    super(page, `/app/lexicon/${project.id}/`, page.locator('.words-container-title, .no-entries'));
   }
 
   async goto(options?: EditorGotoOptions): Promise<void> {
@@ -87,11 +84,16 @@ export class EditorPage extends BasePage {
     await expect(this.page.locator('.page-name >> text=' + this.project.name)).toBeVisible();
   }
 
-  async navigateToSettings() {
+  async navigateToSettings(): Promise<ProjectSettingsPage> {
     await expect(this.settingsMenuLink).toBeVisible();
     await this.settingsMenuLink.click();
     await expect(this.projectSettingsLink).toBeVisible();
-    await this.projectSettingsLink.click();
+    const projectSettingsPage = new ProjectSettingsPage(this.page, this.project);
+    await Promise.all([
+      this.projectSettingsLink.click(),
+      projectSettingsPage.waitForPage(),
+    ]);
+    return projectSettingsPage;
   }
 
   async navigateToEntriesList() {

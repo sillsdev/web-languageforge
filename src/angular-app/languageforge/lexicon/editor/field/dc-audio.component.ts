@@ -71,7 +71,7 @@ export class FieldAudioController implements angular.IController {
   deleteAudio(): void {
     if (this.hasAudio()) {
       const deleteMsg = 'Are you sure you want to delete the audio <b>\'' +
-        FieldAudioController.originalFileName(this.dcFilename) + '\'</b>';
+        FieldAudioController.originalFileName(this.dcFilename) + '\'</b>?';
       this.modalService.showModalSimple('Delete Audio', deleteMsg, 'Cancel', 'Delete Audio')
         .then(() => {
           this.lexProjectService.removeMediaFile('audio', this.dcFilename, result => {
