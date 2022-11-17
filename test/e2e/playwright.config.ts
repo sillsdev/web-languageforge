@@ -11,7 +11,6 @@ import { devices } from '@playwright/test';
  * See https://playwright.dev/docs/test-configuration.
  */
 const config: PlaywrightTestConfig = {
-  testDir: './test/e2e',
   /* Maximum time one test can run for. */
   timeout: 30 * 1000,
   expect: {
@@ -24,7 +23,7 @@ const config: PlaywrightTestConfig = {
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Global setup for things like logging in users and saving login cookies */
-  globalSetup: require.resolve('./test/e2e/utils/globalSetup'),
+  globalSetup: require.resolve('./utils/globalSetup'),
   /* Retry on CI only */
   retries: process.env.CI ? 1 : 0,
   /* Opt out of parallel tests on CI. */
@@ -106,7 +105,7 @@ const config: PlaywrightTestConfig = {
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: 'make playwright-app',
+    command: 'cd ../.. && make playwright-app',
     port: 3238,
     timeout: 15 * 1000,
     reuseExistingServer: true,
