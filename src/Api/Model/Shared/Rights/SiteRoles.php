@@ -8,7 +8,7 @@ use Api\Model\Shared\Mapper\MapOf;
 class SiteRoles extends RolesBase
 {
     const SITE_MANAGER = "site_manager"; // highest possible level for site: various management responsibilities like creating projects
-    const PROJECT_CREATOR = "project_creator"; // permission to create a project
+    const PROJECT_OWNER = "project_owner"; // permission to create a project, delete a project, and transfer ownership of that project
     const USER = "user";
     const NONE = "none";
 
@@ -26,15 +26,16 @@ class SiteRoles extends RolesBase
         //$rights[] = Domain::USERS + Operation::DELETE_OWN;
         self::$_rights[self::USER] = $rights;
 
-        // Project Creator (User plus ability to create/delete own projects)
+        // Project Owner (User plus ability to create/delete own projects)
         // Note: will use ProjectModel::isOwner() to determine
         // ARCHIVE and DELETE of "OWN" projects
         $rights = self::$_rights[self::USER];
         $rights[] = Domain::PROJECTS + Operation::CREATE;
-        self::$_rights[self::PROJECT_CREATOR] = $rights;
+        $rights[] = Domain::PROJECTS + Operation::DELETE;
+        self::$_rights[self::PROJECT_OWNER] = $rights;
 
-        // Site Manager (Project creator plus all rights on projects)
-        $rights = self::$_rights[self::PROJECT_CREATOR];
+        // Site Manager (Project owner plus all rights on projects)
+        $rights = self::$_rights[self::PROJECT_OWNER];
         self::grantAllOnDomain($rights, Domain::PROJECTS);
         self::$_rights[self::SITE_MANAGER] = $rights;
     }

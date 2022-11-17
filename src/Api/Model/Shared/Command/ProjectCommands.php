@@ -274,15 +274,20 @@ class ProjectCommands
 
         //get the id of the previous owner
         $previousOwnerId = $project->ownerRef->asString();
+        $previousOwner = new UserModel($previousOwnerId);
 
         // set the project owner ref to the new owner id
         $project->ownerRef = $newOwnerId;
 
         // set the project role of the previous owner id to be manager
         $project->addUser($previousOwnerId, ProjectRoles::MANAGER);
+        $previousOwner->addProject($projectId);
+        $previousOwner->write();
 
         // set the project role of the new owner id to be manager
         $project->addUser($newOwnerId, ProjectRoles::MANAGER);
+        $newOwner->addProject($projectId);
+        $newOwner->write();
 
         $project->write();
         return $newOwnerId;

@@ -1,7 +1,7 @@
 import * as angular from 'angular';
 import { ProjectService } from '../../../../bellows/core/api/project.service';
 import { UserService } from '../../../../bellows/core/api/user.service';
-import { Session } from '../../../../bellows/core/session.service';
+import { Session, SessionService } from '../../../../bellows/core/session.service';
 import { UtilityService } from '../../../../bellows/core/utility.service';
 import { Project, ProjectRole } from '../../../../bellows/shared/model/project.model';
 import { User } from '../../../../bellows/shared/model/user.model';
@@ -19,11 +19,12 @@ export class UserManagementController implements angular.IController {
   anonymousUserRoles: ProjectRole[];
   memberRoles: ProjectRole[];
 
-  static $inject = ['$q', 'projectService', 'userService'];
+  static $inject = ['$q', 'projectService', 'userService', 'sessionService',];
   constructor(
     private readonly $q: angular.IQService,
     private readonly projectService: ProjectService,
-    private readonly userService: UserService) { }
+    private readonly userService: UserService,
+    private readonly sessionService: SessionService) { }
 
   $onInit(): void {
     // TODO: actually hook anonymousUserRole up to the backend
@@ -66,6 +67,9 @@ export class UserManagementController implements angular.IController {
     });
   }
 
+  currentUserIsOwnerOrAdmin(){
+    return this.project.ownerRef.id === this.session.data.userId || this.session.hasSiteRight(this.sessionService.domain.USERS, this.sessionService.operation.VIEW);
+  }
 
   onSpecialRoleChanged($event: {roleDetail: RoleDetail, target: string}) {
     if ($event.target === 'anonymous_user') {

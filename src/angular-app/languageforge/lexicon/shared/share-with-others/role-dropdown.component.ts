@@ -26,6 +26,7 @@ export class RoleDropdownController implements angular.IController {
   session: Session;
   allowDisable: boolean;
   allowDelete: boolean;
+  currentUserIsOwnerOrAdmin: () => boolean;
   onRoleChanged: (params: { $event: { roleDetail: RoleDetail, target: any } }) => void;
   onDeleteTarget: (params: { $event: { target: any } }) => void;
   onOwnershipTransfer: (params: { $event: { target: any } }) => void;
@@ -83,10 +84,6 @@ export class RoleDropdownController implements angular.IController {
     }
   }
 
-  makeOwner(): void {
-    this.onOwnershipTransfer({ $event: { target: this.target } });
-  }
-
 }
 
 export const RoleDropdownComponent: angular.IComponentOptions = {
@@ -99,6 +96,7 @@ export const RoleDropdownComponent: angular.IComponentOptions = {
     onOwnershipTransfer: '&',
     onRoleChanged: '&',
     onDeleteTarget: '&',
+    currentUserIsOwnerOrAdmin: '&',
     allowDelete: '<'
   },
   controller: RoleDropdownController,
