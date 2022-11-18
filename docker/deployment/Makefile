@@ -26,6 +26,8 @@ logs-mail:
 
 shell-app:
 	kubectl exec -it deploy/app -- sh
+shell-db:
+	kubectl exec -it deploy/db -- sh
 shell-lfmerge:
 	kubectl exec -it deploy/lfmerge -- sh
 shell-next-app:
@@ -88,6 +90,33 @@ delete-next-proxy:
 	kubectl delete ingress languageforge-app
 delete-next-app:
 	kubectl delete deployment,service next-app
+
+scale-down: scale-down-app scale-down-lfmerge scale-down-next-proxy scale-down-next-app scale-down-mail scale-down-db
+scale-down-db:
+	kubectl scale deploy/db --replicas 0
+scale-down-mail:
+	kubectl scale deploy/mail --replicas 0
+scale-down-app:
+	kubectl scale deploy/app --replicas 0
+scale-down-lfmerge:
+	kubectl scale deploy/lfmerge --replicas 0
+scale-down-next-app:
+	kubectl scale deploy/next-app --replicas 0
+scale-down-next-proxy:
+	kubectl scale deploy/next-proxy --replicas 0
+scale-up: scale-up-db scale-up-next-proxy scale-up-next-app scale-up-mail scale-up-app scale-up-lfmerge
+scale-up-db:
+	kubectl scale deploy/db --replicas 1
+scale-up-mail:
+	kubectl scale deploy/mail --replicas 1
+scale-up-app:
+	kubectl scale deploy/app --replicas 1
+scale-up-lfmerge:
+	kubectl scale deploy/lfmerge --replicas 1
+scale-up-next-app:
+	kubectl scale deploy/next-app --replicas 1
+scale-up-next-proxy:
+	kubectl scale deploy/next-proxy --replicas 1
 
 APPPOD = $(shell kubectl get pods --selector='app=app' -o name | sed -e s'/pod\///')
 lfmerge-copy-state:

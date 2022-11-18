@@ -520,7 +520,7 @@ export class LexiconEditorController implements angular.IController {
 
   deleteEntry = (entry: LexEntry): void => {
     const deleteMsg = 'Are you sure you want to delete the entry <b>\'' +
-      LexiconUtilityService.getLexeme(this.lecConfig, this.lecConfig.entry, entry) + '\'</b>';
+      LexiconUtilityService.getLexeme(this.lecConfig, this.lecConfig.entry, entry) + '\'</b>?';
     this.modal.showModalSimple('Delete Entry', deleteMsg, 'Cancel', 'Delete Entry').then(() => {
       let iShowList = this.editorService.getIndexInList(entry.id, this.visibleEntries);
       this.editorService.removeEntryFromLists(entry.id);

@@ -18,7 +18,9 @@
     <div class="col-md-9">
         <div class="card card-body bg-light settings-panel" id="picklistEditorFieldset">
             <h3 class="col-form-label">{{$ctrl.olcOptionListsDirty[$ctrl.currentListIndex].name}}</h3>
-            <i>(At this time {{$ctrl.olcOptionListsDirty[$ctrl.currentListIndex].name}} items cannot be deleted)</i>
+            <div style="padding: 10px">
+                <small>To add or remove items from this list, please use FieldWorks (FLEx).</small>
+            </div>
             <div class="controls">
                 <picklist-editor items="$ctrl.olcOptionListsDirty[$ctrl.currentListIndex].items"></picklist-editor>
             </div>

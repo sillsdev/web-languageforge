@@ -134,7 +134,7 @@ class RightsHelper
 
             case "message_send":
             case "project_read":
-            case "project_read_by_code":
+            case "set_project":
             case "project_settings":
             case "project_updateSettings":
             case "project_readSettings":
@@ -213,9 +213,6 @@ class RightsHelper
             case "activity_list_dto_for_current_project":
                 return $this->userHasSiteRight(Domain::PROJECTS + Operation::VIEW_OWN);
 
-            case "activity_list_dto_for_project":
-                return $this->userHasSiteRight(Domain::PROJECTS + Operation::VIEW_OWN);
-
             case "activity_list_dto_for_lexical_entry":
                 return $this->userHasProjectRight(Domain::ENTRIES + Operation::VIEW);
 
@@ -237,7 +234,6 @@ class RightsHelper
             case "lex_dbeDtoFull":
             case "lex_dbeDtoUpdatesOnly":
             case "lex_stats":
-            case "lex_stats_all":
                 return $this->userHasProjectRight(Domain::ENTRIES + Operation::VIEW);
 
             // case 'lex_entry_read':

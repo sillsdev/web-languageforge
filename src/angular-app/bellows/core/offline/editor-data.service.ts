@@ -166,7 +166,7 @@ export class EditorDataService {
     const deferred = this.$q.defer();
 
     // get data from the server
-    if (Offline.state === 'up') {
+    if (navigator.onLine) {
       this.api.dbeDtoUpdatesOnly(this.browserInstanceId, timestamp, (update: any) => {
         this.processEditorDto(update, true).then((result: any) => {
           if (result.data.itemCount > 0) {
@@ -269,7 +269,7 @@ export class EditorDataService {
     return index;
   }
 
-  // find entry id from index number, used to goto and display  editor record 
+  // find entry id from index number, used to goto and display  editor record
   getIdInFilteredList = (index: number): string => {
     let list = this.filteredEntries;
     let id: string;

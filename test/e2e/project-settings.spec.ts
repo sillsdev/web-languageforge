@@ -31,7 +31,8 @@ test.describe('E2E Project Settings app', () => {
     id: ''
   };
 
-  test.beforeAll(async ({ request, admin, member, manager }) => {for (const project of projects) {
+  test.beforeAll(async ({ request, admin, member, manager }) => {
+    for (const project of projects) {
       const projectId = await initTestProject(request, project.code, project.name, admin.username, [member.username]);
       project.id = projectId;
     }
@@ -44,6 +45,13 @@ test.describe('E2E Project Settings app', () => {
     const editorPage = new EditorPage(memberTab, projects[0]);
     await editorPage.goto();
     await expect(editorPage.settingsMenuLink).not.toBeVisible();
+  });
+
+  test('Project member can navigate from editor to settings', async({ managerTab }) => {
+    const editorPage = new EditorPage(managerTab, projects[0]);
+    await editorPage.goto();
+    const projectSettingsPage = await editorPage.navigateToSettings();
+    await expect(projectSettingsPage.projectTab.tabTitle).toBeVisible();
   });
 
   test('Project owner can manage project they own', async ({ adminTab }) => {

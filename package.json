@@ -15,7 +15,7 @@
     "webpack:dev:watch": "webpack -w --config webpack-dev.config.js",
     "webpack:prd": "webpack --config webpack-prd.config.js",
     "compile-test-e2e": "tsc -p test/app",
-    "test-e2e": "protractor test/app/protractorConf.js",
+    "test-e2e": "npx playwright test -c ./test/e2e/playwright.config.ts",
     "prepare": "husky install"
   },
   "license": "MIT",
@@ -43,7 +43,6 @@
     "ng-table": "^3.0.1",
     "npm-run-all": "^4.1.5",
     "oclazyload": "^1.1.0",
-    "offline-js": "0.7.11",
     "webm-fix-duration": "^1.0.1",
     "zxcvbn": "^4.4.2"
   },
@@ -67,7 +66,6 @@
     "@types/ng-file-upload": "^12.2.3",
     "@types/node": "^17.0.21",
     "@types/oclazyload": "0.0.32",
-    "@types/offline-js": "^0.7.28",
     "@types/rangy": "0.0.30",
     "@types/webpack-env": "^1.16.0",
     "copy-webpack-plugin": "^8.1.0",

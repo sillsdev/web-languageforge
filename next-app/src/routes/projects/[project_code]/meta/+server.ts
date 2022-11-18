@@ -1,13 +1,9 @@
 import { sf } from '$lib/fetch/server'
 
 export async function get({ project_code, cookie }) {
-	const [
-		{ id, projectName: name, users },
-		{ entries, comments }
-	] = await Promise.all([
-		sf({ name: 'project_read_by_code', args: [ project_code ], cookie }),
-		sf({ name: 'lex_stats_all', args: [ project_code ], cookie }),
-	])
+	const { id, projectName: name, users } = await sf({ name: 'set_project', args: [ project_code ], cookie })
+
+	const { entries, comments } = await sf({ name: 'lex_stats', cookie })
 
 	const entries_with_picture = entries.filter(has_picture)
 	const entries_with_audio = entries.filter(has_audio)
