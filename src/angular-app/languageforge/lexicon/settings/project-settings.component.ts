@@ -2,7 +2,7 @@ import * as angular from 'angular';
 
 import {ApplicationHeaderService} from '../../../bellows/core/application-header.service';
 import {NoticeService} from '../../../bellows/core/notice/notice.service';
-import {SessionService} from '../../../bellows/core/session.service';
+import {Session, SessionService} from '../../../bellows/core/session.service';
 import {InterfaceConfig} from '../../../bellows/shared/model/interface-config.model';
 import {SemanticDomainsService} from '../../core/semantic-domains/semantic-domains.service';
 import {LexiconProjectService} from '../core/lexicon-project.service';
@@ -17,6 +17,7 @@ export class LexiconProjectSettingsController implements angular.IController {
 
   project: LexiconProject = {} as LexiconProject;
   actionInProgress: boolean = false;
+  session: Session;
 
   static $inject = ['applicationHeaderService',
     'silNoticeService', 'sessionService',
@@ -65,10 +66,15 @@ export class LexiconProjectSettingsController implements angular.IController {
     });
   }
 
+  currentUserIsOwnerOrAdmin(){
+    return this.project.ownerRef.id === this.session.data.userId || this.session.hasSiteRight(this.sessionService.domain.USERS, this.sessionService.operation.VIEW);
+  }
+
 }
 
 export const LexiconProjectSettingsComponent: angular.IComponentOptions = {
   bindings: {
+    session: '<',
     lpsProject: '<',
     lpsRights: '<',
     lpsInterfaceConfig: '<',
