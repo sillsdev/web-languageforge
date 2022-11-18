@@ -1,7 +1,9 @@
 import * as angular from 'angular';
+import { TargetLocator } from 'selenium-webdriver';
 import { ProjectService } from '../../../../bellows/core/api/project.service';
 import { UserService } from '../../../../bellows/core/api/user.service';
 import { Session, SessionService } from '../../../../bellows/core/session.service';
+import { ModalService } from '../../../../bellows/core/modal/modal.service';
 import { UtilityService } from '../../../../bellows/core/utility.service';
 import { Project, ProjectRole } from '../../../../bellows/shared/model/project.model';
 import { User } from '../../../../bellows/shared/model/user.model';
@@ -19,12 +21,13 @@ export class UserManagementController implements angular.IController {
   anonymousUserRoles: ProjectRole[];
   memberRoles: ProjectRole[];
 
-  static $inject = ['$q', 'projectService', 'userService', 'sessionService',];
+  static $inject = ['$q', 'projectService', 'userService', 'sessionService','modalService'];
   constructor(
     private readonly $q: angular.IQService,
     private readonly projectService: ProjectService,
     private readonly userService: UserService,
-    private readonly sessionService: SessionService) { }
+    private readonly sessionService: SessionService,
+    private readonly modal: ModalService) { }
 
   $onInit(): void {
     // TODO: actually hook anonymousUserRole up to the backend
@@ -60,11 +63,14 @@ export class UserManagementController implements angular.IController {
   }
 
   onOwnershipTransfer($event: {target: Partial<User>}) {
-    var newOwnerId = $event.target.id;
-    this.projectService.transferOwnership(newOwnerId).then(() => {
-      this.loadMemberData();
-      this.project.ownerRef.id = newOwnerId;
-    });
+    const ownershipTransferMessage = 'Are you sure you want to transfer ownership of <b>' + this.project.projectName + '</b> to <b>' + $event.target.username + '</b>?';
+    this.modal.showModalSimple('Transfer project ownership', ownershipTransferMessage, 'Cancel', 'Transfer ownership to ' + $event.target.username).then(() => {
+      var newOwnerId = $event.target.id;
+      this.projectService.transferOwnership(newOwnerId).then(() => {
+        this.loadMemberData();
+        this.project.ownerRef.id = newOwnerId;
+      });
+    })
   }
 
   currentUserIsOwnerOrAdmin(){
@@ -97,8 +103,11 @@ export class UserManagementController implements angular.IController {
   }
 
   removeUser(user: User) {
-    this.projectService.removeUsers([user.id]).then(() => {
-      this.loadMemberData();
+    const removeUserMessage = 'Are you sure you want to remove <b>' + user.username + '</b> from the <b>' + this.project.projectName + '</b> project?';
+    this.modal.showModalSimple('Remove user', removeUserMessage, 'Cancel', 'Remove ' + user.username).then(() => {
+      this.projectService.removeUsers([user.id]).then(() => {
+        this.loadMemberData();
+      });
     });
   }
 
