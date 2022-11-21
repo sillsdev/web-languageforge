@@ -191,7 +191,7 @@ services:
     command: sh -c "postconf -e 'default_transport = retry:no outbound email allowed' && /run.sh"
 
   db:
-    image: mongo:4.2
+    image: mongo:4.4
     container_name: lf-db
     ports:
       # exposed this to host for admin tools
