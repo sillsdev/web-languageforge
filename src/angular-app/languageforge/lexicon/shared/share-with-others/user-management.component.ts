@@ -21,6 +21,7 @@ export class UserManagementController implements angular.IController {
   anonymousUserRoles: ProjectRole[];
   memberRoles: ProjectRole[];
 
+
   static $inject = ['$q', 'projectService', 'userService', 'sessionService','modalService'];
   constructor(
     private readonly $q: angular.IQService,
@@ -29,7 +30,7 @@ export class UserManagementController implements angular.IController {
     private readonly sessionService: SessionService,
     private readonly modal: ModalService) { }
 
-  $onInit(): void {
+  async $onInit(): Promise<void> {
     // TODO: actually hook anonymousUserRole up to the backend
     this.project.anonymousUserRole = LexRoles.NONE.key;
 
@@ -46,13 +47,17 @@ export class UserManagementController implements angular.IController {
       LexRoles.OBSERVER_WITH_COMMENT,
       LexRoles.OBSERVER
     ];
+
+    await this.sessionService.getSession().then((s) => {
+        this.session = s;
+      });
   }
 
-  userIsCurrentUser(user: User) {
+  userIsCurrentUser(user: User): boolean {
     return this.session.data.username === user.username;
   }
 
-  userIsOwner(user: User) {
+  userIsOwner(user: User): boolean {
     return user.id === this.project.ownerRef.id;
   }
 
@@ -63,18 +68,28 @@ export class UserManagementController implements angular.IController {
   }
 
   onOwnershipTransfer($event: {target: Partial<User>}) {
-    const ownershipTransferMessage = 'Are you sure you want to transfer ownership of <b>' + this.project.projectName + '</b> to <b>' + $event.target.username + '</b>?';
-    this.modal.showModalSimple('Transfer project ownership', ownershipTransferMessage, 'Cancel', 'Transfer ownership to ' + $event.target.username).then(() => {
-      var newOwnerId = $event.target.id;
-      this.projectService.transferOwnership(newOwnerId).then(() => {
-        this.loadMemberData();
-        this.project.ownerRef.id = newOwnerId;
-      });
-    })
+    if($event.target.isInvitee){
+      const attemptedToTransferToAnInviteeMessage = 'Please retry after the invitee opens the project.';
+      this.modal.showModalSimple('Ownership was not transferred', attemptedToTransferToAnInviteeMessage, 'OK', 'Close').then(() => {
+      })
+    }
+    else{
+      const ownershipTransferMessage = 'Are you sure you want to transfer ownership of <b>' + this.project.projectName + '</b> to <b>' + $event.target.username + '</b>?';
+      this.modal.showModalSimple('Transfer project ownership', ownershipTransferMessage, 'Cancel', 'Transfer ownership to ' + $event.target.username).then(() => {
+        var newOwnerId = $event.target.id;
+        this.projectService.transferOwnership(newOwnerId).then(() => {
+          this.loadMemberData();
+          this.project.ownerRef.id = newOwnerId;
+        });
+      })
+    }
   }
 
-  currentUserIsOwnerOrAdmin(){
-    return this.project.ownerRef.id === this.session.data.userId || this.session.hasSiteRight(this.sessionService.domain.USERS, this.sessionService.operation.VIEW);
+  currentUserIsOwnerOrAdmin(): boolean {
+    if (typeof this.project.ownerRef == 'object') {
+      return (this.project.ownerRef.id === this.session.data.userId) || this.sessionService.userIsAdmin();
+    }
+    return false;
   }
 
   onSpecialRoleChanged($event: {roleDetail: RoleDetail, target: string}) {

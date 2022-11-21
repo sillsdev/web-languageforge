@@ -8,7 +8,7 @@
       <i class="fa fa-{{ roleDetail.icon }}"></i>
       {{ roleDetail.description }} <i class="fa fa-check" ng-show="$ctrl.selectedRoleDetail == roleDetail"></i>
     </a>
-    <div class="dropdown-divider" ng-if="$ctrl.currentUserIsOwnerOrAdmin()"></div>
+    <div class="dropdown-divider" ng-if="$ctrl.currentUserIsOwnerOrAdmin() && !userIsInvitee({$event: {target: $ctrl.target}})"></div>
     <a class="dropdown-item" role="menuitem" ng-if="$ctrl.currentUserIsOwnerOrAdmin()" ng-click="$ctrl.onOwnershipTransfer({$event: {target: $ctrl.target}})">
         <i class="fa fa-arrow-circle-o-up"></i>
         make owner
