@@ -8,9 +8,20 @@
       <i class="fa fa-{{ roleDetail.icon }}"></i>
       {{ roleDetail.description }} <i class="fa fa-check" ng-show="$ctrl.selectedRoleDetail == roleDetail"></i>
     </a>
-    <div class="dropdown-divider" ng-if="$ctrl.allowDelete"></div>
-    <li class="dropdown-item" role="menuitem" ng-if="$ctrl.allowDelete">
-      <div ng-click="$ctrl.onDeleteTarget({$event: {target: $ctrl.target}})" class="text-danger">remove</div>
-    </li>
+    <div ng-if="$ctrl.currentUserIsOwnerOrAdmin() && !$ctrl.target.isInvitee">
+      <div class="dropdown-divider" ></div>
+      <a class="dropdown-item" role="menuitem" ng-click="$ctrl.onOwnershipTransfer({$event: {target: $ctrl.target}})">
+          <i class="fa fa-arrow-circle-o-up"></i>
+          make owner
+      </a>
+    </div>
+    <div ng-if="$ctrl.allowDelete">
+      <div class="dropdown-divider"></div>
+      <a class="dropdown-item text-danger" role="menuitem" ng-if="$ctrl.allowDelete" ng-click="$ctrl.onDeleteTarget({$event: {target: $ctrl.target}})">
+        <i class="fa fa-times"></i>
+        remove
+    </a>
   </div>
 </div>
+</div>
+

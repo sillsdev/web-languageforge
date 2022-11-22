@@ -53,7 +53,7 @@
                 <pui-archive-project pui-action-in-progress="$ctrl.actionInProgress"></pui-archive-project>
             </form>
         </uib-tab>
-        <uib-tab heading="Delete" data-ng-show="$ctrl.lpsRights.canDeleteProject()">
+        <uib-tab heading="Delete" data-ng-show="$ctrl.currentUserIsOwnerOrAdmin()">
             <form class="card card-body bg-light">
                 <pui-delete-project></pui-delete-project>
             </form>

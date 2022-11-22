@@ -2,7 +2,7 @@ import * as angular from 'angular';
 
 import {ApplicationHeaderService} from '../../../bellows/core/application-header.service';
 import {NoticeService} from '../../../bellows/core/notice/notice.service';
-import {SessionService} from '../../../bellows/core/session.service';
+import {Session, SessionService} from '../../../bellows/core/session.service';
 import {InterfaceConfig} from '../../../bellows/shared/model/interface-config.model';
 import {SemanticDomainsService} from '../../core/semantic-domains/semantic-domains.service';
 import {LexiconProjectService} from '../core/lexicon-project.service';
@@ -17,19 +17,28 @@ export class LexiconProjectSettingsController implements angular.IController {
 
   project: LexiconProject = {} as LexiconProject;
   actionInProgress: boolean = false;
+  session: Session;
 
   static $inject = ['applicationHeaderService',
     'silNoticeService', 'sessionService',
     'semanticDomainsService',
     'lexProjectService'];
   constructor(private readonly applicationHeaderService: ApplicationHeaderService,
-              private readonly notice: NoticeService, private readonly sessionService: SessionService,
+              private readonly notice: NoticeService,
+              private readonly sessionService: SessionService,
               private readonly semanticDomains: SemanticDomainsService,
-              private readonly lexProjectService: LexiconProjectService) { }
+              private readonly lexProjectService: LexiconProjectService) {
 
-  $onInit() {
+              }
+
+  async $onInit(): Promise<void> {
     this.lexProjectService.setBreadcrumbs('settings', 'Project Settings');
     this.lexProjectService.setupSettings();
+
+    await this.sessionService.getSession().then((s) => {
+      this.session = s;
+    });
+
   }
 
   $onChanges(changes: any) {
@@ -63,6 +72,13 @@ export class LexiconProjectSettingsController implements angular.IController {
         this.notice.push(this.notice.SUCCESS, this.project.projectName + ' settings updated successfully.');
       }
     });
+  }
+
+  currentUserIsOwnerOrAdmin(): boolean {
+    if (typeof this.project.ownerRef == 'object') {
+      return (this.project.ownerRef.id === this.session.data.userId) || this.sessionService.userIsAdmin();
+    }
+    return false;
   }
 
 }

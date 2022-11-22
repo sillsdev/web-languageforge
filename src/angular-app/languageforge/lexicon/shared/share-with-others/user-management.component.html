@@ -29,6 +29,8 @@
                                 target="user"
                                 on-role-changed="$ctrl.onUserRoleChanged($event)"
                                 on-delete-target="$ctrl.onDeleteTarget($event)"
+                                on-ownership-transfer="$ctrl.onOwnershipTransfer($event)"
+                                current-user-is-owner-or-admin="$ctrl.currentUserIsOwnerOrAdmin()"
                                 allow-delete="true"
                                 selected-role="user.role"
                                 roles="$ctrl.memberRoles"></role-dropdown>
