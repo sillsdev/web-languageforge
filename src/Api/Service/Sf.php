@@ -21,7 +21,6 @@ use Api\Model\Shared\Command\SessionCommands;
 use Api\Model\Shared\Command\UserCommands;
 use Api\Model\Shared\Command\LdapiCommands;
 use Api\Model\Shared\Communicate\EmailSettings;
-use Api\Model\Shared\Communicate\SmsSettings;
 use Api\Model\Shared\Dto\ActivityListDto;
 use Api\Model\Shared\Dto\ProjectInsightsDto;
 use Api\Model\Shared\Dto\ProjectListDto;
@@ -510,13 +509,12 @@ class Sf
 
     /**
      * Updates the ProjectSettingsModel which are settings accessible only to site administrators
-     * @param SmsSettings[] $smsSettingsArray
      * @param EmailSettings[] $emailSettingsArray
      * @return string $result id to the projectSettingsModel
      */
-    public function project_updateSettings($smsSettingsArray, $emailSettingsArray)
+    public function project_updateSettings($emailSettingsArray)
     {
-        return ProjectCommands::updateProjectSettings($this->projectId, $smsSettingsArray, $emailSettingsArray);
+        return ProjectCommands::updateProjectSettings($this->projectId, $emailSettingsArray);
     }
 
     public function project_readSettings()

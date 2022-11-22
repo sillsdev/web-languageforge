@@ -14,7 +14,6 @@ use Api\Model\Shared\Rights\SystemRoles;
 
 class UserModel extends MapperModel
 {
-    const COMMUNICATE_VIA_SMS = "sms";
     const COMMUNICATE_VIA_EMAIL = "email";
     const COMMUNICATE_VIA_BOTH = "both";
 
@@ -161,7 +160,7 @@ class UserModel extends MapperModel
     /** @var string */
     public $mobile_phone;
 
-    /** @var string - possible values are "email", "sms" or "both" */
+    /** @var string - possible values are "email" or "both" */
     public $communicate_via;
 
     /* name (also listed in site administration above) */

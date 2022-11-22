@@ -2,7 +2,6 @@
 
 use Api\Library\Shared\Communicate\DeliveryInterface;
 use Api\Library\Shared\Communicate\Communicate;
-use Api\Library\Shared\Communicate\Sms\SmsModel;
 use Api\Library\Shared\Website;
 use Api\Model\Shared\MessageModel;
 use Api\Model\Shared\UserModel;
@@ -25,11 +24,6 @@ class MockCommunicateDelivery implements DeliveryInterface
         $this->subject = $subject;
         $this->content = $content;
         $this->htmlContent = $htmlContent;
-    }
-
-    public function sendSms($smsModel)
-    {
-        $this->smsModel = $smsModel;
     }
 }
 
@@ -60,7 +54,7 @@ class CommunicateTest extends TestCase
         $delivery = new MockCommunicateDelivery();
 
         ini_set("display_errors", "0"); // do not show xdebug stack traces in PHPUnit output
-        Communicate::communicateToUser($user, $project, $subject, $smsTemplate, $emailTemplate, "", $delivery);
+        Communicate::communicateToUser($user, $project, $subject, $emailTemplate, $delivery);
         ini_set("display_errors", "1"); // do not show xdebug stack traces in PHPUnit output
     }
 
@@ -81,7 +75,7 @@ class CommunicateTest extends TestCase
         $delivery = new MockCommunicateDelivery();
 
         ini_set("display_errors", "0"); // do not show xdebug stack traces in PHPUnit output
-        Communicate::communicateToUser($user, $project, $subject, $smsTemplate, $emailTemplate, "", $delivery);
+        Communicate::communicateToUser($user, $project, $subject, $emailTemplate, "", $delivery);
         ini_set("display_errors", "1"); // do not show xdebug stack traces in PHPUnit output
 
         // nothing runs in the current test function after an exception. IJH 2016-07
@@ -101,7 +95,7 @@ class CommunicateTest extends TestCase
         $emailTemplate = "TestMessage";
         $delivery = new MockCommunicateDelivery();
 
-        Communicate::communicateToUser($user, $project, $subject, $smsTemplate, $emailTemplate, "", $delivery);
+        Communicate::communicateToUser($user, $project, $subject, $emailTemplate, "", $delivery);
 
         // What's in the delivery?
         $expectedFrom = [$project->emailSettings->fromAddress => $project->emailSettings->fromName];
@@ -110,35 +104,6 @@ class CommunicateTest extends TestCase
         $this->assertEquals($expectedTo, $delivery->to);
         $this->assertEquals($subject, $delivery->subject);
         $this->assertEquals($emailTemplate, $delivery->content);
-    }
-
-    public function testCommunicateToUser_SendSms_PropertiesToFromMessageProviderInfoOk()
-    {
-        self::$environ->clean();
-        $userId = self::$environ->createUser("User", "Name", "name@example.com");
-        $user = new UserModel($userId);
-        $user->communicate_via = UserModel::COMMUNICATE_VIA_SMS;
-        $user->mobile_phone = "+66837610205";
-        $project = self::$environ->createProjectSettings(SF_TESTPROJECTCODE);
-        $project->smsSettings->fromNumber = "13852904211";
-        $project->smsSettings->accountId = "ACc03c2767c2c9c138bde0aa0b30ac9d6e";
-        $project->smsSettings->authToken = "be77f02cd3b6b13d3b42d8a64050fd35";
-        $subject = "";
-        $smsTemplate = "Test message";
-        $emailTemplate = "";
-        $delivery = new MockCommunicateDelivery();
-
-        Communicate::communicateToUser($user, $project, $subject, $smsTemplate, $emailTemplate, "", $delivery);
-
-        // What's in the delivery?
-        $expectedTo = $user->mobile_phone;
-        $expectedFrom = $project->smsSettings->fromNumber;
-        $expectedProviderInfo = $project->smsSettings->accountId . "|" . $project->smsSettings->authToken;
-        $this->assertEquals($expectedTo, $delivery->smsModel->to);
-        $this->assertEquals($expectedFrom, $delivery->smsModel->from);
-        $this->assertEquals($smsTemplate, $delivery->smsModel->message);
-        $this->assertEquals(SmsModel::SMS_TWILIO, $delivery->smsModel->provider); // expected to be set by default
-        $this->assertEquals($expectedProviderInfo, $delivery->smsModel->providerInfo);
     }
 
     public function testCommunicateToUsers_SendEmail_BroadcastMessageStoredAndUnread()
@@ -155,7 +120,7 @@ class CommunicateTest extends TestCase
         $emailTemplate = "TestMessage";
         $delivery = new MockCommunicateDelivery();
 
-        Communicate::communicateToUsers([$user], $project, $subject, $smsTemplate, $emailTemplate, "", $delivery);
+        Communicate::communicateToUsers([$user], $project, $subject, $emailTemplate, "", $delivery);
 
         $unread = new UnreadMessageModel($userId, $project->id->asString());
         $messageIds = $unread->unreadItems();

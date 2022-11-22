@@ -2,8 +2,6 @@
 
 namespace Api\Library\Shared\Communicate;
 
-use Api\Library\Shared\Communicate\Sms\SmsModel;
-use Api\Library\Shared\Communicate\Sms\SmsQueue;
 use Api\Library\Shared\Website;
 use Api\Library\Shared\UrlHelper;
 use Api\Model\Shared\ProjectModel;
@@ -29,7 +27,6 @@ class Communicate
         $users,
         $project,
         $subject,
-        $smsTemplate,
         $emailTemplate,
         $htmlEmailTemplate = "",
         DeliveryInterface $delivery = null
@@ -41,20 +38,11 @@ class Communicate
         $messageId = $messageModel->write();
 
         foreach ($users as $user) {
-            self::communicateToUser(
-                $user,
-                $project,
-                $subject,
-                $smsTemplate,
-                $emailTemplate,
-                $htmlEmailTemplate,
-                $delivery
-            );
+            self::communicateToUser($user, $project, $subject, $emailTemplate, $htmlEmailTemplate, $delivery);
             $unreadModel = new UnreadMessageModel($user->id->asString(), $project->id->asString());
             $unreadModel->markUnread($messageId);
             $unreadModel->write();
         }
-        SmsQueue::processQueue($project->databaseName());
 
         return $messageId;
     }
@@ -63,7 +51,6 @@ class Communicate
      * @param UserModel $user
      * @param ProjectSettingsModel $project
      * @param string $subject
-     * @param string $smsTemplate
      * @param string $emailTemplate
      * @param string $htmlEmailTemplate
      * @param DeliveryInterface $delivery
@@ -72,7 +59,6 @@ class Communicate
         $user,
         $project,
         $subject,
-        $smsTemplate,
         $emailTemplate,
         $htmlEmailTemplate = "",
         DeliveryInterface $delivery = null
@@ -99,28 +85,6 @@ class Communicate
             }
 
             CommunicateHelper::deliverEmail($from, $to, $subject, $content, $htmlContent, $delivery);
-        }
-
-        // Prepare the sms message if required
-        if ($project->smsSettings->hasValidCredentials()) {
-            if (
-                $user->communicate_via == UserModel::COMMUNICATE_VIA_SMS ||
-                $user->communicate_via == UserModel::COMMUNICATE_VIA_BOTH
-            ) {
-                $databaseName = $project->databaseName();
-                $sms = new SmsModel($databaseName);
-                $sms->providerInfo = $project->smsSettings->accountId . "|" . $project->smsSettings->authToken;
-                $sms->to = $user->mobile_phone;
-                $sms->from = $project->smsSettings->fromNumber;
-                $vars = [
-                    "user" => $user,
-                    "project" => $project,
-                ];
-                $template = CommunicateHelper::templateFromString($smsTemplate);
-                $sms->message = $template->render($vars);
-
-                CommunicateHelper::deliverSMS($sms, $delivery);
-            }
         }
     }
 

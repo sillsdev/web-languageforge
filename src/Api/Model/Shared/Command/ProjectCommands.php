@@ -7,7 +7,6 @@ use Api\Library\Shared\Palaso\Exception\UserUnauthorizedException;
 use Api\Library\Shared\Website;
 use Api\Model\Languageforge\Lexicon\Command\SendReceiveCommands;
 use Api\Model\Shared\Communicate\EmailSettings;
-use Api\Model\Shared\Communicate\SmsSettings;
 use Api\Model\Shared\Dto\ManageUsersDto;
 use Api\Model\Shared\Mapper\JsonDecoder;
 use Api\Model\Shared\Mapper\JsonEncoder;
@@ -354,19 +353,15 @@ class ProjectCommands
     /**
      * Updates the ProjectSettingsModel which are settings accessible only to site administrators
      * @param string $projectId
-     * @param array<SmsSettings> $smsSettingsArray
      * @param array<EmailSettings> $emailSettingsArray
      * @return string $result id to the projectSettingsModel
      */
-    public static function updateProjectSettings($projectId, $smsSettingsArray, $emailSettingsArray)
+    public static function updateProjectSettings($projectId, $emailSettingsArray)
     {
         $projectSettings = new ProjectSettingsModel($projectId);
         ProjectCommands::checkIfArchivedAndThrow($projectSettings);
-        $smsSettings = new SmsSettings();
         $emailSettings = new EmailSettings();
-        JsonDecoder::decode($smsSettings, $smsSettingsArray);
         JsonDecoder::decode($emailSettings, $emailSettingsArray);
-        $projectSettings->smsSettings = $smsSettings;
         $projectSettings->emailSettings = $emailSettings;
         $result = $projectSettings->write();
 
@@ -378,7 +373,6 @@ class ProjectCommands
         $project = new ProjectSettingsModel($projectId);
 
         return [
-            "sms" => JsonEncoder::encode($project->smsSettings),
             "email" => JsonEncoder::encode($project->emailSettings),
         ];
     }

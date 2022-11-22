@@ -210,12 +210,12 @@ class ProjectCommandsTest extends TestCase
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
         $projectSettings = new ProjectSettingsModel($projectId);
-        $projectSettings->smsSettings->accountId = "12345";
+        $projectSettings->emailSettings->fromAddress = "test@example.org";
         $projectSettings->write();
 
         $result = ProjectCommands::readProjectSettings($projectId);
 
-        $this->assertEquals("12345", $result["sms"]["accountId"]);
+        $this->assertEquals("test@example.org", $result["email"]["fromAddress"]);
     }
 
     public function testRemoveUsers_UsersInProject_RemovedFromProject()

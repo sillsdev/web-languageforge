@@ -2,9 +2,6 @@
 
 namespace Api\Library\Shared\Communicate;
 
-use Api\Library\Shared\Communicate\Sms\SmsModel;
-use Api\Library\Shared\Communicate\Sms\SmsQueue;
-
 class CommunicateDelivery implements DeliveryInterface
 {
     /**
@@ -17,14 +14,6 @@ class CommunicateDelivery implements DeliveryInterface
     public function sendEmail($from, $to, $subject, $content, $htmlContent = "")
     {
         Email::send($from, $to, $subject, $content, $htmlContent);
-    }
-
-    /**
-     * @param SmsModel $smsModel
-     */
-    public function sendSms($smsModel)
-    {
-        SmsQueue::queue($smsModel);
     }
 }
 
@@ -64,22 +53,6 @@ class CommunicateHelper
         $template = $twig->createTemplate($templateCode);
 
         return $template;
-    }
-
-    /**
-     *
-     * @param SmsModel $smsModel
-     * @param DeliveryInterface $delivery
-     */
-    public static function deliverSMS($smsModel, DeliveryInterface $delivery = null)
-    {
-        // Create our default delivery mechanism if one is not passed in.
-        if ($delivery == null) {
-            $delivery = new CommunicateDelivery();
-        }
-
-        // Deliver the sms message
-        $delivery->sendSMS($smsModel);
     }
 
     /**
