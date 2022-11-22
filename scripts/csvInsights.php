@@ -1,7 +1,7 @@
 #!/usr/bin/php -q
 
 <?php
-require_once "../scriptsConfig.php";
+require_once "scriptsConfig.php";
 
 use Api\Model\Shared\Dto\ProjectInsightsDto;
 
