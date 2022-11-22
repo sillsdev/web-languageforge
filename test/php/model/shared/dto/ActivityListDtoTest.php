@@ -296,7 +296,7 @@ class ActivityListDtoTest extends TestCase
             "contextGuid" => " sense#" . $sense2->guid . " example#" . $example1->guid . " sentence.en",
             "isRegardingPicture" => false,
         ];
-        LexCommentCommands::updateComment($projectId, $userId, $environ->website, $data);
+        LexCommentCommands::updateComment($projectId, $userId, $data);
 
         $dto = ActivityListDto::getActivityForUser($project->siteName, $userId);
         $activity = $dto["activity"];
@@ -365,7 +365,7 @@ class ActivityListDtoTest extends TestCase
             "contextGuid" => " sense#" . $sense2->guid . " example#" . $example1->guid . " sentence.en",
             "isRegardingPicture" => false,
         ];
-        $commentId = LexCommentCommands::updateComment($projectId, $userId, $environ->website, $data);
+        $commentId = LexCommentCommands::updateComment($projectId, $userId, $data);
         LexCommentCommands::plusOneComment($projectId, $userId, $commentId);
 
         $dto = ActivityListDto::getActivityForUser($project->siteName, $userId);
@@ -440,7 +440,7 @@ class ActivityListDtoTest extends TestCase
             "contextGuid" => " sense#" . $sense2->guid . " example#" . $example1->guid . " sentence.en",
             "isRegardingPicture" => false,
         ];
-        $commentId = LexCommentCommands::updateComment($projectId, $userId, $environ->website, $data);
+        $commentId = LexCommentCommands::updateComment($projectId, $userId, $data);
         LexCommentCommands::updateCommentStatus($projectId, $commentId, LexCommentModel::STATUS_TODO);
 
         $dto = ActivityListDto::getActivityForUser($project->siteName, $userId);
@@ -516,8 +516,8 @@ class ActivityListDtoTest extends TestCase
             "contextGuid" => " sense#" . $sense2->guid . " example#" . $example1->guid . " sentence.en",
             "isRegardingPicture" => false,
         ];
-        $commentId = LexCommentCommands::updateComment($projectId, $userId, $environ->website, $data);
-        LexCommentCommands::deleteComment($projectId, $userId, $environ->website, $commentId);
+        $commentId = LexCommentCommands::updateComment($projectId, $userId, $data);
+        LexCommentCommands::deleteComment($projectId, $userId, $commentId);
 
         $dto = ActivityListDto::getActivityForUser($project->siteName, $userId);
         $activity = $dto["activity"];
@@ -591,13 +591,13 @@ class ActivityListDtoTest extends TestCase
             "contextGuid" => " sense#" . $sense2->guid . " example#" . $example1->guid . " sentence.en",
             "isRegardingPicture" => false,
         ];
-        $commentId = LexCommentCommands::updateComment($projectId, $userId, $environ->website, $data);
+        $commentId = LexCommentCommands::updateComment($projectId, $userId, $data);
 
         $replyData = [
             "id" => "",
             "content" => "my first reply",
         ];
-        LexCommentCommands::updateReply($projectId, $userId, $environ->website, $commentId, $replyData);
+        LexCommentCommands::updateReply($projectId, $userId, $commentId, $replyData);
 
         $dto = ActivityListDto::getActivityForUser($project->siteName, $userId);
         $activity = $dto["activity"];
@@ -673,25 +673,19 @@ class ActivityListDtoTest extends TestCase
             "contextGuid" => " sense#" . $sense2->guid . " example#" . $example1->guid . " sentence.en",
             "isRegardingPicture" => false,
         ];
-        $commentId = LexCommentCommands::updateComment($projectId, $userId, $environ->website, $data);
+        $commentId = LexCommentCommands::updateComment($projectId, $userId, $data);
 
         $replyData = [
             "id" => "",
             "content" => "my first reply",
         ];
-        $replyId = LexCommentCommands::updateReply($projectId, $userId, $environ->website, $commentId, $replyData);
+        $replyId = LexCommentCommands::updateReply($projectId, $userId, $commentId, $replyData);
 
         $updatedReplyData = [
             "id" => $replyId,
             "content" => "edited the first reply",
         ];
-        $updatedReplyId = LexCommentCommands::updateReply(
-            $projectId,
-            $userId,
-            $environ->website,
-            $commentId,
-            $updatedReplyData
-        );
+        $updatedReplyId = LexCommentCommands::updateReply($projectId, $userId, $commentId, $updatedReplyData);
         $this->assertEquals($replyId, $updatedReplyId);
 
         $dto = ActivityListDto::getActivityForUser($project->siteName, $userId);
@@ -768,14 +762,14 @@ class ActivityListDtoTest extends TestCase
             "contextGuid" => " sense#" . $sense2->guid . " example#" . $example1->guid . " sentence.en",
             "isRegardingPicture" => false,
         ];
-        $commentId = LexCommentCommands::updateComment($projectId, $userId, $environ->website, $data);
+        $commentId = LexCommentCommands::updateComment($projectId, $userId, $data);
 
         $replyData = [
             "id" => "",
             "content" => "my first reply",
         ];
-        $replyId = LexCommentCommands::updateReply($projectId, $userId, $environ->website, $commentId, $replyData);
-        LexCommentCommands::deleteReply($projectId, $userId, $environ->website, $commentId, $replyId);
+        $replyId = LexCommentCommands::updateReply($projectId, $userId, $commentId, $replyData);
+        LexCommentCommands::deleteReply($projectId, $userId, $commentId, $replyId);
 
         $dto = ActivityListDto::getActivityForUser($project->siteName, $userId);
         $activity = $dto["activity"];

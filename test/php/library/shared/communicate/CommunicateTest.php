@@ -6,6 +6,7 @@ use Api\Library\Shared\Communicate\Sms\SmsModel;
 use Api\Model\Shared\MessageModel;
 use Api\Model\Shared\UserModel;
 use Api\Model\Shared\UnreadMessageModel;
+use Api\Model\Shared\Rights\SiteRoles;
 use PHPUnit\Framework\TestCase;
 
 class MockCommunicateDelivery implements DeliveryInterface
@@ -176,7 +177,7 @@ class CommunicateTest extends TestCase
         Communicate::sendVerifyEmail($user, $delivery);
 
         // What's in the delivery?
-        $expectedFrom = ["no-reply@languageforge" => "Language Forge"];
+        $expectedFrom = ["no-reply@languageforge.org" => "Language Forge"];
         $expectedTo = [$user->email => $user->name];
         $this->assertEquals($expectedFrom, $delivery->from);
         $this->assertEquals($expectedTo, $delivery->to);

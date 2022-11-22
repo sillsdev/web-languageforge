@@ -11,6 +11,7 @@ use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\ProjectSettingsModel;
 use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\Rights\SystemRoles;
+use Api\Model\Shared\Rights\SiteRoles;
 use Api\Model\Shared\UserModel;
 use Palaso\Utilities\FileUtilities;
 
@@ -19,7 +20,7 @@ class MongoTestEnvironment
     public function __construct()
     {
         $this->db = MongoStore::connect(DATABASE);
-        $this->site = "localhost";
+        $this->siteName = "localhost";
         if (!isset($this->uploadFilePaths)) {
             $this->uploadFilePaths = [];
         }
@@ -28,7 +29,7 @@ class MongoTestEnvironment
     /** @var MongoDB */
     private $db;
 
-    private $site;
+    protected $siteName;
 
     /** @var array Local store of 'uploaded' filepaths */
     protected $uploadFilePaths;
@@ -80,8 +81,7 @@ class MongoTestEnvironment
         $userModel->avatar_ref = $username . ".png";
         $userModel->role = $role;
         $userModel->active = true;
-        $userModel->siteRole[$this->website->domain] = SiteRoles::PROJECT_CREATOR;
-
+        $userModel->siteRole[$this->siteName] = SiteRoles::PROJECT_CREATOR;
         return $userModel->write();
     }
 
@@ -99,7 +99,7 @@ class MongoTestEnvironment
         $projectModel->projectName = $name;
         $projectModel->projectCode = $code;
         $projectModel->isArchived = false;
-        $projectModel->siteName = $this->website->domain;
+        $projectModel->siteName = $this->siteName;
         if ($appName != "") {
             $projectModel->appName = $appName;
         } else {
@@ -115,7 +115,7 @@ class MongoTestEnvironment
     {
         $projectModel = new ProjectSettingsModel();
         $projectModel->projectCode = $code;
-        $projectModel->siteName = $this->website->domain;
+        $projectModel->siteName = $this->siteName;
         $this->cleanProjectEnvironment($projectModel);
         $projectModel->write();
 
@@ -285,11 +285,6 @@ class TestableLexProjectModel extends LexProjectModel
 
 class LexiconMongoTestEnvironment extends MongoTestEnvironment
 {
-    public function __construct()
-    {
-        parent::__construct("languageforge.org");
-    }
-
     /** @var LexProjectModel */
     public $project;
 
@@ -304,7 +299,7 @@ class LexiconMongoTestEnvironment extends MongoTestEnvironment
         $projectModel = new TestableLexProjectModel();
         $projectModel->projectName = $name;
         $projectModel->projectCode = $code;
-        $projectModel->siteName = $this->website->domain;
+        $projectModel->siteName = $this->siteName;
         $this->cleanProjectEnvironment($projectModel);
         $projectModel->write();
         $this->project = $projectModel;

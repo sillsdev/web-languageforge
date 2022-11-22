@@ -35,7 +35,7 @@ class ProjectListDtoTest extends TestCase
         $project2->write();
         $projectId2 = $project2->id->asString();
 
-        $dto = ProjectListDto::encode($userId, self::$environ->website);
+        $dto = ProjectListDto::encode($userId);
 
         $this->assertEquals(2, $dto["count"]);
         $this->assertIsArray($dto["entries"]);
@@ -65,7 +65,7 @@ class ProjectListDtoTest extends TestCase
         $project2->ownerRef->id = $userId;
         $projectId2 = $project2->write();
 
-        $dto = ProjectListDto::encode($userId, self::$environ->website);
+        $dto = ProjectListDto::encode($userId);
 
         $this->assertEquals(1, $dto["count"]);
         $this->assertIsArray($dto["entries"]);
@@ -73,7 +73,7 @@ class ProjectListDtoTest extends TestCase
         $this->assertEquals(SF_TESTPROJECT2, $dto["entries"][0]["projectName"]);
         $this->assertEquals(ProjectRoles::NONE, $dto["entries"][0]["role"]);
 
-        $dto = ProjectListDto::encode($userId, self::$environ->website, true);
+        $dto = ProjectListDto::encode($userId, true);
 
         $this->assertEquals(1, $dto["count"]);
         $this->assertIsArray($dto["entries"]);
@@ -99,7 +99,7 @@ class ProjectListDtoTest extends TestCase
         $project2->ownerRef->id = $userId;
         $project2->write();
 
-        $dto = ProjectListDto::encode($userId, self::$environ->website);
+        $dto = ProjectListDto::encode($userId);
 
         $this->assertEquals(1, $dto["count"]);
         $this->assertIsArray($dto["entries"]);

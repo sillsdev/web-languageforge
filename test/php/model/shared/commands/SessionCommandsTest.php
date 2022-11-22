@@ -20,8 +20,6 @@ class SessionTestEnvironment
     {
         $environ = $this->getEnviron();
         $environ->clean();
-        $this->website = $environ->website;
-
         $this->project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $this->userId = $environ->createUser("test_user", "Test User", "test_user@example.com");
         $this->projectId = $this->project->id->asString();
@@ -53,7 +51,7 @@ class SessionCommandsTest extends TestCase
     {
         $environ = new LfSessionTestEnvironment();
         $environ->create();
-        $data = SessionCommands::getSessionData($environ->projectId, $environ->userId, $environ->website);
+        $data = SessionCommands::getSessionData($environ->projectId, $environ->userId);
 
         // Session data should contain a userId but not a projectId
         $this->assertArrayHasKey("userId", $data);
@@ -95,7 +93,7 @@ class SessionCommandsTest extends TestCase
         $environ = new SessionTestEnvironment();
         $environ->create();
         ProjectCommands::updateUserRole($environ->projectId, $environ->userId);
-        $data = SessionCommands::getSessionData($environ->projectId, $environ->userId, $environ->website);
+        $data = SessionCommands::getSessionData($environ->projectId, $environ->userId);
 
         // Session data should contain user project rights, an array of integers
         $this->assertArrayHasKey("userProjectRights", $data);
