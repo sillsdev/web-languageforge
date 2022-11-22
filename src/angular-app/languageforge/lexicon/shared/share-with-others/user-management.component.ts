@@ -1,5 +1,4 @@
 import * as angular from 'angular';
-import { TargetLocator } from 'selenium-webdriver';
 import { ProjectService } from '../../../../bellows/core/api/project.service';
 import { UserService } from '../../../../bellows/core/api/user.service';
 import { Session, SessionService } from '../../../../bellows/core/session.service';
