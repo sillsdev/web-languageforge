@@ -88,13 +88,6 @@ class Base
      */
     protected function renderPage(Application $app, $viewName)
     {
-        // TODO: move to app_dependencies once bootstrap4 migration is complete
-        $sassDir = $this->getThemePath() . "/sass";
-        if (!file_exists($sassDir)) {
-            $sassDir = $this->getThemePath("default") . "/sass";
-        }
-        $this->addCssFiles($sassDir, [], false);
-
         $this->addJavascriptFiles("angular-app/bellows/_js_module_definitions");
         $this->addJavascriptFiles("angular-app/bellows/js", ["vendor", "assets"]);
         $this->addJavascriptFiles("angular-app/bellows/directive");
@@ -167,18 +160,6 @@ class Base
         return $app["security.authorization_checker"]->isGranted("IS_AUTHENTICATED_REMEMBERED");
     }
 
-    protected function getThemePath($theme = "")
-    {
-        if (!$theme) {
-            $theme = $this->website->theme;
-        }
-        if (!file_exists("Site/views/" . $this->website->base . "/theme/" . $theme)) {
-            $theme = "default";
-        }
-
-        return "Site/views/" . $this->website->base . "/theme/" . $theme;
-    }
-
     /**
      * @param string $filename
      * @return string
@@ -186,14 +167,9 @@ class Base
      */
     protected function getFilePath(string $filename)
     {
-        $themePath = $this->getThemePath();
-        $filePath = $themePath . DIRECTORY_SEPARATOR . $filename;
+        $filePath = "Site/views/languageforge/theme/default/$filename";
         if (!file_exists($filePath)) {
-            $themePath = $this->getThemePath("default");
-            $filePath = $themePath . DIRECTORY_SEPARATOR . $filename;
-            if (!file_exists($filePath)) {
-                throw new \Exception(__FILE__ . ' - filename doesn\'t exist: ' . $filename);
-            }
+            throw new \Exception(__FILE__ . ' - filename doesn\'t exist: ' . $filename);
         }
         return DIRECTORY_SEPARATOR . $filePath;
     }

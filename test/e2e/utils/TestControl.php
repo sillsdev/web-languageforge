@@ -31,7 +31,6 @@ use Api\Model\Languageforge\Lexicon\Command\LexUploadCommands;
 use Palaso\Utilities\FileUtilities;
 // use MongoDB\Client;
 
-use Api\Library\Shared\Website;
 use Silex\Application;
 
 require_once APPPATH . "vendor/autoload.php";
@@ -41,7 +40,6 @@ class TestControl
     public function __construct(Application $app)
     {
         $this->app = $app;
-        $this->website = Website::get();
         // $rootPath = realpath(__DIR__.'/../../');
 
         // $TestPath = $rootPath.'/test/';
@@ -50,9 +48,6 @@ class TestControl
 
     /** @var Application */
     private $app;
-
-    /** @var Website */
-    private $website;
 
     public function checkPermissions($methodName)
     {
@@ -84,28 +79,22 @@ class TestControl
         }
 
         // TODO: Handle this with MongoStore instead of through Commands library
-        $userId = UserCommands::createUser(
-            [
-                "name" => $humanName,
-                "email" => $email,
-                "password" => $password,
-            ],
-            $this->website
-        );
+        $userId = UserCommands::createUser([
+            "name" => $humanName,
+            "email" => $email,
+            "password" => $password,
+        ]);
 
-        UserCommands::updateUser(
-            [
-                "id" => $userId,
-                "name" => $humanName,
-                "email" => $email,
-                "username" => $username,
-                "password" => $password,
-                "active" => true,
-                "languageDepotUsername" => $username,
-                "role" => strpos($username, "admin") === false ? SystemRoles::USER : SystemRoles::SYSTEM_ADMIN,
-            ],
-            $this->website
-        );
+        UserCommands::updateUser([
+            "id" => $userId,
+            "name" => $humanName,
+            "email" => $email,
+            "username" => $username,
+            "password" => $password,
+            "active" => true,
+            "languageDepotUsername" => $username,
+            "role" => strpos($username, "admin") === false ? SystemRoles::USER : SystemRoles::SYSTEM_ADMIN,
+        ]);
 
         return $userId;
     }
@@ -155,7 +144,7 @@ class TestControl
         $projectModel->projectName = $projectName;
         $projectModel->projectCode = $projectCode;
         $projectModel->appName = LexProjectModel::LEXICON_APP;
-        $projectModel->siteName = $this->website->domain;
+        $projectModel->siteName = "localhost";
         $projectModel->ownerRef = new IdReference($ownerId);
         $projectModel->addUser($ownerId, ProjectRoles::MANAGER);
         foreach ($memberUsernames as $username) {

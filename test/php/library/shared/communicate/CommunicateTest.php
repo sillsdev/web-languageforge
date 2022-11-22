@@ -176,8 +176,7 @@ class CommunicateTest extends TestCase
         Communicate::sendVerifyEmail($user, $delivery);
 
         // What's in the delivery?
-        $senderEmail = "no-reply@" . self::$environ->website->domain;
-        $expectedFrom = [$senderEmail => self::$environ->website->name];
+        $expectedFrom = ["no-reply@languageforge" => "Language Forge"];
         $expectedTo = [$user->email => $user->name];
         $this->assertEquals($expectedFrom, $delivery->from);
         $this->assertEquals($expectedTo, $delivery->to);
@@ -200,11 +199,10 @@ class CommunicateTest extends TestCase
         Communicate::sendVerifyEmail($user, $delivery);
 
         // What's in the delivery?
-        $senderEmail = "no-reply@" . self::$environ->website->domain;
         $expectedTo = [$user->email => $user->name];
-        $this->assertRegExp("/" . self::$environ->website->name . "/", $delivery->from[$senderEmail]);
+        $this->assertRegExp("/Language Forge/", $delivery->from["no-reply@languageforge.org"]);
         $this->assertEquals($expectedTo, $delivery->to);
-        $this->assertRegExp("/" . self::$environ->website->name . "/", $delivery->subject);
+        $this->assertRegExp("/Language Forge/", $delivery->subject);
         $this->assertRegExp("/Name/", $delivery->content);
         $this->assertRegExp("/" . $user->validationKey . "/", $delivery->content);
     }
@@ -221,21 +219,17 @@ class CommunicateTest extends TestCase
         $project = self::$environ->createProjectSettings(SF_TESTPROJECTCODE);
         $delivery = new MockCommunicateDelivery();
 
-        Communicate::sendInvite($inviterUser, $toUser, $project, self::$environ->website, $delivery);
+        Communicate::sendInvite($inviterUser, $toUser, $project, $delivery);
 
         // What's in the delivery?
-        $senderEmail = "no-reply@" . self::$environ->website->domain;
-        $expectedFrom = [$senderEmail => self::$environ->website->name];
         $expectedTo = [$toUser->email => $toUser->name];
-        $this->assertEquals($expectedFrom, $delivery->from);
         $this->assertEquals($expectedTo, $delivery->to);
-        $this->assertRegExp("/" . self::$environ->website->name . " invitation/", $delivery->subject);
         $this->assertRegExp("/Inviter User/", $delivery->content);
         $this->assertRegExp(
-            "/" . self::$environ->website->domain . "\/public\/signup#!\/\?e=" . urlencode($toUser->email) . "/",
+            "/languageforge.org\/public\/signup#!\/\?e=" . urlencode($toUser->email) . "/",
             $delivery->content
         );
-        $this->assertRegExp("/The " . self::$environ->website->name . " Team/", $delivery->content);
+        $this->assertRegExp("/The Language Forge Team/", $delivery->content);
     }
 
     public function testSendNewUserInProject_PropertiesFromToBodyOk()
@@ -248,20 +242,10 @@ class CommunicateTest extends TestCase
         $project = self::$environ->createProjectSettings(SF_TESTPROJECTCODE);
         $delivery = new MockCommunicateDelivery();
 
-        Communicate::sendNewUserInProject(
-            $toUser,
-            $newUserName,
-            $newUserPassword,
-            $project,
-            self::$environ->website,
-            $delivery
-        );
+        Communicate::sendNewUserInProject($toUser, $newUserName, $newUserPassword, $project, $delivery);
 
         // What's in the delivery?
-        $senderEmail = "no-reply@" . self::$environ->website->domain;
-        $expectedFrom = [$senderEmail => self::$environ->website->name];
         $expectedTo = [$toUser->email => $toUser->name];
-        $this->assertEquals($expectedFrom, $delivery->from);
         $this->assertEquals($expectedTo, $delivery->to);
         $this->assertRegExp("/To Name/", $delivery->content);
         $this->assertRegExp("/" . $newUserName . "/", $delivery->content);
@@ -282,13 +266,10 @@ class CommunicateTest extends TestCase
         $inviterUser->addProject($project->id->asString());
         $inviterUser->write();
 
-        Communicate::sendAddedToProject($inviterUser, $toUser, $project, self::$environ->website, $delivery);
+        Communicate::sendAddedToProject($inviterUser, $toUser, $project, $delivery);
 
         // What's in the delivery?
-        $senderEmail = "no-reply@" . self::$environ->website->domain;
-        $expectedFrom = [$senderEmail => self::$environ->website->name];
         $expectedTo = [$toUser->email => $toUser->name];
-        $this->assertEquals($expectedFrom, $delivery->from);
         $this->assertEquals($expectedTo, $delivery->to);
         $this->assertRegExp('/To Name.*\n*Inviter User/', $delivery->content);
     }
@@ -300,15 +281,11 @@ class CommunicateTest extends TestCase
         $user = new UserModel($userId);
         $delivery = new MockCommunicateDelivery();
 
-        Communicate::sendForgotPasswordVerification($user, self::$environ->website, $delivery);
+        Communicate::sendForgotPasswordVerification($user, $delivery);
 
         // What's in the delivery?
-        $senderEmail = "no-reply@" . self::$environ->website->domain;
-        $expectedFrom = [$senderEmail => self::$environ->website->name];
         $expectedTo = [$user->email => $user->name];
-        $this->assertEquals($expectedFrom, $delivery->from);
         $this->assertEquals($expectedTo, $delivery->to);
-        $this->assertRegExp("/" . self::$environ->website->name . "/", $delivery->subject);
         $this->assertNotRegExp("/<p>/", $delivery->content);
         $this->assertRegExp("/Name/", $delivery->content);
         $this->assertRegExp("/" . $user->resetPasswordKey . "/", $delivery->content);
@@ -326,16 +303,12 @@ class CommunicateTest extends TestCase
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $delivery = new MockCommunicateDelivery();
 
-        Communicate::sendJoinRequestConfirmation($user, $project, self::$environ->website, $delivery);
+        Communicate::sendJoinRequestConfirmation($user, $project, $delivery);
 
         // What's in the delivery?
-        $senderEmail = "no-reply@" . self::$environ->website->domain;
-        $expectedFrom = [$senderEmail => self::$environ->website->name];
         $expectedTo = [$user->email => $user->name];
-        $this->assertEquals($expectedFrom, $delivery->from);
         $this->assertEquals($expectedTo, $delivery->to);
         $this->assertRegExp("/" . SF_TESTPROJECT . "/", $delivery->subject);
-        $this->assertRegExp("/" . self::$environ->website->name . "/", $delivery->subject);
         $this->assertRegExp("/have requested/", $delivery->content);
         $this->assertRegExp("/" . SF_TESTPROJECT . "/", $delivery->content);
     }
@@ -355,16 +328,13 @@ class CommunicateTest extends TestCase
         $admin->addProject($project->id->asString());
         $admin->write();
 
-        Communicate::sendJoinRequest($user, $admin, $project, self::$environ->website, $delivery);
+        Communicate::sendJoinRequest($user, $admin, $project, $delivery);
 
         // What's in the delivery?
-        $senderEmail = "no-reply@" . self::$environ->website->domain;
-        $expectedFrom = [$senderEmail => self::$environ->website->name];
         $expectedTo = [$admin->email => $admin->name];
-        $this->assertEquals($expectedFrom, $delivery->from);
         $this->assertEquals($expectedTo, $delivery->to);
         $this->assertRegExp("/" . $user->name . "/", $delivery->subject);
-        $this->assertRegExp("/" . self::$environ->website->domain . "\/app\/usermanagement/", $delivery->content);
+        $this->assertRegExp("/localhost\/app\/usermanagement/", $delivery->content);
     }
 
     public function testSendJoinRequestAccepted_PropertiesFromToBodyOk()
@@ -376,17 +346,13 @@ class CommunicateTest extends TestCase
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $delivery = new MockCommunicateDelivery();
 
-        Communicate::sendJoinRequestAccepted($user, $project, self::$environ->website, $delivery);
+        Communicate::sendJoinRequestAccepted($user, $project, $delivery);
 
         // What's in the delivery?
-        $senderEmail = "no-reply@" . self::$environ->website->domain;
-        $expectedFrom = [$senderEmail => self::$environ->website->name];
         $expectedTo = [$user->email => $user->name];
-        $expectedLink = self::$environ->website->domain . "\/app\/" . self::$environ->project->appName;
-        $this->assertEquals($expectedFrom, $delivery->from);
+        $expectedLink = "localhost\/app\/" . self::$environ->project->appName;
         $this->assertEquals($expectedTo, $delivery->to);
         $this->assertRegExp("/" . SF_TESTPROJECT . "/", $delivery->subject);
-        $this->assertRegExp("/" . self::$environ->website->name . "/", $delivery->subject);
         $this->assertRegExp("/" . SF_TESTPROJECT . "/", $delivery->content);
         $this->assertRegExp("/has been accepted/", $delivery->content);
         $this->assertRegExp("/$expectedLink/", $delivery->content);

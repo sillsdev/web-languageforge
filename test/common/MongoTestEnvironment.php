@@ -16,10 +16,10 @@ use Palaso\Utilities\FileUtilities;
 
 class MongoTestEnvironment
 {
-    public function __construct($domain = "languageforge.org")
+    public function __construct()
     {
         $this->db = MongoStore::connect(DATABASE);
-        $this->website = Website::get($domain);
+        $this->site = "localhost";
         if (!isset($this->uploadFilePaths)) {
             $this->uploadFilePaths = [];
         }
@@ -27,6 +27,8 @@ class MongoTestEnvironment
 
     /** @var MongoDB */
     private $db;
+
+    private $site;
 
     /** @var array Local store of 'uploaded' filepaths */
     protected $uploadFilePaths;
