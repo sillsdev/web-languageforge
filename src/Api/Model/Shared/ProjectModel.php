@@ -98,7 +98,7 @@ class ProjectModel extends MapperModel
     public $allowSharing;
 
     /**
-     * Specifies which site this project belongs to.  e.g. languageforge, cf. Website class
+     * Specifies which site this project belongs to.  e.g. languageforge.org or qa.languageforge.org
      * @var string
      */
     public $siteName;
