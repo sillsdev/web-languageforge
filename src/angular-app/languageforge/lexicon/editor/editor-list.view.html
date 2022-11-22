@@ -109,12 +109,12 @@
                     </div>
                 </div>
             </div>
-            <div class="row" data-ng-show="$ctrl.entries.length == 0 && $ctrl.lecRights.canEditProject() && $ctrl.lecFinishedLoading">
+            <div class="row" data-ng-show="$ctrl.entries.length == 0 && $ctrl.lecFinishedLoading">
                 <div class="col">
                     <div class="lexiconItemListContainer" data-pui-when-scrolled="$ctrl.show.more()">
                         <div class="text-center no-entries" id="noEntries">
                             <h4>Looks like there are no entries yet.</h4>
-                            <button class="btn btn-primary" data-ng-click="$ctrl.navigateToLiftImport()"
+                            <button class="btn btn-primary" data-ng-if="$ctrl.lecRights.canEditEntry()" data-ng-click="$ctrl.navigateToLiftImport()"
                                     data-ng-hide="$ctrl.projectSettings.hasSendReceive">
                                 <i class="fa fa-upload"></i> Import entries from LIFT</button>
                             <button class="btn btn-primary" data-ng-click="$ctrl.syncProject()" data-ng-show="$ctrl.projectSettings.hasSendReceive">

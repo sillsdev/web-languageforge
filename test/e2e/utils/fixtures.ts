@@ -1,8 +1,9 @@
 // example.spec.ts
 import { test as base } from '@playwright/test';
 import type { Browser, Page } from '@playwright/test';
-import type { usernamesForFixture } from './userFixtures';
+import type { E2EUsernames } from './e2e-users';
 import constants from '../testConstants.json';
+import { getStorageStatePath } from './user-tools';
 
 export type UserDetails = {
   username: string,
@@ -13,21 +14,27 @@ export type UserDetails = {
 
 export type UserTab = Page & UserDetails;
 
-function setupUserDetails(obj: any, username: usernamesForFixture) {
+function setupUserDetails(obj: UserDetails, username: E2EUsernames) {
   obj.username = constants[`${username}Username`] ?? username;
   obj.name = constants[`${username}Name`] ?? username;
   obj.password = constants[`${username}Password`] ?? 'x';
   obj.email = constants[`${username}Email`] ?? `${username}@example.com`;
 }
 
-const userTab = (username: usernamesForFixture) => async ({ browser, browserName }: { browser: Browser, browserName: string}, use: (r: UserTab) => Promise<void>) => {
-  const storageState = `${browserName}-${username}-storageState.json`;
+const userTab = (username: E2EUsernames) => async ({ browser, browserName }: { browser: Browser, browserName: string}, use: (r: UserTab) => Promise<void>) => {
+  const storageState = getStorageStatePath(browserName, username);
   const context = await browser.newContext({ storageState })
   const page = await context.newPage();
   const tab = page as UserTab;
   setupUserDetails(tab, username);
   await use(tab);
 }
+
+const userDetails = (username: E2EUsernames) => async ({}, use: (r: UserDetails) => Promise<void>) => {
+  let user = {} as UserDetails;
+  setupUserDetails(user, username);
+  await use(user);
+};
 
 // Add user fixtures to test function
 // Two kinds of fixtures: userTab and user, where "user" is one of "admin", "manager", "member", "member2", or "observer"
@@ -42,48 +49,32 @@ export const test = (base
     memberTab: UserTab,
     member2Tab: UserTab,
     observerTab: UserTab,
+    writableTab: UserTab,
     anonTab: Page,
     admin: UserDetails,
     manager: UserDetails,
     member: UserDetails,
     member2: UserDetails,
     observer: UserDetails,
+    writable: UserDetails,
   }>({
     adminTab: userTab('admin'),
     managerTab: userTab('manager'),
     memberTab: userTab('member'),
     member2Tab: userTab('member2'),
     observerTab: userTab('observer'),
+    writableTab: userTab('writable'),
     anonTab: async ({ browser }: { browser: Browser }, use: (r: Page) => Promise<void>) => {
       const context = await browser.newContext();
       const page = await context.newPage();
       const tab = page;
       await use(tab);
     },
-    admin: async ({}, use) => {
-      let admin = {} as UserDetails;
-      setupUserDetails(admin, 'admin');
-      await use(admin);
-    },
-    manager: async ({}, use) => {
-      let manager = {} as UserDetails;
-      setupUserDetails(manager, 'manager');
-      await use(manager);
-    },
-    member: async ({}, use) => {
-      let member = {} as UserDetails;
-      setupUserDetails(member, 'member');
-      await use(member);
-    },
-    member2: async ({}, use) => {
-      let member2 = {} as UserDetails;
-      setupUserDetails(member2, 'member2');
-      await use(member2);
-    },
-    observer: async ({}, use) => {
-      let observer = {} as UserDetails;
-      setupUserDetails(observer, 'observer');
-      await use(observer);
-    }
+    admin: userDetails('admin'),
+    manager: userDetails('manager'),
+    member: userDetails('member'),
+    member2: userDetails('member2'),
+    observer: userDetails('observer'),
+    writable: userDetails('writable'),
   })
 );

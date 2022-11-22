@@ -10,6 +10,6 @@ test/php/\.phpunit\.result\.cache
 node_modules
 .DS_Store
 docker-scan-results.txt
-test-results/
-playwright-report/
+test-results
+test-storage-state
 *storageState.json

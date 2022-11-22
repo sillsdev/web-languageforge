@@ -1,6 +1,7 @@
 import { Browser, Page } from '@playwright/test';
 import constants from '../testConstants.json';
-import type { usernamesForFixture } from './userFixtures';
+import type { E2EUsernames } from './e2e-users';
+import { getStorageStatePath } from './user-tools';
 
 export async function login(page: Page, username: string, password: string) {
   await page.goto('/auth/login');
@@ -16,7 +17,7 @@ export async function logout(page: Page) {
   return await page.goto('/auth/logout');
 }
 
-export function getLoginInfo(name: usernamesForFixture) {
+export function getLoginInfo(name: E2EUsernames) {
   const usernameKey = `${name}Username`;
   const passwordKey = `${name}Password`;
   if (Object.hasOwnProperty.call(constants, usernameKey)) {
@@ -29,12 +30,14 @@ export function getLoginInfo(name: usernamesForFixture) {
   }
 }
 
-export function loginAs(page: Page, name: usernamesForFixture) {
+export function loginAs(page: Page, name: E2EUsernames) {
   const { username, password } = getLoginInfo(name);
   return login(page, username, password);
 }
 
-export async function getLoggedInPage(browser: Browser, name: string) {
-  const context = await browser.newContext({ storageState: `${name}-storageState.json` });
+export async function getLoggedInPage(browser: Browser, user: string) {
+  const browserName = browser.browserType().name();
+  const storageState = getStorageStatePath(browserName, user);
+  const context = await browser.newContext({ storageState });
   return await context.newPage();
 }
