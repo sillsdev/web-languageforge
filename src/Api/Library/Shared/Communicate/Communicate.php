@@ -4,6 +4,7 @@ namespace Api\Library\Shared\Communicate;
 
 use Api\Library\Shared\Communicate\Sms\SmsModel;
 use Api\Library\Shared\Communicate\Sms\SmsQueue;
+use Api\Library\Shared\UrlHelper;
 use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\ProjectSettingsModel;
 use Api\Model\Shared\MessageModel;
@@ -136,7 +137,7 @@ class Communicate
         $subject = "Language Forge account signup validation";
         $vars = [
             "user" => $userModel,
-            "link" => "https://languageforge.org/validate/" . $userModel->validationKey,
+            "link" => UrlHelper::baseUrl() . "/validate/" . $userModel->validationKey,
         ];
 
         self::sendTemplateEmail($to, $subject, "SignupValidate", $vars, $delivery);
@@ -152,7 +153,7 @@ class Communicate
         $subject = "Welcome to Language Forge";
         $vars = [
             "user" => $userModel,
-            "link" => "https://languageforge.org",
+            "link" => UrlHelper::baseUrl(),
         ];
 
         self::sendTemplateEmail($to, $subject, "WelcomeToWebsite", $vars, $delivery);
@@ -247,7 +248,7 @@ class Communicate
         $subject = "Language Forge Forgotten Password Verification";
         $vars = [
             "user" => $user,
-            "link" => "https://languageforge.org/auth/reset_password/" . $user->resetPasswordKey,
+            "link" => UrlHelper::baseUrl() . "/auth/reset_password/" . $user->resetPasswordKey,
         ];
 
         self::sendTemplateEmail($to, $subject, "ForgotPasswordVerification", $vars, $delivery);
@@ -291,8 +292,7 @@ class Communicate
             "user" => $user,
             "admin" => $admin,
             "project" => $projectModel,
-            "link" =>
-                "https://languageforge.org/app/usermanagement/" . $projectModel->id->asString() . "#!/joinRequests",
+            "link" => UrlHelper::baseUrl() . "/app/usermanagement/" . $projectModel->id->asString() . "#!/joinRequests",
         ];
 
         self::sendTemplateEmail($to, $subject, "JoinRequest", $vars, $delivery);
@@ -311,7 +311,7 @@ class Communicate
         $vars = [
             "user" => $user,
             "project" => $projectModel,
-            "link" => "https://languageforge.org/app/{$projectModel->appName}/" . $projectModel->id->asString(),
+            "link" => UrlHelper::baseUrl() . "/app/{$projectModel->appName}/" . $projectModel->id->asString(),
         ];
 
         self::sendTemplateEmail($to, $subject, "JoinRequestAccepted", $vars, $delivery);

@@ -2,6 +2,8 @@
 
 namespace Site\OAuth;
 
+use Api\Library\Shared\Website;
+use Api\Library\Shared\UrlHelper;
 use Api\Model\Shared\UserModel;
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Token\AccessToken as OAuthAccessToken;
@@ -35,7 +37,7 @@ abstract class OAuthBase extends Base
 
     public function oauthCallback(Request $request, Application $app)
     {
-        $redirectUri = "https://languageforge.org/oauthcallback/" . $this->getProviderName();
+        $redirectUri = UrlHelper::baseUrl() . "/oauthcallback/" . $this->getProviderName();
         $provider = $this->getOAuthProvider($redirectUri);
 
         $error = $request->query->get("error", null);
