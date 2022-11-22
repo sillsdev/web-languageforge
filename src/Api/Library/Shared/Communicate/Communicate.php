@@ -229,6 +229,7 @@ class Communicate
         $vars = [
             "toUser" => $toUserModel,
             "inviterUser" => $inviterUserModel,
+            "link" => UrlHelper::baseUrl() . "/app/lexicon/" . $projectModel->id->asString(),
             "project" => $projectModel,
         ];
 
