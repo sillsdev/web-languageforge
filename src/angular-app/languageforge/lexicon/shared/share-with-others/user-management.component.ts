@@ -68,21 +68,14 @@ export class UserManagementController implements angular.IController {
   }
 
   onOwnershipTransfer($event: {target: Partial<User>}) {
-    if($event.target.isInvitee){
-      const attemptedToTransferToAnInviteeMessage = 'Please retry after the invitee opens the project.';
-      this.modal.showModalSimple('Ownership was not transferred', attemptedToTransferToAnInviteeMessage, 'OK', 'Close').then(() => {
-      })
-    }
-    else{
-      const ownershipTransferMessage = 'Are you sure you want to transfer ownership of <b>' + this.project.projectName + '</b> to <b>' + $event.target.username + '</b>?';
-      this.modal.showModalSimple('Transfer project ownership', ownershipTransferMessage, 'Cancel', 'Transfer ownership to ' + $event.target.username).then(() => {
-        var newOwnerId = $event.target.id;
-        this.projectService.transferOwnership(newOwnerId).then(() => {
-          this.loadMemberData();
-          this.project.ownerRef.id = newOwnerId;
-        });
-      })
-    }
+    const ownershipTransferMessage = 'Are you sure you want to transfer ownership of <b>' + this.project.projectName + '</b> to <b>' + $event.target.username + '</b>?';
+    this.modal.showModalSimple('Transfer project ownership', ownershipTransferMessage, 'Cancel', 'Transfer ownership to ' + $event.target.username).then(() => {
+      var newOwnerId = $event.target.id;
+      this.projectService.transferOwnership(newOwnerId).then(() => {
+        this.loadMemberData();
+        this.project.ownerRef.id = newOwnerId;
+      });
+    })
   }
 
   currentUserIsOwnerOrAdmin(): boolean {

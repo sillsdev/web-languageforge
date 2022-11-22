@@ -193,7 +193,8 @@ class RightsHelper
                     $this->userHasSiteRight(Domain::PROJECTS + Operation::CREATE);
 
             case "project_transferOwnership":
-                return $this->userHasSiteRight(Domain::PROJECTS + Operation::DELETE);
+                // user is a project manager
+                return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
 
             case "projectcode_exists":
                 return $this->userHasSiteRight(Domain::PROJECTS + Operation::CREATE);
