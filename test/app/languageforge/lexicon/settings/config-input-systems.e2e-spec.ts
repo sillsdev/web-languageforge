@@ -13,23 +13,6 @@ describe('Lexicon E2E Configuration Input Systems', () => {
   const firstLanguage = 'Maori';
   const lastLanguage  = 'Rarotongan';
 
-  it('setup: login as user, select test project, cannot configure', async () => {
-    await loginPage.loginAsUser();
-    await projectsPage.get();
-    await projectsPage.clickOnProject(constants.testProjectName);
-    expect<boolean>(await configPage.settingsMenuLink.isPresent()).toBe(false);
-  });
-
-  it('setup: login as manager, select test project, goto configuration', async () => {
-    await loginPage.loginAsManager();
-    await projectsPage.get();
-    await projectsPage.clickOnProject(constants.testProjectName);
-    expect<any>(await configPage.settingsMenuLink.isPresent()).toBe(true);
-    await configPage.get();
-    expect<any>(await configPage.applyButton.isDisplayed()).toBe(true);
-    expect<any>(await configPage.applyButton.isEnabled()).toBe(false);
-  });
-
   it('can select Input Systems tab', async () => {
     await configPage.tabs.inputSystems.click();
     expect<any>(await configPage.inputSystemsPane.newButton.isDisplayed()).toBe(true);
