@@ -15,7 +15,6 @@ use Api\Model\Languageforge\Lexicon\Command\SendReceiveCommands;
 use Api\Model\Languageforge\Lexicon\Dto\LexBaseViewDto;
 use Api\Model\Languageforge\Lexicon\Dto\LexDbeDto;
 use Api\Model\Languageforge\Lexicon\Dto\LexProjectDto;
-use Api\Model\Shared\Command\MessageCommands;
 use Api\Model\Shared\Command\ProjectCommands;
 use Api\Model\Shared\Command\SessionCommands;
 use Api\Model\Shared\Command\UserCommands;

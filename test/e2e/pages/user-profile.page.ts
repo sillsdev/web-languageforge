@@ -13,12 +13,6 @@ export class UserProfilePage extends BasePage {
     usernameField: this.page.getByLabel('Username'),
     colorField: this.page.locator('select:has-text("Select a Color...")'),
     animalField: this.page.locator('select:has-text("Choose an animal...")'),
-    phoneField: this.page.getByLabel('Mobile Phone Number'),
-    updatesVia: {
-      email: this.page.locator('#EmailButton'),
-      sms: this.page.locator('#SMSButton'),
-      both: this.page.locator('#BothButton'),
-    }
   };
 
   readonly aboutMeTab = {
