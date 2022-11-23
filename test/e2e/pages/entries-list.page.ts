@@ -2,7 +2,7 @@ import { expect, Page } from '@playwright/test';
 import { Project } from '../utils/types';
 import { BasePage } from './base-page';
 
-export class EntriesListPage extends BasePage {
+export class EntriesListPage extends BasePage<EntriesListPage> {
   readonly totalNumberOfEntries = this.page.locator('#totalNumberOfEntries');
   readonly filterInput = this.page.locator('[placeholder="Search"]');
   readonly filterInputClearButton = this.page.locator('.clear-search-button');

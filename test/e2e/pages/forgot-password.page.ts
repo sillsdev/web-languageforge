@@ -1,7 +1,7 @@
 import { Page } from '@playwright/test';
 import { BasePage } from './base-page';
 
-export class ForgotPasswordPage extends BasePage {
+export class ForgotPasswordPage extends BasePage<ForgotPasswordPage> {
     // infoMessage and errors are dynamic elements, so class name locators seem to be the best option
   readonly infoMessages = this.page.locator('.alert-info');
   readonly errors = this.page.locator('.alert-danger');

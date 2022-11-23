@@ -14,12 +14,14 @@ type UploadType =
     'Picture'
 ;
 
-export class EditorPage extends BasePage {
+export class EditorPage extends BasePage<EditorPage> {
   readonly entriesListPage = new EntriesListPage(this.page, this.project);
-  readonly configurationPage = new ConfigurationPage(this.page, this.project);
 
   readonly settingsMenuLink = this.page.locator('#settings-dropdown-button');
-  readonly projectSettingsLink = this.page.locator('#dropdown-project-settings');
+  readonly settingsMenu = {
+    projectSettingsLink: this.page.locator('#dropdown-project-settings'),
+    configurationLink: this.page.locator('#dropdown-configuration'),
+  };
 
   readonly lexAppToolbar = {
     backToListButton: this.page.locator('#toListLink'),
@@ -73,7 +75,7 @@ export class EditorPage extends BasePage {
     super(page, `/app/lexicon/${project.id}/`, page.locator('.words-container-title, .no-entries'));
   }
 
-  async goto(options?: EditorGotoOptions): Promise<void> {
+  async goto(options?: EditorGotoOptions): Promise<EditorPage> {
     await super.goto(options);
     const entryId = options?.entryId;
     const gotoEntry = entryId || await this.page.isVisible('[id^=entryId_]');
@@ -84,15 +86,24 @@ export class EditorPage extends BasePage {
       await super.goto({waitFor: this.page.locator('.entry-card')});
     }
     await expect(this.page.locator('.page-name >> text=' + this.project.name)).toBeVisible();
+    return this;
   }
 
-  async navigateToSettings(): Promise<ProjectSettingsPage> {
-    await expect(this.settingsMenuLink).toBeVisible();
+  async navigateToProjectSettings(): Promise<ProjectSettingsPage> {
     await this.settingsMenuLink.click();
-    await expect(this.projectSettingsLink).toBeVisible();
     const projectSettingsPage = new ProjectSettingsPage(this.page, this.project);
     await Promise.all([
-      this.projectSettingsLink.click(),
+      this.settingsMenu.projectSettingsLink.click(),
+      projectSettingsPage.waitForPage(),
+    ]);
+    return projectSettingsPage;
+  }
+
+  async navigateToProjectConfiguration(): Promise<ConfigurationPage> {
+    await this.settingsMenuLink.click();
+    const projectSettingsPage = new ConfigurationPage(this.page, this.project);
+    await Promise.all([
+      this.settingsMenu.projectSettingsLink.click(),
       projectSettingsPage.waitForPage(),
     ]);
     return projectSettingsPage;

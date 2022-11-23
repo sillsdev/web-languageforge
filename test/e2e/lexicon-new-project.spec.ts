@@ -21,7 +21,7 @@ test.describe('Lexicon E2E New Project wizard app', () => {
 
   test.beforeAll(async ({ memberTab, request, manager, member }) => {
     newLexProjectPageMember = new NewLexProjectPage(memberTab);
-    existingProject.id = await initTestProject(request, existingProject.code, existingProject.name, manager.username, [member.username]);
+    existingProject.id = (await initTestProject(request, existingProject.code, existingProject.name, manager.username, [member.username])).id;
   });
 
   test('Admin can get to wizard', async ({ adminTab }) => {

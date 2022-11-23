@@ -1,7 +1,7 @@
 import { expect, Page } from '@playwright/test';
 import { BasePage } from './base-page';
 
-export class NewLexProjectPage extends BasePage {
+export class NewLexProjectPage extends BasePage<NewLexProjectPage> {
 
   // form controls
   readonly backButton = this.page.locator('#back-button');

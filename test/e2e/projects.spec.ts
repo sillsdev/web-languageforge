@@ -47,12 +47,11 @@ test.describe('E2E Projects List app', () => {
     projectsPageAdmin = new ProjectsPage(adminTab);
 
     for (const project of projects) {
-      const projectId = await initTestProject(request, project.code, project.name, manager.username, [member.username]);
+      const projectId = (await initTestProject(request, project.code, project.name, manager.username, [member.username])).id;
       project.id = projectId;
     }
-    project4.id = await initTestProject(request, project4.code, project4.name, manager.username, [admin.username]);
-    project5.id = await initTestProject(request, project5.code, project5.name, manager.username, []);
-
+    project4.id = (await initTestProject(request, project4.code, project4.name, manager.username, [admin.username])).id;
+    project5.id = (await initTestProject(request, project5.code, project5.name, manager.username, [])).id;
   });
 
   test.describe('for Normal User', () => {

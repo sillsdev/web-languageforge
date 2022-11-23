@@ -8,6 +8,7 @@ import { NoticeElement } from './components/notice.component';
 import { Project } from './utils/types';
 import { addAudioVisualFileToProject, addLexEntry, addPictureFileToProject, addUserToProject, addWritingSystemToProject, initTestProject } from './utils/testSetup';
 import constants from './testConstants.json';
+import { ConfigurationPage } from './pages/configuration.page';
 
 test.describe('Lexicon E2E Entry Editor and Entries List', () => {
 
@@ -22,7 +23,7 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
   let lexEntriesIds: string[] = [];
 
   test.beforeAll(async ({ request, manager, managerTab, member, member2 }) => {
-    project.id = await initTestProject(request, project.code, project.name, manager.username, [member.username]);
+    project.id = (await initTestProject(request, project.code, project.name, manager.username, [member.username])).id;
     await addUserToProject(request, project.code, member2.username, "observer");
     await addWritingSystemToProject(request, project.code, 'th-fonipa', 'tipa');
     await addWritingSystemToProject(request, project.code, 'th-Zxxx-x-audio', 'taud');
@@ -94,11 +95,11 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
       //   .toEqual(constants.testEntry1.senses[0].partOfSpeech.value);
     });
 
-    test('Add citation form as visible field', async () => {
-      await editorPageManager.configurationPage.goto();
-      await editorPageManager.configurationPage.tabs.fields.click();
-      await (await editorPageManager.configurationPage.getCheckbox('Entry Fields', 'Citation Form', 'Hidden if Empty')).uncheck();
-      await editorPageManager.configurationPage.applyButton.click();
+    test('Add citation form as visible field', async ({managerTab}) => {
+      const configurationPage = await new ConfigurationPage(managerTab, project).goto();
+      await configurationPage.tabs.fields.click();
+      await (await configurationPage.getCheckbox('Entry Fields', 'Citation Form', 'Hidden if Empty')).uncheck();
+      await configurationPage.applyButton.click();
       await editorPageManager.goto();
       await expect(editorPageManager.getTextarea(editorPageManager.entryCard, 'Citation Form', 'th')).toBeVisible();
     });
@@ -158,15 +159,15 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
         await expect(cancelAddingPicture).not.toBeVisible();
       });
 
-      test('Can change config to show pictures and hide empty captions & can change config to show empty captions', async () => {
+      test('Can change config to show pictures and hide empty captions & can change config to show empty captions', async ({managerTab}) => {
         // can change config to show pictures and hide empty captions
-        await editorPageManager.configurationPage.goto();
-        await editorPageManager.configurationPage.tabs.fields.click();
+        const configurationPage = await new ConfigurationPage(managerTab, project).goto();
+        await configurationPage.tabs.fields.click();
 
-        await (await editorPageManager.configurationPage.getCheckbox('Meaning Fields', 'Pictures', 'Hidden if Empty')).uncheck();
-        await (await editorPageManager.configurationPage.getFieldSpecificButton('Meaning Fields', 'Pictures')).click();
-        await (await editorPageManager.configurationPage.getFieldSpecificCheckbox('Meaning Fields', 'Pictures', 'Hide Caption If Empty')).check();
-        await editorPageManager.configurationPage.applyButton.click();
+        await (await configurationPage.getCheckbox('Meaning Fields', 'Pictures', 'Hidden if Empty')).uncheck();
+        await (await configurationPage.getFieldSpecificButton('Meaning Fields', 'Pictures')).click();
+        await (await configurationPage.getFieldSpecificCheckbox('Meaning Fields', 'Pictures', 'Hide Caption If Empty')).check();
+        await configurationPage.applyButton.click();
 
         await editorPageManager.goto();
         if ((await editorPageManager.lexAppToolbar.toggleExtraFieldsButton.innerText()).includes('Hide Extra Fields')) {
@@ -179,18 +180,18 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
         await caption.fill('');
 
         // can change config to show empty captions
-        await editorPageManager.configurationPage.goto();
-        await editorPageManager.configurationPage.tabs.fields.click();
-        await (await editorPageManager.configurationPage.getCheckbox('Meaning Fields', 'Pictures', 'Hidden if Empty')).uncheck();
-        await (await editorPageManager.configurationPage.getFieldSpecificButton('Meaning Fields', 'Pictures')).click();
-        await (await editorPageManager.configurationPage.getFieldSpecificCheckbox('Meaning Fields', 'Pictures', 'Hide Caption If Empty')).uncheck();
-        await editorPageManager.configurationPage.applyButton.click();
+        await configurationPage.goto();
+        await configurationPage.tabs.fields.click();
+        await (await configurationPage.getCheckbox('Meaning Fields', 'Pictures', 'Hidden if Empty')).uncheck();
+        await (await configurationPage.getFieldSpecificButton('Meaning Fields', 'Pictures')).click();
+        await (await configurationPage.getFieldSpecificCheckbox('Meaning Fields', 'Pictures', 'Hide Caption If Empty')).uncheck();
+        await configurationPage.applyButton.click();
 
         await editorPageManager.goto();
         await expect(caption).toBeVisible();
       });
 
-      test('Picture is removed when Delete is clicked & can change config to hide pictures and hide captions', async () => {
+      test('Picture is removed when Delete is clicked & can change config to hide pictures and hide captions', async ({managerTab}) => {
         await editorPageManager.goto();
         // Picture is removed when Delete is clicked
         let picture: Locator = await editorPageManager.getPicture(editorPageManager.senseCard, constants.testEntry1.senses[0].pictures[0].fileName);
@@ -201,12 +202,13 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
         picture = await editorPageManager.getPicture(editorPageManager.senseCard, constants.testEntry1.senses[0].pictures[0].fileName);
         expect(picture).toBeUndefined();
 
-        await editorPageManager.configurationPage.goto();
-        await editorPageManager.configurationPage.tabs.fields.click();
-        await (await editorPageManager.configurationPage.getCheckbox('Meaning Fields', 'Pictures', 'Hidden if Empty')).check();
-        await (await editorPageManager.configurationPage.getFieldSpecificButton('Meaning Fields', 'Pictures')).click();
-        await (await editorPageManager.configurationPage.getFieldSpecificCheckbox('Meaning Fields', 'Pictures', 'Hide Caption If Empty')).uncheck();
-        await editorPageManager.configurationPage.applyButton.click();
+        const configurationPage = await new ConfigurationPage(managerTab, project).goto();
+        await configurationPage.goto();
+        await configurationPage.tabs.fields.click();
+        await (await configurationPage.getCheckbox('Meaning Fields', 'Pictures', 'Hidden if Empty')).check();
+        await (await configurationPage.getFieldSpecificButton('Meaning Fields', 'Pictures')).click();
+        await (await configurationPage.getFieldSpecificCheckbox('Meaning Fields', 'Pictures', 'Hide Caption If Empty')).uncheck();
+        await configurationPage.applyButton.click();
 
         // can change config to hide pictures and hide captions
         await editorPageManager.goto();
@@ -227,12 +229,12 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
     });
 
     test.describe('Audio', () => {
-      test.beforeAll(async () => {
-        await editorPageManager.configurationPage.goto();
-        await (await editorPageManager.configurationPage.getFieldSpecificButton('Entry Fields', lexemeLabel)).click();
-        await (await editorPageManager.configurationPage.getFieldSpecificCheckbox('Entry Fields', lexemeLabel, 'IPA')).check();
-        await (await editorPageManager.configurationPage.getFieldSpecificCheckbox('Entry Fields', lexemeLabel, 'Voice')).check();
-        await editorPageManager.configurationPage.applyButton.click();
+      test.beforeAll(async ({managerTab}) => {
+        const configurationPage = await new ConfigurationPage(managerTab, project).goto();
+        await (await configurationPage.getFieldSpecificButton('Entry Fields', lexemeLabel)).click();
+        await (await configurationPage.getFieldSpecificCheckbox('Entry Fields', lexemeLabel, 'IPA')).check();
+        await (await configurationPage.getFieldSpecificCheckbox('Entry Fields', lexemeLabel, 'Voice')).check();
+        await configurationPage.applyButton.click();
       });
 
 
@@ -622,20 +624,20 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
 
     test.describe('Configuration check', async () => {
 
-      let editorPageMember: EditorPage;
+      let configurationPage: ConfigurationPage;
       test.beforeAll(async ({ memberTab }) => {
-        editorPageMember = new EditorPage(memberTab, project);
+        configurationPage = new ConfigurationPage(memberTab, project);
 
         // copied from above from audio tests, because also needed here
         // TODO: eventually put this code somewhere else and in only one in this file
 
         // in the Protractor tests, the row label 'Thai Voice (Voice)' was used. Here, we only
         // require the row label to contain the substring 'Voice' as the label was changed to 'ภาษาไทย (Voice)'
-        await editorPageManager.configurationPage.goto();
-        await (await editorPageManager.configurationPage.getFieldSpecificButton('Entry Fields', lexemeLabel)).click();
-        await (await editorPageManager.configurationPage.getFieldSpecificCheckbox('Entry Fields', lexemeLabel, 'IPA')).check();
-        await (await editorPageManager.configurationPage.getFieldSpecificCheckbox('Entry Fields', lexemeLabel, 'Voice')).check();
-        await editorPageManager.configurationPage.applyButton.click();
+        await configurationPage.goto();
+        await (await configurationPage.getFieldSpecificButton('Entry Fields', lexemeLabel)).click();
+        await (await configurationPage.getFieldSpecificCheckbox('Entry Fields', lexemeLabel, 'IPA')).check();
+        await (await configurationPage.getFieldSpecificCheckbox('Entry Fields', lexemeLabel, 'Voice')).check();
+        await configurationPage.applyButton.click();
       });
 
       test('Can change configuration to make a writing system visible or invisible', async () => {
@@ -647,10 +649,10 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
         await expect(editorPageManager.getSoundplayer(editorPageManager.entryCard, lexemeLabel, 'taud')).toBeVisible();
 
         // make "en" input system visible for "Word" field
-        await editorPageManager.configurationPage.goto();
-        await (await editorPageManager.configurationPage.getFieldSpecificButton('Entry Fields', lexemeLabel)).click();
-        await (await editorPageManager.configurationPage.getFieldSpecificCheckbox('Entry Fields', lexemeLabel, 'English')).check();
-        await editorPageManager.configurationPage.applyButton.click();
+        await configurationPage.goto();
+        await (await configurationPage.getFieldSpecificButton('Entry Fields', lexemeLabel)).click();
+        await (await configurationPage.getFieldSpecificCheckbox('Entry Fields', lexemeLabel, 'English')).check();
+        await configurationPage.applyButton.click();
 
         // check if "en" is visible
         await editorPageManager.goto();
@@ -658,10 +660,10 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
         await expect(editorPageManager.getTextarea(editorPageManager.entryCard, lexemeLabel, 'en')).toBeVisible();
 
         // make "en" input system invisible for "Word" field
-        await editorPageManager.configurationPage.goto();
-        await (await editorPageManager.configurationPage.getFieldSpecificButton('Entry Fields', lexemeLabel)).click();
-        await (await editorPageManager.configurationPage.getFieldSpecificCheckbox('Entry Fields', lexemeLabel, 'English')).uncheck();
-        await editorPageManager.configurationPage.applyButton.click();
+        await configurationPage.goto();
+        await (await configurationPage.getFieldSpecificButton('Entry Fields', lexemeLabel)).click();
+        await (await configurationPage.getFieldSpecificCheckbox('Entry Fields', lexemeLabel, 'English')).uncheck();
+        await configurationPage.applyButton.click();
 
 
         // check if "en" is invisible
@@ -671,16 +673,17 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
       });
 
 
-      test('Make "taud" input system invisible for "Word" field and "tipa" invisible for manager role, then ensure it worked and change it back', async () => {
-        await editorPageManager.configurationPage.goto();
-        await (await editorPageManager.configurationPage.getFieldSpecificButton('Entry Fields', lexemeLabel)).click();
+      test('Make "taud" input system invisible for "Word" field and "tipa" invisible for manager role, then ensure it worked and change it back', async ({memberTab}) => {
+        await configurationPage.goto();
+        await (await configurationPage.getFieldSpecificButton('Entry Fields', lexemeLabel)).click();
         // Make "taud" input system invisible for "Word" field....
-        await (await editorPageManager.configurationPage.getFieldSpecificCheckbox('Entry Fields', lexemeLabel, '(Voice)')).uncheck();
+        await (await configurationPage.getFieldSpecificCheckbox('Entry Fields', lexemeLabel, '(Voice)')).uncheck();
         // ....and "tipa" invisible for manager role
-        await (await editorPageManager.configurationPage.getCheckbox('Input Systems', 'IPA', 'Manager')).uncheck();
-        await editorPageManager.configurationPage.applyButton.click();
+        await (await configurationPage.getCheckbox('Input Systems', 'IPA', 'Manager')).uncheck();
+        await configurationPage.applyButton.click();
 
         // verify that contributor can still see "tipa"
+        const editorPageMember = new EditorPage(memberTab, project);
         await editorPageMember.goto();
         expect(await editorPageMember.getNumberOfElementsWithSameLabel(editorPageMember.entryCard, lexemeLabel)).toEqual(2);
         await expect(editorPageMember.getTextarea(editorPageMember.entryCard, lexemeLabel, 'th')).toBeVisible();
@@ -692,10 +695,10 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
         await expect(editorPageManager.getTextarea(editorPageManager.entryCard, lexemeLabel, 'th')).toBeVisible();
 
         // restore visibility of "taud" for "Word" field
-        await editorPageManager.configurationPage.goto();
-        await (await editorPageManager.configurationPage.getFieldSpecificButton('Entry Fields', lexemeLabel)).click();
-        await (await editorPageManager.configurationPage.getFieldSpecificCheckbox('Entry Fields', lexemeLabel, '(Voice)')).check();
-        await editorPageManager.configurationPage.applyButton.click();
+        await configurationPage.goto();
+        await (await configurationPage.getFieldSpecificButton('Entry Fields', lexemeLabel)).click();
+        await (await configurationPage.getFieldSpecificCheckbox('Entry Fields', lexemeLabel, '(Voice)')).check();
+        await configurationPage.applyButton.click();
 
         // Word has only "th" and "taud" visible for manager role
         await editorPageManager.goto();
@@ -704,9 +707,9 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
         await expect(editorPageManager.getSoundplayer(editorPageManager.entryCard, lexemeLabel, 'taud')).toBeVisible();
 
         // restore visibility of "tipa" input system for manager role
-        await editorPageManager.configurationPage.goto();
-        await (await editorPageManager.configurationPage.getCheckbox('Input Systems', 'IPA', 'Manager')).check();
-        await editorPageManager.configurationPage.applyButton.click();
+        await configurationPage.goto();
+        await (await configurationPage.getCheckbox('Input Systems', 'IPA', 'Manager')).check();
+        await configurationPage.applyButton.click();
 
         // Word has "th", "tipa" and "taud" visible again for manager role
         await editorPageManager.goto();

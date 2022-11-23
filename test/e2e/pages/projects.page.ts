@@ -1,4 +1,5 @@
 import { expect, Locator, Page } from '@playwright/test';
+import { timeStamp } from 'console';
 import { BasePage } from './base-page';
 
 export type UserRoles =
@@ -8,7 +9,7 @@ export type UserRoles =
   'can view'
   ;
 
-export class ProjectsPage extends BasePage {
+export class ProjectsPage extends BasePage<ProjectsPage> {
   readonly projectsList = this.page.locator('[data-ng-repeat="project in visibleProjects"]');
   readonly projectNames = this.projectsList.locator('a[href^="/app/lexicon"]');
 
@@ -35,11 +36,12 @@ export class ProjectsPage extends BasePage {
     super(page, '/app/projects', page.locator('button:has-text("Start or Join a New Project")'));
   }
 
-  async goto() {
+  async goto(): Promise<ProjectsPage> {
     await super.goto();
     if (await this.projectsPerPageDropdown.isVisible()) {
       await this.projectsPerPageDropdown.selectOption('100');
     }
+    return this;
   }
 
   async createEmptyProject(projectName: string) {

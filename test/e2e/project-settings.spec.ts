@@ -33,11 +33,11 @@ test.describe('E2E Project Settings app', () => {
 
   test.beforeAll(async ({ request, admin, member, manager }) => {
     for (const project of projects) {
-      const projectId = await initTestProject(request, project.code, project.name, admin.username, [member.username]);
+      const projectId = (await initTestProject(request, project.code, project.name, admin.username, [member.username])).id;
       project.id = projectId;
     }
     await addUserToProject(request, projects[0].code, manager.username, 'manager');
-    project4.id = await initTestProject(request, project4.code, project4.name, manager.username, []);
+    project4.id = (await initTestProject(request, project4.code, project4.name, manager.username, [])).id;
   });
 
   // test if can change project name
@@ -50,7 +50,7 @@ test.describe('E2E Project Settings app', () => {
   test('Project member can navigate from editor to settings', async({ managerTab }) => {
     const editorPage = new EditorPage(managerTab, projects[0]);
     await editorPage.goto();
-    const projectSettingsPage = await editorPage.navigateToSettings();
+    const projectSettingsPage = await editorPage.navigateToProjectSettings();
     await expect(projectSettingsPage.projectTab.tabTitle).toBeVisible();
   });
 

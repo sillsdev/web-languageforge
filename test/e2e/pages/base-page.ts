@@ -4,17 +4,18 @@ export interface GotoOptions {
   waitFor?: Locator;
 }
 
-export abstract class BasePage {
+export abstract class BasePage<T extends BasePage<T>> {
 
   constructor(readonly page: Page, readonly url: string, readonly waitFor?: Locator) {
   }
 
-  async goto(options?: GotoOptions): Promise<void> {
+  async goto(options?: GotoOptions): Promise<T> {
     await Promise.all([
       this.page.goto(this.url),
       this.waitForPage(),
       options?.waitFor?.waitFor(),
     ]);
+    return this as unknown as T;
   }
 
   async waitForPage(): Promise<void> {

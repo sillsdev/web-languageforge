@@ -4,7 +4,7 @@ import { BasePage } from './base-page';
 
 const fieldsSelector = '[data-ng-repeat="tab in $ctrl.tabs"] >> text=Fields >> visible=true';
 
-export class ConfigurationPage extends BasePage {
+export class ConfigurationPage extends BasePage<ConfigurationPage> {
 
   readonly tabs = {
     fields: this.page.locator(fieldsSelector)

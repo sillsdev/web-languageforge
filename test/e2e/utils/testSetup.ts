@@ -4,6 +4,7 @@ import { existsSync } from 'fs';
 import * as path from 'path';
 import { cwd } from 'process';
 import { APIRequestContext } from '@playwright/test';
+import { Project, toProjectCode } from './types';
 
 type CustomFieldType =
   'MultiString' |
@@ -22,13 +23,23 @@ type LfFieldType =
   'pictures'
 ;
 
-export function initTestProject(request: APIRequestContext,
-                                projectCode: string,
-                                projectName: string,
+export async function initTestProject(request: APIRequestContext,
+                                code: string,
+                                name: string,
                                 ownerUsername: string,
-                                memberUsernames: string[] = [])
+                                memberUsernames: string[] = []): Promise<Project>
 {
-  return testControl(request, 'init_test_project', [projectCode, projectName, ownerUsername, memberUsernames]);
+  const id = await testControl(request, 'init_test_project', [code, name, ownerUsername, memberUsernames]);
+  return {name, code, id};
+}
+
+export async function initTestProjectByName(
+  request: APIRequestContext,
+  name: string,
+  ownerUsername: string,
+  memberUsernames: string[] = []): Promise<Project> {
+    const code = toProjectCode(name);
+    return initTestProject(request, code, name, ownerUsername, memberUsernames);
 }
 
 export function addWritingSystemToProject(request: APIRequestContext, projectCode: string, languageTag: string, abbr = '', name = '')

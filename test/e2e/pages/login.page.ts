@@ -1,7 +1,7 @@
 import { Page } from '@playwright/test';
 import { BasePage } from './base-page';
 
-export class LoginPage extends BasePage {
+export class LoginPage extends BasePage<LoginPage> {
   readonly usernameInput = this.page.locator('#username');
   readonly passwordInput = this.page.locator('#password');
   readonly submitButton = this.page.locator('#login-submit');
