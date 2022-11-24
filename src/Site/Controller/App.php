@@ -264,7 +264,7 @@ class AppModel
      */
     private function determineFolderPaths($appName, $projectId, $isPublic)
     {
-        $siteFolder = "angular-app/" . languageforge;
+        $siteFolder = "angular-app/languageforge";
         $sitePublicFolder = "$siteFolder/public";
         $bellowsFolder = "angular-app/bellows";
         $bellowsAppFolder = "$bellowsFolder/apps";

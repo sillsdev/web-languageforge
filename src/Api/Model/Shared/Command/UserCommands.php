@@ -23,6 +23,7 @@ use Api\Model\Shared\UserModelWithPassword;
 use Api\Model\Shared\UserTypeaheadModel;
 use Palaso\Utilities\CodeGuard;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Api\Library\Shared\UrlHelper;
 
 class UserCommands
 {
@@ -309,7 +310,7 @@ class UserCommands
         if (UserCommands::checkUniqueIdentity($user, $username, "") == "ok") {
             $user->username = $username;
             $user->role = SystemRoles::USER;
-            $user->siteRole["languageforge.org"] = SiteRoles::PROJECT_CREATOR;
+            $user->siteRole[UrlHelper::getHostname()] = SiteRoles::PROJECT_CREATOR;
             $user->active = true;
             $userId = $user->write();
 
@@ -383,7 +384,7 @@ class UserCommands
             $user->avatar_ref = $params["avatar_ref"];
         }
         $user->role = SystemRoles::USER;
-        $user->siteRole["languageforge.org"] = SiteRoles::PROJECT_CREATOR;
+        $user->siteRole[UrlHelper::getHostname()] = SiteRoles::PROJECT_CREATOR;
         $userId = $user->write();
 
         // Write the password
@@ -424,7 +425,7 @@ class UserCommands
             $user->avatar_ref = $params["avatar_ref"];
         }
         $user->role = SystemRoles::USER;
-        $user->siteRole["languageforge.org"] = SiteRoles::PROJECT_CREATOR;
+        $user->siteRole[UrlHelper::getHostname()] = SiteRoles::PROJECT_CREATOR;
         $userId = $user->write();
 
         // NO password for users registered with OAuth

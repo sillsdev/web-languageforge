@@ -5,6 +5,7 @@ namespace Api\Model\Shared;
 use Api\Model\Shared\Mapper\MapperListModel;
 use Api\Model\Shared\Mapper\MongoEncoder;
 use Api\Model\Shared\Mapper\MongoMapper;
+use Api\Library\Shared\UrlHelper;
 
 class UserTypeaheadModel extends MapperListModel
 {
@@ -42,7 +43,7 @@ class UserTypeaheadModel extends MapperListModel
             //error_log("Query: " . print_r($query, true));
         }
         // Filter for only users on the current site
-        $encodedDomain = "languageforge.org";
+        $encodedDomain = UrlHelper::getHostname();
         MongoEncoder::encodeDollarDot($encodedDomain);
         $query["siteRole." . $encodedDomain] = ['$exists' => true];
         parent::__construct(UserModelMongoMapper::instance(), $query, ["username", "name", "avatarRef"]);

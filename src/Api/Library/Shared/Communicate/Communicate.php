@@ -320,7 +320,7 @@ class Communicate
 
     private static function sendTemplateEmail($to, $subject, $templateName, $vars, DeliveryInterface $delivery = null)
     {
-        $from = ["no-reply@languageforge.org" => "Language Forge"];
+        $from = ["no-reply@" . UrlHelper::getHostname() => "Language Forge"];
 
         $templatePath = "languageforge/theme/default/email/en";
         if (!file_exists(APPPATH . "Site/views/" . "$templatePath/$templateName.twig")) {
@@ -350,7 +350,7 @@ class Communicate
      */
     public static function calculateSignupUrl(string $email, string $name = null, string $avatar = null): string
     {
-        $url = "https://languageforge.org/public/signup#!/?e=" . urlencode($email);
+        $url = UrlHelper::baseUrl() . "/public/signup#!/?e=" . urlencode($email);
         if ($name) {
             $url = $url . "&n=" . urlencode($name);
         }

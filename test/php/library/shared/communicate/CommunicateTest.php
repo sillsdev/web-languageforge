@@ -94,7 +94,7 @@ class CommunicateTest extends TestCase
         $user = new UserModel($userId);
         $user->communicate_via = UserModel::COMMUNICATE_VIA_EMAIL;
         $project = self::$environ->createProjectSettings(SF_TESTPROJECTCODE);
-        $project->emailSettings->fromAddress = "projectName@languageforge.org";
+        $project->emailSettings->fromAddress = "projectName@" . self::$environ->siteName;
         $project->emailSettings->fromName = "Language Forge ProjectName";
         $subject = "TestSubject";
         $smsTemplate = "";
@@ -148,7 +148,7 @@ class CommunicateTest extends TestCase
         $user = new UserModel($userId);
         $user->communicate_via = UserModel::COMMUNICATE_VIA_EMAIL;
         $project = self::$environ->createProjectSettings(SF_TESTPROJECTCODE);
-        $project->emailSettings->fromAddress = "projectName@languageforge.org";
+        $project->emailSettings->fromAddress = "projectName@" . self::$environ->siteName;
         $project->emailSettings->fromName = "Language Forge ProjectName";
         $subject = "TestSubject";
         $smsTemplate = "";
@@ -177,9 +177,7 @@ class CommunicateTest extends TestCase
         Communicate::sendVerifyEmail($user, $delivery);
 
         // What's in the delivery?
-        $expectedFrom = ["no-reply@languageforge.org" => "Language Forge"];
         $expectedTo = [$user->email => $user->name];
-        $this->assertEquals($expectedFrom, $delivery->from);
         $this->assertEquals($expectedTo, $delivery->to);
         $this->assertNotRegExp("/" . SF_TESTPROJECT . "/", $delivery->subject);
         $this->assertRegExp("/Name/", $delivery->content);
@@ -201,7 +199,6 @@ class CommunicateTest extends TestCase
 
         // What's in the delivery?
         $expectedTo = [$user->email => $user->name];
-        $this->assertRegExp("/Language Forge/", $delivery->from["no-reply@languageforge.org"]);
         $this->assertEquals($expectedTo, $delivery->to);
         $this->assertRegExp("/Language Forge/", $delivery->subject);
         $this->assertRegExp("/Name/", $delivery->content);
@@ -226,10 +223,7 @@ class CommunicateTest extends TestCase
         $expectedTo = [$toUser->email => $toUser->name];
         $this->assertEquals($expectedTo, $delivery->to);
         $this->assertRegExp("/Inviter User/", $delivery->content);
-        $this->assertRegExp(
-            "/languageforge.org\/public\/signup#!\/\?e=" . urlencode($toUser->email) . "/",
-            $delivery->content
-        );
+        $this->assertRegExp("/\/public\/signup#!\/\?e=" . urlencode($toUser->email) . "/", $delivery->content);
         $this->assertRegExp("/The Language Forge Team/", $delivery->content);
     }
 
@@ -335,7 +329,6 @@ class CommunicateTest extends TestCase
         $expectedTo = [$admin->email => $admin->name];
         $this->assertEquals($expectedTo, $delivery->to);
         $this->assertRegExp("/" . $user->name . "/", $delivery->subject);
-        $this->assertRegExp("/localhost\/app\/usermanagement/", $delivery->content);
     }
 
     public function testSendJoinRequestAccepted_PropertiesFromToBodyOk()
@@ -351,7 +344,7 @@ class CommunicateTest extends TestCase
 
         // What's in the delivery?
         $expectedTo = [$user->email => $user->name];
-        $expectedLink = "localhost\/app\/" . self::$environ->project->appName;
+        $expectedLink = "\/app\/" . self::$environ->project->appName;
         $this->assertEquals($expectedTo, $delivery->to);
         $this->assertRegExp("/" . SF_TESTPROJECT . "/", $delivery->subject);
         $this->assertRegExp("/" . SF_TESTPROJECT . "/", $delivery->content);

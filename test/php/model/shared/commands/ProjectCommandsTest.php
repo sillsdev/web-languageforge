@@ -148,7 +148,7 @@ class ProjectCommandsTest extends TestCase
         $this->assertNotEquals(ProjectRoles::MANAGER, $updatedUser->role);
         $projectUser = $sameProject->listUsers()->entries[0];
         $this->assertEquals("Existing Name", $projectUser["name"]);
-        $userProject = $updatedUser->listProjects("localhost")->entries[0];
+        $userProject = $updatedUser->listProjects()->entries[0];
         $this->assertEquals(SF_TESTPROJECT, $userProject["projectName"]);
     }
 
@@ -170,7 +170,7 @@ class ProjectCommandsTest extends TestCase
 
         // user in project once and project has one user
         $this->assertEquals(1, $sameProject->listUsers()->count);
-        $this->assertEquals(1, $sameUser->listProjects("localhost")->count);
+        $this->assertEquals(1, $sameUser->listProjects()->count);
 
         // update user role in project again
         $updatedUserId = ProjectCommands::updateUserRole($projectId, $userId);
@@ -181,7 +181,7 @@ class ProjectCommandsTest extends TestCase
 
         // user still in project once and project still has one user
         $this->assertEquals(1, $sameProject->listUsers()->count);
-        $this->assertEquals(1, $sameUser->listProjects("localhost")->count);
+        $this->assertEquals(1, $sameUser->listProjects()->count);
     }
 
     public function testRemoveUsers_NoUsers_NoThrow()
@@ -245,11 +245,11 @@ class ProjectCommandsTest extends TestCase
         $otherUser1 = new UserModel($user1Id);
 
         // each user in project, project has each user
-        $user1Project = $otherUser1->listProjects("localhost")->entries[0];
+        $user1Project = $otherUser1->listProjects()->entries[0];
         $this->assertEquals(SF_TESTPROJECT, $user1Project["projectName"]);
-        $user2Project = $otherUser1->listProjects("localhost")->entries[0];
+        $user2Project = $otherUser1->listProjects()->entries[0];
         $this->assertEquals(SF_TESTPROJECT, $user2Project["projectName"]);
-        $user3Project = $otherUser1->listProjects("localhost")->entries[0];
+        $user3Project = $otherUser1->listProjects()->entries[0];
         $this->assertEquals(SF_TESTPROJECT, $user3Project["projectName"]);
         $projectUser1 = $otherProject->listUsers()->entries[0];
         $this->assertEquals("user1name", $projectUser1["username"]);
@@ -270,9 +270,9 @@ class ProjectCommandsTest extends TestCase
 
         // project has no users, each user not in project
         $this->assertEquals(0, $sameProject->listUsers()->count);
-        $this->assertEquals(0, $sameUser1->listProjects("localhost")->count);
-        $this->assertEquals(0, $sameUser2->listProjects("localhost")->count);
-        $this->assertEquals(0, $sameUser3->listProjects("localhost")->count);
+        $this->assertEquals(0, $sameUser1->listProjects()->count);
+        $this->assertEquals(0, $sameUser2->listProjects()->count);
+        $this->assertEquals(0, $sameUser3->listProjects()->count);
     }
 
     public function testRemoveUsers_ProjectOwner_NotRemovedFromProject_Exception()
@@ -321,8 +321,8 @@ class ProjectCommandsTest extends TestCase
 
         // project still has project owner
         $this->assertEquals(1, $sameProject->listUsers()->count);
-        $this->assertEquals(0, $sameUser1->listProjects("localhost")->count);
-        $this->assertEquals(1, $sameUser2->listProjects("localhost")->count);
+        $this->assertEquals(0, $sameUser1->listProjects()->count);
+        $this->assertEquals(1, $sameUser2->listProjects()->count);
     }
 
     public function testProjectCodeExists_CodeExists_True()

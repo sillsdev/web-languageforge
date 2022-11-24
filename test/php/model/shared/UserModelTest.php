@@ -5,6 +5,7 @@ use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Shared\UserModel;
 use Api\Model\Shared\UserTypeaheadModel;
 use PHPUnit\Framework\TestCase;
+use Api\Library\Shared\UrlHelper;
 
 class UserModelTest extends TestCase
 {
@@ -71,20 +72,6 @@ class UserModelTest extends TestCase
         $this->assertEquals([], $model->entries);
     }
 
-    public function testUserTypeahead_CrossSiteNoMatchingEntries()
-    {
-        $environ = new MongoTestEnvironment();
-        $environ->clean();
-        $environ->createUser("someuser", "Some User", "user@example.com");
-
-        // Check no users exist on another website
-        $model = new UserTypeaheadModel("some", "");
-        $model->read();
-
-        $this->assertEquals(0, $model->count);
-        $this->assertEquals([], $model->entries);
-    }
-
     public function testUserTypeahead_ExcludeProject_UserExcluded()
     {
         $environ = new MongoTestEnvironment();
@@ -122,21 +109,21 @@ class UserModelTest extends TestCase
         $userId = $environ->createUser("jsmith", "joe smith", "joe@smith.com");
 
         $p1m = $environ->createProject("p1", "p1Code");
-        $p1m->appName = "sfchecks";
+        $p1m->appName = "lexicon";
         $p1m->ownerRef->id = $userId;
 
         $p1m->write();
         $p1 = $p1m->id->asString();
         $p2m = $environ->createProject("p2", "p2Code");
         $p2 = $p2m->id->asString();
-        $p2m->appName = "sfchecks";
+        $p2m->appName = "lexicon";
         $p2m->ownerRef->id = $userId;
         $p2m->write();
 
         $userModel = new UserModel($userId);
 
         // Check that list projects is empty
-        $result = $userModel->listProjects("localhost");
+        $result = $userModel->listProjects();
         $this->assertEquals(0, $result->count);
         $this->assertEquals([], $result->entries);
 
@@ -149,7 +136,7 @@ class UserModelTest extends TestCase
         $p2m->write();
         $userModel->write();
 
-        $result = $userModel->listProjects("localhost");
+        $result = $userModel->listProjects();
         $this->assertEquals(2, $result->count);
         $this->assertEquals(
             [
@@ -157,16 +144,16 @@ class UserModelTest extends TestCase
                     "projectName" => "p1",
                     "ownerRef" => $userId,
                     "id" => $p1,
-                    "appName" => "sfchecks",
-                    "siteName" => "localhost",
+                    "appName" => "lexicon",
+                    "siteName" => UrlHelper::getHostname(),
                     "projectCode" => "p1Code",
                 ],
                 [
                     "projectName" => "p2",
                     "ownerRef" => $userId,
                     "id" => $p2,
-                    "appName" => "sfchecks",
-                    "siteName" => "localhost",
+                    "appName" => "lexicon",
+                    "siteName" => UrlHelper::getHostname(),
                     "projectCode" => "p2Code",
                 ],
             ],

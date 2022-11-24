@@ -29,7 +29,7 @@ use Api\Model\Languageforge\Lexicon\Command\LexEntryDecoder;
 use Api\Model\Languageforge\Lexicon\Command\LexProjectCommands;
 use Api\Model\Languageforge\Lexicon\Command\LexUploadCommands;
 use Palaso\Utilities\FileUtilities;
-// use MongoDB\Client;
+use Api\Library\Shared\UrlHelper;
 
 use Silex\Application;
 
@@ -144,7 +144,7 @@ class TestControl
         $projectModel->projectName = $projectName;
         $projectModel->projectCode = $projectCode;
         $projectModel->appName = LexProjectModel::LEXICON_APP;
-        $projectModel->siteName = "localhost";
+        $projectModel->siteName = UrlHelper::getHostname();
         $projectModel->ownerRef = new IdReference($ownerId);
         $projectModel->addUser($ownerId, ProjectRoles::MANAGER);
         foreach ($memberUsernames as $username) {

@@ -417,7 +417,7 @@ class Sf
 
     public function activity_list_dto($filterParams = [])
     {
-        return ActivityListDto::getActivityForUser("languageforge.org", $this->userId, $filterParams);
+        return ActivityListDto::getActivityForUser($this->userId, $filterParams);
     }
 
     public function activity_list_dto_for_current_project($filterParams = [])

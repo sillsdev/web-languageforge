@@ -241,16 +241,15 @@ class UserModel extends MapperModel
     }
 
     /**
-     * @param string $site
      * @return string - projectId
      */
-    public function getCurrentProjectId($site)
+    public function getCurrentProjectId()
     {
         $projectId = "";
         if ($this->lastUsedProjectId) {
             $projectId = $this->lastUsedProjectId;
         } else {
-            $projectList = $this->listProjects($site);
+            $projectList = $this->listProjects();
             if (count($projectList->entries) > 0) {
                 $projectId = $projectList->entries[0]["id"];
             }
@@ -282,9 +281,9 @@ class UserModel extends MapperModel
         //$projectModel->users->_removeRef($this->id);
     }
 
-    public function listProjects($site)
+    public function listProjects()
     {
-        $projectList = new ProjectList_UserModel($site);
+        $projectList = new ProjectList_UserModel();
         $projectList->readUserProjects($this->id->asString());
 
         return $projectList;

@@ -85,15 +85,14 @@ class ActivityListDto
     }
 
     /**
-     * @param string $site
      * @param string $userId
      * @param array $filterParams
      * @return array - the DTO array
      * @throws \Exception
      */
-    public static function getActivityForUser($site, $userId, $filterParams = [])
+    public static function getActivityForUser($userId, $filterParams = [])
     {
-        $projectList = new ProjectList_UserModel($site);
+        $projectList = new ProjectList_UserModel();
         $projectList->readUserProjects($userId);
         $activity = [];
         $unreadItems = [];

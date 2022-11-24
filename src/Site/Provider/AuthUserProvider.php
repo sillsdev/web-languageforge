@@ -12,6 +12,7 @@ use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Api\Library\Shared\UrlHelper;
 
 class AuthUserProvider implements UserProviderInterface
 {
@@ -29,9 +30,7 @@ class AuthUserProvider implements UserProviderInterface
         }
         if (!$user->active) {
             // TODO: Get this error msg to propogate to Auth::setupAuthView
-            throw new UsernameNotFoundException(
-                sprintf('Username "%s" access denied on "%s".', $usernameOrEmail, "languageforge.org")
-            );
+            throw new UsernameNotFoundException(sprintf('Access denied for username "%s".', $usernameOrEmail));
         }
         $roles = AuthUserProvider::getSiteRoles($user);
 
@@ -59,12 +58,13 @@ class AuthUserProvider implements UserProviderInterface
     public static function getSiteRoles(UserModel $user)
     {
         $roles = ["ROLE_" . $user->role];
+        $hostname = UrlHelper::getHostname();
         if (
             $user->siteRole and
-            $user->siteRole->offsetExists("languageforge.org") and
-            $user->siteRole["languageforge.org"] !== SiteRoles::NONE
+            $user->siteRole->offsetExists($hostname) and
+            $user->siteRole[$hostname] !== SiteRoles::NONE
         ) {
-            $roles[] = "ROLE_SITE_" . $user->siteRole["languageforge.org"];
+            $roles[] = "ROLE_SITE_" . $user->siteRole[$hostname];
         }
         return $roles;
     }

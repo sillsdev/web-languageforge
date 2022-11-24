@@ -145,7 +145,7 @@ class Base
             } else {
                 $this->data["smallAvatarUrl"] = "/Site/views/shared/image/avatar/" . $this->_user->avatar_ref;
             }
-            $projects = $this->_user->listProjects("languageforge.org");
+            $projects = $this->_user->listProjects();
             $this->data["projects_count"] = $projects->count;
             $this->data["projects"] = $projects->entries;
         }

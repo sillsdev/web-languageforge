@@ -9,6 +9,7 @@ use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Shared\UserModel;
 use Api\Model\Shared\UserModelWithPassword;
 use PHPUnit\Framework\TestCase;
+use Api\Library\Shared\UrlHelper;
 
 class MockUserCommandsDelivery implements DeliveryInterface
 {
@@ -41,8 +42,6 @@ class UserCommandsTest extends TestCase
 
     /** @var mixed[] Data storage between tests */
     private static $save;
-
-    const CROSS_SITE_DOMAIN = "languageforge.org";
 
     public static function setUpBeforeClass(): void
     {
@@ -383,7 +382,7 @@ class UserCommandsTest extends TestCase
         $this->assertEquals(7, strlen($dto["password"]));
         $projectUser = $sameProject->listUsers()->entries[0];
         $this->assertEquals("username", $projectUser["username"]);
-        $userProject = $user->listProjects("localhost")->entries[0];
+        $userProject = $user->listProjects()->entries[0];
         $this->assertEquals(SF_TESTPROJECT, $userProject["projectName"]);
     }
 
@@ -428,7 +427,7 @@ class UserCommandsTest extends TestCase
         $user = new UserModel();
         $user->readByEmail($params["email"]);
         $this->assertEquals($params["email"], $user->email);
-        $this->assertEquals(0, $user->listProjects("localhost")->count);
+        $this->assertEquals(0, $user->listProjects()->count);
     }
 
     /** @throws Exception */
@@ -605,7 +604,7 @@ class UserCommandsTest extends TestCase
 
         // What's in the delivery?
         $toUser = new UserModel($toUserId);
-        $senderEmail = "no-reply@" . "localhost";
+        $senderEmail = "no-reply@" . UrlHelper::getHostname();
         $expectedTo = [$toUser->emailPending => $toUser->name];
         $this->assertEquals($expectedTo, $delivery->to);
         $this->assertRegExp("/Inviting Name/", $delivery->content);
@@ -652,7 +651,7 @@ class UserCommandsTest extends TestCase
 
         // What's in the delivery?
         $toUser = new UserModel($toUser2Id);
-        $senderEmail = "no-reply@" . "localhost";
+        $senderEmail = "no-reply@" . UrlHelper::getHostname();
         $expectedTo = [$toUser->emailPending => $toUser->name];
         $this->assertEquals($toUser1Id, $toUser2Id);
         $this->assertEquals($expectedTo, $delivery->to);

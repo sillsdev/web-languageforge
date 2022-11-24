@@ -48,7 +48,7 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
         $user->last_login = time();
         $user->write();
 
-        $projectId = $user->getCurrentProjectId("languageforge.org");
+        $projectId = $user->getCurrentProjectId();
 
         // redirect to page before the login screen was presented, or to the default project for this user
         $referer = $this->determineTargetUrl($request);

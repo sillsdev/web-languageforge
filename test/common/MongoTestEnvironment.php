@@ -14,13 +14,14 @@ use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Shared\Rights\SiteRoles;
 use Api\Model\Shared\UserModel;
 use Palaso\Utilities\FileUtilities;
+use Api\Library\Shared\UrlHelper;
 
 class MongoTestEnvironment
 {
     public function __construct()
     {
         $this->db = MongoStore::connect(DATABASE);
-        $this->siteName = "localhost";
+        $this->siteName = UrlHelper::getHostname();
         if (!isset($this->uploadFilePaths)) {
             $this->uploadFilePaths = [];
         }
@@ -29,7 +30,7 @@ class MongoTestEnvironment
     /** @var MongoDB */
     private $db;
 
-    protected $siteName;
+    public $siteName;
 
     /** @var array Local store of 'uploaded' filepaths */
     protected $uploadFilePaths;
@@ -382,7 +383,7 @@ class SemDomMongoTestEnvironment extends MongoTestEnvironment
     public function __construct()
     {
         $this->semdomVersion = self::TESTVERSION;
-        parent::__construct("languageforge.org");
+        parent::__construct();
     }
 
     const TESTVERSION = 1000;

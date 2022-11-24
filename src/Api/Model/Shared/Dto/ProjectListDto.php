@@ -21,7 +21,7 @@ class ProjectListDto
         $user = new UserModel($userId);
         $canListAllProjects = $user->hasRight(Domain::PROJECTS + Operation::VIEW);
 
-        $projectList = new ProjectList_UserModel("languageforge.org");
+        $projectList = new ProjectList_UserModel();
         if ($canListAllProjects) {
             $projectList->readAll($isArchivedList);
         } else {

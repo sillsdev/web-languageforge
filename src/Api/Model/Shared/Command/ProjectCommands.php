@@ -17,6 +17,7 @@ use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Shared\UserModel;
 use Palaso\Utilities\CodeGuard;
+use Api\Library\Shared\UrlHelper;
 
 class ProjectCommands
 {
@@ -39,7 +40,7 @@ class ProjectCommands
         $project->projectName = $projectName;
         $project->projectCode = $projectCode;
         $project->appName = $appName;
-        $project->siteName = "languageforge.org";
+        $project->siteName = UrlHelper::getHostname();
         $project->ownerRef->id = $userId;
         $project->addUser($userId, ProjectRoles::MANAGER);
         $projectId = $project->write();
@@ -406,7 +407,7 @@ class ProjectCommands
 
         $project->write();
 
-        return "https://languageforge.org/invite/$newAuthToken";
+        return UrlHelper::baseUrl() . "/invite/$newAuthToken";
     }
 
     /**
@@ -421,7 +422,7 @@ class ProjectCommands
         if (empty($project->inviteToken->token)) {
             return "";
         } else {
-            return "https://languageforge.org/invite/" . $project->inviteToken->token;
+            return UrlHelper::baseUrl() . "/invite/" . $project->inviteToken->token;
         }
     }
 

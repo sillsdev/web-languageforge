@@ -7,6 +7,7 @@ use Api\Model\Shared\Mapper\JsonEncoder;
 use Api\Model\Shared\Mapper\ReferenceList;
 use Api\Model\Shared\ProjectModel;
 use Palaso\Utilities\CodeGuard;
+use Api\Library\Shared\UrlHelper;
 
 class UserProfileEncoder extends JsonEncoder
 {
@@ -20,7 +21,7 @@ class UserProfileEncoder extends JsonEncoder
         if ($key != "projects") {
             return parent::encodeReferenceList($key, $model);
         }
-        $domain = "languageforge.org";
+        $domain = UrlHelper::getHostname();
         $result = array_map(function ($id) use ($domain) {
             CodeGuard::checkTypeAndThrow($id, "Api\Model\Shared\Mapper\Id");
             /** @var Id $id */

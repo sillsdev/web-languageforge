@@ -3,6 +3,7 @@
 namespace Api\Model\Shared\Rights;
 
 use Api\Model\Shared\Mapper\MapOf;
+use Api\Library\Shared\UrlHelper;
 
 class SiteRoles extends RolesBase
 {
@@ -47,8 +48,9 @@ class SiteRoles extends RolesBase
      */
     public static function getRightsArray($roleMap)
     {
-        if ($roleMap->offsetExists("languageforge.org")) {
-            return self::_getRightsArray(self::$_rights, $roleMap["languageforge.org"]);
+        $hostname = UrlHelper::getHostname();
+        if ($roleMap->offsetExists($hostname)) {
+            return self::_getRightsArray(self::$_rights, $roleMap[$hostname]);
         }
 
         return [];
@@ -63,8 +65,9 @@ class SiteRoles extends RolesBase
      */
     public static function hasRight($roleMap, $right)
     {
-        if ($roleMap->offsetExists("languageforge.org")) {
-            return self::_hasRight(self::$_rights, $roleMap["languageforge.org"], $right);
+        $hostname = UrlHelper::getHostname();
+        if ($roleMap->offsetExists($hostname)) {
+            return self::_hasRight(self::$_rights, $roleMap[$hostname], $right);
         }
 
         return false;
