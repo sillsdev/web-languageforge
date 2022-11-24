@@ -31,9 +31,9 @@ class ActivityListDto
     /**
      * @return array
      */
-    public static function getActivityTypes($site)
+    public static function getActivityTypes()
     {
-        return ActivityModel::getActivityTypesForSiteBase($site->base);
+        return ActivityModel::getActivityTypesForSiteBase();
     }
 
     /**

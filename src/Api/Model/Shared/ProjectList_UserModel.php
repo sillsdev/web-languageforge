@@ -11,9 +11,6 @@ use Api\Library\Shared\UrlHelper;
  */
 class ProjectList_UserModel extends MapperListModel
 {
-    /**
-     * @param string $site
-     */
     public function __construct()
     {
         $this->_site = UrlHelper::getHostname();

@@ -122,7 +122,6 @@ class ActivityModel extends MapperModel
     }
 
     /**
-     * @param string $siteBase
      * @return array
      */
     public static function getActivityTypesForSiteBase()
@@ -146,7 +145,6 @@ class ActivityModel extends MapperModel
     }
 
     /**
-     * @param string $siteBase
      * @return array
      */
     public static function getContentTypesForSiteBase()

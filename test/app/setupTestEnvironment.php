@@ -25,7 +25,6 @@ if (count($argv) > 1) {
     $hostname = $argv[1];
 }
 $_SERVER["HTTP_HOST"] = $hostname;
-$site = languageforge;
 
 // start with a fresh database
 MongoStore::dropAllCollections(DATABASE);
