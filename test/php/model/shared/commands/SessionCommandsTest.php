@@ -58,9 +58,6 @@ class SessionCommandsTest extends TestCase
         $this->assertTrue(is_string($data["userId"]));
         $this->assertEquals($environ->userId, $data["userId"]);
 
-        // Session data should also contain "site", a string...
-        $this->assertArrayHasKey("baseSite", $data);
-        $this->assertTrue(is_string($data["baseSite"]));
         // ... and "fileSizeMax", an integer
         $this->assertArrayHasKey("fileSizeMax", $data);
         $this->assertTrue(is_integer($data["fileSizeMax"]));

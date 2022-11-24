@@ -17,7 +17,6 @@ class SessionCommands
     public static function getSessionData($projectId, $userId, $mockFilename = null)
     {
         $sessionData = [];
-        $sessionData["baseSite"] = languageforge;
 
         // VERSION is not defined when running tests
         if (defined("VERSION")) {

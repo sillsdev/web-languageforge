@@ -67,7 +67,6 @@ describe('Bellows E2E Page Traversal', () => {
     await projectsPage.get();
     await projectsPage.projectsList.count();
     await projectsPage.projectNames.count();
-    await projectsPage.projectTypes.count();
     await projectsPage.createBtn.click();
   });
 

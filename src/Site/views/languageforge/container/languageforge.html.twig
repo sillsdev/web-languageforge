@@ -32,20 +32,8 @@
                             <i class="fa fa-bars"></i>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu id="myProjectDropdownMenu" aria-labelledby="myProjectDropdown" style="max-height: 80vh; overflow-y: auto">
-                            {% verbatim %}
-                            <div data-ng-switch="$ctrl.projectTypesBySite().length" data-ng-show="$ctrl.rights.canCreateProject">
-                                <div data-ng-switch-when="1">
-                                    <a class="dropdown-item" data-ng-href="/app/{{$ctrl.projectTypesBySite()[0]}}/new-project">
-                                        <b>Start or Join a New Project</b></a>
-                                </div>
-                                <div data-ng-switch-default data-ng-repeat="appName in $ctrl.projectTypesBySite()">
-                                    <a class="dropdown-item" data-ng-href="/app/{{appName}}/new-project">
-                                        <img height="24px" data-ng-src="/Site/views/{{$ctrl.siteName}}/image/{{appName}}-newProjectBadge.png" />
-                                        <b>Start a <span class="notranslate">{{$ctrl.projectTypeNames[appName]}}</span> project</b>
-                                    </a>
-                                </div>
-                            </div>
-                            {% endverbatim %}
+                            <a class="dropdown-item" data-ng-href="/app/lexicon/new-project">
+                                <b>Start or Join a New Project</b></a>
                             {% if projects|length > 10 %}
                                 <a class="dropdown-item" href="/app/projects"><b>List All Projects</b></a>
                                 <div class="dropdown-divider"></div>
