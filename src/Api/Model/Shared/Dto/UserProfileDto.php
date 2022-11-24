@@ -2,7 +2,6 @@
 
 namespace Api\Model\Shared\Dto;
 
-use Api\Library\Shared\Website;
 use Api\Model\Shared\UserModel;
 
 class UserProfileDto
@@ -10,15 +9,14 @@ class UserProfileDto
     /**
      *
      * @param string $userId
-     * @param Website $website
      * @returns array - the DTO array
      */
-    public static function encode($userId, $website)
+    public static function encode($userId)
     {
         $dto = [];
 
         $userModel = new UserModel($userId);
-        $userProfile = UserProfileEncoder::encodeModel($userModel, $website);
+        $userProfile = UserProfileEncoder::encode($userModel);
         $dto["projectsSettings"] = $userProfile["projects"];
 
         unset($userProfile["projects"]);

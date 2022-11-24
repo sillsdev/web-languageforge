@@ -4,7 +4,6 @@ namespace Api\Model\Shared\Command;
 
 use Api\Library\Shared\Palaso\Exception\ResourceNotAvailableException;
 use Api\Library\Shared\Palaso\Exception\UserUnauthorizedException;
-use Api\Library\Shared\Website;
 use Api\Model\Languageforge\Lexicon\Command\SendReceiveCommands;
 use Api\Model\Shared\Communicate\EmailSettings;
 use Api\Model\Shared\Communicate\SmsSettings;
@@ -18,6 +17,7 @@ use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Shared\UserModel;
 use Palaso\Utilities\CodeGuard;
+use Api\Library\Shared\UrlHelper;
 
 class ProjectCommands
 {
@@ -27,11 +27,10 @@ class ProjectCommands
      * @param string $projectCode
      * @param string $appName
      * @param string $userId
-     * @param Website $website
      * @param array $srProject send receive project data
      * @return string - projectId
      */
-    public static function createProject($projectName, $projectCode, $appName, $userId, $website, $srProject = null)
+    public static function createProject($projectName, $projectCode, $appName, $userId, $srProject = null)
     {
         // Check for unique project code
         if (ProjectCommands::projectCodeExists($projectCode)) {
@@ -41,7 +40,7 @@ class ProjectCommands
         $project->projectName = $projectName;
         $project->projectCode = $projectCode;
         $project->appName = $appName;
-        $project->siteName = $website->domain;
+        $project->siteName = UrlHelper::getHostname();
         $project->ownerRef->id = $userId;
         $project->addUser($userId, ProjectRoles::MANAGER);
         $projectId = $project->write();
@@ -408,7 +407,7 @@ class ProjectCommands
 
         $project->write();
 
-        return $project->website()->baseUrl() . "/invite/" . $newAuthToken;
+        return UrlHelper::baseUrl() . "/invite/$newAuthToken";
     }
 
     /**
@@ -423,7 +422,7 @@ class ProjectCommands
         if (empty($project->inviteToken->token)) {
             return "";
         } else {
-            return $project->website()->baseUrl() . "/invite/" . $project->inviteToken->token;
+            return UrlHelper::baseUrl() . "/invite/" . $project->inviteToken->token;
         }
     }
 

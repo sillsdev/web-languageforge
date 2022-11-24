@@ -1827,9 +1827,7 @@ EOD;
         $skipSameModTime = false;
         LiftImport::get()->merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
         $entryList = new LexEntryListModel($project);
-        $entryList->read();
-
-        // Input systems should be set from LIFT file: English and French but NOT Thai
+        $entryList->read(); // Input systems should be set from LIFT file: English and French but NOT Thai
         $this->assertEquals(2, $project->inputSystems->count());
         $this->assertArrayHasKey("en", $project->inputSystems);
         $this->assertArrayHasKey("fr", $project->inputSystems);
@@ -1846,9 +1844,7 @@ EOD;
         $skipSameModTime = false;
         LiftImport::get()->merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
         $entryList = new LexEntryListModel($project);
-        $entryList->read();
-
-        // Entry should have both glosses in one sense
+        $entryList->read(); // Entry should have both glosses in one sense
         $this->assertEquals(1, $entryList->count);
         $entry0 = $entryList->entries[0];
         $this->assertEquals("a", $entry0["lexeme"]["fr"]["value"]);

@@ -4,7 +4,6 @@ namespace Api\Library\Shared\Communicate;
 
 use Api\Library\Shared\Communicate\Sms\SmsModel;
 use Api\Library\Shared\Communicate\Sms\SmsQueue;
-use Api\Library\Shared\Website;
 use Api\Library\Shared\UrlHelper;
 use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\ProjectSettingsModel;
@@ -127,70 +126,63 @@ class Communicate
     /**
      * Send an email to validate a user when they sign up.
      * @param UserModel $userModel
-     * @param Website $website
      * @param DeliveryInterface $delivery
      */
-    public static function sendVerifyEmail($userModel, $website, DeliveryInterface $delivery = null)
+    public static function sendVerifyEmail($userModel, DeliveryInterface $delivery = null)
     {
         $userModel->setValidation(7);
         $userModel->write();
 
         $to = [$userModel->email => $userModel->name];
-        $subject = $website->name . " account signup validation";
+        $subject = "Language Forge account signup validation";
         $vars = [
             "user" => $userModel,
             "link" => UrlHelper::baseUrl() . "/validate/" . $userModel->validationKey,
-            "website" => $website,
         ];
 
-        self::sendTemplateEmail($to, $subject, "SignupValidate", $vars, $website, $delivery);
+        self::sendTemplateEmail($to, $subject, "SignupValidate", $vars, $delivery);
     }
 
     /**
      * @param UserModel $userModel
-     * @param Website $website
      * @param DeliveryInterface|null $delivery
      */
-    public static function sendWelcomeToWebsite($userModel, $website, DeliveryInterface $delivery = null)
+    public static function sendWelcomeToWebsite($userModel, DeliveryInterface $delivery = null)
     {
         $to = [$userModel->email => $userModel->name];
-        $subject = "Welcome to " . $website->name;
+        $subject = "Welcome to Language Forge";
         $vars = [
             "user" => $userModel,
             "link" => UrlHelper::baseUrl(),
-            "website" => $website,
         ];
 
-        self::sendTemplateEmail($to, $subject, "WelcomeToWebsite", $vars, $website, $delivery);
+        self::sendTemplateEmail($to, $subject, "WelcomeToWebsite", $vars, $delivery);
     }
 
     /**
      * @param UserModel $inviterUserModel
      * @param UserModel $toUserModel
      * @param ProjectModel $projectModel
-     * @param Website $website
      * @param DeliveryInterface $delivery
      */
     public static function sendInvite(
         $inviterUserModel,
         $toUserModel,
         $projectModel,
-        $website,
         DeliveryInterface $delivery = null
     ) {
         $toUserModel->setValidation(7);
         $toUserModel->write();
 
         $to = [$toUserModel->email => $toUserModel->name];
-        $subject = $website->name . " invitation";
+        $subject = "Language Forge invitation";
         $vars = [
             "user" => $inviterUserModel,
             "project" => $projectModel,
-            "link" => self::calculateSignupUrl($website, $toUserModel->email),
-            "website" => $website,
+            "link" => self::calculateSignupUrl($toUserModel->email),
         ];
 
-        self::sendTemplateEmail($to, $subject, "InvitationValidate", $vars, $website, $delivery);
+        self::sendTemplateEmail($to, $subject, "InvitationValidate", $vars, $delivery);
     }
 
     /**
@@ -198,7 +190,6 @@ class Communicate
      * @param string $newUserName
      * @param string $newUserPassword
      * @param ProjectModel $project
-     * @param Website $website
      * @param DeliveryInterface $delivery
      */
     public static function sendNewUserInProject(
@@ -206,20 +197,18 @@ class Communicate
         $newUserName,
         $newUserPassword,
         $project,
-        $website,
         DeliveryInterface $delivery = null
     ) {
         $to = [$toUserModel->email => $toUserModel->name];
-        $subject = $website->name . " new user login for project " . $project->projectName;
+        $subject = "Language Forge new user login for project " . $project->projectName;
         $vars = [
             "user" => $toUserModel,
             "newUserName" => $newUserName,
             "newUserPassword" => $newUserPassword,
-            "website" => $website,
             "project" => $project,
         ];
 
-        self::sendTemplateEmail($to, $subject, "NewUserInProject", $vars, $website, $delivery);
+        self::sendTemplateEmail($to, $subject, "NewUserInProject", $vars, $delivery);
     }
 
     /**
@@ -227,84 +216,73 @@ class Communicate
      * @param UserModel $inviterUserModel
      * @param UserModel $toUserModel
      * @param ProjectModel $projectModel
-     * @param Website $website
      * @param DeliveryInterface $delivery
      */
     public static function sendAddedToProject(
         $inviterUserModel,
         $toUserModel,
         $projectModel,
-        $website,
         DeliveryInterface $delivery = null
     ) {
         $to = [$toUserModel->email => $toUserModel->name];
-        $subject = 'You\'ve been added to the project ' . $projectModel->projectName . " on " . $website->name;
+        $subject = 'You\'ve been added to the project ' . $projectModel->projectName . " on Language Forge";
         $vars = [
             "toUser" => $toUserModel,
             "inviterUser" => $inviterUserModel,
+            "link" => UrlHelper::baseUrl() . "/app/lexicon/" . $projectModel->id->asString(),
             "project" => $projectModel,
-            "website" => $website,
         ];
 
-        self::sendTemplateEmail($to, $subject, "AddedToProject", $vars, $website, $delivery);
+        self::sendTemplateEmail($to, $subject, "AddedToProject", $vars, $delivery);
     }
 
     /**
      * @param UserModel $user
-     * @param Website $website
      * @param DeliveryInterface $delivery
      */
-    public static function sendForgotPasswordVerification($user, $website, DeliveryInterface $delivery = null)
+    public static function sendForgotPasswordVerification($user, DeliveryInterface $delivery = null)
     {
         $user->setForgotPassword(7);
         $user->write();
 
         $to = [$user->email => $user->name];
-        $subject = $website->name . " Forgotten Password Verification";
+        $subject = "Language Forge Forgotten Password Verification";
         $vars = [
             "user" => $user,
             "link" => UrlHelper::baseUrl() . "/auth/reset_password/" . $user->resetPasswordKey,
-            "website" => $website,
         ];
 
-        self::sendTemplateEmail($to, $subject, "ForgotPasswordVerification", $vars, $website, $delivery);
+        self::sendTemplateEmail($to, $subject, "ForgotPasswordVerification", $vars, $delivery);
     }
 
     /**
      * @param UserModel $user
      * @param ProjectModel $projectModel
-     * @param Website $website
      * @param DeliveryInterface $delivery
      */
-    public static function sendJoinRequestConfirmation(
-        $user,
-        $projectModel,
-        $website,
-        DeliveryInterface $delivery = null
-    ) {
+    public static function sendJoinRequestConfirmation($user, $projectModel, DeliveryInterface $delivery = null)
+    {
         $user->setValidation(7);
         $user->write();
 
         $to = [$user->email => $user->name];
         $subject =
-            'You\'ve submitted a join request to the project ' . $projectModel->projectName . " on " . $website->name;
+            'You\'ve submitted a join request to the project ' . $projectModel->projectName . " on Language Forge";
         $vars = [
             "user" => $user,
             "project" => $projectModel,
-            "website" => $website,
         ];
 
-        self::sendTemplateEmail($to, $subject, "JoinRequestConfirmation", $vars, $website, $delivery);
+        self::sendTemplateEmail($to, $subject, "JoinRequestConfirmation", $vars, $delivery);
     }
 
     /**
      * @param UserModel $user
      * @param UserModel $admin
      * @param ProjectModel $projectModel
-     * @param Website $website
      * @param DeliveryInterface $delivery
      */
-    public static function sendJoinRequest($user, $admin, $projectModel, $website, DeliveryInterface $delivery = null)
+    public static function sendJoinRequest($user, $admin, $projectModel, DeliveryInterface $delivery = null)
     {
         $user->setValidation(7);
         $user->write();
@@ -316,46 +294,37 @@ class Communicate
             "admin" => $admin,
             "project" => $projectModel,
             "link" => UrlHelper::baseUrl() . "/app/usermanagement/" . $projectModel->id->asString() . "#!/joinRequests",
-            "website" => $website,
         ];
 
-        self::sendTemplateEmail($to, $subject, "JoinRequest", $vars, $website, $delivery);
+        self::sendTemplateEmail($to, $subject, "JoinRequest", $vars, $delivery);
     }
 
     /**
      * @param UserModel $user
      * @param ProjectModel $projectModel
-     * @param Website $website
      * @param DeliveryInterface $delivery
      */
-    public static function sendJoinRequestAccepted($user, $projectModel, $website, DeliveryInterface $delivery = null)
+    public static function sendJoinRequestAccepted($user, $projectModel, DeliveryInterface $delivery = null)
     {
         $to = [$user->email => $user->name];
         $subject =
-            'You\'ve submitted a join request to the project ' . $projectModel->projectName . " on " . $website->name;
+            'You\'ve submitted a join request to the project ' . $projectModel->projectName . " on Language Forge";
         $vars = [
             "user" => $user,
             "project" => $projectModel,
             "link" => UrlHelper::baseUrl() . "/app/{$projectModel->appName}/" . $projectModel->id->asString(),
-            "website" => $website,
         ];
 
-        self::sendTemplateEmail($to, $subject, "JoinRequestAccepted", $vars, $website, $delivery);
+        self::sendTemplateEmail($to, $subject, "JoinRequestAccepted", $vars, $delivery);
     }
 
-    private static function sendTemplateEmail(
-        $to,
-        $subject,
-        $templateName,
-        $vars,
-        $website,
-        DeliveryInterface $delivery = null
-    ) {
-        $from = ["no-reply@languageforge.org" => "Language Forge"];
+    private static function sendTemplateEmail($to, $subject, $templateName, $vars, DeliveryInterface $delivery = null)
+    {
+        $from = ["no-reply@" . UrlHelper::getHostname() => "Language Forge"];
 
-        $templatePath = $website->base . "/theme/" . $website->theme . "/email/en";
+        $templatePath = "languageforge/theme/default/email/en";
         if (!file_exists(APPPATH . "Site/views/" . "$templatePath/$templateName.twig")) {
-            $templatePath = $website->base . "/theme/default/email/en";
+            $templatePath = "languageforge/theme/default/email/en";
             if (!file_exists(APPPATH . "Site/views/" . "$templatePath/$templateName.twig")) {
                 $templatePath = "shared/email/en";
             }
@@ -374,18 +343,13 @@ class Communicate
     }
 
     /**
-     * @param Website $website
      * @param string $email
      * @param string $name
      * @param string $avatar
      * @return string
      */
-    public static function calculateSignupUrl(
-        Website $website,
-        string $email,
-        string $name = null,
-        string $avatar = null
-    ): string {
+    public static function calculateSignupUrl(string $email, string $name = null, string $avatar = null): string
+    {
         $url = UrlHelper::baseUrl() . "/public/signup#!/?e=" . urlencode($email);
         if ($name) {
             $url = $url . "&n=" . urlencode($name);

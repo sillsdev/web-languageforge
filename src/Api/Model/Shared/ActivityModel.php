@@ -2,7 +2,6 @@
 
 namespace Api\Model\Shared;
 
-use Api\Library\Shared\Website;
 use Api\Model\Shared\Mapper\Id;
 use Api\Model\Shared\Mapper\IdReference;
 use Api\Model\Shared\Mapper\MapperModel;
@@ -123,54 +122,42 @@ class ActivityModel extends MapperModel
     }
 
     /**
-     * @param string $siteBase
      * @return array
      */
-    public static function getActivityTypesForSiteBase($siteBase)
+    public static function getActivityTypesForSiteBase()
     {
-        switch ($siteBase) {
-            case Website::LANGUAGEFORGE:
-                return [
-                    self::ADD_USER_TO_PROJECT,
-                    self::ADD_ENTRY,
-                    self::UPDATE_ENTRY,
-                    self::DELETE_ENTRY,
-                    self::ADD_LEX_COMMENT,
-                    self::UPDATE_LEX_COMMENT,
-                    self::DELETE_LEX_COMMENT,
-                    self::UPDATE_LEX_COMMENT_STATUS,
-                    self::ADD_LEX_REPLY,
-                    self::UPDATE_LEX_REPLY,
-                    self::DELETE_LEX_REPLY,
-                    self::LEX_COMMENT_INCREASE_SCORE,
-                    self::LEX_COMMENT_DECREASE_SCORE,
-                    self::UNKNOWN,
-                ];
-            default:
-                return [];
-        }
+        return [
+            self::ADD_USER_TO_PROJECT,
+            self::ADD_ENTRY,
+            self::UPDATE_ENTRY,
+            self::DELETE_ENTRY,
+            self::ADD_LEX_COMMENT,
+            self::UPDATE_LEX_COMMENT,
+            self::DELETE_LEX_COMMENT,
+            self::UPDATE_LEX_COMMENT_STATUS,
+            self::ADD_LEX_REPLY,
+            self::UPDATE_LEX_REPLY,
+            self::DELETE_LEX_REPLY,
+            self::LEX_COMMENT_INCREASE_SCORE,
+            self::LEX_COMMENT_DECREASE_SCORE,
+            self::UNKNOWN,
+        ];
     }
 
     /**
-     * @param string $siteBase
      * @return array
      */
-    public static function getContentTypesForSiteBase($siteBase)
+    public static function getContentTypesForSiteBase()
     {
-        switch ($siteBase) {
-            case Website::LANGUAGEFORGE:
-                return [
-                    self::PROJECT,
-                    self::LEX_COMMENT,
-                    self::LEX_COMMENT_CONTEXT,
-                    self::LEX_COMMENT_STATUS,
-                    self::LEX_REPLY,
-                    self::USER,
-                    self::USER_RELATED,
-                    self::ENTRY,
-                ];
-            default:
-                return [];
-        }
+        return [
+            self::PROJECT,
+            self::LEX_COMMENT,
+            self::LEX_COMMENT_CONTEXT,
+            self::LEX_COMMENT_STATUS,
+            self::LEX_REPLY,
+            self::USER,
+            self::USER_RELATED,
+            self::ENTRY,
+        ];
     }
 }

@@ -17,12 +17,12 @@ use Api\Model\Shared\UserGenericVoteModel;
 
 class LexCommentCommands
 {
-    public static function updateComment($projectId, $userId, $website, $params)
+    public static function updateComment($projectId, $userId, $params)
     {
         CodeGuard::checkTypeAndThrow($params, "array");
         $project = new LexProjectModel($projectId);
         ProjectCommands::checkIfArchivedAndThrow($project);
-        $rightsHelper = new RightsHelper($userId, $project, $website);
+        $rightsHelper = new RightsHelper($userId, $project);
         $isNew = $params["id"] == "";
         if ($isNew) {
             $comment = new LexCommentModel($project);
@@ -55,14 +55,14 @@ class LexCommentCommands
         return $comment->write();
     }
 
-    public static function updateReply($projectId, $userId, $website, $commentId, $params)
+    public static function updateReply($projectId, $userId, $commentId, $params)
     {
         CodeGuard::checkTypeAndThrow($params, "array");
         CodeGuard::checkEmptyAndThrow($commentId, "commentId in updateReply()");
         $project = new LexProjectModel($projectId);
         ProjectCommands::checkIfArchivedAndThrow($project);
         $comment = new LexCommentModel($project, $commentId);
-        $rightsHelper = new RightsHelper($userId, $project, $website);
+        $rightsHelper = new RightsHelper($userId, $project);
         $replyId = $params["id"];
         if (array_key_exists("id", $params) && $replyId != "") {
             $reply = $comment->getReply($replyId);
@@ -146,12 +146,11 @@ class LexCommentCommands
     /**
      * @param  string $projectId
      * @param  string $userId
-     * @param  \Api\Library\Shared\Website $website
      * @param  string $commentId
      * @throws \Exception
      * @return string $commentId
      */
-    public static function deleteComment($projectId, $userId, $website, $commentId)
+    public static function deleteComment($projectId, $userId, $commentId)
     {
         // user must have DELETE_OWN privilege just to access this method
 
@@ -160,7 +159,7 @@ class LexCommentCommands
         $comment = new LexCommentModel($project, $commentId);
         if ($comment->authorInfo->createdByUserRef->asString() != $userId) {
             // if the userId is different from the author, throw if user does not have DELETE privilege
-            $rh = new RightsHelper($userId, $project, $website);
+            $rh = new RightsHelper($userId, $project);
             if (!$rh->userHasProjectRight(Domain::COMMENTS + Operation::DELETE)) {
                 throw new \Exception("No permission to delete other people's comments!");
             }
@@ -176,13 +175,12 @@ class LexCommentCommands
     /**
      * @param  string $projectId
      * @param  string $userId
-     * @param  \Api\Library\Shared\Website $website
      * @param  string $commentId
      * @param  string $replyId
      * @throws \Exception
      * @return string $commentId
      */
-    public static function deleteReply($projectId, $userId, $website, $commentId, $replyId)
+    public static function deleteReply($projectId, $userId, $commentId, $replyId)
     {
         // if the userId is different from the author, throw if user does not have DELETE privilege
         $project = new LexProjectModel($projectId);
@@ -191,7 +189,7 @@ class LexCommentCommands
         $reply = $comment->getReply($replyId);
         if ($reply->authorInfo->createdByUserRef->asString() != $userId) {
             // if the userId is different from the author, throw if user does not have DELETE privilege
-            $rh = new RightsHelper($userId, $project, $website);
+            $rh = new RightsHelper($userId, $project);
             if (!$rh->userHasProjectRight(Domain::COMMENTS + Operation::DELETE)) {
                 throw new \Exception("No permission to delete other people's comment replies!");
             }

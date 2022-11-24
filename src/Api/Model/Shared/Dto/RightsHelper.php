@@ -2,7 +2,6 @@
 
 namespace Api\Model\Shared\Dto;
 
-use Api\Library\Shared\Website;
 use Api\Model\Shared\Command\LdapiCommands;
 use Api\Model\Shared\Rights\Domain;
 use Api\Model\Shared\Rights\Operation;
@@ -18,9 +17,6 @@ class RightsHelper
 
     /** @var ProjectModel */
     private $_projectModel;
-
-    /** @var Website */
-    private $_website;
 
     /**
      * @param UserModel $userModel
@@ -64,13 +60,11 @@ class RightsHelper
     /**
      * @param string $userId
      * @param ProjectModel $projectModel
-     * @param Website $website
      */
-    public function __construct($userId, $projectModel, $website)
+    public function __construct($userId, $projectModel)
     {
         $this->_userId = $userId;
         $this->_projectModel = $projectModel;
-        $this->_website = $website;
     }
 
     /**

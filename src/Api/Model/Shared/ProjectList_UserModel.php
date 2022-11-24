@@ -3,6 +3,7 @@
 namespace Api\Model\Shared;
 
 use Api\Model\Shared\Mapper\MapperListModel;
+use Api\Library\Shared\UrlHelper;
 
 /**
  * List of projects of which a user is a member
@@ -10,12 +11,9 @@ use Api\Model\Shared\Mapper\MapperListModel;
  */
 class ProjectList_UserModel extends MapperListModel
 {
-    /**
-     * @param string $site
-     */
-    public function __construct($site)
+    public function __construct()
     {
-        $this->_site = $site;
+        $this->_site = UrlHelper::getHostname();
         parent::__construct(ProjectModelMongoMapper::instance());
     }
 

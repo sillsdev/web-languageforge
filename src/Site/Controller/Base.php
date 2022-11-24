@@ -4,7 +4,6 @@ namespace Site\Controller;
 
 use Api\Library\Shared\Palaso\StringUtil;
 use Api\Library\Shared\SilexSessionHelper;
-use Api\Library\Shared\Website;
 use Api\Model\Shared\FeaturedProjectListModel;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Shared\Rights\Operation;
@@ -19,7 +18,6 @@ class Base
 {
     public function __construct()
     {
-        $this->website = Website::get();
         $this->_appName = "";
         $this->data["isAdmin"] = false;
         $this->data["projects"] = [];
@@ -41,9 +39,6 @@ class Base
 
     /** @var array data used to render templates */
     public $data;
-
-    /** @var Website */
-    public $website;
 
     /** @var boolean */
     protected $_isLoggedIn;
@@ -93,13 +88,6 @@ class Base
      */
     protected function renderPage(Application $app, $viewName)
     {
-        // TODO: move to app_dependencies once bootstrap4 migration is complete
-        $sassDir = $this->getThemePath() . "/sass";
-        if (!file_exists($sassDir)) {
-            $sassDir = $this->getThemePath("default") . "/sass";
-        }
-        $this->addCssFiles($sassDir, [], false);
-
         $this->addJavascriptFiles("angular-app/bellows/_js_module_definitions");
         $this->addJavascriptFiles("angular-app/bellows/js", ["vendor", "assets"]);
         $this->addJavascriptFiles("angular-app/bellows/directive");
@@ -157,7 +145,7 @@ class Base
             } else {
                 $this->data["smallAvatarUrl"] = "/Site/views/shared/image/avatar/" . $this->_user->avatar_ref;
             }
-            $projects = $this->_user->listProjects($this->website->domain);
+            $projects = $this->_user->listProjects();
             $this->data["projects_count"] = $projects->count;
             $this->data["projects"] = $projects->entries;
         }
@@ -172,18 +160,6 @@ class Base
         return $app["security.authorization_checker"]->isGranted("IS_AUTHENTICATED_REMEMBERED");
     }
 
-    protected function getThemePath($theme = "")
-    {
-        if (!$theme) {
-            $theme = $this->website->theme;
-        }
-        if (!file_exists("Site/views/" . $this->website->base . "/theme/" . $theme)) {
-            $theme = "default";
-        }
-
-        return "Site/views/" . $this->website->base . "/theme/" . $theme;
-    }
-
     /**
      * @param string $filename
      * @return string
@@ -191,14 +167,9 @@ class Base
      */
     protected function getFilePath(string $filename)
     {
-        $themePath = $this->getThemePath();
-        $filePath = $themePath . DIRECTORY_SEPARATOR . $filename;
+        $filePath = "Site/views/languageforge/theme/default/$filename";
         if (!file_exists($filePath)) {
-            $themePath = $this->getThemePath("default");
-            $filePath = $themePath . DIRECTORY_SEPARATOR . $filename;
-            if (!file_exists($filePath)) {
-                throw new \Exception(__FILE__ . ' - filename doesn\'t exist: ' . $filename);
-            }
+            throw new \Exception(__FILE__ . ' - filename doesn\'t exist: ' . $filename);
         }
         return DIRECTORY_SEPARATOR . $filePath;
     }

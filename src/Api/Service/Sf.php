@@ -5,7 +5,6 @@ namespace Api\Service;
 use Api\Library\Shared\Palaso\Exception\UserNotAuthenticatedException;
 use Api\Library\Shared\Palaso\Exception\UserUnauthorizedException;
 use Api\Library\Shared\SilexSessionHelper;
-use Api\Library\Shared\Website;
 use Api\Model\Languageforge\Lexicon\Command\LexCommentCommands;
 use Api\Model\Languageforge\Lexicon\Command\LexEntryCommands;
 use Api\Model\Languageforge\Lexicon\Command\LexOptionListCommands;
@@ -42,9 +41,8 @@ class Sf
     public function __construct(Application $app)
     {
         $this->app = $app;
-        $this->website = Website::get();
         $this->userId = SilexSessionHelper::getUserId($app);
-        $this->projectId = SilexSessionHelper::getProjectId($app, $this->website);
+        $this->projectId = SilexSessionHelper::getProjectId($app);
 
         // "Kick" session every time we use an API call, so it won't time out
         $this->update_last_activity();
@@ -55,9 +53,6 @@ class Sf
 
     /** @var Application */
     private $app;
-
-    /** @var Website */
-    private $website;
 
     /** @var string */
     private $userId;
@@ -101,7 +96,7 @@ class Sf
      */
     public function user_readProfile()
     {
-        return UserProfileDto::encode($this->userId, $this->website);
+        return UserProfileDto::encode($this->userId);
     }
 
     /**
@@ -123,7 +118,7 @@ class Sf
      */
     public function user_update($params)
     {
-        return UserCommands::updateUser($params, $this->website);
+        return UserCommands::updateUser($params);
     }
 
     /**
@@ -136,7 +131,7 @@ class Sf
      */
     public function user_updateProfile($params)
     {
-        $result = UserCommands::updateUserProfile($params, $this->userId, $this->website);
+        $result = UserCommands::updateUserProfile($params, $this->userId);
         if ($result == "login") {
             // Username changed
             $this->app["session"]->getFlashBag()->add("infoMessage", "Username changed. Please login.");
@@ -161,7 +156,7 @@ class Sf
      */
     public function user_createSimple($username)
     {
-        return UserCommands::createSimple($username, $this->projectId, $this->userId, $this->website);
+        return UserCommands::createSimple($username, $this->projectId, $this->userId);
     }
 
     // TODO Pretty sure this is going to want some paging params
@@ -175,13 +170,13 @@ class Sf
 
     public function user_typeahead($term, $projectIdToExclude = "")
     {
-        return UserCommands::userTypeaheadList($term, $projectIdToExclude, $this->website);
+        return UserCommands::userTypeaheadList($term, $projectIdToExclude);
     }
 
     public function user_typeaheadExclusive($term, $projectIdToExclude = "")
     {
         $projectIdToExclude = empty($projectIdToExclude) ? $this->projectId : $projectIdToExclude;
-        return UserCommands::userTypeaheadList($term, $projectIdToExclude, $this->website);
+        return UserCommands::userTypeaheadList($term, $projectIdToExclude);
     }
 
     public function change_password($userId, $newPassword)
@@ -212,7 +207,7 @@ class Sf
      */
     public function user_register($params)
     {
-        $result = UserCommands::register($params, $this->website, $this->app["session"]->get("captcha_info"));
+        $result = UserCommands::register($params, $this->app["session"]->get("captcha_info"));
         if ($result == "login") {
             Auth::login($this->app, UserCommands::sanitizeInput($params["email"]), $params["password"]);
         }
@@ -221,7 +216,7 @@ class Sf
 
     public function user_register_oauth($params)
     {
-        $result = UserCommands::registerOAuthUser($params, $this->website);
+        $result = UserCommands::registerOAuthUser($params);
         if ($result == "login") {
             Auth::loginWithoutPassword($this->app, UserCommands::sanitizeInput($params["username"]));
         }
@@ -235,7 +230,7 @@ class Sf
 
     public function user_create($params)
     {
-        return UserCommands::createUser($params, $this->website);
+        return UserCommands::createUser($params);
     }
 
     public function get_captcha_data()
@@ -245,12 +240,12 @@ class Sf
 
     public function user_sendInvite($toEmail, $lexRoleKey)
     {
-        return UserCommands::sendInvite($this->projectId, $this->userId, $this->website, $toEmail, null, $lexRoleKey);
+        return UserCommands::sendInvite($this->projectId, $this->userId, $toEmail, null, $lexRoleKey);
     }
 
     public function project_insights_csv()
     {
-        return ProjectInsightsDto::csvInsights($this->website);
+        return ProjectInsightsDto::csvInsights();
     }
 
     // ---------------------------------------------------------------
@@ -259,7 +254,7 @@ class Sf
 
     public function project_sendJoinRequest($projectID)
     {
-        return UserCommands::sendJoinRequest($projectID, $this->userId, $this->website);
+        return UserCommands::sendJoinRequest($projectID, $this->userId);
     }
 
     /**
@@ -271,14 +266,7 @@ class Sf
      */
     public function project_create($projectName, $projectCode, $appName, $srProject = null)
     {
-        return ProjectCommands::createProject(
-            $projectName,
-            $projectCode,
-            $appName,
-            $this->userId,
-            $this->website,
-            $srProject
-        );
+        return ProjectCommands::createProject($projectName, $projectCode, $appName, $this->userId, $srProject);
     }
 
     /**
@@ -331,7 +319,7 @@ class Sf
 
     public function project_archivedList()
     {
-        return ProjectListDto::encode($this->userId, $this->website, true);
+        return ProjectListDto::encode($this->userId, true);
     }
 
     /**
@@ -353,7 +341,7 @@ class Sf
 
     public function project_list_dto()
     {
-        return ProjectListDto::encode($this->userId, $this->website);
+        return ProjectListDto::encode($this->userId);
     }
 
     public function project_joinProject($projectId, $role)
@@ -411,7 +399,7 @@ class Sf
     // ---------------------------------------------------------------
     public function session_getSessionData()
     {
-        return SessionCommands::getSessionData($this->projectId, $this->userId, $this->website);
+        return SessionCommands::getSessionData($this->projectId, $this->userId);
     }
 
     public function projectcode_exists($code)
@@ -424,12 +412,12 @@ class Sf
     // ---------------------------------------------------------------
     public function valid_activity_types_dto()
     {
-        return ActivityListDto::getActivityTypes($this->website);
+        return ActivityListDto::getActivityTypes();
     }
 
     public function activity_list_dto($filterParams = [])
     {
-        return ActivityListDto::getActivityForUser($this->website->domain, $this->userId, $filterParams);
+        return ActivityListDto::getActivityForUser($this->userId, $filterParams);
     }
 
     public function activity_list_dto_for_current_project($filterParams = [])
@@ -460,7 +448,7 @@ class Sf
 
     public function project_acceptJoinRequest($userId, $role)
     {
-        UserCommands::acceptJoinRequest($this->projectId, $userId, $this->website, $role);
+        UserCommands::acceptJoinRequest($this->projectId, $userId, $role);
         ProjectCommands::removeJoinRequest($this->projectId, $userId);
     }
 
@@ -626,22 +614,22 @@ class Sf
 
     public function lex_comment_update($data)
     {
-        return LexCommentCommands::updateComment($this->projectId, $this->userId, $this->website, $data);
+        return LexCommentCommands::updateComment($this->projectId, $this->userId, $data);
     }
 
     public function lex_commentReply_update($commentId, $data)
     {
-        return LexCommentCommands::updateReply($this->projectId, $this->userId, $this->website, $commentId, $data);
+        return LexCommentCommands::updateReply($this->projectId, $this->userId, $commentId, $data);
     }
 
     public function lex_comment_delete($commentId)
     {
-        return LexCommentCommands::deleteComment($this->projectId, $this->userId, $this->website, $commentId);
+        return LexCommentCommands::deleteComment($this->projectId, $this->userId, $commentId);
     }
 
     public function lex_commentReply_delete($commentId, $replyId)
     {
-        return LexCommentCommands::deleteReply($this->projectId, $this->userId, $this->website, $commentId, $replyId);
+        return LexCommentCommands::deleteReply($this->projectId, $this->userId, $commentId, $replyId);
     }
 
     public function lex_comment_plusOne($commentId)
@@ -839,7 +827,7 @@ class Sf
             } catch (\Exception $e) {
                 $projectModel = null;
             }
-            $rightsHelper = new RightsHelper($this->userId, $projectModel, $this->website);
+            $rightsHelper = new RightsHelper($this->userId, $projectModel);
             if (!$rightsHelper->userCanAccessMethod($methodName)) {
                 throw new UserUnauthorizedException("Insufficient privileges accessing API method '$methodName'");
             }
@@ -857,7 +845,7 @@ class Sf
             } catch (\Exception $e) {
                 $projectModel = null;
             }
-            $rightsHelper = new RightsHelper($this->userId, $projectModel, $this->website);
+            $rightsHelper = new RightsHelper($this->userId, $projectModel);
             if (!$rightsHelper->userCanAccessMethodWithParams($methodName, $params)) {
                 throw new UserUnauthorizedException("Insufficient privileges accessing API method '$methodName'");
             }

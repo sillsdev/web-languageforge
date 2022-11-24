@@ -41,8 +41,7 @@ class ProjectCommandsTest extends TestCase
             SF_TESTPROJECT,
             SF_TESTPROJECTCODE,
             LfProjectModel::LEXICON_APP,
-            $user1->id->asString(),
-            self::$environ->website
+            $user1->id->asString()
         );
 
         $this->assertEquals(1, ProjectCommands::deleteProjects([$projectId], $user1Id));
@@ -62,8 +61,7 @@ class ProjectCommandsTest extends TestCase
             SF_TESTPROJECT,
             SF_TESTPROJECTCODE,
             LfProjectModel::LEXICON_APP,
-            $user1->id->asString(),
-            self::$environ->website
+            $user1->id->asString()
         );
         $project = new ProjectModel($projectId);
         $project->addUser($user2->id->asString(), ProjectRoles::MANAGER);
@@ -150,7 +148,7 @@ class ProjectCommandsTest extends TestCase
         $this->assertNotEquals(ProjectRoles::MANAGER, $updatedUser->role);
         $projectUser = $sameProject->listUsers()->entries[0];
         $this->assertEquals("Existing Name", $projectUser["name"]);
-        $userProject = $updatedUser->listProjects(self::$environ->website->domain)->entries[0];
+        $userProject = $updatedUser->listProjects()->entries[0];
         $this->assertEquals(SF_TESTPROJECT, $userProject["projectName"]);
     }
 
@@ -172,7 +170,7 @@ class ProjectCommandsTest extends TestCase
 
         // user in project once and project has one user
         $this->assertEquals(1, $sameProject->listUsers()->count);
-        $this->assertEquals(1, $sameUser->listProjects(self::$environ->website->domain)->count);
+        $this->assertEquals(1, $sameUser->listProjects()->count);
 
         // update user role in project again
         $updatedUserId = ProjectCommands::updateUserRole($projectId, $userId);
@@ -183,7 +181,7 @@ class ProjectCommandsTest extends TestCase
 
         // user still in project once and project still has one user
         $this->assertEquals(1, $sameProject->listUsers()->count);
-        $this->assertEquals(1, $sameUser->listProjects(self::$environ->website->domain)->count);
+        $this->assertEquals(1, $sameUser->listProjects()->count);
     }
 
     public function testRemoveUsers_NoUsers_NoThrow()
@@ -247,11 +245,11 @@ class ProjectCommandsTest extends TestCase
         $otherUser1 = new UserModel($user1Id);
 
         // each user in project, project has each user
-        $user1Project = $otherUser1->listProjects(self::$environ->website->domain)->entries[0];
+        $user1Project = $otherUser1->listProjects()->entries[0];
         $this->assertEquals(SF_TESTPROJECT, $user1Project["projectName"]);
-        $user2Project = $otherUser1->listProjects(self::$environ->website->domain)->entries[0];
+        $user2Project = $otherUser1->listProjects()->entries[0];
         $this->assertEquals(SF_TESTPROJECT, $user2Project["projectName"]);
-        $user3Project = $otherUser1->listProjects(self::$environ->website->domain)->entries[0];
+        $user3Project = $otherUser1->listProjects()->entries[0];
         $this->assertEquals(SF_TESTPROJECT, $user3Project["projectName"]);
         $projectUser1 = $otherProject->listUsers()->entries[0];
         $this->assertEquals("user1name", $projectUser1["username"]);
@@ -272,9 +270,9 @@ class ProjectCommandsTest extends TestCase
 
         // project has no users, each user not in project
         $this->assertEquals(0, $sameProject->listUsers()->count);
-        $this->assertEquals(0, $sameUser1->listProjects(self::$environ->website->domain)->count);
-        $this->assertEquals(0, $sameUser2->listProjects(self::$environ->website->domain)->count);
-        $this->assertEquals(0, $sameUser3->listProjects(self::$environ->website->domain)->count);
+        $this->assertEquals(0, $sameUser1->listProjects()->count);
+        $this->assertEquals(0, $sameUser2->listProjects()->count);
+        $this->assertEquals(0, $sameUser3->listProjects()->count);
     }
 
     public function testRemoveUsers_ProjectOwner_NotRemovedFromProject_Exception()
@@ -323,8 +321,8 @@ class ProjectCommandsTest extends TestCase
 
         // project still has project owner
         $this->assertEquals(1, $sameProject->listUsers()->count);
-        $this->assertEquals(0, $sameUser1->listProjects(self::$environ->website->domain)->count);
-        $this->assertEquals(1, $sameUser2->listProjects(self::$environ->website->domain)->count);
+        $this->assertEquals(0, $sameUser1->listProjects()->count);
+        $this->assertEquals(1, $sameUser2->listProjects()->count);
     }
 
     public function testProjectCodeExists_CodeExists_True()
@@ -357,8 +355,7 @@ class ProjectCommandsTest extends TestCase
             SF_TESTPROJECT,
             SF_TESTPROJECTCODE,
             LexProjectModel::LEXICON_APP,
-            $user1->id->asString(),
-            self::$environ->website
+            $user1->id->asString()
         );
 
         $project = new ProjectModel($projectId);
@@ -375,8 +372,7 @@ class ProjectCommandsTest extends TestCase
             SF_TESTPROJECT,
             SF_TESTPROJECTCODE,
             LexProjectModel::LEXICON_APP,
-            $user1->id->asString(),
-            self::$environ->website
+            $user1->id->asString()
         );
 
         $project = new LexProjectModel($projectId);
@@ -401,7 +397,6 @@ class ProjectCommandsTest extends TestCase
             SF_TESTPROJECTCODE,
             LexProjectModel::LEXICON_APP,
             $user1->id->asString(),
-            self::$environ->website,
             $srProject
         );
         $project = new LexProjectModel($projectId);
@@ -454,7 +449,6 @@ class ProjectCommandsTest extends TestCase
             SF_TESTPROJECTCODE,
             LexProjectModel::LEXICON_APP,
             $user1->id->asString(),
-            self::$environ->website,
             $srProject
         );
         $project = new LexProjectModel($projectId);
@@ -529,7 +523,6 @@ class ProjectCommandsTest extends TestCase
             SF_TESTPROJECTCODE,
             LexProjectModel::LEXICON_APP,
             $user1->id->asString(),
-            self::$environ->website,
             $srProject
         );
         $project = new LexProjectModel($projectId);
@@ -582,7 +575,6 @@ class ProjectCommandsTest extends TestCase
             SF_TESTPROJECTCODE,
             LexProjectModel::LEXICON_APP,
             $user1->id->asString(),
-            self::$environ->website,
             $srProject
         );
         $project = new LexProjectModel($projectId);
@@ -624,7 +616,6 @@ class ProjectCommandsTest extends TestCase
             SF_TESTPROJECTCODE,
             LexProjectModel::LEXICON_APP,
             $user1->id->asString(),
-            self::$environ->website,
             $srProject
         );
 
@@ -655,7 +646,6 @@ class ProjectCommandsTest extends TestCase
             SF_TESTPROJECTCODE,
             LexProjectModel::LEXICON_APP,
             $user1->id->asString(),
-            self::$environ->website,
             $srProject
         );
 
@@ -689,7 +679,6 @@ class ProjectCommandsTest extends TestCase
             SF_TESTPROJECTCODE,
             LexProjectModel::LEXICON_APP,
             $user1->id->asString(),
-            self::$environ->website,
             $srProject
         );
 
@@ -718,15 +707,13 @@ class ProjectCommandsTest extends TestCase
             SF_TESTPROJECT,
             SF_TESTPROJECTCODE,
             LfProjectModel::LEXICON_APP,
-            $user1Id,
-            self::$environ->website
+            $user1Id
         );
         $project2Id = ProjectCommands::createProject(
             SF_TESTPROJECT2,
             SF_TESTPROJECTCODE2,
             LfProjectModel::LEXICON_APP,
-            $user1Id,
-            self::$environ->website
+            $user1Id
         );
 
         // user1 is already a manager of both projects
@@ -763,8 +750,7 @@ class ProjectCommandsTest extends TestCase
             SF_TESTPROJECT,
             SF_TESTPROJECTCODE,
             LfProjectModel::LEXICON_APP,
-            $previousOwnerId,
-            self::$environ->website
+            $previousOwnerId
         );
 
         // previous owner and new owner are both already members of the project. New owner doesn't have to be a manager.
@@ -802,8 +788,7 @@ class ProjectCommandsTest extends TestCase
             SF_TESTPROJECT,
             SF_TESTPROJECTCODE,
             LfProjectModel::LEXICON_APP,
-            $previousOwnerId,
-            self::$environ->website
+            $previousOwnerId
         );
 
         // admin who transfers is a system admin. previous owner and new owner are both already members of the project. New owner doesn't have to be a manager.
@@ -839,8 +824,7 @@ class ProjectCommandsTest extends TestCase
             SF_TESTPROJECT,
             SF_TESTPROJECTCODE,
             LfProjectModel::LEXICON_APP,
-            $ownerId,
-            self::$environ->website
+            $ownerId
         );
 
         // current user and new owner are both already members of the project. But the current user is not the owner, even though they're a manager
@@ -865,8 +849,7 @@ class ProjectCommandsTest extends TestCase
             SF_TESTPROJECT,
             SF_TESTPROJECTCODE,
             LfProjectModel::LEXICON_APP,
-            $ownerId,
-            self::$environ->website
+            $ownerId
         );
 
         // owner is part of the project, but the target owner is not
@@ -891,8 +874,7 @@ class ProjectCommandsTest extends TestCase
             SF_TESTPROJECT,
             SF_TESTPROJECTCODE,
             LfProjectModel::LEXICON_APP,
-            $ownerId,
-            self::$environ->website
+            $ownerId
         );
         ProjectCommands::updateUserRole($projectId, $adminId, ProjectRoles::TECH_SUPPORT);
 
@@ -917,8 +899,7 @@ class ProjectCommandsTest extends TestCase
             SF_TESTPROJECT,
             SF_TESTPROJECTCODE,
             LfProjectModel::LEXICON_APP,
-            $ownerId,
-            self::$environ->website
+            $ownerId
         );
         ProjectCommands::updateUserRole($projectId, $userId, ProjectRoles::TECH_SUPPORT);
     }
@@ -931,8 +912,7 @@ class ProjectCommandsTest extends TestCase
             SF_TESTPROJECT,
             SF_TESTPROJECTCODE,
             LfProjectModel::LEXICON_APP,
-            $ownerId,
-            self::$environ->website
+            $ownerId
         );
         $projectModel = ProjectModel::getById($projectId);
         $inviteUrl = ProjectCommands::createInviteLink($projectId, ProjectRoles::MANAGER);
@@ -964,8 +944,7 @@ class ProjectCommandsTest extends TestCase
             SF_TESTPROJECT,
             SF_TESTPROJECTCODE,
             LfProjectModel::LEXICON_APP,
-            $ownerId,
-            self::$environ->website
+            $ownerId
         );
         $projectModel = ProjectModel::getById($projectId);
         $inviteUrl = ProjectCommands::createInviteLink($projectId, ProjectRoles::MANAGER);
@@ -998,8 +977,7 @@ class ProjectCommandsTest extends TestCase
             SF_TESTPROJECT,
             SF_TESTPROJECTCODE,
             LfProjectModel::LEXICON_APP,
-            $ownerId,
-            self::$environ->website
+            $ownerId
         );
         $projectModel = ProjectModel::getById($projectId);
         $inviteUrl = ProjectCommands::createInviteLink($projectId, ProjectRoles::MANAGER);
@@ -1020,8 +998,7 @@ class ProjectCommandsTest extends TestCase
             SF_TESTPROJECT,
             SF_TESTPROJECTCODE,
             LfProjectModel::LEXICON_APP,
-            $ownerId,
-            self::$environ->website
+            $ownerId
         );
         $projectModel = ProjectModel::getById($projectId);
         $inviteUrl = ProjectCommands::createInviteLink($projectId, ProjectRoles::CONTRIBUTOR);

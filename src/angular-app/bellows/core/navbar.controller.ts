@@ -3,7 +3,6 @@ import * as angular from 'angular';
 import {InterfaceConfig} from '../shared/model/interface-config.model';
 import {ProjectSettings} from '../shared/model/project-settings.model';
 import {Project, ProjectRoles} from '../shared/model/project.model';
-import {ProjectService, ProjectTypeNames} from './api/project.service';
 import {ApplicationHeaderService, HeaderData} from './application-header.service';
 import {ModalService} from './modal/modal.service';
 import {OfflineCacheUtilsService} from './offline/offline-cache-utils.service';
@@ -15,34 +14,29 @@ interface Rights {
 
 export class NavbarController implements angular.IController {
   rights: Rights = {} as Rights;
-  projectTypesBySite: () => string[];
   header: HeaderData;
   session: Session;
   project: Project;
   interfaceConfig: InterfaceConfig;
   currentUserIsProjectManager: boolean;
   displayShareButton: boolean;
-  projectTypeNames: ProjectTypeNames;
   siteName: string;
   isLexiconProject: boolean = false;
 
   static $inject = [
     '$scope',
     '$uibModal',
-    'projectService',
     'sessionService',
     'offlineCacheUtils',
     'applicationHeaderService'];
   constructor(private readonly $scope: angular.IScope,
               private readonly $modal: ModalService,
-              private readonly projectService: ProjectService, private readonly sessionService: SessionService,
+              private readonly sessionService: SessionService,
               private readonly offlineCacheUtils: OfflineCacheUtilsService,
               private readonly applicationHeaderService: ApplicationHeaderService,
               ) { }
 
   $onInit(): void {
-    this.projectTypeNames = this.projectService.data.projectTypeNames;
-    this.projectTypesBySite = this.projectService.data.projectTypesBySite;
     this.header = this.applicationHeaderService.data;
     this.sessionService.getSession().then(session => {
       this.session = session;

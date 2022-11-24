@@ -13,7 +13,7 @@ class Download extends Base
         if (!file_exists($filePath)) {
             $filePath = APPPATH . "assets/$appName/$projectSlug/" . urldecode($filename);
             if (!file_exists($filePath)) {
-                $app->abort(404, $this->website->base); // this terminates PHP
+                $app->abort(404, "languageforge"); // this terminates PHP
 
                 return;
             }
