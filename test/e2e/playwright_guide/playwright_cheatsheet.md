@@ -16,7 +16,7 @@
 
 ## Simple
 
-1. `make playwright-tests`
+1. `make e2e-tests`
    This commands executes the playwright tests. Execution is specified in the makefile.
 
 ## More options
