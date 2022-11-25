@@ -13,18 +13,16 @@ Welcome! We're glad that you are interested in helping develop Language Forge.
   - [Mobile device testing on a branch](#mobile-device-testing-on-a-branch)
 - [Tests](#tests)
   - [Running Playwright E2E Tests](#running-playwright-e2e-tests)
-  - [Running Protractor E2E Tests](#running-protractor-e2e-tests)
   - [Running Unit Tests](#running-unit-tests)
 - [Other Commands](#other-commands)
   - [Cleanup](#cleanup)
   - [Running dev](#running-dev)
 - [Debugging](#debugging)
   - [PHP Application Debugging](#php-application-debugging)
-  - [PHP Tests Debugging](#php-tests-debugging)
-  - [E2E Tests Debugging](#e2e-tests-debugging)
+  - [Typescript AngularJS Application Debugging](#typescript-angularjs-application-debugging)
+  - [PHP Test Debugging](#php-test-debugging)
+  - [Playwright E2E Test Debugging](#playwright-e2e-test-debugging)
 - [Style Guides](#style-guides)
-  - [PHP](#php)
-  - [JavaScript](#javascript)
   - [Angular & TypeScript](#angular--typescript)
   </details>
 
@@ -38,7 +36,7 @@ On Windows, the project should be opened with the [Remote - WSL](https://marketp
 
 ### IDE Developer Experience (DX)
 
-While Docker is great way to encapsulate all of the dependencies, build tools and run-time environment of the application, IDEs usually require locally installed extensions, tools and runtimes in order to provide type checking, code hints, and debugging capabilities that make for a better developer experience.  To this end, the following locally installed tools/dependencies may be installed for good DX:
+While Docker is great way to encapsulate all of the dependencies, build tools and run-time environment of the application, IDEs usually require locally installed extensions, tools and runtimes in order to provide type checking, code hints, and debugging capabilities that make for a better developer experience. To this end, the following locally installed tools/dependencies may be installed for good DX:
 
 - PHP 7.3
 - Composer
@@ -57,7 +55,7 @@ While Docker is great way to encapsulate all of the dependencies, build tools an
 3. Install [Node 16.14.0](https://nodejs.org/en/download/). We recommend using [nvm](https://github.com/nvm-sh/nvm#installation-and-update).
 4. Clone the repo: `git clone https://github.com/sillsdev/web-languageforge`.
    1. Windows users, be sure to clone the project to the WSL file system (to keep VS Code, Git and the file system in sync)
-5. Run `npm install` (required for git pre-commit hook with Prettier) 
+5. Run `npm install` (required for git pre-commit hook with Prettier)
 
 ### Running the App Locally
 
@@ -146,7 +144,7 @@ A [tutorial on YouTube is available showing how to use XDebug and VSCode](https:
 
 > TODO - we need instructions on how to do this, setting breakpoints in VSCode and attaching to the Chrome debugger.
 
-### PHP Tests Debugging
+### PHP Test Debugging
 
 To debug the PHP tests, follow these steps:
 
@@ -173,7 +171,7 @@ Additional considerations:
 
 If you encounter errors such as VSCode cannot find a file in the path "vendor", these source files are not available to VSCode as they are running inside Docker. If you want to debug vendor libraries (not required), you will have to use Composer to download dependencies and put them in your source tree.
 
-### Playwright E2E Tests Debugging
+### Playwright E2E Test Debugging
 
 Head on over to [Hanna's tutorial on debugging Playwright E2E tests](test/e2e/playwright_guide/playwright_cheatsheet.md) for more information.
 
