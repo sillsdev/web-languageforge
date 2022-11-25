@@ -5,7 +5,8 @@ FROM php:7.3.28-apache
 # unzip - used by LF application for unzipping lexicon uploads
 # curl - used by LF application
 # ffmpeg - used by LF audio upload method
-RUN apt-get update && apt-get -y install p7zip-full unzip curl tini ffmpeg && rm -rf /var/lib/apt/lists/*
+# mongo-tools - used by LF backup/restore project commands
+RUN apt-get update && apt-get -y install p7zip-full mongo-tools unzip curl tini ffmpeg && rm -rf /var/lib/apt/lists/*
 
 # see https://github.com/mlocati/docker-php-extension-installer
 # PHP extensions required by the LF application
