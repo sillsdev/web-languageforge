@@ -25,28 +25,17 @@ class Page extends Base
             return $app->redirect("/auth/logout");
         }
 
-        $this->setupPageVariables($app);
-
         // special case for "brochure" HTML5 homepage
         if ($pageName == "home") {
             if ($this->_isLoggedIn) {
                 return $app->redirect("/redirect/project");
             }
-            $homepageInAFolder = $this->getThemePath() . "/page/home";
-            if (is_dir($homepageInAFolder)) {
-                $this->data["baseDir"] = $this->getThemePath() . "/page/home";
-                try {
-                    return $app["twig"]->render("home/index.html.twig", $this->data);
-                } catch (\Twig\Loader\ErrorLoader $e) {
-                    $app->abort(404, "Page not found: home/index.html.twig");
-                }
-            }
+
+            $this->data["baseDir"] = "Site/views/languageforge/theme/default/page/home";
+
+            return $app["twig"]->render("home/index.html.twig", $this->data);
         }
 
         return $this->renderPage($app, $pageName);
-    }
-
-    private function setupPageVariables(Application $app)
-    {
     }
 }
