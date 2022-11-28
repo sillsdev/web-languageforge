@@ -7,23 +7,22 @@ Welcome! We're glad that you are interested in helping develop Language Forge.
 
 - [Development Environment Quick Start](#development-environment-quick-start)
   - [Supported Development Environments](#supported-development-environments)
+  - [IDE Developer Experience (DX)](#ide-developer-experience-dx)
   - [Project Setup](#project-setup)
   - [Running the App Locally](#running-the-app-locally)
   - [Mobile device testing on a branch](#mobile-device-testing-on-a-branch)
 - [Tests](#tests)
   - [Running Playwright E2E Tests](#running-playwright-e2e-tests)
-  - [Running Protractor E2E Tests](#running-protractor-e2e-tests)
   - [Running Unit Tests](#running-unit-tests)
 - [Other Commands](#other-commands)
   - [Cleanup](#cleanup)
   - [Running dev](#running-dev)
 - [Debugging](#debugging)
   - [PHP Application Debugging](#php-application-debugging)
-  - [PHP Tests Debugging](#php-tests-debugging)
-  - [E2E Tests Debugging](#e2e-tests-debugging)
+  - [Typescript AngularJS Application Debugging](#typescript-angularjs-application-debugging)
+  - [PHP Test Debugging](#php-test-debugging)
+  - [Playwright E2E Test Debugging](#playwright-e2e-test-debugging)
 - [Style Guides](#style-guides)
-  - [PHP](#php)
-  - [JavaScript](#javascript)
   - [Angular & TypeScript](#angular--typescript)
   </details>
 
@@ -31,9 +30,18 @@ Welcome! We're glad that you are interested in helping develop Language Forge.
 
 ### Supported Development Environments
 
-Development of Language Forge is supported using [VS Code](https://code.visualstudio.com/download) on either pure Linux or Windows using WSL ([`wsl --install`](https://learn.microsoft.com/en-us/windows/wsl/install)).
+Development of Language Forge is supported using [VS Code](https://code.visualstudio.com/download) on Linux, MacOS or Windows using WSL ([`wsl --install`](https://learn.microsoft.com/en-us/windows/wsl/install)).
 
 On Windows, the project should be opened with the [Remote - WSL](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl) VS Code extension, so that all commands and extensions run on WSL.
+
+### IDE Developer Experience (DX)
+
+While Docker is great way to encapsulate all of the dependencies, build tools and run-time environment of the application, IDEs usually require locally installed extensions, tools and runtimes in order to provide type checking, code hints, and debugging capabilities that make for a better developer experience. To this end, the following locally installed tools/dependencies may be installed for good DX:
+
+- PHP 7.3
+- Composer
+- Node and npm
+- .Net SDK
 
 ### Project Setup
 
@@ -47,6 +55,7 @@ On Windows, the project should be opened with the [Remote - WSL](https://marketp
 3. Install [Node 16.14.0](https://nodejs.org/en/download/). We recommend using [nvm](https://github.com/nvm-sh/nvm#installation-and-update).
 4. Clone the repo: `git clone https://github.com/sillsdev/web-languageforge`.
    1. Windows users, be sure to clone the project to the WSL file system (to keep VS Code, Git and the file system in sync)
+5. Run `npm install` (required for git pre-commit hook with Prettier)
 
 ### Running the App Locally
 
@@ -96,33 +105,6 @@ ngrok will return two URLs, one http and one https, that contain what is being s
 1. `make playwright-tests`
 2. Test results will appear in your terminal
 
-### Running Protractor E2E Tests
-
-1. `make e2e-tests` (⚠️ these do not work on Apple Silicon at this time)
-1. Individual test results will appear in your terminal but if you'd like to watch them in real-time, simply VNC into the running tests via `localhost:5900`, e.g., Mac OSX users simply `open vnc://localhost:5900` and use `secret` as the password. Other operating systems may require installing a separate VNC Viewer tool.
-
-To run a single E2E spec file, put its path (relative to the repo root) into the `TEST_SPECS` environment variable (don't forget to `export` it), or pass it as an option to `make e2e-tests` as follows:
-
-```bash
-make TEST_SPECS=test/app/languageforge/lexicon/lexicon-new-project.e2e-spec.js e2e-tests
-# Or:
-export TEST_SPECS=test/app/languageforge/lexicon/lexicon-new-project.e2e-spec.js
-make e2e-tests
-```
-
-**Important:** the `TEST_SPECS` file must end in `.js`, not `.ts`, because the test runner we're using doesn't understand Typescript.
-
-The easiest way to get the `TEST_SPECS` variable set up correctly is to go into VS Code and right-click the tab containing the spec file you want to run, then choose "Copy Relative Path" from the dropdown menu. Then do the following at the command line:
-
-1. `export TEST_SPECS=`
-1. Ctrl+V (or possibly Ctrl+Shift+V on a Linux command line)
-1. Backspace over `.ts` and change it to `.js`
-1. Enter
-1. `make e2e-tests`
-
-To quickly re-run the tests without going through the `make build` process, you can restart the `app-for-e2e` container and run the tests as follows:
-`docker compose restart app-for-e2e && docker compose run -e TEST_SPECS= test-e2e` where the relative path to the test spec file is optionally given after the `=` sign.
-
 ### Running Unit Tests
 
 1. `make unit-tests`
@@ -143,8 +125,6 @@ To quickly re-run the tests without going through the `make build` process, you 
 
 ## Debugging
 
-> Launch configurations for Chrome and PHP debugging are defined in `.vscode/launch.json`.
-
 ### PHP Application Debugging
 
 To debug the Language Forge application locally, follow these steps:
@@ -160,7 +140,11 @@ To debug the Language Forge application locally, follow these steps:
 
 A [tutorial on YouTube is available showing how to use XDebug and VSCode](https://www.youtube.com/watch?v=nKh5DHViKlA) to debug the LF back-end application.
 
-### PHP Tests Debugging
+### Typescript AngularJS Application Debugging
+
+> TODO - we need instructions on how to do this, setting breakpoints in VSCode and attaching to the Chrome debugger.
+
+### PHP Test Debugging
 
 To debug the PHP tests, follow these steps:
 
@@ -187,48 +171,11 @@ Additional considerations:
 
 If you encounter errors such as VSCode cannot find a file in the path "vendor", these source files are not available to VSCode as they are running inside Docker. If you want to debug vendor libraries (not required), you will have to use Composer to download dependencies and put them in your source tree.
 
-### E2E Tests Debugging
+### Playwright E2E Test Debugging
 
-You'll need the "Remote - Containers" extension (`ms-vscode-remote.remote-containers`) installed, and you'll need your version of Docker Compose to be at least 1.21. (The VS Code instructions say that the Ubuntu snap package for `docker-compose` is **not** supported, so if you don't have it installed already, go to https://github.com/docker/compose/releases and download an appropriate binary of the most recent release. On Linux, you should put that binary in `/usr/local/bin/docker-compose`, **not** in `/usr/bin`!)
-
-1. Run `docker-compose --version` and make sure it's at least version 1.21
-
-Now when you want to debug E2E tests, you can click on the small green square in the lower left corner of VS Code (it looks like `><`) and a menu will pop up. Choose **Reopen in Container**. This will build the `test-e2e` container and all its dependencies, and will then install VS Code inside the container and set up your local copy of VS Code to be communicating to the copy inside the container. For all intents and purposes, it will be as if you were running VS Code inside the container. If this is the first time you've done this, you might have to wait a minute or two: click on the "show log" link (lower right) if you want to see what's happening.
-
-Once you're running VS Code inside the `test-e2e` container, you can do the following to run E2E tests in debug mode:
-
-1. (Optional) Edit `.vscode/launch.json` inside the container and uncomment the `--` and `--specs=...` lines, and edit the second line with the filename(s) you want to run.
-1. Click on the Run and Debug icon on the left side of VS Code (looks like a "play" triangle with a bug icon in front of it)
-1. If **Debug E2E tests** isn't already selected in the dropdown, select it
-1. Set breakpoints in the tests you want to debug
-1. Click the green "play" icon just left of the debug dropdown
-
-**NOTE:** If you try to step out of a test function, you may find yourself inside a file called `primordials.js` which is part of Node. This is a [VS Code bug](https://github.com/microsoft/vscode-js-debug/issues/980) that has not yet been fixed (as of June 2021). If that happens, simply go back to your test file, set a new breakpoint, and then click the **Continue** icon (or press <kbd>F5</kbd>) in the debug toolbar to get back into your code.
-
-If you interrupt the E2E tests halfway through their run (easy to do when debugging), you might find that the test database gets into a situation where running the tests a second time causes lots of spurious failures. For example, if you interrupt the "change password" test right in the middle, after it has changed the test user's password but before it has reset the test user's password back to the original value, then a subsequent run of E2E tests will completely fail to run. If that's the case, you'll want to reset the E2E test app container so that it will re-run the test initialization script and reset the test database.
-
-To reset the E2E test app container, simply choose the **Reset and debug E2E tests** option in the debugging dropdown instead of the **Debug E2E tests** option. Now you should be able to run the E2E tests again.
-
-If you edit files in the `src` or `data` folders of the test container, these changes will be applied to the files in your Git repository. But to make those changes "stick", you might have to exit the test container and rebuild it. To do that:
-
-1. Exit the E2E container (click the green container menu in the lower left corner of VS Code and choose "Reopen folder locally")
-1. Hit `F1` or `Ctrl+Shift+P` and choose **Remote-Containers: Rebuild and Reopen in Container** (type "Rebuild" to find it quickly)
-
-After a minute or two, your source or test changes should be applied and you should see the result of your changes when you run the E2E tests again.
+Head on over to [Hanna's tutorial on debugging Playwright E2E tests](test/e2e/playwright_guide/playwright_cheatsheet.md) for more information.
 
 ## Style Guides
-
-### PHP
-
-PHP code conforms to [PSR-2](http://www.php-fig.org/psr/psr-2/).
-
-- Add `php-cs-fixer` globally installed with _composer_ (http://cs.sensiolabs.org/). Here is how to add it to **PhpStorm** (https://hackernoon.com/how-to-configure-phpstorm-to-use-php-cs-fixer-1844991e521f). Use it with the parameters `fix --verbose "$FileDir$/$FileName$"`.
-
-### JavaScript
-
-JavaScript code conforms to [AirBNB JS style guide](https://github.com/airbnb/javascript).
-
-- Using PhpStorm with JSCS helps a lot with automating this (see the section below on PhpStorm [Coding Standard and Style](#coding-standard-and-style)).
 
 ### Angular & TypeScript
 
