@@ -6,7 +6,12 @@ export interface GotoOptions {
 
 export abstract class BasePage<T extends BasePage<T>> {
 
-  constructor(readonly page: Page, readonly url: string, readonly waitFor?: Locator) {
+  readonly waitFor?: Locator[];
+
+  constructor(readonly page: Page, readonly url: string, waitFor?: Locator[] | Locator) {
+    this.waitFor = Array.isArray(waitFor) ? waitFor
+    : waitFor !== undefined ? [waitFor]
+    : undefined;
   }
 
   async goto(options?: GotoOptions): Promise<T> {
@@ -18,10 +23,11 @@ export abstract class BasePage<T extends BasePage<T>> {
     return this as unknown as T;
   }
 
-  async waitForPage(): Promise<void> {
+  async waitForPage(): Promise<T> {
     await Promise.all([
-      this.page.waitForNavigation({url: new RegExp(`${this.url}(#|$)`)}),
-      this.waitFor?.waitFor(),
+      this.page.waitForURL(new RegExp(`${this.url}(#|$)`)),
+      ...this.waitFor?.map(wait => wait.waitFor()),
     ]);
+    return this as unknown as T;
   }
 }

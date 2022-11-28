@@ -4,6 +4,8 @@ import type { Browser, Page } from '@playwright/test';
 import type { E2EUsernames } from './e2e-users';
 import constants from '../testConstants.json';
 import { getStorageStatePath } from './user-tools';
+import { Project } from './types';
+import { initTestProjectForTest } from './testSetup';
 
 export type UserDetails = {
   username: string,
@@ -21,7 +23,7 @@ function setupUserDetails(obj: UserDetails, username: E2EUsernames) {
   obj.email = constants[`${username}Email`] ?? `${username}@example.com`;
 }
 
-const userTab = (username: E2EUsernames) => async ({ browser, browserName }: { browser: Browser, browserName: string}, use: (r: UserTab) => Promise<void>) => {
+const userTab = (username: E2EUsernames) => async ({ browser, browserName }: { browser: Browser, browserName: string }, use: (r: UserTab) => Promise<void>) => {
   const storageState = getStorageStatePath(browserName, username);
   const context = await browser.newContext({ storageState })
   const page = await context.newPage();
@@ -30,7 +32,7 @@ const userTab = (username: E2EUsernames) => async ({ browser, browserName }: { b
   await use(tab);
 }
 
-const userDetails = (username: E2EUsernames) => async ({}, use: (r: UserDetails) => Promise<void>) => {
+const userDetails = (username: E2EUsernames) => async ({ }, use: (r: UserDetails) => Promise<void>) => {
   let user = {} as UserDetails;
   setupUserDetails(user, username);
   await use(user);
@@ -42,7 +44,7 @@ const userDetails = (username: E2EUsernames) => async ({}, use: (r: UserDetails)
 // The anonTab fixture represents a browser tab (a "page" in Playwright terms) where nobody is logged in; this tab can be used across different tests (like userTab)
 // The user fixture just carries that user's details (username, password, name and email)
 // Note: "Tab" was chosen instead of "Page" to avoid confusion with Page Object Model classes like SiteAdminPage
-export const test = (base
+export const test = base
   .extend<{
     adminTab: UserTab,
     managerTab: UserTab,
@@ -76,5 +78,19 @@ export const test = (base
     member2: userDetails('member2'),
     observer: userDetails('observer'),
     writable: userDetails('writable'),
-  })
-);
+  });
+
+/**
+ * When called a LF project will be created for each playwright test (i.e. test.beforeEach)
+ * @returns a function for accessing the project that was created for the current test
+ */
+export const projectPerTest = (): () => Project => {
+
+  let currentTestProject: Project;
+
+  test.beforeEach(async ({ request, manager }, testInfo) => {
+    currentTestProject = await initTestProjectForTest(request, testInfo, manager);
+  });
+
+  return () => currentTestProject;
+}

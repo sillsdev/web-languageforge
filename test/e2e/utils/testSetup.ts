@@ -3,8 +3,9 @@ import { copyFile } from 'fs/promises';
 import { existsSync } from 'fs';
 import * as path from 'path';
 import { cwd } from 'process';
-import { APIRequestContext } from '@playwright/test';
+import { APIRequestContext, TestInfo } from '@playwright/test';
 import { Project, toProjectCode } from './types';
+import { UserDetails } from './fixtures';
 
 type CustomFieldType =
   'MultiString' |
@@ -33,13 +34,14 @@ export async function initTestProject(request: APIRequestContext,
   return {name, code, id};
 }
 
-export async function initTestProjectByName(
+export async function initTestProjectForTest(
   request: APIRequestContext,
-  name: string,
-  ownerUsername: string,
-  memberUsernames: string[] = []): Promise<Project> {
+  testInfo: TestInfo,
+  owner: UserDetails,
+  members: UserDetails[] = []): Promise<Project> {
+    const name = `${testInfo.title} - ${Date.now()}`;
     const code = toProjectCode(name);
-    return initTestProject(request, code, name, ownerUsername, memberUsernames);
+    return initTestProject(request, code, name, owner.username, members.map(member => member.username));
 }
 
 export function addWritingSystemToProject(request: APIRequestContext, projectCode: string, languageTag: string, abbr = '', name = '')

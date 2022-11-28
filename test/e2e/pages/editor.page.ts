@@ -1,7 +1,7 @@
 import { expect, Locator, Page } from '@playwright/test';
 import { Project } from '../utils/types';
 import { BasePage, GotoOptions } from './base-page';
-import { ConfigurationPage } from './configuration.page';
+import { ConfigurationPageFieldsTab } from './configuration-fields.tab';
 import { EntriesListPage } from './entries-list.page';
 import { ProjectSettingsPage } from './project-settings.page';
 
@@ -99,14 +99,14 @@ export class EditorPage extends BasePage<EditorPage> {
     return projectSettingsPage;
   }
 
-  async navigateToProjectConfiguration(): Promise<ConfigurationPage> {
+  async navigateToProjectConfiguration(): Promise<ConfigurationPageFieldsTab> {
     await this.settingsMenuLink.click();
-    const projectSettingsPage = new ConfigurationPage(this.page, this.project);
+    const configurationPage = new ConfigurationPageFieldsTab(this.page, this.project);
     await Promise.all([
-      this.settingsMenu.projectSettingsLink.click(),
-      projectSettingsPage.waitForPage(),
+      this.settingsMenu.configurationLink.click(),
+      configurationPage.waitForPage(),
     ]);
-    return projectSettingsPage;
+    return configurationPage;
   }
 
   async navigateToEntriesList() {

@@ -3,6 +3,7 @@ import { UserProfilePage } from './pages/user-profile.page';
 import { expect } from '@playwright/test';
 import { LoginPage } from './pages/login.page';
 import { ProjectsPage } from './pages/projects.page';
+import { random } from './utils/random';
 
 test.describe('E2E User Profile', () => {
 
@@ -39,7 +40,6 @@ test.describe('E2E User Profile', () => {
     await userProfilePage.accountTab.emailField.fill(newEmail);
     await userProfilePage.accountTab.colorField.selectOption({label: 'Steel Blue'});
     await userProfilePage.accountTab.animalField.selectOption({label: 'Otter'});
-    const newPhone = `+1876 ${Date.now().toString().slice(0, 7)}`;
 
     await userProfilePage.saveBtn.click();
     await Promise.all([
@@ -87,9 +87,9 @@ test.describe('E2E User Profile', () => {
     await userProfilePage.goto();
     await userProfilePage.tabs.aboutMe.click();
 
-    const newName = `Name - ${Date.now()}`;
+    const newName = `Name - ${random()}`;
     await userProfilePage.aboutMeTab.nameField.fill(newName);
-    const newAge = `${~~(Math.random() * 30) + 20}`; // random between 20 - 50
+    const newAge = random(2).toString();
     await userProfilePage.aboutMeTab.ageField.fill(newAge);
     await userProfilePage.aboutMeTab.genderField.selectOption({label: 'Female'});
 

@@ -8,7 +8,7 @@ import { NoticeElement } from './components/notice.component';
 import { Project } from './utils/types';
 import { addAudioVisualFileToProject, addLexEntry, addPictureFileToProject, addUserToProject, addWritingSystemToProject, initTestProject } from './utils/testSetup';
 import constants from './testConstants.json';
-import { ConfigurationPage } from './pages/configuration.page';
+import { ConfigurationPageFieldsTab } from './pages/configuration-fields.tab';
 
 test.describe('Lexicon E2E Entry Editor and Entries List', () => {
 
@@ -96,8 +96,8 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
     });
 
     test('Add citation form as visible field', async ({managerTab}) => {
-      const configurationPage = await new ConfigurationPage(managerTab, project).goto();
-      await configurationPage.tabs.fields.click();
+      const configurationPage = await new ConfigurationPageFieldsTab(managerTab, project).goto();
+      await configurationPage.tabLinks.fields.click();
       await (await configurationPage.getCheckbox('Entry Fields', 'Citation Form', 'Hidden if Empty')).uncheck();
       await configurationPage.applyButton.click();
       await editorPageManager.goto();
@@ -161,8 +161,8 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
 
       test('Can change config to show pictures and hide empty captions & can change config to show empty captions', async ({managerTab}) => {
         // can change config to show pictures and hide empty captions
-        const configurationPage = await new ConfigurationPage(managerTab, project).goto();
-        await configurationPage.tabs.fields.click();
+        const configurationPage = await new ConfigurationPageFieldsTab(managerTab, project).goto();
+        await configurationPage.tabLinks.fields.click();
 
         await (await configurationPage.getCheckbox('Meaning Fields', 'Pictures', 'Hidden if Empty')).uncheck();
         await (await configurationPage.getFieldSpecificButton('Meaning Fields', 'Pictures')).click();
@@ -181,7 +181,7 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
 
         // can change config to show empty captions
         await configurationPage.goto();
-        await configurationPage.tabs.fields.click();
+        await configurationPage.tabLinks.fields.click();
         await (await configurationPage.getCheckbox('Meaning Fields', 'Pictures', 'Hidden if Empty')).uncheck();
         await (await configurationPage.getFieldSpecificButton('Meaning Fields', 'Pictures')).click();
         await (await configurationPage.getFieldSpecificCheckbox('Meaning Fields', 'Pictures', 'Hide Caption If Empty')).uncheck();
@@ -202,9 +202,9 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
         picture = await editorPageManager.getPicture(editorPageManager.senseCard, constants.testEntry1.senses[0].pictures[0].fileName);
         expect(picture).toBeUndefined();
 
-        const configurationPage = await new ConfigurationPage(managerTab, project).goto();
+        const configurationPage = await new ConfigurationPageFieldsTab(managerTab, project).goto();
         await configurationPage.goto();
-        await configurationPage.tabs.fields.click();
+        await configurationPage.tabLinks.fields.click();
         await (await configurationPage.getCheckbox('Meaning Fields', 'Pictures', 'Hidden if Empty')).check();
         await (await configurationPage.getFieldSpecificButton('Meaning Fields', 'Pictures')).click();
         await (await configurationPage.getFieldSpecificCheckbox('Meaning Fields', 'Pictures', 'Hide Caption If Empty')).uncheck();
@@ -230,7 +230,7 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
 
     test.describe('Audio', () => {
       test.beforeAll(async ({managerTab}) => {
-        const configurationPage = await new ConfigurationPage(managerTab, project).goto();
+        const configurationPage = await new ConfigurationPageFieldsTab(managerTab, project).goto();
         await (await configurationPage.getFieldSpecificButton('Entry Fields', lexemeLabel)).click();
         await (await configurationPage.getFieldSpecificCheckbox('Entry Fields', lexemeLabel, 'IPA')).check();
         await (await configurationPage.getFieldSpecificCheckbox('Entry Fields', lexemeLabel, 'Voice')).check();
@@ -624,9 +624,9 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
 
     test.describe('Configuration check', async () => {
 
-      let configurationPage: ConfigurationPage;
+      let configurationPage: ConfigurationPageFieldsTab;
       test.beforeAll(async ({ memberTab }) => {
-        configurationPage = new ConfigurationPage(memberTab, project);
+        configurationPage = new ConfigurationPageFieldsTab(memberTab, project);
 
         // copied from above from audio tests, because also needed here
         // TODO: eventually put this code somewhere else and in only one in this file

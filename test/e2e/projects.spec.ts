@@ -7,7 +7,8 @@ import { NoticeElement } from './components/notice.component';
 import { Project } from './utils/types';
 
 import { initTestProject, addUserToProject } from './utils/testSetup';
-import { gotoProjectDirectly } from './utils/navigation';
+import { navigate } from './utils/navigate';
+import { EditorPage } from './pages/editor.page';
 
 
 test.describe('E2E Projects List app', () => {
@@ -132,7 +133,7 @@ test.describe('E2E Projects List app', () => {
     test('Admin added to project when accessing without membership', async () => {
       // this is already tested in a test above but makes the test more understandable
       await expect(projectsPageAdmin.projectLink(projects[2].name)).not.toBeVisible();
-      await gotoProjectDirectly(projectsPageAdmin.page, projects[2].id, projects[2].name);
+      await new EditorPage(projectsPageAdmin.page, projects[2]).goto();
       await projectsPageAdmin.goto();
       await expect(projectsPageAdmin.projectLink(projects[2].name)).toBeVisible();
     });
