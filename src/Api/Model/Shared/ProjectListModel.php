@@ -11,7 +11,7 @@ class ProjectListModel extends MapperListModel
         parent::__construct(
             ProjectModelMongoMapper::instance(),
             [],
-            ["projectName", "language", "projectCode", "siteName", "appName"]
+            ["projectName", "language", "projectCode", "appName"]
         );
     }
 }

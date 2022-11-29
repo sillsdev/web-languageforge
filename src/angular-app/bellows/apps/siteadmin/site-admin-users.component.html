@@ -53,7 +53,7 @@
                             project<span ng-show="user.projects.length > 1">s</span>) </span>
                             <span ng-repeat="project in user.projects">
                                 <a class="username-styling"
-                                   data-ng-href="http://{{project.siteName}}/app/{{project.appName}}/{{project.id}}">
+                                   data-ng-href="/app/{{project.appName}}/{{project.id}}">
                                     {{project.projectCode}}</a><span ng-show="!$last">, </span></span>
                         </td>
                     </tr>
