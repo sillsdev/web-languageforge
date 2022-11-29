@@ -53,36 +53,11 @@ class LexBaseViewDto
         // a stand in for the code above - all Semantic Domain languages
         // ToDo: translate 'semantic domain only' for each language below. IJH 2018-06
         $selectSemanticDomainLanguages = [
-            "optionsOrder" => [
-                "id",
-                "my",
-                "km",
-                "en",
-                "ko",
-                "ms",
-                "ne",
-                "fa",
-                "pt",
-                "ru",
-                "swh",
-                "es",
-                "fr",
-                "ur",
-                "hi",
-                "bn",
-                "te",
-                "th",
-                "zh-CN",
-            ],
+            "optionsOrder" => ["id", "km", "en", "es", "fr"],
             "options" => [
                 "id" => [
                     "name" => "Bahasa Indonesia",
                     "option" => "Bahasa Indonesia - semantic domain only",
-                    "hasSemanticDomain" => true,
-                ],
-                "my" => [
-                    "name" => "Burmese",
-                    "option" => "Burmese - semantic domain only",
                     "hasSemanticDomain" => true,
                 ],
                 "km" => [
@@ -91,37 +66,6 @@ class LexBaseViewDto
                     "hasSemanticDomain" => true,
                 ],
                 "en" => ["name" => "English", "option" => "English", "hasSemanticDomain" => true],
-                "ko" => ["name" => "Korean", "option" => "Korean - semantic domain only", "hasSemanticDomain" => true],
-                "ms" => [
-                    "name" => "Malay",
-                    "option" => "Malay (macrolanguage) - semantic domain only",
-                    "hasSemanticDomain" => true,
-                ],
-                "ne" => [
-                    "name" => "Nepali",
-                    "option" => "Nepali (macrolanguage) - semantic domain only",
-                    "hasSemanticDomain" => true,
-                ],
-                "fa" => [
-                    "name" => "Persian",
-                    "option" => "Persian - semantic domain only",
-                    "hasSemanticDomain" => true,
-                ],
-                "pt" => [
-                    "name" => "Portuguese",
-                    "option" => "Portuguese - semantic domain only",
-                    "hasSemanticDomain" => true,
-                ],
-                "ru" => [
-                    "name" => "Russian",
-                    "option" => "Russian - semantic domain only",
-                    "hasSemanticDomain" => true,
-                ],
-                "swh" => [
-                    "name" => "Swahili",
-                    "option" => "Swahili - semantic domain only",
-                    "hasSemanticDomain" => true,
-                ],
                 "es" => [
                     "name" => "español",
                     "option" => "español - semantic domain only",
@@ -132,16 +76,6 @@ class LexBaseViewDto
                     "option" => "français - semantic domain only",
                     "hasSemanticDomain" => true,
                 ],
-                "ur" => ["name" => "اُردُو", "option" => "semantic domain only - اُردُو", "hasSemanticDomain" => true],
-                "hi" => ["name" => "हिन्दी", "option" => "हिन्दी - semantic domain only", "hasSemanticDomain" => true],
-                "bn" => ["name" => "বাংলা", "option" => "বাংলা - semantic domain only", "hasSemanticDomain" => true],
-                "te" => ["name" => "తెలుగు", "option" => "తెలుగు - semantic domain only", "hasSemanticDomain" => true],
-                "th" => [
-                    "name" => "ภาษาไทย",
-                    "option" => "ภาษาไทย - semantic domain only",
-                    "hasSemanticDomain" => true,
-                ],
-                "zh-CN" => ["name" => "中文", "option" => "中文 - semantic domain only", "hasSemanticDomain" => true],
             ],
         ];
         $data["interfaceConfig"]["selectLanguages"] = $selectSemanticDomainLanguages;
