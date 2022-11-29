@@ -102,7 +102,7 @@ ngrok will return two URLs, one http and one https, that contain what is being s
 
 ### Running Playwright E2E Tests
 
-1. `make playwright-tests`
+1. `make e2e-tests`
 2. Test results will appear in your terminal
 
 ### Running Unit Tests

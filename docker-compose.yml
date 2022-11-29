@@ -203,13 +203,6 @@ services:
     environment:
       - MONGO_INITDB_DATABASE=scriptureforge
 
-  selenium:
-    image: selenium/standalone-chrome-debug:3.141.59-20210713
-    volumes:
-      - /dev/shm:/dev/shm
-    ports:
-      - "5900:5900"
-
   ld-db:
     image: mysql:5.7
     container_name: ld-db
@@ -242,57 +235,6 @@ services:
       - MYSQL_PASSWORD=not-a-secret
       - MYSQL_ROOT_PASSWORD=also-not-a-secret
       - JWT_SIGNING_KEY=bogus-development-token
-
-  test-e2e:
-    build:
-      dockerfile: docker/test-e2e/Dockerfile
-      args:
-        - ENVIRONMENT=development
-    image: lf-test-e2e
-    container_name: lf-test-e2e
-    depends_on:
-      - db
-      - app-for-e2e
-      - mail
-      - selenium
-    environment:
-      - WAIT_HOSTS=db:27017, mail:25, selenium:4444, app-for-e2e:80
-      - ENVIRONMENT=development
-      - LANGUAGE_DEPOT_API_TOKEN=bogus-development-token
-    command: sh -c "/wait && /run.sh"
-    volumes:
-      # for developer convenience
-      - ./src:/data/src
-      - ./typings:/data/typings
-      - ./webpack.config.js:/data/webpack.config.js
-      - ./webpack-dev.config.js:/data/webpack-dev.config.js
-      - ./webpack-prd.config.js:/data/webpack-prd.config.js
-      - ./package.json:/data/package.json
-      - ./package-lock.json:/data/package-lock.json
-# uncomment on dev machine for convenience but don't commit - it messes up the e2e test run by
-# clobbering the JS files produced by tsc in the built image.
-#      - ../test:/data/test
-
-  app-for-e2e:
-    build:
-      dockerfile: docker/app-for-e2e/Dockerfile
-    image: lf-app-for-e2e
-    container_name: lf-app-for-e2e
-    platform: linux/amd64
-    depends_on:
-      - db
-      - mail
-    environment:
-      - WAIT_HOSTS=db:27017, mail:25
-      - LDAPI_BASE_URL=http://ld-api:3000/api/v2/
-      - ENVIRONMENT=development
-      - WEBSITE=localhost
-      - DATABASE=scriptureforge_test
-      - MONGODB_CONN=mongodb://db:27017
-      - MAIL_HOST=mail
-      - REMEMBER_ME_SECRET=bogus-development-key
-      - LANGUAGE_DEPOT_API_TOKEN=bogus-development-token
-    command: sh -c "/wait && /run.sh"
 
   app-for-playwright:
     build:
