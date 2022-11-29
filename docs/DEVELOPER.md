@@ -102,8 +102,10 @@ ngrok will return two URLs, one http and one https, that contain what is being s
 
 ### Running Playwright E2E Tests
 
+Before running tests you'll need to install chromium dependencies with `npx playwright install-deps chromium`, which will ask for root access.
+
 1. `make playwright-tests`
-2. Test results will appear in your terminal
+1. Test results will appear in your terminal
 
 ### Running Unit Tests
 
