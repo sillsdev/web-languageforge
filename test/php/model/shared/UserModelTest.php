@@ -274,7 +274,6 @@ class UserModelTest extends TestCase
             "avatar_shape" => "bat",
             "avatar_ref" => "Site/views/shared/image/avatar/pinkbat.png",
             "mobile_phone" => "555-5555",
-            "communicate_via" => UserModel::COMMUNICATE_VIA_BOTH,
             "name" => "User 2",
             "age" => "21",
             "gender" => UserModel::GENDER_MALE,
@@ -285,7 +284,6 @@ class UserModelTest extends TestCase
         $this->assertNotEquals($params["avatar_shape"], $user->avatar_shape);
         $this->assertNotEquals($params["avatar_ref"], $user->avatar_ref);
         $this->assertNotEquals($params["mobile_phone"], $user->mobile_phone);
-        $this->assertNotEquals($params["communicate_via"], $user->communicate_via);
         $this->assertNotEquals($params["name"], $user->name);
         $this->assertNotEquals($params["age"], $user->age);
         $this->assertNotEquals($params["gender"], $user->gender);
@@ -299,7 +297,6 @@ class UserModelTest extends TestCase
         $this->assertEquals($params["avatar_shape"], $user->avatar_shape);
         $this->assertEquals($params["avatar_ref"], $user->avatar_ref);
         $this->assertEquals($params["mobile_phone"], $user->mobile_phone);
-        $this->assertEquals($params["communicate_via"], $user->communicate_via);
         $this->assertEquals($params["name"], $user->name);
         $this->assertEquals($params["age"], $user->age);
         $this->assertEquals($params["gender"], $user->gender);
@@ -323,7 +320,6 @@ class UserModelTest extends TestCase
             "avatar_shape" => "bat",
             "avatar_ref" => "Site/views/shared/image/avatar/pinkbat.png",
             "mobile_phone" => "555-5555",
-            "communicate_via" => UserModel::COMMUNICATE_VIA_BOTH,
             "age" => "21",
             "gender" => UserModel::GENDER_MALE,
             "interfaceLanguageCode" => "th",
@@ -337,7 +333,6 @@ class UserModelTest extends TestCase
         $this->assertNotEquals($params["avatar_shape"], $user->avatar_shape);
         $this->assertNotEquals($params["avatar_ref"], $user->avatar_ref);
         $this->assertNotEquals($params["mobile_phone"], $user->mobile_phone);
-        $this->assertNotEquals($params["communicate_via"], $user->communicate_via);
         $this->assertNotEquals($params["age"], $user->age);
         $this->assertNotEquals($params["gender"], $user->gender);
         $this->assertNotEquals($params["interfaceLanguageCode"], $user->interfaceLanguageCode);
@@ -354,7 +349,6 @@ class UserModelTest extends TestCase
         $this->assertEquals($params["avatar_shape"], $user->avatar_shape);
         $this->assertEquals($params["avatar_ref"], $user->avatar_ref);
         $this->assertEquals($params["mobile_phone"], $user->mobile_phone);
-        $this->assertEquals($params["communicate_via"], $user->communicate_via);
         $this->assertEquals($params["age"], $user->age);
         $this->assertEquals($params["gender"], $user->gender);
         $this->assertEquals($params["interfaceLanguageCode"], $user->interfaceLanguageCode);

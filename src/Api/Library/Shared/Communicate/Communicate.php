@@ -48,44 +48,6 @@ class Communicate
     }
 
     /**
-     * @param UserModel $user
-     * @param ProjectSettingsModel $project
-     * @param string $subject
-     * @param string $emailTemplate
-     * @param string $htmlEmailTemplate
-     * @param DeliveryInterface $delivery
-     */
-    public static function communicateToUser(
-        $user,
-        $project,
-        $subject,
-        $emailTemplate,
-        $htmlEmailTemplate = "",
-        DeliveryInterface $delivery = null
-    ) {
-        // Prepare the email message if required
-        if ($user->communicate_via == UserModel::COMMUNICATE_VIA_EMAIL) {
-            CodeGuard::checkNotFalseAndThrow($project->emailSettings->fromAddress, "email from address");
-            CodeGuard::checkNotFalseAndThrow($user->email, "email to address");
-            $from = [$project->emailSettings->fromAddress => $project->emailSettings->fromName];
-            $to = [$user->email => $user->name];
-            $vars = [
-                "user" => $user,
-                "project" => $project,
-            ];
-            $template = CommunicateHelper::templateFromString($emailTemplate);
-            $content = $template->render($vars);
-            $htmlContent = "";
-            if ($htmlEmailTemplate) {
-                $template = CommunicateHelper::templateFromString($emailTemplate);
-                $htmlContent = $template->render($vars);
-            }
-
-            CommunicateHelper::deliverEmail($from, $to, $subject, $content, $htmlContent, $delivery);
-        }
-    }
-
-    /**
      * Send an email to validate a user when they sign up.
      * @param UserModel $userModel
      * @param Website $website
