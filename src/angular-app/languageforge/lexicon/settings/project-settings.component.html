@@ -10,6 +10,12 @@
                         </div>
                     </div>
                     <div class="form-group row">
+                        <label class="col-form-label col-12">Project Code</label>
+                        <div class="controls col-12 notranslate">
+                            {{$ctrl.project.projectCode}}
+                        </div>
+                    </div>
+                    <div class="form-group row">
                         <label class="col-form-label col-12" for="language">Default Interface Language</label>
                         <div class="controls col-12">
                             <select class="form-control custom-select" id="language"
@@ -20,15 +26,23 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-form-label col-12">Project Code</label>
-                        <div class="controls col-12 notranslate">
-                            {{$ctrl.project.projectCode}}
+                        <label class="col-form-label col-12" for="language">Preferred Audio Recording Codec</label>
+                        <div class="controls col-12">
+                            <select class="form-control custom-select" id="codec"
+                                data-ng-model="$ctrl.project.audioRecordingCodec"
+                                data-ng-options="$ctrl.lpsInterfaceConfig.selectAudioRecordingCodec.options[codec].codec for codec in $ctrl.lpsInterfaceConfig.selectAudioRecordingCodec.optionsOrder">
+                                <option value="">-- choose an audio codec --</option>
+                            </select>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-form-label col-12">Project Owner</label>
-                        <div class="controls col-12 notranslate">
-                            {{$ctrl.project.ownerRef.username}}
+                        <label class="col-form-label col-12" for="language">Convert uploaded audio to OPUS / WEBM... </label>
+                        <div class="controls col-12">
+                            <select class="form-control custom-select" id="conversion"
+                                data-ng-model="$ctrl.project.whenToConvertAudio"
+                                data-ng-options="$ctrl.lpsInterfaceConfig.selectWhenToConvertAudio.options[frequency].frequency for frequency in $ctrl.lpsInterfaceConfig.selectWhenToConvertAudio.optionsOrder">
+                                <option value="">-- choose when audio is converted --</option>
+                            </select>
                         </div>
                     </div>
                     <!--
