@@ -1,6 +1,5 @@
 <?php
 
-use Api\Library\Shared\Website;
 use Api\Model\Languageforge\Lexicon\Command\SendReceiveCommands;
 use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\Languageforge\LfProjectModel;
@@ -12,15 +11,17 @@ use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\ProjectSettingsModel;
 use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\Rights\SystemRoles;
+use Api\Model\Shared\Rights\SiteRoles;
 use Api\Model\Shared\UserModel;
 use Palaso\Utilities\FileUtilities;
+use Api\Library\Shared\UrlHelper;
 
 class MongoTestEnvironment
 {
-    public function __construct($domain = "languageforge.org")
+    public function __construct()
     {
         $this->db = MongoStore::connect(DATABASE);
-        $this->website = Website::get($domain);
+        $this->siteName = UrlHelper::getHostname();
         if (!isset($this->uploadFilePaths)) {
             $this->uploadFilePaths = [];
         }
@@ -29,11 +30,10 @@ class MongoTestEnvironment
     /** @var MongoDB */
     private $db;
 
+    public $siteName;
+
     /** @var array Local store of 'uploaded' filepaths */
     protected $uploadFilePaths;
-
-    /** @var Website */
-    public $website;
 
     /**
      * Removes all the collections from the mongo database.
@@ -82,8 +82,7 @@ class MongoTestEnvironment
         $userModel->avatar_ref = $username . ".png";
         $userModel->role = $role;
         $userModel->active = true;
-        $userModel->siteRole[$this->website->domain] = $this->website->userDefaultSiteRole;
-
+        $userModel->siteRole[$this->siteName] = SiteRoles::PROJECT_CREATOR;
         return $userModel->write();
     }
 
@@ -101,7 +100,7 @@ class MongoTestEnvironment
         $projectModel->projectName = $name;
         $projectModel->projectCode = $code;
         $projectModel->isArchived = false;
-        $projectModel->siteName = $this->website->domain;
+        $projectModel->siteName = $this->siteName;
         if ($appName != "") {
             $projectModel->appName = $appName;
         } else {
@@ -117,7 +116,7 @@ class MongoTestEnvironment
     {
         $projectModel = new ProjectSettingsModel();
         $projectModel->projectCode = $code;
-        $projectModel->siteName = $this->website->domain;
+        $projectModel->siteName = $this->siteName;
         $this->cleanProjectEnvironment($projectModel);
         $projectModel->write();
 
@@ -287,11 +286,6 @@ class TestableLexProjectModel extends LexProjectModel
 
 class LexiconMongoTestEnvironment extends MongoTestEnvironment
 {
-    public function __construct()
-    {
-        parent::__construct("languageforge.org");
-    }
-
     /** @var LexProjectModel */
     public $project;
 
@@ -306,7 +300,7 @@ class LexiconMongoTestEnvironment extends MongoTestEnvironment
         $projectModel = new TestableLexProjectModel();
         $projectModel->projectName = $name;
         $projectModel->projectCode = $code;
-        $projectModel->siteName = $this->website->domain;
+        $projectModel->siteName = $this->siteName;
         $this->cleanProjectEnvironment($projectModel);
         $projectModel->write();
         $this->project = $projectModel;
@@ -389,7 +383,7 @@ class SemDomMongoTestEnvironment extends MongoTestEnvironment
     public function __construct()
     {
         $this->semdomVersion = self::TESTVERSION;
-        parent::__construct("languageforge.org");
+        parent::__construct();
     }
 
     const TESTVERSION = 1000;
@@ -470,7 +464,6 @@ class SemDomMongoTestEnvironment extends MongoTestEnvironment
             $languageName,
             false,
             $userId,
-            $this->website,
             self::TESTVERSION
         );
         return new SemDomTransProjectModel($projectId);

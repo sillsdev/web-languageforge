@@ -57,7 +57,7 @@ class ActivityListDtoTest extends TestCase
 
         LexEntryCommands::updateEntry($projectId, $params, $userId);
 
-        $dto = ActivityListDto::getActivityForUser($project->siteName, $userId);
+        $dto = ActivityListDto::getActivityForUser($userId);
         $activity = $dto["activity"];
         $this->assertCount(1, $activity);
         $activityRecord = array_shift($activity);
@@ -151,7 +151,7 @@ class ActivityListDtoTest extends TestCase
 
         LexEntryCommands::updateEntry($projectId, $params, $userId);
 
-        $dto = ActivityListDto::getActivityForUser($project->siteName, $userId);
+        $dto = ActivityListDto::getActivityForUser($userId);
         $activity = $dto["activity"];
         $this->assertCount(1, $activity);
         $activityRecord = array_shift($activity);
@@ -220,7 +220,7 @@ class ActivityListDtoTest extends TestCase
 
         LexEntryCommands::updateEntry($projectId, $params, $userId);
 
-        $dto = ActivityListDto::getActivityForUser($project->siteName, $userId);
+        $dto = ActivityListDto::getActivityForUser($userId);
         $activity = $dto["activity"];
         $this->assertCount(1, $activity);
         $activityRecord = array_shift($activity);
@@ -296,9 +296,9 @@ class ActivityListDtoTest extends TestCase
             "contextGuid" => " sense#" . $sense2->guid . " example#" . $example1->guid . " sentence.en",
             "isRegardingPicture" => false,
         ];
-        LexCommentCommands::updateComment($projectId, $userId, $environ->website, $data);
+        LexCommentCommands::updateComment($projectId, $userId, $data);
 
-        $dto = ActivityListDto::getActivityForUser($project->siteName, $userId);
+        $dto = ActivityListDto::getActivityForUser($userId);
         $activity = $dto["activity"];
         $this->assertCount(1, $activity);
         $activityRecord = array_shift($activity);
@@ -365,10 +365,10 @@ class ActivityListDtoTest extends TestCase
             "contextGuid" => " sense#" . $sense2->guid . " example#" . $example1->guid . " sentence.en",
             "isRegardingPicture" => false,
         ];
-        $commentId = LexCommentCommands::updateComment($projectId, $userId, $environ->website, $data);
+        $commentId = LexCommentCommands::updateComment($projectId, $userId, $data);
         LexCommentCommands::plusOneComment($projectId, $userId, $commentId);
 
-        $dto = ActivityListDto::getActivityForUser($project->siteName, $userId);
+        $dto = ActivityListDto::getActivityForUser($userId);
         $activity = $dto["activity"];
         $this->assertCount(2, $activity);
         // We're only interested in the LEX_COMMENT_INCREASE_SCORE activity for this test
@@ -440,10 +440,10 @@ class ActivityListDtoTest extends TestCase
             "contextGuid" => " sense#" . $sense2->guid . " example#" . $example1->guid . " sentence.en",
             "isRegardingPicture" => false,
         ];
-        $commentId = LexCommentCommands::updateComment($projectId, $userId, $environ->website, $data);
+        $commentId = LexCommentCommands::updateComment($projectId, $userId, $data);
         LexCommentCommands::updateCommentStatus($projectId, $commentId, LexCommentModel::STATUS_TODO);
 
-        $dto = ActivityListDto::getActivityForUser($project->siteName, $userId);
+        $dto = ActivityListDto::getActivityForUser($userId);
         $activity = $dto["activity"];
         $this->assertCount(2, $activity);
         // We're only interested in the UPDATE_LEX_COMMENT_STATUS activity for this test
@@ -516,10 +516,10 @@ class ActivityListDtoTest extends TestCase
             "contextGuid" => " sense#" . $sense2->guid . " example#" . $example1->guid . " sentence.en",
             "isRegardingPicture" => false,
         ];
-        $commentId = LexCommentCommands::updateComment($projectId, $userId, $environ->website, $data);
-        LexCommentCommands::deleteComment($projectId, $userId, $environ->website, $commentId);
+        $commentId = LexCommentCommands::updateComment($projectId, $userId, $data);
+        LexCommentCommands::deleteComment($projectId, $userId, $commentId);
 
-        $dto = ActivityListDto::getActivityForUser($project->siteName, $userId);
+        $dto = ActivityListDto::getActivityForUser($userId);
         $activity = $dto["activity"];
         $this->assertCount(2, $activity);
         // We're only interested in the DELETE_LEX_COMMENT activity for this test
@@ -591,15 +591,15 @@ class ActivityListDtoTest extends TestCase
             "contextGuid" => " sense#" . $sense2->guid . " example#" . $example1->guid . " sentence.en",
             "isRegardingPicture" => false,
         ];
-        $commentId = LexCommentCommands::updateComment($projectId, $userId, $environ->website, $data);
+        $commentId = LexCommentCommands::updateComment($projectId, $userId, $data);
 
         $replyData = [
             "id" => "",
             "content" => "my first reply",
         ];
-        LexCommentCommands::updateReply($projectId, $userId, $environ->website, $commentId, $replyData);
+        LexCommentCommands::updateReply($projectId, $userId, $commentId, $replyData);
 
-        $dto = ActivityListDto::getActivityForUser($project->siteName, $userId);
+        $dto = ActivityListDto::getActivityForUser($userId);
         $activity = $dto["activity"];
         $this->assertCount(2, $activity);
         // We're only interested in the ADD_LEX_REPLY activity for this test
@@ -673,28 +673,22 @@ class ActivityListDtoTest extends TestCase
             "contextGuid" => " sense#" . $sense2->guid . " example#" . $example1->guid . " sentence.en",
             "isRegardingPicture" => false,
         ];
-        $commentId = LexCommentCommands::updateComment($projectId, $userId, $environ->website, $data);
+        $commentId = LexCommentCommands::updateComment($projectId, $userId, $data);
 
         $replyData = [
             "id" => "",
             "content" => "my first reply",
         ];
-        $replyId = LexCommentCommands::updateReply($projectId, $userId, $environ->website, $commentId, $replyData);
+        $replyId = LexCommentCommands::updateReply($projectId, $userId, $commentId, $replyData);
 
         $updatedReplyData = [
             "id" => $replyId,
             "content" => "edited the first reply",
         ];
-        $updatedReplyId = LexCommentCommands::updateReply(
-            $projectId,
-            $userId,
-            $environ->website,
-            $commentId,
-            $updatedReplyData
-        );
+        $updatedReplyId = LexCommentCommands::updateReply($projectId, $userId, $commentId, $updatedReplyData);
         $this->assertEquals($replyId, $updatedReplyId);
 
-        $dto = ActivityListDto::getActivityForUser($project->siteName, $userId);
+        $dto = ActivityListDto::getActivityForUser($userId);
         $activity = $dto["activity"];
         $this->assertCount(3, $activity);
         // We're only interested in the UPDATE_LEX_REPLY activity for this test
@@ -768,16 +762,16 @@ class ActivityListDtoTest extends TestCase
             "contextGuid" => " sense#" . $sense2->guid . " example#" . $example1->guid . " sentence.en",
             "isRegardingPicture" => false,
         ];
-        $commentId = LexCommentCommands::updateComment($projectId, $userId, $environ->website, $data);
+        $commentId = LexCommentCommands::updateComment($projectId, $userId, $data);
 
         $replyData = [
             "id" => "",
             "content" => "my first reply",
         ];
-        $replyId = LexCommentCommands::updateReply($projectId, $userId, $environ->website, $commentId, $replyData);
-        LexCommentCommands::deleteReply($projectId, $userId, $environ->website, $commentId, $replyId);
+        $replyId = LexCommentCommands::updateReply($projectId, $userId, $commentId, $replyData);
+        LexCommentCommands::deleteReply($projectId, $userId, $commentId, $replyId);
 
-        $dto = ActivityListDto::getActivityForUser($project->siteName, $userId);
+        $dto = ActivityListDto::getActivityForUser($userId);
         $activity = $dto["activity"];
         $this->assertCount(3, $activity);
         // We're only interested in the DELETE_LEX_REPLY activity for this test

@@ -1,11 +1,11 @@
 <?php
 
-use Api\Library\Shared\Website;
 use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Shared\UserModel;
 use Api\Model\Shared\UserTypeaheadModel;
 use PHPUnit\Framework\TestCase;
+use Api\Library\Shared\UrlHelper;
 
 class UserModelTest extends TestCase
 {
@@ -37,7 +37,7 @@ class UserModelTest extends TestCase
 
         $environ->createUser("someuser", "Some User", "user@example.com");
 
-        $model = new UserTypeaheadModel("", "", $environ->website);
+        $model = new UserTypeaheadModel("", "");
         $model->read();
 
         $this->assertEquals(1, $model->count);
@@ -51,7 +51,7 @@ class UserModelTest extends TestCase
         $environ->clean();
         $environ->createUser("someuser", "Some User", "user@example.com");
 
-        $model = new UserTypeaheadModel("", "", $environ->website);
+        $model = new UserTypeaheadModel("", "");
         $model->read();
 
         $this->assertEquals(1, $model->count);
@@ -65,22 +65,7 @@ class UserModelTest extends TestCase
         $environ->clean();
         $environ->createUser("someuser", "Some User", "user@example.com");
 
-        $model = new UserTypeaheadModel("Bogus", "", $environ->website);
-        $model->read();
-
-        $this->assertEquals(0, $model->count);
-        $this->assertEquals([], $model->entries);
-    }
-
-    public function testUserTypeahead_CrossSiteNoMatchingEntries()
-    {
-        $environ = new MongoTestEnvironment();
-        $environ->clean();
-        $environ->createUser("someuser", "Some User", "user@example.com");
-
-        // Check no users exist on another website
-        $website = new Website("localhost", Website::LANGUAGEFORGE);
-        $model = new UserTypeaheadModel("some", "", $website);
+        $model = new UserTypeaheadModel("Bogus", "");
         $model->read();
 
         $this->assertEquals(0, $model->count);
@@ -100,7 +85,7 @@ class UserModelTest extends TestCase
         $environ->createUser("someuser", "Some User", "user@example.com");
         $environ->createUser("anotheruser", "Another User", "another@example.com");
 
-        $model = new UserTypeaheadModel("", $projectId, $environ->website);
+        $model = new UserTypeaheadModel("", $projectId);
         $model->read();
 
         $this->assertEquals(2, $model->count);
@@ -108,7 +93,7 @@ class UserModelTest extends TestCase
         $this->assertEquals("Some User", $model->entries[0]["name"]);
         $this->assertEquals("Another User", $model->entries[1]["name"]);
 
-        $model = new UserTypeaheadModel("Some", $projectId, $environ->website);
+        $model = new UserTypeaheadModel("Some", $projectId);
         $model->read();
 
         $this->assertEquals(1, $model->count);
@@ -124,21 +109,21 @@ class UserModelTest extends TestCase
         $userId = $environ->createUser("jsmith", "joe smith", "joe@smith.com");
 
         $p1m = $environ->createProject("p1", "p1Code");
-        $p1m->appName = "sfchecks";
+        $p1m->appName = "lexicon";
         $p1m->ownerRef->id = $userId;
 
         $p1m->write();
         $p1 = $p1m->id->asString();
         $p2m = $environ->createProject("p2", "p2Code");
         $p2 = $p2m->id->asString();
-        $p2m->appName = "sfchecks";
+        $p2m->appName = "lexicon";
         $p2m->ownerRef->id = $userId;
         $p2m->write();
 
         $userModel = new UserModel($userId);
 
         // Check that list projects is empty
-        $result = $userModel->listProjects($environ->website->domain);
+        $result = $userModel->listProjects();
         $this->assertEquals(0, $result->count);
         $this->assertEquals([], $result->entries);
 
@@ -151,7 +136,7 @@ class UserModelTest extends TestCase
         $p2m->write();
         $userModel->write();
 
-        $result = $userModel->listProjects($environ->website->domain);
+        $result = $userModel->listProjects();
         $this->assertEquals(2, $result->count);
         $this->assertEquals(
             [
@@ -159,16 +144,14 @@ class UserModelTest extends TestCase
                     "projectName" => "p1",
                     "ownerRef" => $userId,
                     "id" => $p1,
-                    "appName" => "sfchecks",
-                    "siteName" => $environ->website->domain,
+                    "appName" => "lexicon",
                     "projectCode" => "p1Code",
                 ],
                 [
                     "projectName" => "p2",
                     "ownerRef" => $userId,
                     "id" => $p2,
-                    "appName" => "sfchecks",
-                    "siteName" => $environ->website->domain,
+                    "appName" => "lexicon",
                     "projectCode" => "p2Code",
                 ],
             ],

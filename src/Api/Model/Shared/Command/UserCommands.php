@@ -4,7 +4,6 @@ namespace Api\Model\Shared\Command;
 
 use Api\Library\Shared\Communicate\Communicate;
 use Api\Library\Shared\Communicate\DeliveryInterface;
-use Api\Library\Shared\Website;
 use Api\Library\Shared\Palaso\Exception\UserUnauthorizedException;
 use Api\Model\Languageforge\Lexicon\LexRoles;
 use Api\Model\Shared\Dto\CreateSimpleDto;
@@ -24,6 +23,7 @@ use Api\Model\Shared\UserModelWithPassword;
 use Api\Model\Shared\UserTypeaheadModel;
 use Palaso\Utilities\CodeGuard;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Api\Library\Shared\UrlHelper;
 
 class UserCommands
 {
@@ -56,10 +56,9 @@ class UserCommands
     /**
      * System Admin: Update User
      * @param array $params - user model fields to update
-     * @param Website $website
      * @return string $userId
      */
-    public static function updateUser($params, $website)
+    public static function updateUser($params)
     {
         $user = new UserModel($params["id"]);
 
@@ -82,9 +81,6 @@ class UserCommands
         if (array_key_exists("siteRole", $params)) {
             $user->siteRole->exchangeArray($params["siteRole"]);
         }
-        if (!$user->hasRoleOnSite($website) && $website->allowSignupFromOtherSites) {
-            $user->siteRole[$website->domain] = $website->userDefaultSiteRole;
-        }
 
         return $user->write();
     }
@@ -93,12 +89,11 @@ class UserCommands
      * User Profile: Update User Profile
      * @param array $params - user model fields to update
      * @param string $userId
-     * @param Website $website
      * @param DeliveryInterface $delivery
      * @return bool|string False if update failed; $userId on update; 'login' on username change
      * @throws \Exception
      */
-    public static function updateUserProfile($params, $userId, $website, DeliveryInterface $delivery = null)
+    public static function updateUserProfile($params, $userId, DeliveryInterface $delivery = null)
     {
         $params["id"] = $userId;
         $user = new UserModel($userId);
@@ -128,7 +123,7 @@ class UserCommands
             $user->setProperties(UserModel::USER_PROFILE_ACCESSIBLE, $params);
             $userId = $user->write();
             if ($isNewEmail) {
-                Communicate::sendVerifyEmail($user, $website, $delivery);
+                Communicate::sendVerifyEmail($user, $delivery);
             }
             if ($isNewUsername) {
                 return "login";
@@ -200,12 +195,11 @@ class UserCommands
     /**
      * @param string $term
      * @param string $projectIdToExclude
-     * @param Website website
      * @return UserTypeaheadModel
      */
-    public static function userTypeaheadList($term, $projectIdToExclude = "", $website)
+    public static function userTypeaheadList($term, $projectIdToExclude = "")
     {
-        $list = new UserTypeaheadModel($term, $projectIdToExclude, $website);
+        $list = new UserTypeaheadModel($term, $projectIdToExclude);
         $list->read();
 
         return $list;
@@ -284,15 +278,14 @@ class UserCommands
     /**
      * System Admin: Create a user with default site role.
      * @param array $params
-     * @param Website $website
      * @return bool|string userId of the new user
      * @throws \Exception
      */
-    public static function createUser($params, $website)
+    public static function createUser($params)
     {
         $captchaInfo = [];
         $captchaInfo["code"] = $params["captcha"] = "captcha";
-        if (self::register($params, $website, $captchaInfo) == "login") {
+        if (self::register($params, $captchaInfo) == "login") {
             $user = new UserModel();
             $user->readByUsernameOrEmail($params["email"]);
             return $user->id->asString();
@@ -306,11 +299,10 @@ class UserCommands
      * @param string $username
      * @param string $projectId
      * @param string $currentUserId
-     * @param Website $website
      * @throws \Exception
      * @return array
      */
-    public static function createSimple($username, $projectId, $currentUserId, $website)
+    public static function createSimple($username, $projectId, $currentUserId)
     {
         $user = new UserModel();
         $username = UserCommands::sanitizeInput($username);
@@ -318,7 +310,7 @@ class UserCommands
         if (UserCommands::checkUniqueIdentity($user, $username, "") == "ok") {
             $user->username = $username;
             $user->role = SystemRoles::USER;
-            $user->siteRole[$website->domain] = $website->userDefaultSiteRole;
+            $user->siteRole[UrlHelper::getHostname()] = SiteRoles::PROJECT_CREATOR;
             $user->active = true;
             $userId = $user->write();
 
@@ -335,7 +327,7 @@ class UserCommands
             ProjectCommands::updateUserRole($projectId, $userId, ProjectRoles::CONTRIBUTOR);
             $toUser = new UserModel($currentUserId);
             $project = new ProjectModel($projectId);
-            Communicate::sendNewUserInProject($toUser, $user->username, $password, $project, $website);
+            Communicate::sendNewUserInProject($toUser, $user->username, $password, $project);
 
             $dto = new CreateSimpleDto($userId, $password);
 
@@ -349,13 +341,12 @@ class UserCommands
      * Public: Register a new user and activate them if they already exist on a new site.
      *
      * @param array $params (email, name, password, captcha)
-     * @param Website $website
      * @param array $captchaInfo
      * @param DeliveryInterface $delivery
      * @return string {captchaFail, login, emailNotAvailable}
      * @throws \Exception
      */
-    public static function register($params, $website, $captchaInfo, DeliveryInterface $delivery = null)
+    public static function register($params, $captchaInfo, DeliveryInterface $delivery = null)
     {
         $email = self::sanitizeInput($params["email"]);
         CodeGuard::checkEmptyAndThrow($email, "email");
@@ -375,24 +366,11 @@ class UserCommands
                 $user->active = true;
                 $user->write();
 
-                Communicate::sendWelcomeToWebsite($user, $website, $delivery);
-                Communicate::sendVerifyEmail($user, $website, $delivery);
+                Communicate::sendWelcomeToWebsite($user, $delivery);
+                Communicate::sendVerifyEmail($user, $delivery);
                 return "login";
             } elseif ($user->verifyPassword($params["password"])) {
-                $userId = $user->id->asString();
-                $user = new UserModel($userId);
-                if ($user->hasRoleOnSite($website)) {
-                    return "login";
-                } else {
-                    if ($website->allowSignupFromOtherSites) {
-                        $user->siteRole[$website->domain] = $website->userDefaultSiteRole;
-                        $user->write();
-
-                        UserCommands::addUserToDefaultProject($user->id->asString(), $website);
-                        Communicate::sendWelcomeToWebsite($user, $website, $delivery);
-                        return "login";
-                    }
-                }
+                return "login";
             }
             return "emailNotAvailable";
         }
@@ -406,7 +384,7 @@ class UserCommands
             $user->avatar_ref = $params["avatar_ref"];
         }
         $user->role = SystemRoles::USER;
-        $user->siteRole[$website->domain] = $website->userDefaultSiteRole;
+        $user->siteRole[UrlHelper::getHostname()] = SiteRoles::PROJECT_CREATOR;
         $userId = $user->write();
 
         // Write the password
@@ -414,9 +392,8 @@ class UserCommands
         $userPassword->setPassword($params["password"]);
         $userPassword->write();
 
-        UserCommands::addUserToDefaultProject($userId, $website);
-        Communicate::sendWelcomeToWebsite($user, $website, $delivery);
-        Communicate::sendVerifyEmail($user, $website, $delivery);
+        Communicate::sendWelcomeToWebsite($user, $delivery);
+        Communicate::sendVerifyEmail($user, $delivery);
         return "login";
     }
 
@@ -424,12 +401,11 @@ class UserCommands
      * Public: Register a new user who has already authenticated with OAuth.
      *
      * @param array $params (email, username, name, ?avatar_ref)
-     * @param Website $website
      * @param DeliveryInterface $delivery
      * @throws \Exception
      * @return string {login, usernameNotAvailable}
      */
-    public static function registerOAuthUser($params, $website, DeliveryInterface $delivery = null)
+    public static function registerOAuthUser($params, DeliveryInterface $delivery = null)
     {
         $email = self::sanitizeInput($params["email"]);
         CodeGuard::checkEmptyAndThrow($email, "email");
@@ -449,14 +425,13 @@ class UserCommands
             $user->avatar_ref = $params["avatar_ref"];
         }
         $user->role = SystemRoles::USER;
-        $user->siteRole[$website->domain] = $website->userDefaultSiteRole;
+        $user->siteRole[UrlHelper::getHostname()] = SiteRoles::PROJECT_CREATOR;
         $userId = $user->write();
 
         // NO password for users registered with OAuth
 
-        UserCommands::addUserToDefaultProject($userId, $website);
-        Communicate::sendWelcomeToWebsite($user, $website, $delivery);
-        Communicate::sendVerifyEmail($user, $website, $delivery);
+        Communicate::sendWelcomeToWebsite($user, $delivery);
+        Communicate::sendVerifyEmail($user, $delivery);
         return "login";
     }
 
@@ -465,23 +440,6 @@ class UserCommands
         $user = new UserModel();
         $user->setUniqueUsernameFromString($usernameBase);
         return $user->username;
-    }
-
-    /**
-     * @param string $userId
-     * @param Website $website
-     * @throws \Exception
-     */
-    public static function addUserToDefaultProject($userId, Website $website)
-    {
-        $user = new UserModel($userId);
-        $project = ProjectModel::getDefaultProject($website);
-        if ($project) {
-            $project->addUser($user->id->asString(), ProjectRoles::CONTRIBUTOR);
-            $user->addProject($project->id->asString());
-            $project->write();
-            $user->write();
-        }
     }
 
     public static function getCaptchaData(Session $session)
@@ -520,7 +478,6 @@ class UserCommands
      * Sends an email to $toEmail to join the site.
      * @param string $projectId
      * @param string $invitingUserId
-     * @param Website $website
      * @param string $toEmail
      * @param DeliveryInterface $delivery
      * @throws \Exception
@@ -529,7 +486,6 @@ class UserCommands
     public static function sendInvite(
         $projectId,
         $invitingUserId,
-        $website,
         $toEmail,
         DeliveryInterface $delivery = null,
         $roleKey = null
@@ -552,14 +508,8 @@ class UserCommands
         }
 
         if ($invitedUser->emailPending) {
-            Communicate::sendInvite($invitingUser, $invitedUser, $project, $website, $delivery);
+            Communicate::sendInvite($invitingUser, $invitedUser, $project, $delivery);
             $invitedUserId = $invitedUser->id->asString();
-        }
-
-        // Make sure the user exists on the site
-        if (!$invitedUser->hasRoleOnSite($website)) {
-            $invitedUser->siteRole[$website->domain] = $website->userDefaultSiteRole;
-            $invitedUser->write();
         }
 
         // Verify authority of $invitingUser to invite someone of this role
@@ -600,7 +550,7 @@ class UserCommands
             $invitedUserId = $invitedUser->write();
             $project->addUser($invitedUserId, $roleKey);
             $project->write();
-            Communicate::sendAddedToProject($invitingUser, $invitedUser, $project, $website, $delivery);
+            Communicate::sendAddedToProject($invitingUser, $invitedUser, $project, $delivery);
         }
 
         return $invitedUserId;
@@ -610,20 +560,14 @@ class UserCommands
      * Sends an email to request joining of the project
      * @param string $projectId
      * @param string $userId
-     * @param Website $website
      * @param DeliveryInterface $delivery
      * @throws \Exception
      * @return string $userId
      */
-    public static function sendJoinRequest($projectId, $userId, $website, DeliveryInterface $delivery = null)
+    public static function sendJoinRequest($projectId, $userId, DeliveryInterface $delivery = null)
     {
         $newUser = new UserModel($userId);
         $project = new ProjectModel($projectId);
-
-        // Make sure the user exists on the site
-        if (!$newUser->hasRoleOnSite($website)) {
-            $newUser->siteRole[$website->domain] = $website->userDefaultSiteRole;
-        }
 
         // Determine if user is already a member of the project
         if ($project->userIsMember($newUser->id->asString())) {
@@ -636,8 +580,8 @@ class UserCommands
 
         $admin = new UserModel($project->ownerRef->asString());
         if ($admin->email != "") {
-            Communicate::sendJoinRequest($newUser, $admin, $project, $website, $delivery);
-            Communicate::sendJoinRequestConfirmation($newUser, $project, $website, $delivery);
+            Communicate::sendJoinRequest($newUser, $admin, $project, $delivery);
+            Communicate::sendJoinRequestConfirmation($newUser, $project, $delivery);
         }
 
         return $admin;
@@ -646,23 +590,17 @@ class UserCommands
     /**
      * @param string $projectId
      * @param string $userId
-     * @param Website $website
      * @param ProjectRoles $role
      * @param DeliveryInterface $delivery
      * @return IdReference|UserModel
      * @throws \Exception
      */
-    public static function acceptJoinRequest($projectId, $userId, $website, $role, DeliveryInterface $delivery = null)
+    public static function acceptJoinRequest($projectId, $userId, $role, DeliveryInterface $delivery = null)
     {
         $newUser = new UserModel($userId);
         $project = new ProjectModel($projectId);
 
         ProjectCommands::updateUserRole($projectId, $userId, $role);
-
-        // Make sure the user exists on the site
-        if (!$newUser->hasRoleOnSite($website)) {
-            $newUser->siteRole[$website->domain] = $website->userDefaultSiteRole;
-        }
 
         // Determine if user is already a member of the project
         if ($project->userIsMember($newUser->id->asString())) {
@@ -671,7 +609,7 @@ class UserCommands
 
         $admin = new UserModel($project->ownerRef->asString());
         if ($admin->email != "") {
-            Communicate::sendJoinRequestAccepted($newUser, $project, $website, $delivery);
+            Communicate::sendJoinRequestAccepted($newUser, $project, $delivery);
         }
 
         return $admin;

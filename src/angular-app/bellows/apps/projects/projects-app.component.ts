@@ -26,11 +26,8 @@ interface ViewModelProject {
 export class ProjectsAppController implements angular.IController {
   finishedLoading: boolean = false;
   rights: Rights = new Rights();
-  newProjectCollapsed: boolean = true;
   selected: Project[] = [];
   projects: Project[] = [];
-  projectTypeNames: any;
-  projectTypesBySite: () => string[];
   siteName: string;
   projectCount: number;
 
@@ -52,8 +49,6 @@ export class ProjectsAppController implements angular.IController {
              ) { }
 
   $onInit() {
-    this.projectTypeNames = this.projectService.data.projectTypeNames;
-    this.projectTypesBySite = this.projectService.data.projectTypesBySite;
     this.applicationHeaderService.setPageName('My Projects');
     this.breadcrumbService.set('top', [{
           href: '/app/projects',
@@ -109,12 +104,7 @@ export class ProjectsAppController implements angular.IController {
   }
 
   startProject() {
-    if (this.projectTypesBySite().length === 1) {
-      const appName = this.projectTypesBySite()[0];
-      this.$window.location.href = '/app/' + appName + '/new-project';
-    } else {
-      this.newProjectCollapsed = !this.newProjectCollapsed;
-    }
+    this.$window.location.href = '/app/lexicon/new-project';
   }
 
 }

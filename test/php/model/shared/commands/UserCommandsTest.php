@@ -1,7 +1,6 @@
 <?php
 
 use Api\Library\Shared\Communicate\DeliveryInterface;
-use Api\Library\Shared\Website;
 use Api\Model\Shared\Command\ProjectCommands;
 use Api\Model\Shared\Command\UserCommands;
 use Api\Model\Shared\ProjectModel;
@@ -10,6 +9,7 @@ use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Shared\UserModel;
 use Api\Model\Shared\UserModelWithPassword;
 use PHPUnit\Framework\TestCase;
+use Api\Library\Shared\UrlHelper;
 
 class MockUserCommandsDelivery implements DeliveryInterface
 {
@@ -37,8 +37,6 @@ class UserCommandsTest extends TestCase
 
     /** @var mixed[] Data storage between tests */
     private static $save;
-
-    const CROSS_SITE_DOMAIN = "languageforge.org";
 
     public static function setUpBeforeClass(): void
     {
@@ -112,7 +110,7 @@ class UserCommandsTest extends TestCase
         $zed = new UserModel($zedId);
         $this->assertEquals($zed->avatar_ref, $zed->username . ".png");
 
-        $this->assertFalse(UserCommands::updateUserProfile($params, $zedId, self::$environ->website));
+        $this->assertFalse(UserCommands::updateUserProfile($params, $zedId));
         $zed = new UserModel($zedId);
         $this->assertNotEquals($params["avatar_ref"], $zed->avatar_ref);
     }
@@ -130,7 +128,7 @@ class UserCommandsTest extends TestCase
         $zed = new UserModel($zedId);
         $this->assertEquals("zed@example.com", $zed->email);
 
-        $this->assertFalse(UserCommands::updateUserProfile($params, $zedId, self::$environ->website));
+        $this->assertFalse(UserCommands::updateUserProfile($params, $zedId));
         $zed = new UserModel($zedId);
         $this->assertNotEquals($params["email"], $zed->email);
     }
@@ -147,7 +145,7 @@ class UserCommandsTest extends TestCase
             "email" => "joe@smith.com",
         ];
 
-        $this->assertFalse(UserCommands::updateUserProfile($params, $zedId, self::$environ->website));
+        $this->assertFalse(UserCommands::updateUserProfile($params, $zedId));
         $zed = new UserModel($zedId);
         $this->assertNotEquals($params["username"], $zed->username);
         $this->assertNotEquals($params["email"], $zed->email);
@@ -162,7 +160,7 @@ class UserCommandsTest extends TestCase
             "username" => "zeduser",
             "email" => "joe@smith.com",
         ];
-        $status = UserCommands::updateUserProfile($params, $zedId, self::$environ->website);
+        $status = UserCommands::updateUserProfile($params, $zedId);
         $this->assertEquals($zedId, $status);
         $zed = new UserModel($zedId);
         $this->assertEquals("zeduser", $zed->username);
@@ -178,7 +176,7 @@ class UserCommandsTest extends TestCase
             "username" => "jsmith",
             "email" => "joe@smith.com",
         ];
-        $status = UserCommands::updateUserProfile($params, $zedId, self::$environ->website);
+        $status = UserCommands::updateUserProfile($params, $zedId);
         $this->assertEquals("login", $status);
         $zed = new UserModel($zedId);
         $this->assertEquals("jsmith", $zed->username);
@@ -197,7 +195,7 @@ class UserCommandsTest extends TestCase
             "interfaceLanguageCode" => "th",
         ];
 
-        $newUserId = UserCommands::updateUserProfile($params, $userId, self::$environ->website);
+        $newUserId = UserCommands::updateUserProfile($params, $userId);
 
         // user profile updated
         $user = new UserModel($newUserId);
@@ -214,7 +212,7 @@ class UserCommandsTest extends TestCase
             "interfaceLanguageCode" => "th",
         ];
 
-        $newUserId = UserCommands::updateUserProfile($params, $userId, self::$environ->website);
+        $newUserId = UserCommands::updateUserProfile($params, $userId);
 
         // user profile updated
         $user = new UserModel($newUserId);
@@ -231,7 +229,7 @@ class UserCommandsTest extends TestCase
             "interfaceLanguageCode" => "th",
         ];
 
-        $newUserId = UserCommands::updateUser($params, self::$environ->website);
+        $newUserId = UserCommands::updateUser($params);
 
         // user updated
         $user = new UserModel($newUserId);
@@ -327,7 +325,7 @@ class UserCommandsTest extends TestCase
             "password" => "password",
         ];
 
-        $this->assertNotFalse("login", UserCommands::createUser($params, self::$environ->website));
+        $this->assertNotFalse("login", UserCommands::createUser($params));
     }
 
     /** @throws Exception */
@@ -338,8 +336,8 @@ class UserCommandsTest extends TestCase
             "email" => "name@example.com",
             "password" => "password",
         ];
-        $userId = UserCommands::createUser($params, self::$environ->website);
-        $this->assertEquals($userId, UserCommands::createUser($params, self::$environ->website));
+        $userId = UserCommands::createUser($params);
+        $this->assertEquals($userId, UserCommands::createUser($params));
     }
 
     /** @throws Exception */
@@ -351,10 +349,10 @@ class UserCommandsTest extends TestCase
             "email" => "name@example.com",
             "password" => "password",
         ];
-        UserCommands::createUser($params, self::$environ->website);
+        UserCommands::createUser($params);
         $params["password"] = "differentPassword";
 
-        $this->assertFalse(UserCommands::createUser($params, self::$environ->website));
+        $this->assertFalse(UserCommands::createUser($params));
     }
 
     /** @throws Exception */
@@ -368,7 +366,7 @@ class UserCommandsTest extends TestCase
         $currentUserId = self::$environ->createUser("test1", "test1", "test@test.com");
 
         // create user
-        $dto = UserCommands::createSimple($userName, $projectId, $currentUserId, self::$environ->website);
+        $dto = UserCommands::createSimple($userName, $projectId, $currentUserId);
 
         // read from disk
         $user = new UserModel($dto["id"]);
@@ -379,7 +377,7 @@ class UserCommandsTest extends TestCase
         $this->assertEquals(7, strlen($dto["password"]));
         $projectUser = $sameProject->listUsers()->entries[0];
         $this->assertEquals("username", $projectUser["username"]);
-        $userProject = $user->listProjects(self::$environ->website->domain)->entries[0];
+        $userProject = $user->listProjects()->entries[0];
         $this->assertEquals(SF_TESTPROJECT, $userProject["projectName"]);
     }
 
@@ -396,10 +394,10 @@ class UserCommandsTest extends TestCase
         $currentUserId = self::$environ->createUser("test1", "test1", "test@test.com");
 
         // create user
-        UserCommands::createSimple($name, $projectId, $currentUserId, self::$environ->website);
+        UserCommands::createSimple($name, $projectId, $currentUserId);
 
         // create user again
-        UserCommands::createSimple($name, $projectId, $currentUserId, self::$environ->website);
+        UserCommands::createSimple($name, $projectId, $currentUserId);
     }
 
     /** @throws Exception */
@@ -419,12 +417,12 @@ class UserCommandsTest extends TestCase
         $this->assertFalse(UserModel::userExists($params["email"]));
 
         $delivery = new MockUserCommandsDelivery();
-        UserCommands::register($params, self::$environ->website, $captcha_info, $delivery);
+        UserCommands::register($params, $captcha_info, $delivery);
 
         $user = new UserModel();
         $user->readByEmail($params["email"]);
         $this->assertEquals($params["email"], $user->email);
-        $this->assertEquals(0, $user->listProjects(self::$environ->website->domain)->count);
+        $this->assertEquals(0, $user->listProjects()->count);
     }
 
     /** @throws Exception */
@@ -443,7 +441,7 @@ class UserCommandsTest extends TestCase
         $captcha_info = ["code" => $validCode];
 
         $delivery = new MockUserCommandsDelivery();
-        $result = UserCommands::register($params, self::$environ->website, $captcha_info, $delivery);
+        $result = UserCommands::register($params, $captcha_info, $delivery);
 
         $this->assertEquals($result, "captchaFail");
     }
@@ -458,7 +456,7 @@ class UserCommandsTest extends TestCase
         $currentUserId = self::$environ->createUser("test1", "test1", "test@test.com");
 
         // create user 'username' with password, and assign an email address
-        $dto = UserCommands::createSimple($userName, $projectId, $currentUserId, self::$environ->website);
+        $dto = UserCommands::createSimple($userName, $projectId, $currentUserId);
         $user = new UserModel($dto["id"]);
         $takenEmail = "username@test.com";
         $user->email = $takenEmail;
@@ -477,7 +475,7 @@ class UserCommandsTest extends TestCase
         $delivery = new MockUserCommandsDelivery();
 
         // Attempt to register
-        $result = UserCommands::register($params, self::$environ->website, $captcha_info, $delivery);
+        $result = UserCommands::register($params, $captcha_info, $delivery);
 
         $this->assertEquals($result, "emailNotAvailable");
     }
@@ -506,7 +504,7 @@ class UserCommandsTest extends TestCase
         $delivery = new MockUserCommandsDelivery();
 
         // Attempt to register
-        $result = UserCommands::register($params, self::$environ->website, $captcha_info, $delivery);
+        $result = UserCommands::register($params, $captcha_info, $delivery);
 
         $this->assertEquals("login", $result);
     }
@@ -527,7 +525,7 @@ class UserCommandsTest extends TestCase
         self::$environ->createUser("someusername", "Some Name", "someone@example.com");
 
         $delivery = new MockUserCommandsDelivery();
-        $result = UserCommands::register($params, self::$environ->website, $captcha_info, $delivery);
+        $result = UserCommands::register($params, $captcha_info, $delivery);
 
         $this->assertEquals($result, "login");
     }
@@ -549,7 +547,7 @@ class UserCommandsTest extends TestCase
         self::$environ->createUser("someusername", "Some Name", $gmail);
         $delivery = new MockUserCommandsDelivery();
 
-        $result = UserCommands::register($params, self::$environ->website, $captcha_info, $delivery);
+        $result = UserCommands::register($params, $captcha_info, $delivery);
 
         $this->assertEquals("emailNotAvailable", $result);
     }
@@ -575,18 +573,12 @@ class UserCommandsTest extends TestCase
             "captcha" => $validCode,
         ];
 
-        $toUserId = UserCommands::sendInvite(
-            $project->id->asString(),
-            $invitingUserId,
-            self::$environ->website,
-            $params["email"],
-            $delivery
-        );
+        $toUserId = UserCommands::sendInvite($project->id->asString(), $invitingUserId, $params["email"], $delivery);
         $joeUser = new UserModel($toUserId);
         $this->assertEquals($joeUser->active, null);
         $this->assertNull($joeUser->active);
 
-        UserCommands::register($params, self::$environ->website, $captcha_info, $delivery);
+        UserCommands::register($params, $captcha_info, $delivery);
 
         $joeUser = new UserModel($toUserId);
         $this->assertTrue($joeUser->active);
@@ -603,20 +595,12 @@ class UserCommandsTest extends TestCase
         $project->write();
         $delivery = new MockUserCommandsDelivery();
 
-        $toUserId = UserCommands::sendInvite(
-            $project->id->asString(),
-            $invitingUserId,
-            self::$environ->website,
-            $toEmail,
-            $delivery
-        );
+        $toUserId = UserCommands::sendInvite($project->id->asString(), $invitingUserId, $toEmail, $delivery);
 
         // What's in the delivery?
         $toUser = new UserModel($toUserId);
-        $senderEmail = "no-reply@" . self::$environ->website->domain;
-        $expectedFrom = [$senderEmail => self::$environ->website->name];
+        $senderEmail = "no-reply@" . UrlHelper::getHostname();
         $expectedTo = [$toUser->emailPending => $toUser->name];
-        $this->assertEquals($expectedFrom, $delivery->from);
         $this->assertEquals($expectedTo, $delivery->to);
         $this->assertRegExp("/Inviting Name/", $delivery->content);
         $this->assertRegExp("/Test Project/", $delivery->content);
@@ -634,21 +618,12 @@ class UserCommandsTest extends TestCase
         $project->write();
         $delivery = new MockUserCommandsDelivery();
 
-        $toUserId = UserCommands::sendInvite(
-            $project->id->asString(),
-            $invitingUserId,
-            self::$environ->website,
-            $toEmail,
-            $delivery
-        );
+        $toUserId = UserCommands::sendInvite($project->id->asString(), $invitingUserId, $toEmail, $delivery);
 
         // What's in the delivery?
         $toUser = new UserModel($toUserId);
-        $senderEmail = "no-reply@" . self::$environ->website->domain;
-        $expectedFrom = [$senderEmail => self::$environ->website->name];
         $expectedTo = [$toUser->email => $toUser->name];
         $this->assertEquals($someoneUserId, $toUserId);
-        $this->assertEquals($expectedFrom, $delivery->from);
         $this->assertEquals($expectedTo, $delivery->to);
         $this->assertRegExp("/Inviting Name/", $delivery->content);
         $this->assertRegExp("/Test Project/", $delivery->content);
@@ -665,29 +640,15 @@ class UserCommandsTest extends TestCase
         $project->write();
         $delivery = new MockUserCommandsDelivery();
 
-        $toUser1Id = UserCommands::sendInvite(
-            $project->id->asString(),
-            $invitingUserId,
-            self::$environ->website,
-            $toEmail,
-            $delivery
-        );
+        $toUser1Id = UserCommands::sendInvite($project->id->asString(), $invitingUserId, $toEmail, $delivery);
         $delivery = new MockUserCommandsDelivery();
-        $toUser2Id = UserCommands::sendInvite(
-            $project->id->asString(),
-            $invitingUserId,
-            self::$environ->website,
-            $toEmail,
-            $delivery
-        );
+        $toUser2Id = UserCommands::sendInvite($project->id->asString(), $invitingUserId, $toEmail, $delivery);
 
         // What's in the delivery?
         $toUser = new UserModel($toUser2Id);
-        $senderEmail = "no-reply@" . self::$environ->website->domain;
-        $expectedFrom = [$senderEmail => self::$environ->website->name];
+        $senderEmail = "no-reply@" . UrlHelper::getHostname();
         $expectedTo = [$toUser->emailPending => $toUser->name];
         $this->assertEquals($toUser1Id, $toUser2Id);
-        $this->assertEquals($expectedFrom, $delivery->from);
         $this->assertEquals($expectedTo, $delivery->to);
         $this->assertRegExp("/Inviting Name/", $delivery->content);
         $this->assertRegExp("/Test Project/", $delivery->content);
@@ -706,21 +667,9 @@ class UserCommandsTest extends TestCase
         $project->write();
         $delivery = new MockUserCommandsDelivery();
 
-        $toUser1Id = UserCommands::sendInvite(
-            $project->id->asString(),
-            $invitingUserId,
-            self::$environ->website,
-            $toEmail,
-            $delivery
-        );
+        $toUser1Id = UserCommands::sendInvite($project->id->asString(), $invitingUserId, $toEmail, $delivery);
         $delivery = new MockUserCommandsDelivery();
-        $toUser2Id = UserCommands::sendInvite(
-            $project->id->asString(),
-            $invitingUserId,
-            self::$environ->website,
-            $toEmail,
-            $delivery
-        );
+        $toUser2Id = UserCommands::sendInvite($project->id->asString(), $invitingUserId, $toEmail, $delivery);
 
         // What's in the delivery?
         $this->assertEquals($someoneUserId, $toUser1Id);
@@ -743,7 +692,6 @@ class UserCommandsTest extends TestCase
         $toUserId = UserCommands::sendInvite(
             $project->id->asString(),
             $invitingUserId,
-            self::$environ->website,
             $toEmail,
             $delivery,
             ProjectRoles::MANAGER
@@ -764,7 +712,6 @@ class UserCommandsTest extends TestCase
         $toUserId = UserCommands::sendInvite(
             $project->id->asString(),
             $invitingUserId,
-            self::$environ->website,
             $toEmail,
             $delivery,
             ProjectRoles::CONTRIBUTOR
@@ -786,7 +733,6 @@ class UserCommandsTest extends TestCase
         $toUserId = UserCommands::sendInvite(
             $project->id->asString(),
             $invitingUserId,
-            self::$environ->website,
             $toEmail,
             $delivery,
             ProjectRoles::CONTRIBUTOR
@@ -817,7 +763,7 @@ class UserCommandsTest extends TestCase
     {
         self::$environ->createUser("bob", "Bob", "bob@example.com");
 
-        $list = UserCommands::userTypeaheadList("bob", "", self::$environ->website);
+        $list = UserCommands::userTypeaheadList("bob", "");
         $this->assertEquals(1, $list->totalCount);
     }
 
@@ -825,7 +771,7 @@ class UserCommandsTest extends TestCase
     {
         self::$environ->createUser("bob", "Bob", "bob@example.com");
 
-        $list = UserCommands::userTypeaheadList("bob@e", "", self::$environ->website);
+        $list = UserCommands::userTypeaheadList("bob@e", "");
         $this->assertEquals([], $list->entries);
     }
 
@@ -833,7 +779,7 @@ class UserCommandsTest extends TestCase
     {
         self::$environ->createUser("bob", "Bob", "bob@example.com");
 
-        $list = UserCommands::userTypeaheadList("bob@example.com", "", self::$environ->website);
+        $list = UserCommands::userTypeaheadList("bob@example.com", "");
         $this->assertEquals(1, $list->totalCount);
         $this->assertFalse(array_key_exists("email", $list->entries[0]), "Email should not be returned.");
     }

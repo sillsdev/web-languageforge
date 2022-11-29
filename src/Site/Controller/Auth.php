@@ -4,7 +4,6 @@ namespace Site\Controller;
 
 use Api\Library\Shared\Communicate\Communicate;
 use Api\Library\Shared\Palaso\Exception\UserUnauthorizedException;
-use Api\Library\Shared\Website;
 use Api\Model\Shared\Command\UserCommands;
 use Api\Model\Shared\UserModel;
 use Silex\Application;
@@ -60,7 +59,7 @@ class Auth extends App
                 if ($this->isLoggedIn($app)) {
                     return $app->redirect("/redirect/project");
                 }
-                $model = new AppModel($app, $appName, $this->website);
+                $model = new AppModel($app, $appName);
                 $this->setupAngularAppVariables($model);
                 $this->setupAuthView($request, $app);
                 if ($appName === "oauth-signup") {
@@ -88,11 +87,7 @@ class Auth extends App
             return $this->view($request, $app, "forgot_password");
         }
 
-        if (!$user->hasRoleOnSite($this->website)) {
-            $user->siteRole[$this->website->domain] = $this->website->userDefaultSiteRole;
-        }
-
-        Communicate::sendForgotPasswordVerification($user, $this->website);
+        Communicate::sendForgotPasswordVerification($user);
         $app["session"]
             ->getFlashBag()
             ->add("infoMessage", 'Password Reset email sent for username "' . $usernameOrEmail . '"');
@@ -109,7 +104,7 @@ class Auth extends App
             $this->data["oauth_email_for_login"] = $email;
             $avatar = $app["session"]->get(OAuthBase::SESSION_KEY_OAUTH_AVATAR_URL);
             $this->data["oauth_avatar_for_login"] = $avatar;
-            $link = Communicate::calculateSignupUrl($this->website, $email, $name, $avatar);
+            $link = Communicate::calculateSignupUrl($email, $name, $avatar);
             $this->data["oauth_uri_for_signup"] = $link;
         }
     }
@@ -128,8 +123,6 @@ class Auth extends App
     private function setupAuthView(Request $request, Application $app)
     {
         $this->data["last_username"] = $app["session"]->get(Security::LAST_USERNAME);
-
-        $this->data["website_name"] = $this->website->name;
 
         $errorMsg = $app["security.last_error"]($request);
         if ($errorMsg == "Bad credentials.") {
@@ -206,7 +199,7 @@ class Auth extends App
     {
         $userModel = new UserModel();
         $userModel->readByUserName($username);
-        $roles = AuthUserProvider::getSiteRoles($userModel, $app["website"]);
+        $roles = AuthUserProvider::getSiteRoles($userModel);
         $userWithId = new UserWithId($userModel->username, "", $userModel->username, $roles);
         $authToken = new UsernamePasswordToken($userWithId, "", "site", $userWithId->getRoles());
         $tokenStorage = $app["security.token_storage"];

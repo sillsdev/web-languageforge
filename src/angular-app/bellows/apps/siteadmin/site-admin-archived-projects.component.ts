@@ -14,7 +14,6 @@ class Rights {
 
 export class SiteAdminArchivedProjectsController implements angular.IController {
   finishedLoading = false;
-  projectTypeNames = this.projectService.data.projectTypeNames;
   archivedProjects: Project[] = [];
   selected: Project[] = [];
   rights = new Rights();
@@ -23,7 +22,7 @@ export class SiteAdminArchivedProjectsController implements angular.IController 
     'silNoticeService', 'modalService'];
   constructor(private projectService: ProjectService, private sessionService: SessionService,
               private notice: NoticeService, private modalService: ModalService) {}
-  
+
   $onInit() {
     this.sessionService.getSession().then((session) => {
       const hasRight = session.hasSiteRight(this.sessionService.domain.PROJECTS, this.sessionService.operation.DELETE);

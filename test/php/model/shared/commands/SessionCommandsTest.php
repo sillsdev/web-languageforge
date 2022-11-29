@@ -1,6 +1,5 @@
 <?php
 
-use Api\Library\Shared\Website;
 use Api\Model\Shared\Command\SessionCommands;
 use Api\Model\Shared\Command\ProjectCommands;
 use Api\Model\Shared\ProjectModel;
@@ -17,15 +16,10 @@ class SessionTestEnvironment
     /** @var string */
     public $userId;
 
-    /** @var Website */
-    public $website;
-
     public function create()
     {
         $environ = $this->getEnviron();
         $environ->clean();
-        $this->website = $environ->website;
-
         $this->project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $this->userId = $environ->createUser("test_user", "Test User", "test_user@example.com");
         $this->projectId = $this->project->id->asString();
@@ -57,16 +51,13 @@ class SessionCommandsTest extends TestCase
     {
         $environ = new LfSessionTestEnvironment();
         $environ->create();
-        $data = SessionCommands::getSessionData($environ->projectId, $environ->userId, $environ->website);
+        $data = SessionCommands::getSessionData($environ->projectId, $environ->userId);
 
         // Session data should contain a userId but not a projectId
         $this->assertArrayHasKey("userId", $data);
         $this->assertTrue(is_string($data["userId"]));
         $this->assertEquals($environ->userId, $data["userId"]);
 
-        // Session data should also contain "site", a string...
-        $this->assertArrayHasKey("baseSite", $data);
-        $this->assertTrue(is_string($data["baseSite"]));
         // ... and "fileSizeMax", an integer
         $this->assertArrayHasKey("fileSizeMax", $data);
         $this->assertTrue(is_integer($data["fileSizeMax"]));
@@ -99,7 +90,7 @@ class SessionCommandsTest extends TestCase
         $environ = new SessionTestEnvironment();
         $environ->create();
         ProjectCommands::updateUserRole($environ->projectId, $environ->userId);
-        $data = SessionCommands::getSessionData($environ->projectId, $environ->userId, $environ->website);
+        $data = SessionCommands::getSessionData($environ->projectId, $environ->userId);
 
         // Session data should contain user project rights, an array of integers
         $this->assertArrayHasKey("userProjectRights", $data);
