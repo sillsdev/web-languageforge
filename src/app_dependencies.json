@@ -1,4 +1,5 @@
 {
   "font-awesome": { "path": "dist/font-awesome/css", "cssFile": "font-awesome" },
-  "ng-table": { "path": "dist/ng-table", "cssFile": "ng-table.min" }
+  "ng-table": { "path": "dist/ng-table", "cssFile": "ng-table.min" },
+  "zxcvbn": { "path": "dist/zxcvbn", "jsFile": "zxcvbn" }
 }
