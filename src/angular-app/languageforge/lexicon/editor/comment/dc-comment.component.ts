@@ -26,7 +26,6 @@ export class CommentController implements angular.IController {
   parentGetSenseLabel: (params: { regardingField: string, contextGuid: string }) => string;
   plusOneComment: (params: { commentId: string }) => void;
   setCommentInteractiveStatus: (params: { id: string, visible: boolean }) => void;
-  toggleShowNewComment: () => void;
 
   getAvatarUrl = UtilityService.getAvatarUrl;
   showNewReplyForm = true;
@@ -56,7 +55,6 @@ export class CommentController implements angular.IController {
   }
 
   showCommentReplies(): void {
-    this.toggleShowNewComment();
     this.comment.showRepliesContainer = !this.comment.showRepliesContainer;
     this.setCommentInteractiveStatus({ id: this.comment.id, visible: this.comment.showRepliesContainer });
     this.getSenseLabel();
@@ -256,8 +254,7 @@ export const CommentComponent: angular.IComponentOptions = {
     loadComments: '&',
     parentGetSenseLabel: '&',
     plusOneComment: '&',
-    setCommentInteractiveStatus: '&',
-    toggleShowNewComment: '&'
+    setCommentInteractiveStatus: '&'
   },
   controller: CommentController,
   templateUrl: '/angular-app/languageforge/lexicon/editor/comment/dc-comment.component.html'
