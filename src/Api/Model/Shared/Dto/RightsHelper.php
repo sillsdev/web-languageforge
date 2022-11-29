@@ -136,8 +136,6 @@ class RightsHelper
             case "project_read":
             case "set_project":
             case "project_settings":
-            case "project_updateSettings":
-            case "project_readSettings":
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
 
             case "project_update":

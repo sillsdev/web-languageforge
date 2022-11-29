@@ -339,17 +339,6 @@ class ProjectCommands
         // send email notifying of acceptance
     }
 
-    public static function requestAccessForProject($projectId, $userId)
-    {
-        // add userId to request queue
-        // send email to project owner and all managers
-    }
-
-    public static function renameProject($projectId, $oldName, $newName)
-    {
-        // TODO: Write this. (Move renaming logic over from sf->project_update). RM 2013-08
-    }
-
     /**
      * Updates the ProjectSettingsModel which are settings accessible only to site administrators
      * @param string $projectId

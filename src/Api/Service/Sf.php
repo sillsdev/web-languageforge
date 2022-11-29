@@ -506,21 +506,6 @@ class Sf
         return ProjectSettingsDto::encode($this->projectId, $this->userId);
     }
 
-    /**
-     * Updates the ProjectSettingsModel which are settings accessible only to site administrators
-     * @param EmailSettings[] $emailSettingsArray
-     * @return string $result id to the projectSettingsModel
-     */
-    public function project_updateSettings($emailSettingsArray)
-    {
-        return ProjectCommands::updateProjectSettings($this->projectId, $emailSettingsArray);
-    }
-
-    public function project_readSettings()
-    {
-        return ProjectCommands::readProjectSettings($this->projectId);
-    }
-
     public function project_pageDto()
     {
         return ProjectPageDto::encode($this->projectId, $this->userId);

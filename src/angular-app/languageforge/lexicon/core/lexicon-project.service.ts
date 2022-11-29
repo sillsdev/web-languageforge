@@ -100,10 +100,6 @@ export class LexiconProjectService {
     return this.api.call('lex_project_update', [settings], callback);
   }
 
-  readSettings(callback?: JsonRpcCallback) {
-    return this.api.call('project_readSettings', [], callback);
-  }
-
   users(callback?: JsonRpcCallback) {
     return this.api.call('project_usersDto', [], callback);
   }
