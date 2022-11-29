@@ -145,7 +145,6 @@ class UserModelTest extends TestCase
                     "ownerRef" => $userId,
                     "id" => $p1,
                     "appName" => "lexicon",
-                    "siteName" => UrlHelper::getHostname(),
                     "projectCode" => "p1Code",
                 ],
                 [
@@ -153,7 +152,6 @@ class UserModelTest extends TestCase
                     "ownerRef" => $userId,
                     "id" => $p2,
                     "appName" => "lexicon",
-                    "siteName" => UrlHelper::getHostname(),
                     "projectCode" => "p2Code",
                 ],
             ],

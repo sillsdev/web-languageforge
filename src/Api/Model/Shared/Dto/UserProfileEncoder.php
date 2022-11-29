@@ -21,7 +21,6 @@ class UserProfileEncoder extends JsonEncoder
         if ($key != "projects") {
             return parent::encodeReferenceList($key, $model);
         }
-        $domain = UrlHelper::getHostname();
         $result = array_map(function ($id) use ($domain) {
             CodeGuard::checkTypeAndThrow($id, "Api\Model\Shared\Mapper\Id");
             /** @var Id $id */
@@ -33,7 +32,6 @@ class UserProfileEncoder extends JsonEncoder
                 // userProfilePropertiesEnabled is type ArrayOf, so testing for empty() didn't work
                 if (
                     !$projectModel->isArchived &&
-                    $projectModel->siteName == $domain &&
                     count($projectModel->userProperties->userProfilePropertiesEnabled) > 0
                 ) {
                     $projectDto = [];
