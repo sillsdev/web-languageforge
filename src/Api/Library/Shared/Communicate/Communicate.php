@@ -64,10 +64,7 @@ class Communicate
         DeliveryInterface $delivery = null
     ) {
         // Prepare the email message if required
-        if (
-            $user->communicate_via == UserModel::COMMUNICATE_VIA_EMAIL ||
-            $user->communicate_via == UserModel::COMMUNICATE_VIA_BOTH
-        ) {
+        if ($user->communicate_via == UserModel::COMMUNICATE_VIA_EMAIL) {
             CodeGuard::checkNotFalseAndThrow($project->emailSettings->fromAddress, "email from address");
             CodeGuard::checkNotFalseAndThrow($user->email, "email to address");
             $from = [$project->emailSettings->fromAddress => $project->emailSettings->fromName];

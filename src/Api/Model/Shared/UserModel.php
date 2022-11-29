@@ -15,7 +15,6 @@ use Api\Model\Shared\Rights\SystemRoles;
 class UserModel extends MapperModel
 {
     const COMMUNICATE_VIA_EMAIL = "email";
-    const COMMUNICATE_VIA_BOTH = "both";
 
     const GENDER_MALE = "Male";
     const GENDER_FEMALE = "Female";
