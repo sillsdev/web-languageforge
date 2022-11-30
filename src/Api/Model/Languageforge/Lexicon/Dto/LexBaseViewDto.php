@@ -36,7 +36,10 @@ class LexBaseViewDto
             "languageCode" => $interfaceLanguageCode,
             "isUserLanguageCode" => $isUserLanguageCode,
         ];
-        $data["interfaceConfig"]["selectLanguages"] = ["optionsOrder" => [], "options" => []];
+        $data["interfaceConfig"]["selectLanguages"] = [
+            "optionsOrder" => ["en"],
+            "options" => ["en" => ["name" => "English", "option" => "English", "hasSemanticDomain" => true]],
+        ];
 
         $optionlistListModel = new LexOptionListListModel($project);
         $optionlistListModel->read();
