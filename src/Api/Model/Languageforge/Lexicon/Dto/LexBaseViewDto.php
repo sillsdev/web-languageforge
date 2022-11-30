@@ -36,49 +36,7 @@ class LexBaseViewDto
             "languageCode" => $interfaceLanguageCode,
             "isUserLanguageCode" => $isUserLanguageCode,
         ];
-
-        // comment out at the moment until a refactor can be done that is more efficient (language data in the database?)
-        /*
-        $codes = ['bn', 'en', 'es', 'fa', 'fr', 'hi', 'id', 'km', 'ko', 'ms', 'my', 'ne', 'pt', 'ru', 'swh', 'te', 'th',
-         'ur', 'zh'];
-        $options = self::getLanguages($codes);
-        asort($options);    // sort by language name
-        $selectSemanticDomainLanguages = [
-            'optionsOrder' => array_keys($options),
-            'options' => $options
-        ];
-        var_dump($selectSemanticDomainLanguages);
-        */
-
-        // a stand in for the code above - all Semantic Domain languages
-        // ToDo: translate 'semantic domain only' for each language below. IJH 2018-06
-        $selectSemanticDomainLanguages = [
-            "optionsOrder" => ["id", "km", "en", "es", "fr"],
-            "options" => [
-                "id" => [
-                    "name" => "Bahasa Indonesia",
-                    "option" => "Bahasa Indonesia - semantic domain only",
-                    "hasSemanticDomain" => true,
-                ],
-                "km" => [
-                    "name" => "Central Khmer",
-                    "option" => "Central Khmer - semantic domain only",
-                    "hasSemanticDomain" => true,
-                ],
-                "en" => ["name" => "English", "option" => "English", "hasSemanticDomain" => true],
-                "es" => [
-                    "name" => "español",
-                    "option" => "español - semantic domain only",
-                    "hasSemanticDomain" => true,
-                ],
-                "fr" => [
-                    "name" => "français",
-                    "option" => "français - semantic domain only",
-                    "hasSemanticDomain" => true,
-                ],
-            ],
-        ];
-        $data["interfaceConfig"]["selectLanguages"] = $selectSemanticDomainLanguages;
+        $data["interfaceConfig"]["selectLanguages"] = ["optionsOrder" => [], "options" => []];
 
         $optionlistListModel = new LexOptionListListModel($project);
         $optionlistListModel->read();
