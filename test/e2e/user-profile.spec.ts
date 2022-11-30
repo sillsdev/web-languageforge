@@ -23,8 +23,6 @@ test.describe('E2E User Profile', () => {
 
     await expect(userProfilePage.accountTab.emailField).toHaveValue(member2Tab.email);
     await expect(userProfilePage.accountTab.usernameField).toHaveValue(member2Tab.username);
-    await expect(userProfilePage.accountTab.phoneField).toHaveValue('');
-    await expect(userProfilePage.accountTab.updatesVia.email).toHaveClass(/active/);
 
     await userProfilePage.tabs.aboutMe.click();
 
@@ -42,8 +40,6 @@ test.describe('E2E User Profile', () => {
     await userProfilePage.accountTab.colorField.selectOption({label: 'Steel Blue'});
     await userProfilePage.accountTab.animalField.selectOption({label: 'Otter'});
     const newPhone = `+1876 ${Date.now().toString().slice(0, 7)}`;
-    await userProfilePage.accountTab.phoneField.fill(newPhone);
-    await userProfilePage.accountTab.updatesVia.both.click();
 
     await userProfilePage.saveBtn.click();
     await Promise.all([
@@ -54,8 +50,6 @@ test.describe('E2E User Profile', () => {
     await expect(userProfilePage.accountTab.emailField).toHaveValue(newEmail);
     await expect(userProfilePage.accountTab.colorField).toHaveSelectedOption({label: 'Steel Blue'});
     await expect(userProfilePage.accountTab.animalField).toHaveSelectedOption({label: 'Otter'});
-    await expect(userProfilePage.accountTab.phoneField).toHaveValue(newPhone);
-    await expect(userProfilePage.accountTab.updatesVia.both).toHaveClass(/active/);
   });
 
   test('Update username and re-login', async ({writableTab}) => {

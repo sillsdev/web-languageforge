@@ -28,11 +28,6 @@ class MockUserCommandsDelivery implements DeliveryInterface
         $this->content = $content;
         $this->htmlContent = $htmlContent;
     }
-
-    public function sendSms($smsModel)
-    {
-        $this->smsModel = $smsModel;
-    }
 }
 
 class UserCommandsTest extends TestCase

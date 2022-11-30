@@ -42,13 +42,6 @@ export class SfUserProfilePage {
     avatarShape:      element(by.id('user-profile-avatar-shape')),
     avatar:           element(by.id('avatarRef')),
 
-    // Jamaican mobile phone number will move to Project scope
-    mobilePhoneInput: element(by.id('mobile_phone')),
-
-    // Contact preferences
-    emailBtn:         element(by.id('EmailButton')),
-    SMSBtn:           element(by.id('SMSButton')),
-    bothBtn:          element(by.id('BothButton')),
     saveBtn:          element(by.id('saveBtn')),
 
     selectColor: (newColor: string|RegExp) => {
@@ -73,13 +66,6 @@ export class SfUserProfilePage {
       // click another field to force validation
       return this.myAccountTab.emailInput.click();
     },
-    updateMobilePhone: async (newPhone: string) => {
-      await browser.wait(ExpectedConditions.visibilityOf(this.myAccountTab.mobilePhoneInput), Utils.conditionTimeout);
-      return this.myAccountTab.mobilePhoneInput.sendKeys(newPhone);
-    },
-    updateContactPreference() {
-      return this.bothBtn.click();
-    }
   };
 
   aboutMeTab = {

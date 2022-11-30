@@ -1277,7 +1277,7 @@ export class LexiconEditorController implements angular.IController {
     // asynchronously upon data retrieval...I'm not exactly sure what's needed here, but this is a poor-man's start.
     const entryDivId = '#entryId_' + id;
     const interval = this.$interval(() => {
-      if ($(entryDivId)[0]) {
+      if (document.querySelector(entryDivId)) {
         LexiconEditorController.syncListEntryWithCurrentEntry(entryDivId, alignment)
         this.$interval.cancel(interval)
       }
@@ -1285,7 +1285,7 @@ export class LexiconEditorController implements angular.IController {
   }
 
   private static syncListEntryWithCurrentEntry(elementId: string, alignment: string = 'center'): void {
-    const element = $(elementId)[0];
+	const element = document.querySelector(elementId);
     const block = alignment !== 'top' ? 'center' : 'start';
 
     // https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView

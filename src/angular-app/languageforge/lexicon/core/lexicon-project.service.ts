@@ -100,14 +100,6 @@ export class LexiconProjectService {
     return this.api.call('lex_project_update', [settings], callback);
   }
 
-  updateSettings(smsSettings: any, emailSettings: any, callback?: JsonRpcCallback) {
-    return this.api.call('project_updateSettings', [smsSettings, emailSettings], callback);
-  }
-
-  readSettings(callback?: JsonRpcCallback) {
-    return this.api.call('project_readSettings', [], callback);
-  }
-
   users(callback?: JsonRpcCallback) {
     return this.api.call('project_usersDto', [], callback);
   }
