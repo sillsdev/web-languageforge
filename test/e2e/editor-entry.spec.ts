@@ -17,8 +17,8 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
   let editorPageManager: EditorPage;
 
   const project: Project = {
-    name: 'editor_entry_spec_ts Project 01',
-    code: 'p01_editor_entry_spec_ts__project_01',
+    name: 'editor_entry_spec_ts Project 01' + Date.now(),
+    code: 'p01_editor_entry_spec_ts__project_01' + Date.now(),
     id: ''
   };
   let lexEntriesIds: string[] = [];
@@ -92,8 +92,8 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
         editorPageManager.senseCard, 'Definition', 'en'))
         .toHaveValue(constants.testEntry1.senses[0].definition.en.value);
       // TODO: when the partOfSpeech bug is fixed, we can uncomment the following line
-      //expect(await editorPageManager.getSelectedValueFromSelectDropdown(editorPageManager.senseCard, 'Part of Speech'))
-      //   .toEqual(constants.testEntry1.senses[0].partOfSpeech.value);
+      expect(await editorPageManager.getSelectedValueFromSelectDropdown(editorPageManager.senseCard, 'Part of Speech'))
+         .toEqual(constants.testEntry1.senses[0].partOfSpeech.displayName);
     });
 
     test('Add citation form as visible field', async ({managerTab}) => {
@@ -428,21 +428,14 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
           await expect(audio.locator(editorPageManager.audioPlayer.dropdownToggleSelector)).toBeVisible();
         });
 
-
-        // TODO: convert to navigation test
-        //   test('click on second word (found by definition)', async () => {
-        //     // await editorPage.edit.findEntryByDefinition(constants.testEntry2.senses[0].definition.en.value).click();
-        //   });
-
         test('Word 2: edit page has correct definition, part of speech', async () => {
           await editorPageManager.goto({entryId: lexEntriesIds[1]});
           await expect(editorPageManager.getTextarea(
             editorPageManager.senseCard, 'Definition', 'en'))
             .toHaveValue(constants.testEntry2.senses[0].definition.en.value);
 
-          // TODO: when part of speech is fixed, uncomment and fix test
-          // expect(await editorPageManager.getSelectedValueFromSelectDropdown(editorPageManager.senseCard, 'Part of Speech'))
-          //   .toEqual(constants.testEntry2.senses[0].partOfSpeech.value);
+          expect(await editorPageManager.getSelectedValueFromSelectDropdown(editorPageManager.senseCard, 'Part of Speech'))
+            .toEqual(constants.testEntry2.senses[0].partOfSpeech.displayName);
         });
 
         test('Dictionary citation reflects example sentences and translations', async () => {
@@ -467,11 +460,10 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
             editorPageManager.senseCard.nth(1), 'Definition', 'en'))
             .toHaveValue(constants.testMultipleMeaningEntry1.senses[1].definition.en.value);
 
-          // TODO: when part of speech is fixed, uncomment and fix test
-          // expect(await editorPageManager.getSelectedValueFromSelectDropdown(editorPageManager.senseCard.nth(0), 'Part of Speech'))
-          //   .toEqual(constants.testMultipleMeaningEntry1.senses[0].partOfSpeech.value);
-          // expect(await editorPageManager.getSelectedValueFromSelectDropdown(editorPageManager.senseCard.nth(1), 'Part of Speech'))
-          //   .toEqual(constants.testMultipleMeaningEntry1.senses[1].partOfSpeech.value);
+          expect(await editorPageManager.getSelectedValueFromSelectDropdown(editorPageManager.senseCard.nth(0), 'Part of Speech'))
+            .toEqual(constants.testMultipleMeaningEntry1.senses[0].partOfSpeech.displayName);
+          expect(await editorPageManager.getSelectedValueFromSelectDropdown(editorPageManager.senseCard.nth(1), 'Part of Speech'))
+            .toEqual(constants.testMultipleMeaningEntry1.senses[1].partOfSpeech.displayName);
         });
 
         test('Word with multiple meanings: edit page has correct example sentences, translations', async () => {
@@ -566,15 +558,14 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
           await (editorPageManager.getTextarea(editorPageManager.senseCard, 'Definition', 'en'))
             .fill(constants.testEntry3.senses[0].definition.en.value);
 
-          // TODO: when the partOfSpeech bug is fixed, fix this code
-          // await editorPageManager.getDropdown(editorPageManager.senseCard, 'Part of Speech');
-          // await Utils.clickDropdownByValue(await editorPage.edit.getOneField('Part of Speech').element(by.css('select')),
-          //   new RegExp('Noun \\(n\\)'));
-          //   await Utils.scrollTop();
+          const partOfSpeedDropdown = editorPageManager.getDropdown(editorPageManager.senseCard, 'Part of Speech');
+          partOfSpeedDropdown.selectOption({label: 'Noun (n)'});
 
           // Autosaves changes
           await editorPageManager.page.waitForURL(url => !url.hash.includes('editor/entry/_new_'));
           await editorPageManager.page.reload();
+
+          await expect(partOfSpeedDropdown).toHaveSelectedOption({label: 'Noun (n)'});
 
           const alreadyThere: string = await editorPageManager.getTextarea(editorPageManager.entryCard, lexemeLabel, 'th').inputValue();
           await (editorPageManager.getTextarea(editorPageManager.entryCard, lexemeLabel, 'th'))
@@ -613,13 +604,24 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
               editorPageManager.entryCard, lexemeLabel, 'th'))
             .toHaveValue(constants.testEntry1.lexeme.th.value);
         });
-
-        test('Check that Semantic Domain field is visible (for view settings test later)', async () => {
-          await editorPageManager.goto();
-          await expect(editorPageManager.label('Semantic Domain')).toBeVisible();
-        });
       });
 
+    });
+
+    test.describe('Entry ID in URL', () => {
+      test('URL entry id matches selected entry', async () => {
+        await editorPageManager.goto({entryId: lexEntriesIds[1]});
+        expect(editorPageManager.page.url()).toContain(lexEntriesIds[1]);
+        expect(editorPageManager.page.url()).not.toContain(lexEntriesIds[0]);
+
+        await editorPageManager.goto({entryId: lexEntriesIds[0]});
+        expect(editorPageManager.page.url()).toContain(lexEntriesIds[0]);
+        expect(editorPageManager.page.url()).not.toContain(lexEntriesIds[1]);
+
+        await editorPageManager.goto({entryId: lexEntriesIds[1]});
+        expect(editorPageManager.page.url()).toContain(lexEntriesIds[1]);
+        expect(editorPageManager.page.url()).not.toContain(lexEntriesIds[0]);
+      });
     });
 
     test.describe('Configuration check', async () => {

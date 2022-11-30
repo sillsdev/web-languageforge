@@ -89,7 +89,7 @@
       {
         "definition": { "en": { "value": "fried rice with pork" } },
         "pictures": [{ "fileName": "FriedRiceWithPork.jpg", "caption": { "en": { "value": "fried rice with pork" } } }],
-        "partOfSpeech": { "value": "n" },
+        "partOfSpeech": { "value": "n", "displayName": "Noun (n)" },
         "semanticDomain": { "values": ["1.1"] }
       }
     ]
@@ -97,7 +97,10 @@
   "testEntry2": {
     "lexeme": { "th": { "value": "หน่อไม้ฝรั่งผัดกุ้ง" }, "th-fonipa": { "value": "nɔ̀máay fàràŋ phàt kûŋ" } },
     "senses": [
-      { "definition": { "en": { "value": "asparagus with shrimp over rice" } }, "partOfSpeech": { "value": "n" } }
+      {
+        "definition": { "en": { "value": "asparagus with shrimp over rice" } },
+        "partOfSpeech": { "value": "n", "displayName": "Noun (n)" }
+      }
     ]
   },
 
@@ -127,7 +130,7 @@
     "senses": [
       {
         "definition": { "en": { "value": "that, as" } },
-        "partOfSpeech": { "value": "prep" },
+        "partOfSpeech": { "value": "prep", "displayName": "Preposition (prep)" },
         "generalNote": { "en": { "value": "Most common usage" } },
         "examples": [
           {
@@ -143,7 +146,7 @@
       },
       {
         "definition": { "en": { "value": "say, speak" } },
-        "partOfSpeech": { "value": "v" },
+        "partOfSpeech": { "value": "v", "displayName": "Verb (v)" },
         "generalNote": { "en": { "value": "This meaning is almost as common" } },
         "examples": [
           {

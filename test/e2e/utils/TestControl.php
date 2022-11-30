@@ -11,6 +11,7 @@ use Api\Model\Shared\Command\UploadResponse;
 use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\UserModel;
 use Api\Model\Shared\UserModelWithPassword;
+use Api\Model\Languageforge\Lexicon\Guid;
 use Api\Model\Languageforge\Lexicon\LexEntryModel;
 use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\Languageforge\Lexicon\Config\LexConfig;
@@ -140,7 +141,7 @@ class TestControl
         $db = MongoStore::connect(DATABASE);
         $coll = $db->selectCollection("projects");
         $coll->deleteMany(["projectCode" => $projectCode]);
-        $projectModel = new ProjectModel();
+        $projectModel = new LexProjectModel();
         $projectModel->projectName = $projectName;
         $projectModel->projectCode = $projectCode;
         $projectModel->appName = LexProjectModel::LEXICON_APP;
@@ -159,6 +160,7 @@ class TestControl
         MongoStore::dropAllCollections($projectModel->databaseName());
         MongoStore::dropDB($projectModel->databaseName());
         $projectModel->write();
+        $projectModel->initializeNewProject();
         // Now we know projectModel id, so now user models can be updated with membership
         foreach ($memberUsernames as $username) {
             $user = new UserModel();
@@ -358,6 +360,7 @@ class TestControl
         $project = ProjectModel::getByProjectCode($projectCode);
         $entry = new LexEntryModel($project);
         LexEntryDecoder::decode($entry, $data);
+        $entry->guid = Guid::makeValid("");
         return $entry->write();
     }
 
