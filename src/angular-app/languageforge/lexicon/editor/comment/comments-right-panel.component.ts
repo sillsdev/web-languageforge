@@ -153,10 +153,6 @@ export class CommentsRightPanelController implements angular.IController {
       this.commentService.comments.counts.userPlusOne[commentId] != null);
   }
 
-  toggleShowNewComment = (): void => {
-    this.showNewComment = !this.showNewComment;
-  }
-
   getSenseLabel = (regardingField: string, contextGuid: string): string => {
     if (regardingField == null || this.control.config == null) {
       return '';

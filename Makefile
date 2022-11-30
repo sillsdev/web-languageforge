@@ -9,14 +9,14 @@ start: build
 dev: start
 	docker compose up -d ui-builder
 
-.PHONY: playwright-tests-ci
-playwright-tests-ci:
+.PHONY: e2e-tests-ci
+e2e-tests-ci:
 	npm ci
 	$(MAKE) playwright-app
 	npx playwright install chromium && npx playwright test -c ./test/e2e/playwright.config.ts
 
-.PHONY: playwright-tests
-playwright-tests:
+.PHONY: e2e-tests
+e2e-tests:
 	npm install
 	$(MAKE) playwright-app
 	docker compose up -d ui-builder
@@ -29,19 +29,6 @@ playwright-app:
 	docker compose up -d app-for-playwright
     # wait until the app-for-playwright service is serving up HTTP before continuing
 	until curl localhost:3238 > /dev/null 2>&1; do sleep 1; done
-
-.PHONY: e2e-tests
-e2e-tests:
-	docker compose build app-for-e2e test-e2e
-	docker compose restart app-for-e2e || docker compose up -d app-for-e2e
-	docker compose run -e TEST_SPECS=$(TEST_SPECS) test-e2e
-
-.PHONY: e2e-tests-ci
-e2e-tests-ci:
-	docker compose build app-for-e2e test-e2e
-	docker compose run -e GITHUB_ACTIONS=1 --name e2etests test-e2e
-	docker cp e2etests:/data/e2e-output/junitresults.xml e2e-results.xml
-	docker rm e2etests
 
 .PHONY: unit-tests
 unit-tests:

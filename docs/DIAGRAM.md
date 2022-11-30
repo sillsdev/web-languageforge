@@ -55,21 +55,9 @@ flowchart TB
 
     mail
     db[(mongo db port: 27017)]
-    selenium[selenium port: 5900]
     ld-db[ld-db port: 3306]
     ld-api[ld-api port: 3000]
     ld-api --> ld-db
-
-    test-e2e
-    test-e2e -- port 27017 --> db
-    test-e2e -- port 80 --> app-for-e2e
-    test-e2e -- port 25 --> mail
-    test-e2e -- port 4444 ---> selenium
-
-    app-for-e2e
-    app-for-e2e -- port 27017 ---> db
-    app-for-e2e -- port 25 ---> mail
-    app-for-e2e -. port 3000 ..-> ld-api
 
     app-for-playwright
     app-for-playwright -- port 27017 ---> db
