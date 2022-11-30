@@ -35,6 +35,33 @@ class SessionCommands
                     ],
                     "optionsOrder" => ["en"],
                 ],
+                "selectAudioRecordingCodec" => [
+                    "options" => [
+                        "webm" => [
+                            "codec" => "OPUS",
+                            "container" => "WEBM",
+                        ],
+                        "wav" => [
+                            "codec" => "PCM",
+                            "container" => "WAV",
+                        ],
+                    ],
+                    "optionsOrder" => ["webm", "wav"],
+                ],
+                "selectWhenToConvertAudio" => [
+                    "options" => [
+                        "never" => [
+                            "frequency" => "never",
+                        ],
+                        "SR" => [
+                            "frequency" => "Only if necessary for Send/Receive",
+                        ],
+                        "always" => [
+                            "frequency" => "always",
+                        ],
+                    ],
+                    "optionsOrder" => ["never", "SR", "always"],
+                ],
             ],
         ];
 
