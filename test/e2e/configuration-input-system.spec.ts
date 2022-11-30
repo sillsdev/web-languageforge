@@ -2,7 +2,7 @@ import { projectPerTest, test } from './utils/fixtures';
 import { EditorPage } from './pages/editor.page';
 import { expect } from '@playwright/test';
 import { ConfigurationPageInputSystemsTab } from './pages/configuration-input-systems.tab';
-import { random } from './utils/random';
+import { random } from './utils';
 
 test.describe('Configuration Input Systems', async () => {
 

@@ -1,7 +1,7 @@
 import type { PlaywrightTestConfig } from '@playwright/test';
 import { expect } from '@playwright/test';
 import { devices } from '@playwright/test';
-import { toHaveSelectedOption } from './utils/playwright-helpers';
+import { matchers } from './utils/custom-matchers';
 
 /**
  * Read environment variables from file.
@@ -9,16 +9,14 @@ import { toHaveSelectedOption } from './utils/playwright-helpers';
  */
 // require('dotenv').config();
 
-expect.extend({
-  toHaveSelectedOption,
-});
+expect.extend({...matchers});
 
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
 const config: PlaywrightTestConfig = {
   /* Maximum time one test can run for. */
-  timeout: 30 * 1000,
+  timeout: 60 * 1000,
   expect: {
     /**
      * Maximum time expect() should wait for the condition to be met.

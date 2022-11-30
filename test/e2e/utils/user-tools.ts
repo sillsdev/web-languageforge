@@ -5,6 +5,7 @@ import { E2EUsernames } from "./e2e-users";
 import * as fs from 'fs';
 import constants from "../testConstants.json";
 import path from "path";
+import { testPath } from './path-utils';
 
 const SESSION_LIFETIME = 365 * 24 * 60 * 60 * 1000; // 1 year, in milliseconds
 
@@ -33,11 +34,7 @@ export async function initUser(context: BrowserContext, user: E2EUsernames) {
 }
 
 export function getStorageStatePath(browser: string, user: string): string {
-  const testRoot = 'test/e2e';
   const storageRoot = 'test-storage-state'
   const storageState = `${browser}-${user}-storageState.json`;
-  // true if running tests with VS-Code extension otherwise false
-  return process.cwd().endsWith(testRoot)
-    ? path.join(storageRoot, storageState)
-    : path.join(testRoot, storageRoot, storageState);
+  return testPath(path.join(storageRoot, storageState));
 }

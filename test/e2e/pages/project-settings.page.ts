@@ -41,10 +41,6 @@ export class ProjectSettingsPage extends BasePage<ProjectSettingsPage> {
     await this.deleteModal.confirm.click();
   }
 
-  async countNotices(): Promise<number> {
-    return await this.noticeList.count();
-  }
-
   async setDefaultInterfaceLanguage(language: string) {
     await expect(this.projectTab.tabTitle).toBeVisible();
     await expect(this.projectTab.saveButton).toBeEnabled();

@@ -3,7 +3,7 @@ import { UserProfilePage } from './pages/user-profile.page';
 import { expect } from '@playwright/test';
 import { LoginPage } from './pages/login.page';
 import { ProjectsPage } from './pages/projects.page';
-import { random } from './utils/random';
+import { random } from './utils';
 
 test.describe('E2E User Profile', () => {
 

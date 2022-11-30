@@ -36,7 +36,7 @@ test.describe('E2E Project Settings app', () => {
       const projectId = (await initTestProject(request, project.code, project.name, admin.username, [member.username])).id;
       project.id = projectId;
     }
-    await addUserToProject(request, projects[0].code, manager.username, 'manager');
+    await addUserToProject(request, projects[0], manager.username, 'manager');
     project4.id = (await initTestProject(request, project4.code, project4.name, manager.username, [])).id;
   });
 
@@ -57,7 +57,7 @@ test.describe('E2E Project Settings app', () => {
   test('Project owner can manage project they own', async ({ adminTab }) => {
     const projectSettingsPage = new ProjectSettingsPage(adminTab, projects[0]);
     await projectSettingsPage.goto();
-    expect(await projectSettingsPage.noticeList.count()).toBe(0);
+    await expect(projectSettingsPage.noticeList).toHaveCount(0);
     await projectSettingsPage.deleteTab.tabTitle.click();
     await expect(projectSettingsPage.deleteTab.deleteProjectButton).toBeVisible();
     await expect(projectSettingsPage.deleteTab.deleteProjectButton).toBeDisabled();
@@ -72,10 +72,10 @@ test.describe('E2E Project Settings app', () => {
   test('Manager can delete if owner', async ({managerTab}) => {
     const projectsPage = new ProjectsPage(managerTab);
     await projectsPage.goto();
-    expect(await projectsPage.hasProject(project4.name)).toBe(true);
+    await expect(projectsPage.projectRow(project4.name)).toBeVisible();
     const projectSettingsPage = new ProjectSettingsPage(managerTab, project4);
     await projectSettingsPage.goto();
-    expect(await projectSettingsPage.countNotices()).toBe(0);
+    await expect(projectSettingsPage.noticeList).toHaveCount(0);
 
     await projectSettingsPage.deleteTab.tabTitle.click();
     await expect(projectSettingsPage.deleteTab.deleteProjectButton).toBeVisible();
@@ -86,7 +86,7 @@ test.describe('E2E Project Settings app', () => {
     await projectSettingsPage.deleteModal.confirm.click();
 
     await projectsPage.waitForPage();
-    expect(await projectsPage.hasProject(project4.name)).toBe(false);
+    await expect(projectsPage.projectRow(project4.name)).not.toBeVisible();
   });
 
 });

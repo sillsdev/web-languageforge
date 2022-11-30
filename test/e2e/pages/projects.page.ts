@@ -1,5 +1,4 @@
 import { expect, Locator, Page } from '@playwright/test';
-import { timeStamp } from 'console';
 import { BasePage } from './base-page';
 
 export type UserRoles =
@@ -70,32 +69,12 @@ export class ProjectsPage extends BasePage<ProjectsPage> {
     await this.shareProjectSendInvitationButton.click();
   }
 
-  async hasProject(projectName: string): Promise<boolean> {
-    const count = await this.projectRow(projectName).count();
-    if (count > 1) {
-      throw new Error('Found multiple matching projects');
-    }
-    return count === 1;
-  }
-
   projectRow(projectName: string): Locator {
-    return this.page.locator('listview .row:has-text("' + projectName + '")');
+    return this.page.locator(`listview .row:has-text("${projectName}")`);
   }
 
   projectLink(projectName: string): Locator {
-    return this.page.locator('listview .row a:has-text("' + projectName + '")');
-  }
-
-  async projectIsLinked(projectName: string): Promise<boolean> {
-    return this.projectLink(projectName).isVisible();
-  }
-
-  async projectHasAddTechSupportButton(projectName: string): Promise<boolean> {
-    return this.projectAddTechSupportButtonLocator(projectName).isVisible();
-  }
-
-  async projectHasLeaveProjectButton(projectName: string): Promise<boolean> {
-    return this.projectLeaveProjectButtonLocator(projectName).isVisible();
+    return this.page.locator(`listview .row a:has-text("${projectName}")`);
   }
 
   projectAddTechSupportButtonLocator(projectName: string): Locator {

@@ -8,6 +8,7 @@ import { NoticeElement } from './components/notice.component';
 import { Project, toProject } from './utils/types';
 import { initTestProject } from './utils/testSetup';
 import constants from './testConstants.json';
+import { testFile } from './utils';
 
 test.describe('Lexicon E2E New Project wizard app', () => {
   let newLexProjectPageMember: NewLexProjectPage;
@@ -208,7 +209,7 @@ test.describe('Lexicon E2E New Project wizard app', () => {
         await expect(newLexProjectPageMember.namePage.projectCodeExists).toBeVisible();
         await expect(newLexProjectPageMember.namePage.projectCodeAlphanumeric).not.toBeVisible();
         await expect(newLexProjectPageMember.namePage.projectCodeOk).not.toBeVisible();
-        expect(await newLexProjectPageMember.namePage.projectCodeInput).toHaveValue(existingProject.code);
+        await expect(newLexProjectPageMember.namePage.projectCodeInput).toHaveValue(existingProject.code);
         await newLexProjectPageMember.expectFormStatusHasError();
         await expect(newLexProjectPageMember.formStatus).toContainText(
           'Another project with code \'' + existingProject.code +
@@ -372,14 +373,13 @@ test.describe('Lexicon E2E New Project wizard app', () => {
         newLexProjectPageMember.page.waitForEvent('filechooser'),
         newLexProjectPageMember.initialDataPageBrowseButton.click(),
       ]);
-      expect(noticeElement.notice).toHaveCount(0);
+      await expect(noticeElement.notice).toHaveCount(0);
       // TODO: consider putting the name of this file in testConstants
-      const dummyLargeFileName: string = 'dummy_large_file.zip';
-      await fileChooser.setFiles('test/e2e/shared-files/' + dummyLargeFileName);
+      await fileChooser.setFiles(testFile('dummy_large_file.zip'));
       await expect(newLexProjectPageMember.initialDataPageBrowseButton).toBeVisible();
       await expect(newLexProjectPageMember.verifyDataPage.entriesImported).not.toBeVisible();
       await expect(noticeElement.notice).toBeVisible();
-      expect(noticeElement.notice).toHaveCount(1);
+      await expect(noticeElement.notice).toHaveCount(1);
       await expect(noticeElement.notice).toContainText('is too large. It must be smaller than');
       await newLexProjectPageMember.expectFormStatusHasNoError();
       await noticeElement.closeButton.click();
@@ -390,11 +390,11 @@ test.describe('Lexicon E2E New Project wizard app', () => {
         newLexProjectPageMember.page.waitForEvent('filechooser'),
         newLexProjectPageMember.initialDataPageBrowseButton.click(),
       ]);
-      expect(noticeElement.notice).toHaveCount(0);
+      await expect(noticeElement.notice).toHaveCount(0);
       const jpgFileName: string = 'FriedRiceWithPork.jpg'
-      await fileChooser2.setFiles('test/e2e/shared-files/' + jpgFileName);
+      await fileChooser2.setFiles(testFile(jpgFileName));
       await expect(noticeElement.notice).toBeVisible();
-      expect(noticeElement.notice).toHaveCount(1);
+      await expect(noticeElement.notice).toHaveCount(1);
       await expect(noticeElement.notice).toContainText(jpgFileName + ' is not an allowed compressed file. Ensure the file is');
       await expect(newLexProjectPageMember.initialDataPageBrowseButton).toBeVisible();
       await expect(newLexProjectPageMember.verifyDataPage.entriesImported).not.toBeVisible();
@@ -407,14 +407,14 @@ test.describe('Lexicon E2E New Project wizard app', () => {
         newLexProjectPageMember.page.waitForEvent('filechooser'),
         newLexProjectPageMember.initialDataPageBrowseButton.click(),
       ]);
-      expect(noticeElement.notice).toHaveCount(0);
+      await expect(noticeElement.notice).toHaveCount(0);
       // TODO: potentially add another test testing for invalid zip file, notice text "Import failed. Status: 400 Bad Request- [object Object]"
       // const dummySmallFileName: string = 'dummy_small_file.zip';
       const testLexProjectFileName: string = 'TestLexProject.zip';
       const numberOfEntriesInTestLexProjectFile: number = 2;
-      await fileChooser3.setFiles('test/e2e/shared-files/' + testLexProjectFileName);
+      await fileChooser3.setFiles(testFile(testLexProjectFileName));
       await expect(newLexProjectPageMember.verifyDataPage.entriesImported).toBeVisible();
-      expect(noticeElement.notice).toHaveCount(1);
+      await expect(noticeElement.notice).toHaveCount(1);
       await expect(noticeElement.notice).toContainText('Successfully imported ' + testLexProjectFileName);
       await newLexProjectPageMember.expectFormStatusHasNoError();
 

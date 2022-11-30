@@ -7,7 +7,6 @@ import { NoticeElement } from './components/notice.component';
 import { Project } from './utils/types';
 
 import { initTestProject, addUserToProject } from './utils/testSetup';
-import { navigate } from './utils/navigate';
 import { EditorPage } from './pages/editor.page';
 
 
@@ -72,11 +71,11 @@ test.describe('E2E Projects List app', () => {
     });
 
     test('Project to which user is added shows up when page reloaded', async ({ request, member }) => {
-      expect(await projectsPageMember.hasProject(project4.name)).toBe(false);
-      await addUserToProject(request, project4.code, member.username);
+      await expect(projectsPageMember.projectRow(project4.name)).not.toBeVisible();
+      await addUserToProject(request, project4, member.username);
       await projectsPageMember.page.reload();
       await projectsPageMember.goto();
-      expect(await projectsPageMember.hasProject(project4.name)).toBe(true);
+      await expect(projectsPageMember.projectRow(project4.name)).toBeVisible();
     });
   });
 
@@ -98,29 +97,29 @@ test.describe('E2E Projects List app', () => {
     });
 
     test('Should allow admin to add him- or herself to the project as tech support if not already a manager', async () => {
-      expect(await projectsPageAdmin.projectIsLinked(project5.name)).toBe(false);
-      expect(await projectsPageAdmin.projectHasAddTechSupportButton(project5.name)).toBe(true);
+      await expect(projectsPageAdmin.projectLink(project5.name)).not.toBeVisible();
+      await expect(projectsPageAdmin.projectAddTechSupportButtonLocator(project5.name)).toBeVisible();
 
       await projectsPageAdmin.projectAddTechSupportButtonLocator(project5.name).click();
-      await expect(await projectsPageAdmin.projectAddTechSupportButtonLocator(project5.name)).not.toBeVisible();
+      await expect(projectsPageAdmin.projectAddTechSupportButtonLocator(project5.name)).not.toBeVisible();
     });
 
 
     test('Should allow admin (tech support) to remove him- or herself from a project' , async () => {
-      expect(await projectsPageAdmin.projectIsLinked(project4.name)).toBe(true);
-      expect(await projectsPageAdmin.projectHasLeaveProjectButton(project4.name)).toBe(true);
+      await expect(projectsPageAdmin.projectLink(project4.name)).toBeVisible();
+      await expect(projectsPageAdmin.projectAddTechSupportButtonLocator(project4.name)).toBeVisible();
 
       await projectsPageAdmin.projectLeaveProjectButtonLocator(project4.name).click();
 
       const noticeElement = new NoticeElement(projectsPageAdmin.page);
       await expect(noticeElement.notice).toBeVisible();
       await expect(noticeElement.notice).toContainText(`${project4.name} is no longer in your projects.`);
-      await expect(await projectsPageAdmin.projectLeaveProjectButtonLocator(project4.name)).not.toBeVisible();
+      await expect(projectsPageAdmin.projectLeaveProjectButtonLocator(project4.name)).not.toBeVisible();
       await expect(projectsPageAdmin.projectLink(project4.name)).not.toBeVisible();
 
       // admin is no longer a contributor
-      expect(await projectsPageAdmin.projectIsLinked(project4.name)).toBe(false);
-      expect(await projectsPageAdmin.projectHasAddTechSupportButton(project4.name)).toBe(true);
+      await expect(projectsPageAdmin.projectLink(project4.name)).not.toBeVisible();
+      await expect(projectsPageAdmin.projectAddTechSupportButtonLocator(project4.name)).toBeVisible();
 
     });
 

@@ -4,6 +4,7 @@ import { BasePage, GotoOptions } from './base-page';
 import { ConfigurationPageFieldsTab } from './configuration-fields.tab';
 import { EntriesListPage } from './entries-list.page';
 import { ProjectSettingsPage } from './project-settings.page';
+import { EditorComment } from '../components/editor-comment';
 
 export interface EditorGotoOptions extends GotoOptions {
   entryId?: string;
@@ -15,28 +16,29 @@ type UploadType =
 ;
 
 export class EditorPage extends BasePage<EditorPage> {
+
   readonly entriesListPage = new EntriesListPage(this.page, this.project);
 
-  readonly settingsMenuLink = this.page.locator('#settings-dropdown-button');
+  readonly settingsMenuLink = this.locator('#settings-dropdown-button');
   readonly settingsMenu = {
-    projectSettingsLink: this.page.locator('#dropdown-project-settings'),
-    configurationLink: this.page.locator('#dropdown-configuration'),
+    projectSettingsLink: this.locator('#dropdown-project-settings'),
+    configurationLink: this.locator('#dropdown-configuration'),
   };
 
   readonly lexAppToolbar = {
-    backToListButton: this.page.locator('#toListLink'),
-    toggleCommentsButton: this.page.locator('#toCommentsLink'),
-    toggleExtraFieldsButton: this.page.locator('#toggleHiddenFieldsBtn')
+    backToListButton: this.locator('#toListLink'),
+    toggleCommentsButton: this.locator('#toCommentsLink'),
+    toggleExtraFieldsButton: this.locator('#toggleHiddenFieldsBtn')
   };
-  readonly renderedDivs = this.page.locator('.dc-rendered-entryContainer');
+  readonly renderedDivs = this.locator('.dc-rendered-entryContainer');
 
   readonly search = {
-    searchInput: this.page.locator('#editor-entry-search-entries'),
-    matchCount: this.page.locator('#totalNumberOfEntries >> span')
+    searchInput: this.locator('#editor-entry-search-entries'),
+    matchCount: this.locator('#totalNumberOfEntries >> span')
   };
 
-  readonly entryCard = this.page.locator('.entry-card');
-  readonly senseCard = this.page.locator('.dc-sense.card');
+  readonly entryCard = this.locator('.entry-card');
+  readonly senseCard = this.locator('.dc-sense.card');
   readonly exampleCardSelector = '.dc-example';
   readonly semanticDomainSelector = '.dc-semanticdomain-value';
 
@@ -44,7 +46,7 @@ export class EditorPage extends BasePage<EditorPage> {
   readonly moveDownButtonSelector = 'a[data-ng-click="$ctrl.move($ctrl.index, 1)"]:not(.ng-hide)';
   readonly moveUpButtonSelector = 'a[data-ng-click="$ctrl.move($ctrl.index, -1)"]:not(.ng-hide)';
 
-  readonly compactEntryListContainer = this.page.locator('#compactEntryListContainer');
+  readonly compactEntryListContainer = this.locator('#compactEntryListContainer');
   readonly compactEntryListItem = this.compactEntryListContainer.locator('.lexiconListItemCompact');
 
   readonly audioPlayer = {
@@ -71,21 +73,51 @@ export class EditorPage extends BasePage<EditorPage> {
 
   readonly addPictureButtonSelector = 'a >> text=Add Picture';
 
+  commentBubble(fieldName: string, inputSystemAbbr?: string): Locator {
+    const fieldGroup = this.locator(`.field-container:has(label:has-text("${fieldName}"))`);
+    return fieldGroup.locator('.comment-bubble-group', {
+      has: inputSystemAbbr ? this.locator(`.wsid:text("${inputSystemAbbr}")`) : undefined,
+    }).locator('a');
+  }
+
+  commentCount(fieldName: string, inputSystemAbbr?: string): Locator {
+    return this.commentBubble(fieldName, inputSystemAbbr).locator('.commentCount');
+  }
+
+  readonly commentTextArea = this.locator('.newCommentForm textarea');
+  readonly postCommentButton = this.locator('#comment-panel-post-button');
+
+  readonly commentsSearchBar = this.locator(`.comments-search-container`);
+  readonly commentsButton = this.locator(`#toCommentsLink`);
+  readonly commentContainer = this.locator(`.commentListContainer`);
+  readonly comments = this.commentContainer.locator(`> div:visible`);
+  readonly comment = (n: number) => this.locator(`.commentListContainer > div:nth-child(${n}) .commentContainer`);
+
   constructor(page: Page, readonly project: Project) {
     super(page, `/app/lexicon/${project.id}/`, page.locator('.words-container-title, .no-entries'));
   }
 
   async goto(options?: EditorGotoOptions): Promise<EditorPage> {
+    const alreadyOnPage = this.page.url().endsWith(this.url) || this.page.url().includes('#!/editor');
     await super.goto(options);
     const entryId = options?.entryId;
-    const gotoEntry = entryId || await this.page.isVisible('[id^=entryId_]');
-    if (gotoEntry) {
+    if (entryId || alreadyOnPage) {
       // If we're navigating from one entry to another, then goto doesn't cause angular to load the new entry
       // clicking is a more realistic test anyway
-      await this.page.locator(`[id^=entryId_${entryId ?? ''}]`).first().click();
-      await super.goto({waitFor: this.page.locator('.entry-card')});
+      await Promise.all([
+        this.locator(`[id^=entryId_${entryId ?? ''}]`).first().click(),
+        this.waitForPage(),
+      ]);
     }
-    await expect(this.page.locator('.page-name >> text=' + this.project.name)).toBeVisible();
+    await expect(this.locator('.page-name >> text=' + this.project.name)).toBeVisible();
+    return this;
+  }
+
+  async waitForPage(): Promise<EditorPage> {
+    await super.waitForPage();
+    if (await this.page.isVisible('[id^=entryId_]')) {
+      await this.locator('.entry-card').waitFor();
+    }
     return this;
   }
 
@@ -111,14 +143,6 @@ export class EditorPage extends BasePage<EditorPage> {
 
   async navigateToEntriesList() {
     await this.lexAppToolbar.backToListButton.click();
-  }
-
-  getLabel(card: Locator, label: string): Locator {
-    return card.locator(`label:has-text("${label}")`).first();
-  }
-
-  async getNumberOfElementsWithSameLabel(card: Locator, label: string): Promise<number> {
-    return card.locator(`label:has-text("${label}")`).count();
   }
 
   getTextarea(card: Locator, field: string, ws: string): Locator {
@@ -170,4 +194,34 @@ export class EditorPage extends BasePage<EditorPage> {
     }
   }
 
+  getComment(n: number = 1): EditorComment {
+    return new EditorComment(this.comment(n));
+  }
+
+  async postComment(text: string): Promise<EditorComment> {
+    const currNumComments = await this.comments.count();
+    const newCommentNumber = currNumComments + 1;
+    await this.commentTextArea.type(text);
+    await this.postCommentButton.click();
+    const comment = this.getComment(newCommentNumber);
+    await comment.commentDate.waitFor();
+    return comment;
+  }
+
+  async toggleComments(fieldName: string, inputSystemAbbr?: string): Promise<void> {
+    await this.commentBubble(fieldName, inputSystemAbbr).click();
+    await this.waitIfCommentsAreClosing();
+  }
+
+  async toggleAllComments(): Promise<void> {
+    await this.commentsButton.click();
+    await this.waitIfCommentsAreClosing();
+  }
+
+  private async waitIfCommentsAreClosing(): Promise<void> {
+    const isClosing = await this.locator(`#lexAppCommentView.panel-closing`).isVisible();
+    if (isClosing) {
+      await this.locator(`#lexAppCommentView:not(.panel-closing)`).waitFor({state: 'attached'});
+    }
+  }
 }
