@@ -32,9 +32,14 @@ class LexBaseViewDto
             $isUserLanguageCode = true;
         }
 
+        $audioRecordingCodec = $project->audioRecordingCodec;
+        $whenToConvertAudio = $project->whenToConvertAudio;
+
         $data["interfaceConfig"] = [
             "languageCode" => $interfaceLanguageCode,
             "isUserLanguageCode" => $isUserLanguageCode,
+            "audioRecordingCodec" => $audioRecordingCodec,
+            "whenToConvertAudio" => $whenToConvertAudio,
         ];
 
         // comment out at the moment until a refactor can be done that is more efficient (language data in the database?)
@@ -144,7 +149,37 @@ class LexBaseViewDto
                 "zh-CN" => ["name" => "中文", "option" => "中文 - semantic domain only", "hasSemanticDomain" => true],
             ],
         ];
+
+        $selectAudioRecordingCodec = [
+            "options" => [
+                "webm" => [
+                    "codec" => "OPUS/WEBM (default)",
+                ],
+                "wav" => [
+                    "codec" => "PCM/WAV",
+                ],
+            ],
+            "optionsOrder" => ["webm", "wav"],
+        ];
+
+        $selectWhenToConvertAudio = [
+            "options" => [
+                "never" => [
+                    "frequency" => "Never (default)",
+                ],
+                "SR" => [
+                    "frequency" => "Only if necessary for Send/Receive",
+                ],
+                "always" => [
+                    "frequency" => "Always",
+                ],
+            ],
+            "optionsOrder" => ["never", "SR", "always"],
+        ];
+
         $data["interfaceConfig"]["selectLanguages"] = $selectSemanticDomainLanguages;
+        $data["interfaceConfig"]["selectAudioRecordingCodec"] = $selectAudioRecordingCodec;
+        $data["interfaceConfig"]["selectWhenToConvertAudio"] = $selectWhenToConvertAudio;
 
         $optionlistListModel = new LexOptionListListModel($project);
         $optionlistListModel->read();

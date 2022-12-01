@@ -8,6 +8,8 @@ export class InterfaceConfig {
   placementToSide = 'left';
   languageCode = 'en';
   isUserLanguageCode?: boolean;
+  audioRecordingCodec: 'webm';
+  whenToConvertAudio: 'never';
   selectLanguages?: OrderedOptions<SelectLanguage>;
   selectAudioRecordingCodec?: OrderedOptions<SelectAudioRecordingCodec>;
   selectWhenToConvertAudio?: OrderedOptions<SelectWhenToConvertAudio>;
@@ -21,7 +23,6 @@ export interface SelectLanguage {
 
 export interface SelectAudioRecordingCodec {
   codec: string;
-  container: string;
 }
 
 export interface SelectWhenToConvertAudio {

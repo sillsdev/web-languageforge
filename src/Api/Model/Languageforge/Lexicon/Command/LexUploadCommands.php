@@ -87,16 +87,23 @@ class LexUploadCommands
             $filePath = self::mediaFilePath($folderPath, $fileNamePrefix, $fileName);
             $moveOk = copy($tmpFilePath, $filePath);
 
+            // conversion to webm format (varies based on project setting)
+            $convertAudio = false;
+            if (strcmp($project->whenToConvertAudio, "always") == 0) {
+                $convertAudio = true;
+            }
             if (
-                strcmp(strtolower($fileExt), ".mp3") !== 0 &&
-                strcmp(strtolower($fileExt), ".wav") !== 0 &&
-                strcmp(strtolower($fileExt), ".webm") !== 0
+                (strcmp($project->whenToConvertAudio, "SR") == 0 && filesize($filePath) > 1000000) || // 1MB file size limit and file type requirements for send/receive 11-2022
+                (strcmp(strtolower($fileExt), ".mp3") !== 0 &&
+                    strcmp(strtolower($fileExt), ".wav") !== 0 &&
+                    strcmp(strtolower($fileExt), ".webm") !== 0)
             ) {
-                //First, find the duration of the file
-                $ffprobeCommand = `ffprobe -i $tmpFilePath -show_entries format=duration -v quiet -of csv="p=0" 2> /dev/null`;
-                $audioDuration = floatval($ffprobeCommand);
+                $convertAudio = true;
+            }
 
+            if ($convertAudio == true) {
                 $extensionlessFileName = substr($fileName, 0, strrpos($fileName, strtolower($fileExt)));
+
                 $fileName = "$extensionlessFileName.webm"; //$fileName ->> the converted file
                 `ffmpeg -i $tmpFilePath -c:a libopus $fileName 2> /dev/null`; //original file is at the tmpFilePath. convert that file and save it to be $fileName
                 $filePath = self::mediaFilePath($folderPath, $fileNamePrefix, $fileName);

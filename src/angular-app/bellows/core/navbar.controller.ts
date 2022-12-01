@@ -50,17 +50,19 @@ export class NavbarController implements angular.IController {
           placementToSide: 'left',
           languageCode: 'en',
           isUserLanguageCode: true,
+          audioRecordingCodec: 'webm',
+          whenToConvertAudio: 'never',
           selectLanguages: {
             optionsOrder: ['en'],
             options: { en: { name: 'English', option: 'English' } }
           },
           selectAudioRecordingCodec: {
-            optionsOrder: ['webm', 'wav'],
-            options: { webm: { codec: 'OPUS', container: 'WEBM'}, wav: { codec: 'PCM', container: 'WAV'}},
+            optionsOrder: ['webm'],
+            options: { webm: { codec: 'OPUS/WEBM'}},
           },
           selectWhenToConvertAudio: {
             optionsOrder: ['never', 'SR', 'always'],
-            options: { never: { frequency: 'Never'}, SR: { frequency: 'Only if necessary for Send/Receive'}, always: { frequency: 'always'}},
+            options: { never: { frequency: 'Never'} },
           }
         } as InterfaceConfig;
       const projectSettings = session.projectSettings<ProjectSettings>();
