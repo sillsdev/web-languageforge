@@ -38,7 +38,7 @@ class SessionCommands
                 "selectAudioRecordingCodec" => [
                     "options" => [
                         "webm" => [
-                            "codec" => "OPUS/WEBM (default)",
+                            "codec" => "OPUS - excellent quality/bitrate - in WEBM containers (default)",
                         ],
                     ],
                     "optionsOrder" => ["webm"],
