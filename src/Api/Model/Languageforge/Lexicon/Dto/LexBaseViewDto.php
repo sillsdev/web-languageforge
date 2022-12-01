@@ -153,10 +153,10 @@ class LexBaseViewDto
         $selectAudioRecordingCodec = [
             "options" => [
                 "webm" => [
-                    "codec" => "OPUS/WEBM (default)",
+                    "codec" => "OPUS - excellent quality/bitrate - in WEBM containers (default)",
                 ],
                 "wav" => [
-                    "codec" => "PCM/WAV",
+                    "codec" => "PCM/WAV - uncompressed - in WEBM containers (large file sizes)",
                 ],
             ],
             "optionsOrder" => ["webm", "wav"],

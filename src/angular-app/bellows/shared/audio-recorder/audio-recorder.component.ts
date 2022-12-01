@@ -41,7 +41,7 @@ export class AudioRecorderController implements angular.IController {
       codecSpecs = "audio/webm; codecs=opus";
     }
     else{
-      codecSpecs = "audio/x-wav; codecs=pcm";
+      codecSpecs = "audio/webm; codecs=pcm";
     }
 
     navigator.mediaDevices.getUserMedia({ audio: true }).then(

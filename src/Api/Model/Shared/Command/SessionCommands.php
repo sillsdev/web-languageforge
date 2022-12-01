@@ -40,25 +40,16 @@ class SessionCommands
                         "webm" => [
                             "codec" => "OPUS/WEBM (default)",
                         ],
-                        "wav" => [
-                            "codec" => "PCM/WAV",
-                        ],
                     ],
-                    "optionsOrder" => ["webm", "wav"],
+                    "optionsOrder" => ["webm"],
                 ],
                 "selectWhenToConvertAudio" => [
                     "options" => [
                         "never" => [
                             "frequency" => "Never (default)",
                         ],
-                        "SR" => [
-                            "frequency" => "Only if necessary for Send/Receive",
-                        ],
-                        "always" => [
-                            "frequency" => "Always",
-                        ],
                     ],
-                    "optionsOrder" => ["never", "SR", "always"],
+                    "optionsOrder" => ["never"],
                 ],
             ],
         ];
@@ -93,6 +84,8 @@ class SessionCommands
                 $sessionData["project"]["slug"] = $project->databaseName();
                 $sessionData["project"]["isArchived"] = $project->isArchived;
                 $sessionData["project"]["interfaceLanguageCode"] = $project->interfaceLanguageCode;
+                $sessionData["project"]["audioRecordingCodec"] = $project->audioRecordingCodec;
+                $sessionData["project"]["whenToConvertAudio"] = $project->whenToConvertAudio;
                 $sessionData["project"]["inviteToken"]["token"] = $project->inviteToken->token;
                 $sessionData["project"]["inviteToken"]["defaultRole"] = $project->inviteToken->defaultRole;
                 $sessionData["userProjectRights"] = $project->getRightsArray($userId);

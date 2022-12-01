@@ -61,7 +61,7 @@ export class NavbarController implements angular.IController {
             options: { webm: { codec: 'OPUS/WEBM'}},
           },
           selectWhenToConvertAudio: {
-            optionsOrder: ['never', 'SR', 'always'],
+            optionsOrder: ['never'],
             options: { never: { frequency: 'Never'} },
           }
         } as InterfaceConfig;
