@@ -1,13 +1,14 @@
 import * as angular from 'angular';
 import { ProjectService } from '../../../../bellows/core/api/project.service';
-import { UserService } from '../../../../bellows/core/api/user.service';
 import { Session, SessionService } from '../../../../bellows/core/session.service';
 import { ModalService } from '../../../../bellows/core/modal/modal.service';
 import { UtilityService } from '../../../../bellows/core/utility.service';
-import { Project, ProjectRole } from '../../../../bellows/shared/model/project.model';
+import { NoticeService } from 'src/angular-app/bellows/core/notice/notice.service';
+import { Project, ProjectRole, ProjectRoles } from '../../../../bellows/shared/model/project.model';
 import { User } from '../../../../bellows/shared/model/user.model';
 import { LexRoles } from '../model/lexicon-project.model';
 import { RoleDetail } from './role-dropdown.component';
+import { SiteWideNoticeService } from 'src/angular-app/bellows/core/site-wide-notice-service';
 
 export class UserManagementController implements angular.IController {
   getAvatarUrl = UtilityService.getAvatarUrl;
@@ -21,13 +22,15 @@ export class UserManagementController implements angular.IController {
   memberRoles: ProjectRole[];
 
 
-  static $inject = ['$q', 'projectService', 'userService', 'sessionService','modalService'];
+
+  static $inject = ['$window', 'projectService', 'sessionService','modalService', 'silNoticeService', 'siteWideNoticeService'];
   constructor(
-    private readonly $q: angular.IQService,
+    private $window: angular.IWindowService,
     private readonly projectService: ProjectService,
-    private readonly userService: UserService,
     private readonly sessionService: SessionService,
-    private readonly modal: ModalService) { }
+    private readonly modal: ModalService,
+    private readonly notice: NoticeService,
+    private siteWideNoticeService: SiteWideNoticeService,) { }
 
   async $onInit(): Promise<void> {
     // TODO: actually hook anonymousUserRole up to the backend
@@ -47,9 +50,11 @@ export class UserManagementController implements angular.IController {
       LexRoles.OBSERVER
     ];
 
+    this.siteWideNoticeService.displayNotices();
     await this.sessionService.getSession().then((s) => {
         this.session = s;
       });
+    this.notice.checkUrlForNotices();
   }
 
   userIsCurrentUser(user: User): boolean {
@@ -77,6 +82,13 @@ export class UserManagementController implements angular.IController {
     })
   }
 
+  userIsTechSupport(user: User): boolean {
+    if (user.role === ProjectRoles.TECH_SUPPORT.key){
+      return true;
+    }
+    return false;
+  }
+
   currentUserIsOwnerOrAdmin(): boolean {
     if (typeof this.project.ownerRef == 'object') {
       return (this.project.ownerRef.id === this.session.data.userId) || this.sessionService.userIsAdmin();
@@ -87,7 +99,6 @@ export class UserManagementController implements angular.IController {
   onSpecialRoleChanged($event: {roleDetail: RoleDetail, target: string}) {
     if ($event.target === 'anonymous_user') {
       this.project.anonymousUserRole = $event.roleDetail.role.key;
-      console.log('TODO: actually set ' + $event.target + ' role to ' + $event.roleDetail.role.key);
     }
   }
 
@@ -118,9 +129,26 @@ export class UserManagementController implements angular.IController {
     });
   }
 
+  removeSelfFromProject() {
+    const removeSelfMessage = 'Are you sure you want to remove yourself from <b>' + this.project.projectName + '</b>?';
+    this.modal.showModalSimple('Leave ' + this.project.projectName, removeSelfMessage, 'Cancel', 'Remove me from ' + this.project.projectName).then(() => {
+      this.projectService.removeSelfFromProject(this.project.id, async result => {
+        if(result.ok){
+          this.notice.push(this.notice.SUCCESS, this.project.projectName + ' is no longer in your projects.');
+          this.$window.location.href = '/app/projects';
+        }
+      });
+    });
+  }
+
   onDeleteTarget($event: { target: any }) {
     if (($event.target as User).avatar_ref !== undefined) { // target is a User
-      this.removeUser($event.target);
+      if(this.userIsCurrentUser($event.target)){
+        this.removeSelfFromProject();
+      }
+      else{
+        this.removeUser($event.target);
+      }
     }
   }
 

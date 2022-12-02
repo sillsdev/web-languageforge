@@ -1,7 +1,7 @@
 import * as angular from 'angular';
 
 import {OfflineCacheService} from '../offline/offline-cache.service';
-import {Session, SessionService} from '../session.service';
+import {SessionService} from '../session.service';
 import {ApiService, JsonRpcCallback} from './api.service';
 
 export class ProjectService {
@@ -9,7 +9,6 @@ export class ProjectService {
   protected api: ApiService;
   protected sessionService: SessionService;
   private offlineCache: OfflineCacheService;
-  private $location: angular.ILocationService;
   private $q: angular.IQService;
 
   // noinspection TypeScriptFieldCanBeMadeReadonly
@@ -19,7 +18,6 @@ export class ProjectService {
     this.api = $injector.get('apiService');
     this.sessionService = $injector.get('sessionService');
     this.offlineCache = $injector.get('offlineCache');
-    this.$location = $injector.get('$location');
     this.$q = $injector.get('$q');
   }
 
@@ -105,6 +103,10 @@ export class ProjectService {
 
   removeUsers(userIds: string[], callback?: JsonRpcCallback) {
     return this.api.call('project_removeUsers', [userIds], callback);
+  }
+
+  removeSelfFromProject(aProjectId: string, callback?: JsonRpcCallback) {
+    return this.api.call('project_removeSelf', [aProjectId], callback);
   }
 
   getDto(callback?: JsonRpcCallback) {

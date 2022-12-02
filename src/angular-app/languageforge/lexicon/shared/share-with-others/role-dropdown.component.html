@@ -1,9 +1,10 @@
 <div class="btn-group" uib-dropdown dropdown-append-to-body is-open="status.isopen">
-  <button id="single-button" type="button" class="btn btn-primary text-dark bg-light role-indicator"
+  <button id="single-button-1" ng-if="!$ctrl.userIsTechSupport()" type="button" class="btn btn-primary text-dark bg-light role-indicator"
     uib-dropdown-toggle>
-    <i class="fa fa-{{ $ctrl.selectedRoleDetail.icon }}"></i> <span class="caret"></span>
+    <i class="fa fa-{{ $ctrl.selectedRoleDetail.icon }}"></i>
+    <span class="caret"></span>
   </button>
-  <div class="dropdown-menu dropdown-menu-right modal-dropdown" uib-dropdown-menu role="menu" aria-labelledby="single-button">
+  <div ng-if="!$ctrl.userIsTechSupport()" class="dropdown-menu dropdown-menu-right modal-dropdown" uib-dropdown-menu role="menu" aria-labelledby="single-button-1">
     <a href class="dropdown-item" role="menuitem" ng-repeat="roleDetail in $ctrl.roleDetails" ng-click="$ctrl.selectRoleDetail(roleDetail)">
       <i class="fa fa-{{ roleDetail.icon }}"></i>
       {{ roleDetail.description }} <i class="fa fa-check" ng-show="$ctrl.selectedRoleDetail == roleDetail"></i>
@@ -15,13 +16,38 @@
           make owner
       </a>
     </div>
-    <div ng-if="$ctrl.allowDelete">
+    <div>
       <div class="dropdown-divider"></div>
-      <a class="dropdown-item text-danger" role="menuitem" ng-if="$ctrl.allowDelete" ng-click="$ctrl.onDeleteTarget({$event: {target: $ctrl.target}})">
+      <a class="dropdown-item text-danger" role="menuitem" ng-click="$ctrl.onDeleteTarget({$event: {target: $ctrl.target}})">
         <i class="fa fa-times"></i>
         remove
     </a>
   </div>
+</div>
+<button id="single-button-2" ng-if="$ctrl.userIsTechSupport()" type="button" class="btn btn-primary text-dark bg-light role-indicator"
+uib-dropdown-toggle>
+  <i class="fa fa-cogs"></i>
+  <span class="caret"></span>
+</button>
+<div ng-if="$ctrl.userIsTechSupport()" class="dropdown-menu dropdown-menu-right modal-dropdown" uib-dropdown-menu role="menu" aria-labelledby="single-button-2">
+  <div class="dropdown-item">
+    <i class="fa fa-cogs"></i>
+    tech support
+  </div>
+  <div ng-if="$ctrl.currentUserIsOwnerOrAdmin() && !$ctrl.target.isInvitee">
+    <div class="dropdown-divider" ></div>
+    <a class="dropdown-item" role="menuitem" ng-click="$ctrl.onOwnershipTransfer({$event: {target: $ctrl.target}})">
+        <i class="fa fa-arrow-circle-o-up"></i>
+        make owner
+    </a>
+  </div>
+  <div>
+    <div class="dropdown-divider"></div>
+    <a class="dropdown-item text-danger" role="menuitem" ng-click="$ctrl.onDeleteTarget({$event: {target: $ctrl.target}})">
+      <i class="fa fa-times"></i>
+      remove
+  </a>
+</div>
 </div>
 </div>
 
