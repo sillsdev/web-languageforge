@@ -49,7 +49,7 @@
 			icon: MessageAlertIcon,
 			url: `/app/lexicon/${ project.id }#!/editor/entry/000000?filterBy=Comments`,
 		},
-	]
+	].filter(({ value }) => value !== undefined)
 
 	async function load_all_activities() {
 		activities = await GET(`/projects/${$page.params.project_code}/activities`)

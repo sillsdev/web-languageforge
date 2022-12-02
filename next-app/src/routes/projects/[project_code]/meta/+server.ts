@@ -1,24 +1,29 @@
+import { can_view_comments } from '$lib/auth'
+import { current_user } from '$lib/data/user'
 import { sf } from '$lib/fetch/server'
 
 export async function get({ project_code, cookie }) {
 	const { id, projectName: name, users } = await sf({ name: 'set_project', args: [ project_code ], cookie })
-
 	const { entries, comments } = await sf({ name: 'lex_stats', cookie })
 
-	const entries_with_picture = entries.filter(has_picture)
-	const entries_with_audio = entries.filter(has_audio)
-	const unresolved_comments = comments.filter(({ status }) => status !== 'resolved')
-
-	return {
+	const details = {
 		id,
 		code: project_code,
 		name,
-		num_entries: entries.length,
-		num_entries_with_audio: entries_with_audio.length,
-		num_entries_with_pictures: entries_with_picture.length,
-		num_unresolved_comments: unresolved_comments.length,
 		num_users: Object.keys(users).length,
+		num_entries: entries.length,
+		num_entries_with_audio: entries.filter(has_audio).length,
+		num_entries_with_pictures: entries.filter(has_picture).length,
 	}
+
+	const { role } = await current_user(cookie)
+	if (can_view_comments(role)) {
+		const unresolved_comments = comments.filter(({ status }) => status !== 'resolved')
+
+		details.num_unresolved_comments = unresolved_comments.length
+	}
+
+	return details
 }
 
 function has_picture(entry) {
@@ -26,7 +31,7 @@ function has_picture(entry) {
 }
 
 // audio can be found in lots of places other than lexeme, ref impl used: https://github.com/sillsdev/web-languageforge/blob/develop/src/angular-app/bellows/core/offline/editor-data.service.ts#L523
-function has_audio(anEntry) {
+function has_audio(entry) {
 	const contains_audio = writing_system => writing_system.endsWith('-audio') // naming convention imposed by src/angular-app/languageforge/lexicon/settings/configuration/input-system-view.model.ts L81
 
 	// examples of possible locations where audio may be found in the entry's data:
@@ -70,7 +75,7 @@ function has_audio(anEntry) {
 	// }
 	const in_example = (senses = []) => senses.some(sense => in_meaning(sense.examples))
 
-	const { senses, ...entry } = anEntry
+	const { senses, ...fields } = entry
 
-	return in_fields(entry) || in_meaning(senses) || in_example(senses)
+	return in_fields(fields) || in_meaning(senses) || in_example(senses)
 }
