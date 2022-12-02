@@ -26,7 +26,7 @@ e2e-tests:
 playwright-app:
     # delete any cached session storage state files if the service isn't running
 	docker compose ps app-for-playwright > /dev/null 2>&1 || $(MAKE) clean-test
-	docker compose up -d app-for-playwright
+	docker compose up -d app-for-playwright --build
     # wait until the app-for-playwright service is serving up HTTP before continuing
 	until curl localhost:3238 > /dev/null 2>&1; do sleep 1; done
 

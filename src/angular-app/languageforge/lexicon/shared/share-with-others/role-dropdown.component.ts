@@ -25,7 +25,7 @@ export class RoleDropdownController implements angular.IController {
   project: Project;
   session: Session;
   allowDisable: boolean;
-  allowDelete: boolean;
+  userIsTechSupport: () => boolean;
   currentUserIsOwnerOrAdmin: () => boolean;
   onRoleChanged: (params: { $event: { roleDetail: RoleDetail, target: any } }) => void;
   onDeleteTarget: (params: { $event: { target: any } }) => void;
@@ -96,8 +96,8 @@ export const RoleDropdownComponent: angular.IComponentOptions = {
     onOwnershipTransfer: '&',
     onRoleChanged: '&',
     onDeleteTarget: '&',
+    userIsTechSupport: '&',
     currentUserIsOwnerOrAdmin: '&',
-    allowDelete: '<'
   },
   controller: RoleDropdownController,
   templateUrl: '/angular-app/languageforge/lexicon/shared/share-with-others/role-dropdown.component.html'

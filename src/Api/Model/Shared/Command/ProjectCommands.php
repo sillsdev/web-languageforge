@@ -293,14 +293,14 @@ class ProjectCommands
 
     /**
      * Removes users from the project (two-way unlink)
-     * @param string $projectId
+     * @param string $aProjectId - might not be the session's current project. Any project that the user is part of.
      * @param array<string> $userIds
      * @return string $projectId
      * @throws \Exception
      */
-    public static function removeUsers($projectId, $userIds)
+    public static function removeUsers($aProjectId, $userIds)
     {
-        $project = new ProjectModel($projectId);
+        $project = new ProjectModel($aProjectId);
         foreach ($userIds as $userId) {
             // Guard against removing project owner
             if ($userId != $project->ownerRef->id) {
@@ -314,7 +314,7 @@ class ProjectCommands
             }
         }
 
-        return $projectId;
+        return $aProjectId;
     }
 
     /**

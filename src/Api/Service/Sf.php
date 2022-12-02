@@ -456,9 +456,9 @@ class Sf
     }
 
     // REVIEW: should this be part of the general project API ?
-    public function project_removeUsers($userIds)
+    public function project_removeUsers($aProjectId, $userIds)
     {
-        return ProjectCommands::removeUsers($this->projectId, $userIds);
+        return ProjectCommands::removeUsers($aProjectId, $userIds);
     }
 
     /**

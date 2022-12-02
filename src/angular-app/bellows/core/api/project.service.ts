@@ -103,8 +103,8 @@ export class ProjectService {
     return this.api.call('project_denyJoinRequest', [userId], callback);
   }
 
-  removeUsers(userIds: string[], callback?: JsonRpcCallback) {
-    return this.api.call('project_removeUsers', [userIds], callback);
+  removeUsers(aProjectId: string, userIds: string[], callback?: JsonRpcCallback) {
+    return this.api.call('project_removeUsers', [aProjectId, userIds], callback);
   }
 
   getDto(callback?: JsonRpcCallback) {

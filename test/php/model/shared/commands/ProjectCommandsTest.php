@@ -281,7 +281,7 @@ class ProjectCommandsTest extends TestCase
 
         self::$environ->clean();
 
-        // setup project and users.  user1 is the project owner
+        // setup project and users.  user2 is the project owner
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
         $user1Id = self::$environ->createUser("user1name", "User1 Name", "user1@example.com");
@@ -302,7 +302,7 @@ class ProjectCommandsTest extends TestCase
         self::$save["user1Id"] = $user1Id;
         self::$save["user2Id"] = $user2Id;
 
-        // remove users from project.  user1 still remains as project owner
+        // remove users from project.  user2 still remains as project owner
         $userIds = [$user1->id->asString(), $user2->id->asString()];
 
         ProjectCommands::removeUsers($projectId, $userIds);
@@ -319,7 +319,7 @@ class ProjectCommandsTest extends TestCase
         $sameUser1 = new UserModel(self::$save["user1Id"]);
         $sameUser2 = new UserModel(self::$save["user2Id"]);
 
-        // project still has project owner
+        // project still has project owner (user2)
         $this->assertEquals(1, $sameProject->listUsers()->count);
         $this->assertEquals(0, $sameUser1->listProjects()->count);
         $this->assertEquals(1, $sameUser2->listProjects()->count);

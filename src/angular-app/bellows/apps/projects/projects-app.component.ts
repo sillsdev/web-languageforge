@@ -5,7 +5,8 @@ import { ApplicationHeaderService } from '../../core/application-header.service'
 import { BreadcrumbService } from '../../core/breadcrumbs/breadcrumb.service';
 import { SiteWideNoticeService } from '../../core/site-wide-notice-service';
 import { NoticeService } from '../../core/notice/notice.service';
-import { SessionService } from '../../core/session.service';
+import { Session, SessionService } from '../../core/session.service';
+import { ModalService } from '../../../bellows/core/modal/modal.service';
 import { Project } from '../../shared/model/project.model';
 import { UserService } from '../../core/api/user.service';
 import { RolesService } from '../../core/api/roles.service';
@@ -30,25 +31,32 @@ export class ProjectsAppController implements angular.IController {
   projects: Project[] = [];
   siteName: string;
   projectCount: number;
+  session: Session;
 
-  static $inject = ['$window', 'projectService',
+  static $inject = ['$window',
+                    'projectService',
                     'userService',
                     'rolesService',
-                    'sessionService', 'silNoticeService',
+                    'sessionService',
+                    'silNoticeService',
                     'breadcrumbService',
                     'siteWideNoticeService',
                     'applicationHeaderService',
+                    'modalService'
                    ];
-  constructor(private $window: angular.IWindowService, private projectService: ProjectService,
+  constructor(private $window: angular.IWindowService,
+              private projectService: ProjectService,
               private userService: UserService,
               private rolesService: RolesService,
-              private sessionService: SessionService, private notice: NoticeService,
+              private sessionService: SessionService,
+              private notice: NoticeService,
               private breadcrumbService: BreadcrumbService,
               private siteWideNoticeService: SiteWideNoticeService,
               private applicationHeaderService: ApplicationHeaderService,
+              private modal: ModalService
              ) { }
 
-  $onInit() {
+  async $onInit(): Promise<void> {
     this.applicationHeaderService.setPageName('My Projects');
     this.breadcrumbService.set('top', [{
           href: '/app/projects',
@@ -56,7 +64,8 @@ export class ProjectsAppController implements angular.IController {
         }]);
     this.siteWideNoticeService.displayNotices();
 
-    this.sessionService.getSession().then(session => {
+    await this.sessionService.getSession().then(session => {
+      this.session = session;
       this.rights.canEditProjects =
         session.hasSiteRight(this.sessionService.domain.PROJECTS, this.sessionService.operation.EDIT);
       this.rights.canCreateProject =
@@ -92,12 +101,25 @@ export class ProjectsAppController implements angular.IController {
     return project.role === 'project_manager' || project.role === 'tech_support';
   }
 
-  // Add user as Tech Support to a project
+  isOwner(project: Project): boolean {
+    if (typeof project.ownerId == 'string') {
+      return project.ownerId === this.session.data.userId;
+    }
+    return false;
+  }
+
   addTechSupportToProject(project: Project) {
     this.projectService.joinProject(project.id, 'tech_support', result => {
       if (result.ok) {
-        this.notice.push(this.notice.SUCCESS, 'You are now Tech Support for the \'' +
-          project.projectName + '\' project.');
+        this.$window.location.href = "/app/lexicon/" + project.id;
+      }
+    });
+  }
+
+  removeSelfFromProject(project : Project): void {
+    this.projectService.removeUsers(project.id, [this.session.data.userId], result => {
+      if(result.ok){
+        this.notice.push(this.notice.SUCCESS, project.projectName + ' is no longer in your projects.');
         this.queryProjectsForUser();
       }
     });
