@@ -29,8 +29,6 @@ class LexUploadCommands
         $project = new LexProjectModel($projectId);
         ProjectCommands::checkIfArchivedAndThrow($project);
 
-        $recordedInBrowser = $_POST["recordedInBrowser"];
-
         $file = $_FILES["file"];
         $fileName = $file["name"];
         $fileNamePrefix = date("YmdHis");
@@ -87,6 +85,11 @@ class LexUploadCommands
             $codecFlag = "";
 
             // recorded audio and uploaded audio have different settings
+            $recordedInBrowser = false;
+            if (array_key_exists("recordedInBrowser", $_POST)) {
+                $recordedInBrowser = $_POST["recordedInBrowser"];
+            }
+
             if ($recordedInBrowser) {
                 // audio recorded with pcm codec is saved in .webm files, which is then converted to .wav files 12-2022
                 if (strcmp($project->audioRecordingCodec, "wav") == 0) {
