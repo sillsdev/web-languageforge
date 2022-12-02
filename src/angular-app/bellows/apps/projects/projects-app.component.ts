@@ -6,22 +6,12 @@ import { BreadcrumbService } from '../../core/breadcrumbs/breadcrumb.service';
 import { SiteWideNoticeService } from '../../core/site-wide-notice-service';
 import { NoticeService } from '../../core/notice/notice.service';
 import { Session, SessionService } from '../../core/session.service';
-import { ModalService } from '../../../bellows/core/modal/modal.service';
 import { Project } from '../../shared/model/project.model';
-import { UserService } from '../../core/api/user.service';
-import { RolesService } from '../../core/api/roles.service';
 
 class Rights {
   canEditProjects: boolean;
   canCreateProject: boolean;
   showControlBar: boolean;
-}
-
-interface ViewModelProject {
-  id: string;
-  projectName: string;
-  appName: string;
-  role: string;
 }
 
 export class ProjectsAppController implements angular.IController {
@@ -35,25 +25,19 @@ export class ProjectsAppController implements angular.IController {
 
   static $inject = ['$window',
                     'projectService',
-                    'userService',
-                    'rolesService',
                     'sessionService',
                     'silNoticeService',
                     'breadcrumbService',
                     'siteWideNoticeService',
-                    'applicationHeaderService',
-                    'modalService'
+                    'applicationHeaderService'
                    ];
   constructor(private $window: angular.IWindowService,
               private projectService: ProjectService,
-              private userService: UserService,
-              private rolesService: RolesService,
               private sessionService: SessionService,
               private notice: NoticeService,
               private breadcrumbService: BreadcrumbService,
               private siteWideNoticeService: SiteWideNoticeService,
-              private applicationHeaderService: ApplicationHeaderService,
-              private modal: ModalService
+              private applicationHeaderService: ApplicationHeaderService
              ) { }
 
   async $onInit(): Promise<void> {
@@ -117,7 +101,7 @@ export class ProjectsAppController implements angular.IController {
   }
 
   removeSelfFromProject(project : Project): void {
-    this.projectService.removeUsers(project.id, [this.session.data.userId], result => {
+    this.projectService.removeSelfFromProject(project.id, result => {
       if(result.ok){
         this.notice.push(this.notice.SUCCESS, project.projectName + ' is no longer in your projects.');
         this.queryProjectsForUser();

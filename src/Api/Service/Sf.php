@@ -455,10 +455,14 @@ class Sf
         ProjectCommands::removeJoinRequest($this->projectId, $userId);
     }
 
-    // REVIEW: should this be part of the general project API ?
-    public function project_removeUsers($aProjectId, $userIds)
+    public function project_removeUsers($userIds)
     {
-        return ProjectCommands::removeUsers($aProjectId, $userIds);
+        return ProjectCommands::removeUsers($this->projectId, $userIds);
+    }
+
+    public function project_removeSelf($aProjectId)
+    {
+        return ProjectCommands::removeUsers($aProjectId, [$this->userId]);
     }
 
     /**

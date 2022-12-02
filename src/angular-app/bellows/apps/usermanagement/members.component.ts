@@ -106,7 +106,7 @@ export class UserManagementMembersController implements angular.IController {
       return;
     }
 
-    this.projectService.removeUsers(this.project.id, userIds).then(() => {
+    this.projectService.removeUsers(userIds).then(() => {
       this.sessionService.getSession().then(session => {
         if (userIds.indexOf(session.userId()) !== -1) {
           // redirect if you just removed yourself from the project

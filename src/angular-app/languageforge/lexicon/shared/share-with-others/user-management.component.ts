@@ -123,7 +123,7 @@ export class UserManagementController implements angular.IController {
   removeUser(user: User) {
     const removeUserMessage = 'Are you sure you want to remove <b>' + user.username + '</b> from the <b>' + this.project.projectName + '</b> project?';
     this.modal.showModalSimple('Remove user', removeUserMessage, 'Cancel', 'Remove ' + user.username).then(() => {
-      this.projectService.removeUsers(this.project.id, [user.id]).then(() => {
+      this.projectService.removeUsers([user.id]).then(() => {
         this.loadMemberData();
       });
     });
@@ -132,7 +132,7 @@ export class UserManagementController implements angular.IController {
   removeSelfFromProject() {
     const removeSelfMessage = 'Are you sure you want to remove yourself from <b>' + this.project.projectName + '</b>?';
     this.modal.showModalSimple('Leave ' + this.project.projectName, removeSelfMessage, 'Cancel', 'Remove me from ' + this.project.projectName).then(() => {
-      this.projectService.removeUsers(this.project.id, [this.session.data.userId], async result => {
+      this.projectService.removeSelfFromProject(this.project.id, async result => {
         if(result.ok){
           this.notice.push(this.notice.SUCCESS, this.project.projectName + ' is no longer in your projects.');
           this.$window.location.href = '/app/projects';

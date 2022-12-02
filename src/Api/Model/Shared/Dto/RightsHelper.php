@@ -147,6 +147,9 @@ class RightsHelper
             case "project_removeUsers":
                 return $this->userHasProjectRight(Domain::USERS + Operation::DELETE);
 
+            case "project_removeSelf":
+                return $this->userHasProjectRight(Domain::PROJECTS + Operation::VIEW);
+
             // Admin (system context)
             case "user_read":
             case "user_list":
