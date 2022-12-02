@@ -23,7 +23,6 @@ CACHE:
 /Site/views/{{ app.website.base~'/theme/'~app.website.theme }}/image/favicon.ico
 
 {%  if useMinifiedJs %}
-/node_modules/jquery/dist/jquery.min.js?v={{ version }}
 /dist/manifest.bundle.js
 /dist/vendor.bundle.js
 /dist/main.bundle.js
@@ -35,7 +34,6 @@ CACHE:
 /js/lib/{{ app.website.base }}.min.js?v={{ version }}
 
 {%  else %}
-/node_modules/jquery/dist/jquery.js?v={{ version }}
 /dist/manifest.bundle.js
 /dist/vendor.bundle.js
 /dist/main.bundle.js

@@ -135,7 +135,7 @@ export class LexiconSendReceiveService {
             break;
           case SendReceiveErrorCodes.ProjectTooOld:
             errorMessage = 'The project \'' + this.status.ProjectCode + '\' is from an ' +
-              'unsupported version of FLEx. The oldest supported FLEx version is 8.2';
+              'unsupported version of FLEx.  Please update to the latest version and try again.';
             break;
           case SendReceiveErrorCodes.ProjectTooNew:
             errorMessage = 'The project \'' + this.status.ProjectCode + '\' is from a version ' +
