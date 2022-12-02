@@ -21,7 +21,6 @@
 
     {# jquery must be the first js to be loaded #}
     {%  if useMinifiedJs %}
-        <script src="/dist/jquery/jquery.min.js?v={{ version }}"></script>
         <script src="/dist/manifest.bundle.js?v={{ version }}"></script>
         <script src="/dist/vendor.bundle.js?v={{ version }}"></script>
         <script src="/dist/main.bundle.js?v={{ version }}"></script>
@@ -31,7 +30,6 @@
         {% endfor %}
 
     {%  else %}
-        <script src="/dist/jquery/jquery.js?v={{ version }}"></script>
         <script src="/dist/manifest.bundle.js?v={{ version }}"></script>
         <script src="/dist/vendor.bundle.js?v={{ version }}"></script>
         <script src="/dist/main.bundle.js?v={{ version }}"></script>

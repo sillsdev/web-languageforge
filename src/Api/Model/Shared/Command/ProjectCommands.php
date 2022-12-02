@@ -6,7 +6,6 @@ use Api\Library\Shared\Palaso\Exception\ResourceNotAvailableException;
 use Api\Library\Shared\Palaso\Exception\UserUnauthorizedException;
 use Api\Model\Languageforge\Lexicon\Command\SendReceiveCommands;
 use Api\Model\Shared\Communicate\EmailSettings;
-use Api\Model\Shared\Communicate\SmsSettings;
 use Api\Model\Shared\Dto\ManageUsersDto;
 use Api\Model\Shared\Mapper\JsonDecoder;
 use Api\Model\Shared\Mapper\JsonEncoder;
@@ -294,14 +293,14 @@ class ProjectCommands
 
     /**
      * Removes users from the project (two-way unlink)
-     * @param string $projectId
+     * @param string $aProjectId - might not be the session's current project. Any project that the user is part of.
      * @param array<string> $userIds
      * @return string $projectId
      * @throws \Exception
      */
-    public static function removeUsers($projectId, $userIds)
+    public static function removeUsers($aProjectId, $userIds)
     {
-        $project = new ProjectModel($projectId);
+        $project = new ProjectModel($aProjectId);
         foreach ($userIds as $userId) {
             // Guard against removing project owner
             if ($userId != $project->ownerRef->id) {
@@ -315,7 +314,7 @@ class ProjectCommands
             }
         }
 
-        return $projectId;
+        return $aProjectId;
     }
 
     /**
@@ -339,33 +338,18 @@ class ProjectCommands
         // send email notifying of acceptance
     }
 
-    public static function requestAccessForProject($projectId, $userId)
-    {
-        // add userId to request queue
-        // send email to project owner and all managers
-    }
-
-    public static function renameProject($projectId, $oldName, $newName)
-    {
-        // TODO: Write this. (Move renaming logic over from sf->project_update). RM 2013-08
-    }
-
     /**
      * Updates the ProjectSettingsModel which are settings accessible only to site administrators
      * @param string $projectId
-     * @param array<SmsSettings> $smsSettingsArray
      * @param array<EmailSettings> $emailSettingsArray
      * @return string $result id to the projectSettingsModel
      */
-    public static function updateProjectSettings($projectId, $smsSettingsArray, $emailSettingsArray)
+    public static function updateProjectSettings($projectId, $emailSettingsArray)
     {
         $projectSettings = new ProjectSettingsModel($projectId);
         ProjectCommands::checkIfArchivedAndThrow($projectSettings);
-        $smsSettings = new SmsSettings();
         $emailSettings = new EmailSettings();
-        JsonDecoder::decode($smsSettings, $smsSettingsArray);
         JsonDecoder::decode($emailSettings, $emailSettingsArray);
-        $projectSettings->smsSettings = $smsSettings;
         $projectSettings->emailSettings = $emailSettings;
         $result = $projectSettings->write();
 
@@ -377,7 +361,6 @@ class ProjectCommands
         $project = new ProjectSettingsModel($projectId);
 
         return [
-            "sms" => JsonEncoder::encode($project->smsSettings),
             "email" => JsonEncoder::encode($project->emailSettings),
         ];
     }

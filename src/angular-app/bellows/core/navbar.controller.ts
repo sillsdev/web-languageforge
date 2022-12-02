@@ -20,7 +20,6 @@ export class NavbarController implements angular.IController {
   interfaceConfig: InterfaceConfig;
   currentUserIsProjectManager: boolean;
   displayShareButton: boolean;
-  siteName: string;
   isLexiconProject: boolean = false;
 
   static $inject = [
@@ -85,7 +84,6 @@ export class NavbarController implements angular.IController {
 
       this.rights.canCreateProject =
         session.hasSiteRight(this.sessionService.domain.PROJECTS, this.sessionService.operation.CREATE);
-      this.siteName = session.baseSite();
     });
     this.$scope.$on('$locationChangeStart', (event, next, current) => {
       if (current.includes('/lexicon') && !current.includes('/new-project')) {

@@ -62,12 +62,9 @@ export class CommentBubbleController implements angular.IController {
     } else {
       this.control.setCommentContext(this.contextGuid);
       this.selectFieldForComment();
-      let bubbleOffsetTop;
-      if (this.multiOptionValue) {
-        bubbleOffsetTop = this.$element.parents('.list-repeater').offset().top;
-      } else {
-        bubbleOffsetTop = this.$element.offset().top;
-      }
+
+      const bubbleOffsetTop = this.multiOptionValue ? this.$element[0].closest('.list-repeater').getBoundingClientRect().top
+	  												: this.$element[0].getBoundingClientRect().top;
 
       const rightPanel = document.querySelector('.comments-right-panel') as HTMLElement;
       const offsetAuthor = 40;

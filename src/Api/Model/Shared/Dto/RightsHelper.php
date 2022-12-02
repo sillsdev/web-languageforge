@@ -100,7 +100,6 @@ class RightsHelper
                 return $this->userHasProjectRight(Domain::USERS + Operation::EDIT);
             case "project_sendJoinRequest":
                 return true;
-
             case "project_getInviteLink":
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::VIEW);
 
@@ -130,8 +129,6 @@ class RightsHelper
             case "project_read":
             case "set_project":
             case "project_settings":
-            case "project_updateSettings":
-            case "project_readSettings":
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
 
             case "project_update":
@@ -149,6 +146,9 @@ class RightsHelper
 
             case "project_removeUsers":
                 return $this->userHasProjectRight(Domain::USERS + Operation::DELETE);
+
+            case "project_removeSelf":
+                return $this->userHasProjectRight(Domain::PROJECTS + Operation::VIEW);
 
             // Admin (system context)
             case "user_read":

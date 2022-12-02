@@ -92,7 +92,15 @@ export class ProjectsPage extends BasePage {
     return this.projectAddTechSupportButtonLocator(projectName).isVisible();
   }
 
+  async projectHasLeaveProjectButton(projectName: string): Promise<boolean> {
+    return this.projectLeaveProjectButtonLocator(projectName).isVisible();
+  }
+
   projectAddTechSupportButtonLocator(projectName: string): Locator {
     return this.projectRow(projectName).locator('text=Tech Support');
+  }
+
+  projectLeaveProjectButtonLocator(projectName: string): Locator {
+    return this.projectRow(projectName).locator('text=Leave this project');
   }
 }

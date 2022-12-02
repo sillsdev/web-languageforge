@@ -2,8 +2,6 @@
 
 namespace Api\Library\Shared\Communicate;
 
-use Api\Library\Shared\Communicate\Sms\SmsModel;
-
 interface DeliveryInterface
 {
     /**
@@ -15,11 +13,4 @@ interface DeliveryInterface
      * @param string $htmlContent
      */
     public function sendEmail($from, $to, $subject, $content, $htmlContent = "");
-
-    /**
-     * Sends an Sms.
-     * It actually queues the sms to be sent at an appropriate time.
-     * @param SmsModel $smsModel
-     */
-    public function sendSms($smsModel);
 }

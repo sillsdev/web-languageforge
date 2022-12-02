@@ -13,10 +13,6 @@ use Api\Model\Shared\Rights\SystemRoles;
 
 class UserModel extends MapperModel
 {
-    const COMMUNICATE_VIA_SMS = "sms";
-    const COMMUNICATE_VIA_EMAIL = "email";
-    const COMMUNICATE_VIA_BOTH = "both";
-
     const GENDER_MALE = "Male";
     const GENDER_FEMALE = "Female";
 
@@ -29,7 +25,6 @@ class UserModel extends MapperModel
         "avatar_shape",
         "avatar_ref",
         "mobile_phone",
-        "communicate_via",
         "name",
         "email",
         "username",
@@ -48,7 +43,6 @@ class UserModel extends MapperModel
         "avatar_shape",
         "avatar_ref",
         "mobile_phone",
-        "communicate_via",
         "name",
         "age",
         "gender",
@@ -159,9 +153,6 @@ class UserModel extends MapperModel
 
     /** @var string */
     public $mobile_phone;
-
-    /** @var string - possible values are "email", "sms" or "both" */
-    public $communicate_via;
 
     /* name (also listed in site administration above) */
 
@@ -292,9 +283,7 @@ class UserModel extends MapperModel
     public function read($id)
     {
         parent::read($id);
-        if (!$this->communicate_via) {
-            $this->communicate_via = self::COMMUNICATE_VIA_EMAIL;
-        }
+
         if (!$this->avatar_ref) {
             $default_avatar = "anonymoose.png";
             $this->avatar_ref = $default_avatar;

@@ -14,13 +14,11 @@ use Api\Model\Languageforge\Lexicon\Command\SendReceiveCommands;
 use Api\Model\Languageforge\Lexicon\Dto\LexBaseViewDto;
 use Api\Model\Languageforge\Lexicon\Dto\LexDbeDto;
 use Api\Model\Languageforge\Lexicon\Dto\LexProjectDto;
-use Api\Model\Shared\Command\MessageCommands;
 use Api\Model\Shared\Command\ProjectCommands;
 use Api\Model\Shared\Command\SessionCommands;
 use Api\Model\Shared\Command\UserCommands;
 use Api\Model\Shared\Command\LdapiCommands;
 use Api\Model\Shared\Communicate\EmailSettings;
-use Api\Model\Shared\Communicate\SmsSettings;
 use Api\Model\Shared\Dto\ActivityListDto;
 use Api\Model\Shared\Dto\ProjectInsightsDto;
 use Api\Model\Shared\Dto\ProjectListDto;
@@ -457,10 +455,14 @@ class Sf
         ProjectCommands::removeJoinRequest($this->projectId, $userId);
     }
 
-    // REVIEW: should this be part of the general project API ?
     public function project_removeUsers($userIds)
     {
         return ProjectCommands::removeUsers($this->projectId, $userIds);
+    }
+
+    public function project_removeSelf($aProjectId)
+    {
+        return ProjectCommands::removeUsers($aProjectId, [$this->userId]);
     }
 
     /**
@@ -494,22 +496,6 @@ class Sf
     public function project_settings()
     {
         return ProjectSettingsDto::encode($this->projectId, $this->userId);
-    }
-
-    /**
-     * Updates the ProjectSettingsModel which are settings accessible only to site administrators
-     * @param SmsSettings[] $smsSettingsArray
-     * @param EmailSettings[] $emailSettingsArray
-     * @return string $result id to the projectSettingsModel
-     */
-    public function project_updateSettings($smsSettingsArray, $emailSettingsArray)
-    {
-        return ProjectCommands::updateProjectSettings($this->projectId, $smsSettingsArray, $emailSettingsArray);
-    }
-
-    public function project_readSettings()
-    {
-        return ProjectCommands::readProjectSettings($this->projectId);
     }
 
     public function project_pageDto()
