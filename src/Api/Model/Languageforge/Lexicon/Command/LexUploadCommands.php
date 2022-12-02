@@ -25,7 +25,7 @@ class LexUploadCommands
      * @throws \Exception
      * @return UploadResponse
      */
-    public static function uploadAudioFile($projectId, $mediaType, $tmpFilePath)
+    public static function uploadAudioFile($projectId, $tmpFilePath)
     {
         $project = new LexProjectModel($projectId);
         ProjectCommands::checkIfArchivedAndThrow($project);
@@ -127,7 +127,7 @@ class LexUploadCommands
                 //If this audio upload is replacing old audio, the previous file(s) for the entry are deleted from the assets
                 if (array_key_exists("previousFilename", $_POST)) {
                     $previousFilename = $_POST["previousFilename"];
-                    self::deleteMediaFile($projectId, $mediaType, $previousFilename);
+                    self::deleteMediaFile($projectId, "audio", $previousFilename);
                 }
             } else {
                 $data = new ErrorResult();

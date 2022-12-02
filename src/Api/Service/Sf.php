@@ -647,9 +647,9 @@ class Sf
         return LexOptionListCommands::updateList($this->projectId, $params);
     }
 
-    public function lex_uploadAudioFile($mediaType, $tmpFilePath)
+    public function lex_uploadAudioFile($tmpFilePath)
     {
-        $response = LexUploadCommands::uploadAudioFile($this->projectId, $mediaType, $tmpFilePath);
+        $response = LexUploadCommands::uploadAudioFile($this->projectId, $tmpFilePath);
         return JsonEncoder::encode($response);
     }
 

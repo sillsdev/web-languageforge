@@ -49,7 +49,7 @@ class Upload extends Base
                 switch ($mediaType) {
                     case "audio":
                         $api->checkPermissions("lex_uploadAudioFile");
-                        $response = $api->lex_uploadAudioFile($mediaType, $tmpFilePath);
+                        $response = $api->lex_uploadAudioFile($tmpFilePath);
                         break;
                     case "sense-image":
                         $api->checkPermissions("lex_uploadImageFile");
