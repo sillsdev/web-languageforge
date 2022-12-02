@@ -42,15 +42,5 @@ class LexBaseViewDtoTest extends TestCase
         $this->assertTrue($dto["config"]["roleViews"]["contributor"]["showTasks"]["dbe"]);
         $this->assertEquals("th", $dto["interfaceConfig"]["languageCode"]);
         $this->assertEquals("English", $dto["interfaceConfig"]["selectLanguages"]["options"]["en"]["option"]);
-        $this->assertEquals("webm", $dto["interfaceConfig"]["audioRecordingCodec"]);
-        $this->assertEquals(
-            "OPUS - excellent quality/bitrate - in WEBM containers (default)",
-            $dto["interfaceConfig"]["selectAudioRecordingCodec"]["options"]["webm"]["codec"]
-        );
-        $this->assertEquals("never", $dto["interfaceConfig"]["whenToConvertAudio"]);
-        $this->assertEquals(
-            "Never (default)",
-            $dto["interfaceConfig"]["selectWhenToConvertAudio"]["options"]["never"]["frequency"]
-        );
     }
 }

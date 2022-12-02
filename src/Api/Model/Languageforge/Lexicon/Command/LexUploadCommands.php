@@ -101,7 +101,7 @@ class LexUploadCommands
 
                 if (
                     strcmp($project->whenToConvertAudio, "always") == 0 ||
-                    (strcmp($project->whenToConvertAudio, "SR") == 0 && // restrictions on send/receive files 12-2022
+                    (strcmp($project->whenToConvertAudio, "sr") == 0 && // restrictions on send/receive files 12-2022
                         (filesize($filePath) > 1000000 ||
                             (strcmp(strtolower($fileExt), ".mp3") !== 0 &&
                                 strcmp(strtolower($fileExt), ".wav") !== 0 &&

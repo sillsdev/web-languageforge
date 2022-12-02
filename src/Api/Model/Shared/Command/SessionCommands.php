@@ -35,22 +35,6 @@ class SessionCommands
                     ],
                     "optionsOrder" => ["en"],
                 ],
-                "selectAudioRecordingCodec" => [
-                    "options" => [
-                        "webm" => [
-                            "codec" => "OPUS - excellent quality/bitrate - in WEBM containers (default)",
-                        ],
-                    ],
-                    "optionsOrder" => ["webm"],
-                ],
-                "selectWhenToConvertAudio" => [
-                    "options" => [
-                        "never" => [
-                            "frequency" => "Never (default)",
-                        ],
-                    ],
-                    "optionsOrder" => ["never"],
-                ],
             ],
         ];
 
@@ -84,8 +68,6 @@ class SessionCommands
                 $sessionData["project"]["slug"] = $project->databaseName();
                 $sessionData["project"]["isArchived"] = $project->isArchived;
                 $sessionData["project"]["interfaceLanguageCode"] = $project->interfaceLanguageCode;
-                $sessionData["project"]["audioRecordingCodec"] = $project->audioRecordingCodec;
-                $sessionData["project"]["whenToConvertAudio"] = $project->whenToConvertAudio;
                 $sessionData["project"]["inviteToken"]["token"] = $project->inviteToken->token;
                 $sessionData["project"]["inviteToken"]["defaultRole"] = $project->inviteToken->defaultRole;
                 $sessionData["userProjectRights"] = $project->getRightsArray($userId);

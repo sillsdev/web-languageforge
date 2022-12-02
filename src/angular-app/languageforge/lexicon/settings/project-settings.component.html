@@ -21,7 +21,6 @@
                             <select class="form-control custom-select" id="language"
                                 data-ng-model="$ctrl.project.interfaceLanguageCode"
                                 data-ng-options="$ctrl.lpsInterfaceConfig.selectLanguages.options[code].option for code in $ctrl.lpsInterfaceConfig.selectLanguages.optionsOrder">
-                                <option value="">-- choose a language --</option>
                             </select>
                         </div>
                     </div>
@@ -29,9 +28,9 @@
                         <label class="col-form-label col-12" for="codec">Preferred Audio Recording Codec</label>
                         <div class="controls col-12">
                             <select class="form-control custom-select" id="codec"
-                                data-ng-model="$ctrl.project.audioRecordingCodec"
-                                data-ng-options="$ctrl.lpsInterfaceConfig.selectAudioRecordingCodec.options[codec].codec for codec in $ctrl.lpsInterfaceConfig.selectAudioRecordingCodec.optionsOrder">
-                                <option value="">-- choose an audio codec --</option>
+                                data-ng-model="$ctrl.project.audioRecordingCodec">
+                                <option value="webm">OPUS/WEBM</option>
+                                <option value="wav">PCM/WAV</option>
                             </select>
                         </div>
                     </div>
@@ -39,9 +38,10 @@
                         <label class="col-form-label col-12" for="conversion">Convert Uploaded Audio To OPUS/WEBM... </label>
                         <div class="controls col-12">
                             <select class="form-control custom-select" id="conversion"
-                                data-ng-model="$ctrl.project.whenToConvertAudio"
-                                data-ng-options="$ctrl.lpsInterfaceConfig.selectWhenToConvertAudio.options[frequency].frequency for frequency in $ctrl.lpsInterfaceConfig.selectWhenToConvertAudio.optionsOrder">
-                                <option value="">-- choose when audio is converted --</option>
+                                data-ng-model="$ctrl.project.whenToConvertAudio">
+                                <option value="never">Never</option>
+                                <option value="sr">Only if necessary for Send/Receive</option>
+                                <option value="always">Always</option>
                             </select>
                         </div>
                     </div>

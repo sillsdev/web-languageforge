@@ -32,49 +32,14 @@ class LexBaseViewDto
             $isUserLanguageCode = true;
         }
 
-        $audioRecordingCodec = $project->audioRecordingCodec;
-        $whenToConvertAudio = $project->whenToConvertAudio;
-
         $data["interfaceConfig"] = [
             "languageCode" => $interfaceLanguageCode,
             "isUserLanguageCode" => $isUserLanguageCode,
-            "audioRecordingCodec" => $audioRecordingCodec,
-            "whenToConvertAudio" => $whenToConvertAudio,
         ];
         $data["interfaceConfig"]["selectLanguages"] = [
             "optionsOrder" => ["en"],
             "options" => ["en" => ["name" => "English", "option" => "English", "hasSemanticDomain" => true]],
         ];
-
-        $selectAudioRecordingCodec = [
-            "options" => [
-                "webm" => [
-                    "codec" => "OPUS - excellent quality/bitrate - in WEBM containers (default)",
-                ],
-                "wav" => [
-                    "codec" => "PCM/WAV - uncompressed - in WEBM containers (large file sizes)",
-                ],
-            ],
-            "optionsOrder" => ["webm", "wav"],
-        ];
-
-        $selectWhenToConvertAudio = [
-            "options" => [
-                "never" => [
-                    "frequency" => "Never (default)",
-                ],
-                "SR" => [
-                    "frequency" => "Only if necessary for Send/Receive",
-                ],
-                "always" => [
-                    "frequency" => "Always",
-                ],
-            ],
-            "optionsOrder" => ["never", "SR", "always"],
-        ];
-
-        $data["interfaceConfig"]["selectAudioRecordingCodec"] = $selectAudioRecordingCodec;
-        $data["interfaceConfig"]["selectWhenToConvertAudio"] = $selectWhenToConvertAudio;
 
         $optionlistListModel = new LexOptionListListModel($project);
         $optionlistListModel->read();
