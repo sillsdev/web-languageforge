@@ -87,7 +87,7 @@ export class FieldAudioController implements angular.IController {
     }
   }
 
-  uploadAudio(file: UploadFile): void {
+  uploadAudio(file: UploadFile, recordedInBrowser: boolean = false): void {
     if (!file || file.$error) {
       return;
     }
@@ -106,7 +106,7 @@ export class FieldAudioController implements angular.IController {
         data: {
           file,
           previousFilename: this.dcFilename,
-          projectId: session.project().id
+          recordedInBrowser: recordedInBrowser
         }
       }).then((response: UploadResponse) => {
           this.notice.cancelLoading();
@@ -151,7 +151,7 @@ export class FieldAudioController implements angular.IController {
       const date = new Date();
       const fileName = 'recording_' + format(addMinutes(date, date.getTimezoneOffset()), 'yyyy_MM_dd_HH_mm_ss') + '.webm';
       const file = new File([blob], fileName);
-      this.uploadAudio(file);
+      this.uploadAudio(file, true);
     }
     this.showAudioRecorder = false;
   }

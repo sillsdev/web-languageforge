@@ -53,15 +53,15 @@ class Upload extends Base
                         break;
                     case "sense-image":
                         $api->checkPermissions("lex_uploadImageFile");
-                        $response = $api->lex_uploadImageFile($mediaType, $tmpFilePath);
+                        $response = $api->lex_uploadImageFile($tmpFilePath);
                         break;
                     case "import-zip":
                         $api->checkPermissions("lex_upload_importProjectZip");
-                        $response = $api->lex_upload_importProjectZip($mediaType, $tmpFilePath);
+                        $response = $api->lex_upload_importProjectZip($tmpFilePath);
                         break;
                     case "import-lift":
                         $api->checkPermissions("lex_upload_importLift");
-                        $response = $api->lex_upload_importLift($mediaType, $tmpFilePath);
+                        $response = $api->lex_upload_importLift($tmpFilePath);
                         break;
                     default:
                         throw new \Exception("Unsupported upload type: $mediaType");
