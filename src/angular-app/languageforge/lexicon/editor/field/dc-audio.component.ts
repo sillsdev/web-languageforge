@@ -102,7 +102,7 @@ export class FieldAudioController implements angular.IController {
 
       this.notice.setLoading('Uploading ' + file.name + '...');
       this.Upload.upload({
-        url: '/upload/lf-lexicon/audio',
+        url: '/upload/audio',
         data: {
           file,
           previousFilename: this.dcFilename,

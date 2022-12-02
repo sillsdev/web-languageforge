@@ -57,12 +57,12 @@ export class LexiconImportController implements angular.IController {
         return;
       }
 
-      let uploadUrl = '/upload/lf-lexicon/import-lift';
+      let uploadUrl = '/upload/import-lift';
       if (this.upload.isLift) {
         this.notice.setLoading('Importing LIFT file...');
       } else {
         this.notice.setLoading('Importing zipped file...');
-        uploadUrl = '/upload/lf-lexicon/import-zip';
+        uploadUrl = '/upload/import-zip';
       }
 
       this.upload.importStarted = true;
