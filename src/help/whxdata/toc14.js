@@ -1,1 +1,0 @@
-gXMLBuffer ="<?xml version=\"1.0\" encoding=\"utf-8\" ?><data  src=\"toc3.js\"  name=\"Manager tasks\"><item name=\"Manager tasks overview\" url=\"Language_Forge_Tasks/Manager_tasks/Manager_tasks_overview.htm\" /></data>";

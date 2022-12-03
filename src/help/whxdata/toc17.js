@@ -1,1 +1,0 @@
-gXMLBuffer ="<?xml version=\"1.0\" encoding=\"utf-8\" ?><data  src=\"toc3.js\"  name=\"Observer tasks\"><item name=\"Observer tasks overview\" url=\"Language_Forge_Tasks/Observer_tasks/Observer_tasks_overview.htm\" /><item name=\"Search for entry\" url=\"Language_Forge_Tasks/Observer_tasks/Search_for_entry.htm\" /></data>";
