@@ -62,7 +62,7 @@ export class InviteMemberFormController implements angular.IController {
   }
 
   $postLink(): void {
-    angular.element('input[type=email]')[0].focus();
+    document.querySelector<HTMLElement>('input[type=email]').focus();
   }
 
   sendEmailInvite() {
@@ -101,7 +101,7 @@ export class InviteMemberFormController implements angular.IController {
   getInviteRole() {
     return this.reusableInviteLinkRoles.find(role => role.key === this.project.inviteToken.defaultRole);
   }
-  
+
   async copy() {
     await navigator.clipboard.writeText(this.inviteLink);
 
