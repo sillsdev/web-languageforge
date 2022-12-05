@@ -5,6 +5,9 @@ export class LoginPage extends BasePage<LoginPage> {
   readonly usernameInput = this.page.locator('#username');
   readonly passwordInput = this.page.locator('#password');
   readonly submitButton = this.page.locator('#login-submit');
+  readonly forgotPasswordLink = this.page.locator('#forgot_password');
+  readonly alertInfo = this.page.locator('.alert-info');
+  readonly errors = this.page.locator('.alert-danger');
 
   constructor(page: Page) {
     super(page, '/auth/login', page.locator('#password'))

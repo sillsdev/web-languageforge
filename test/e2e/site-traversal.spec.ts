@@ -47,7 +47,7 @@ test.describe('E2E Page Traversal', () => {
   test('Explore forgot password page', async () => {
     await forgotPasswordPage.goto();
 
-    await forgotPasswordPage.usernameInput.fill('');
+    await forgotPasswordPage.usernameOrEmailInput.fill('');
     await forgotPasswordPage.submitButton.click();
   });
 

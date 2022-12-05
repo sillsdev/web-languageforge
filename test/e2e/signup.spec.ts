@@ -118,7 +118,7 @@ test.describe('E2E Signup app', () => {
     await signupPage.signupButton.click();
 
     // Verify new user logged in and redirected to projects page
-    new ProjectsPage(signupPage.page).waitForPage();
+    await new ProjectsPage(signupPage.page).waitForPage();
   });
 
   test('Redirects to projects page if already logged in', async ({ memberTab }) => {

@@ -1,25 +1,23 @@
-import { Locator, Page } from "@playwright/test";
-
-type MyProjects = {
-  button: Locator;
-  links: Locator;
-};
+import { Page } from "@playwright/test";
 
 export class PageHeader {
-  readonly page: Page;
-  readonly myProjects: MyProjects;
-  readonly loginButton: Locator;
-  readonly languageDropdownButton: Locator;
-  readonly languageDropdownItem: Locator;
 
-  constructor(page: Page) {
-    this.page = page;
-    this.myProjects = {
-      button: page.locator('#myProjectDropdownButton'),
-      links: page.locator('#myProjectDropdownMenu >> .dropdown-item')
-    };
-    this.loginButton = page.locator('text=Login').nth(0);
-    this.languageDropdownButton = page.locator('#languageDropdownButton');
-    this.languageDropdownItem = page.locator('#languageDropdownMenu >> .dropdown-item');
+  readonly myProjects = {
+    button: this.page.locator('#myProjectDropdownButton'),
+    links: this.page.locator('#myProjectDropdownMenu >> .dropdown-item'),
+  };
+  readonly loginButton = this.page.locator('text=Login').nth(0);
+  readonly languageDropdownButton = this.page.locator('#languageDropdownButton');
+  readonly languageDropdownItem = this.page.locator('#languageDropdownMenu >> .dropdown-item');
+
+  readonly userDropdownButton = this.page.locator('#userDropdown');
+  private readonly userDropdownMenu = this.page.locator('#userDropdown ~ .dropdown-menu');
+  readonly userDropdown = {
+    profile: this.userDropdownMenu.getByText('My Profile'),
+    changePassword: this.userDropdownMenu.getByText('Change Password'),
+    logout: this.userDropdownMenu.getByText('Logout'),
+  };
+
+  constructor(private readonly page: Page) {
   }
 }

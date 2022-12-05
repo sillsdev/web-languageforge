@@ -1,9 +1,9 @@
 // example.spec.ts
-import { test as base } from '@playwright/test';
+import { test as base, APIRequestContext } from '@playwright/test';
 import type { Browser, Page } from '@playwright/test';
 import type { E2EUsernames } from './e2e-users';
 import constants from '../testConstants.json';
-import { getStorageStatePath } from './user-tools';
+import { getStorageStatePath, UserTestService } from './user-tools';
 import { Project } from './types';
 import { initTestProjectForTest } from './testSetup';
 
@@ -59,6 +59,7 @@ export const test = base
     member2: UserDetails,
     observer: UserDetails,
     writable: UserDetails,
+    userService: UserTestService,
   }>({
     adminTab: userTab('admin'),
     managerTab: userTab('manager'),
@@ -78,6 +79,10 @@ export const test = base
     member2: userDetails('member2'),
     observer: userDetails('observer'),
     writable: userDetails('writable'),
+    userService: async ({ request }: {request: APIRequestContext}, use: (userService: UserTestService) => Promise<void>) => {
+      const userService = new UserTestService(request);
+      await use(userService);
+    },
   });
 
 /**

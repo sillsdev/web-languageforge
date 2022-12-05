@@ -110,6 +110,26 @@ class TestControl
         return "";
     }
 
+    public function get_reset_password_key($usernameOrEmail)
+    {
+        $user = new UserModelWithPassword();
+        if ($user->readByUsernameOrEmail($usernameOrEmail)) {
+            return $user->resetPasswordKey;
+        }
+        return "";
+    }
+
+    public function expire_and_get_reset_password_key($usernameOrEmail)
+    {
+        $user = new UserModelWithPassword();
+        if ($user->readByUsernameOrEmail($usernameOrEmail)) {
+            $user->resetPasswordExpirationDate = new \DateTime();
+            $user->write();
+            return $user->resetPasswordKey;
+        }
+        return "";
+    }
+
     public function reset_projects()
     {
         $db = MongoStore::connect(DATABASE);

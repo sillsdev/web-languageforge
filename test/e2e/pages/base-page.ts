@@ -1,12 +1,15 @@
 import { Locator, Page } from "@playwright/test";
+import { PageHeader } from "../components/page-header.component";
 
 export interface GotoOptions {
   waitFor?: Locator;
 }
 
-export abstract class BasePage<T extends BasePage<T>> {
+export abstract class BasePage<T extends BasePage<T>> implements Pick<Page, 'locator'> {
 
-  readonly waitFor: Locator[];
+  readonly header = new PageHeader(this.page);
+
+  private readonly waitFor: Locator[];
 
   private get self(): T {
     return this as unknown as T;
