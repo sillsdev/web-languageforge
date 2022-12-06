@@ -1,57 +1,24 @@
 import * as angular from 'angular';
 
 import {OfflineCacheService} from '../offline/offline-cache.service';
-import {Session, SessionService} from '../session.service';
+import {SessionService} from '../session.service';
 import {ApiService, JsonRpcCallback} from './api.service';
 
-export interface ProjectTypeNames {
-  [projectType: string]: string;
-}
-
-export interface ProjectData {
-  projectTypeNames: ProjectTypeNames;
-  projectTypesBySite: () => string[];
-}
-
 export class ProjectService {
-  data: ProjectData;
 
   protected api: ApiService;
   protected sessionService: SessionService;
   private offlineCache: OfflineCacheService;
-  private $location: angular.ILocationService;
   private $q: angular.IQService;
 
   // noinspection TypeScriptFieldCanBeMadeReadonly
-  private projectTypesBySite: string[] = [];
 
   static $inject: string[] = ['$injector'];
   constructor(protected $injector: angular.auto.IInjectorService) {
     this.api = $injector.get('apiService');
     this.sessionService = $injector.get('sessionService');
     this.offlineCache = $injector.get('offlineCache');
-    this.$location = $injector.get('$location');
     this.$q = $injector.get('$q');
-
-    // data constants
-    this.data = {
-      projectTypeNames: {
-        lexicon: 'Dictionary',
-      },
-      projectTypesBySite: () => {
-        return this.projectTypesBySite;
-      }
-    } as ProjectData;
-
-    this.sessionService.getSession().then((session: Session) => {
-      const types = {
-        // 'languageforge': ['lexicon', 'semdomtrans'],
-        languageforge: ['lexicon'],
-      };
-
-      this.projectTypesBySite = types[session.baseSite()];
-    });
-
   }
 
   create(projectName: string, projectCode: string, appName: string, srProject: any = {}, callback?: JsonRpcCallback) {
@@ -122,6 +89,10 @@ export class ProjectService {
     return this.api.call('project_updateUserRole', [userId, role], callback);
   }
 
+  transferOwnership(newOwnerId: string, callback?: JsonRpcCallback){
+    return this.api.call('project_transferOwnership', [newOwnerId], callback);
+  }
+
   acceptJoinRequest(userId: string, role: string, callback?: JsonRpcCallback) {
     return this.api.call('project_acceptJoinRequest', [userId, role], callback);
   }
@@ -132,6 +103,10 @@ export class ProjectService {
 
   removeUsers(userIds: string[], callback?: JsonRpcCallback) {
     return this.api.call('project_removeUsers', [userIds], callback);
+  }
+
+  removeSelfFromProject(aProjectId: string, callback?: JsonRpcCallback) {
+    return this.api.call('project_removeSelf', [aProjectId], callback);
   }
 
   getDto(callback?: JsonRpcCallback) {

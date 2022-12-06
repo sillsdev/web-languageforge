@@ -2,7 +2,6 @@
 
 namespace Api\Model\Shared;
 
-use Api\Library\Shared\Website;
 use Api\Model\Shared\Mapper\ArrayOf;
 use Api\Model\Shared\Mapper\Id;
 use Api\Model\Shared\Mapper\IdReference;
@@ -14,10 +13,6 @@ use Api\Model\Shared\Rights\SystemRoles;
 
 class UserModel extends MapperModel
 {
-    const COMMUNICATE_VIA_SMS = "sms";
-    const COMMUNICATE_VIA_EMAIL = "email";
-    const COMMUNICATE_VIA_BOTH = "both";
-
     const GENDER_MALE = "Male";
     const GENDER_FEMALE = "Female";
 
@@ -30,7 +25,6 @@ class UserModel extends MapperModel
         "avatar_shape",
         "avatar_ref",
         "mobile_phone",
-        "communicate_via",
         "name",
         "email",
         "username",
@@ -49,7 +43,6 @@ class UserModel extends MapperModel
         "avatar_shape",
         "avatar_ref",
         "mobile_phone",
-        "communicate_via",
         "name",
         "age",
         "gender",
@@ -161,9 +154,6 @@ class UserModel extends MapperModel
     /** @var string */
     public $mobile_phone;
 
-    /** @var string - possible values are "email", "sms" or "both" */
-    public $communicate_via;
-
     /* name (also listed in site administration above) */
 
     /** @var string */
@@ -242,16 +232,15 @@ class UserModel extends MapperModel
     }
 
     /**
-     * @param string $site
      * @return string - projectId
      */
-    public function getCurrentProjectId($site)
+    public function getCurrentProjectId()
     {
         $projectId = "";
         if ($this->lastUsedProjectId) {
             $projectId = $this->lastUsedProjectId;
         } else {
-            $projectList = $this->listProjects($site);
+            $projectList = $this->listProjects();
             if (count($projectList->entries) > 0) {
                 $projectId = $projectList->entries[0]["id"];
             }
@@ -283,9 +272,9 @@ class UserModel extends MapperModel
         //$projectModel->users->_removeRef($this->id);
     }
 
-    public function listProjects($site)
+    public function listProjects()
     {
-        $projectList = new ProjectList_UserModel($site);
+        $projectList = new ProjectList_UserModel();
         $projectList->readUserProjects($this->id->asString());
 
         return $projectList;
@@ -294,9 +283,7 @@ class UserModel extends MapperModel
     public function read($id)
     {
         parent::read($id);
-        if (!$this->communicate_via) {
-            $this->communicate_via = self::COMMUNICATE_VIA_EMAIL;
-        }
+
         if (!$this->avatar_ref) {
             $default_avatar = "anonymoose.png";
             $this->avatar_ref = $default_avatar;
@@ -351,13 +338,12 @@ class UserModel extends MapperModel
     }
 
     /**
-     * Returns true if the current user has $right to $website.
+     * Returns true if the current user has $right.
      * @param int $right
-     * @param Website $website
      * @return bool
      * @throws \Exception
      */
-    public function hasRight($right, $website)
+    public function hasRight($right)
     {
         $result = SiteRoles::hasRight($this->siteRole, $right) || SystemRoles::hasRight($this->role, $right);
 
@@ -365,26 +351,15 @@ class UserModel extends MapperModel
     }
 
     /**
-     * @param Website $website
      * @return array:
      */
-    public function getRightsArray($website)
+    public function getRightsArray()
     {
-        $siteRightsArray = SiteRoles::getRightsArray($this->siteRole, $website);
+        $siteRightsArray = SiteRoles::getRightsArray($this->siteRole);
         $systemRightsArray = SystemRoles::getRightsArray($this->role);
         $mergeArray = array_merge($siteRightsArray, $systemRightsArray);
 
         return array_values(array_unique($mergeArray));
-    }
-
-    /**
-     * Returns whether the user has a role on the requested website
-     * @param Website $website
-     * @return bool true if the user has any role on the website, otherwise false
-     */
-    public function hasRoleOnSite($website)
-    {
-        return $this->siteRole->offsetExists($website->domain);
     }
 
     /**

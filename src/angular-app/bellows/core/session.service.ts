@@ -5,7 +5,7 @@ import { Project } from '../shared/model/project.model';
 import { ApiService, JsonRpcCallback } from './api/api.service';
 
 export class Session {
-  constructor(public data?: SessionData) { }
+  constructor(public data?: SessionData) {}
 
   userId(): string {
     return this.data.userId;
@@ -140,6 +140,10 @@ export class SessionService {
 
   project() {
 	return this.session.data.project;
+  }
+
+  userIsAdmin(): boolean {
+    return this.session.hasRight(this.session.data.userSiteRights, this.domain.USERS, this.operation.DELETE);
   }
 
   getSession(forceRefresh: boolean = false, callback?: SessionCallback): angular.IPromise<Session> {

@@ -2,7 +2,6 @@
 
 namespace Site\OAuth;
 
-use Api\Library\Shared\Website;
 use Api\Library\Shared\UrlHelper;
 use Api\Model\Shared\UserModel;
 use League\OAuth2\Client\Provider\AbstractProvider;
@@ -164,7 +163,7 @@ abstract class OAuthBase extends Base
 
     public static function doSilexLogin(UserModel $userModel, Application $app): string
     {
-        $roles = AuthUserProvider::getSiteRoles($userModel, $app["website"]);
+        $roles = AuthUserProvider::getSiteRoles($userModel);
         $oauthUser = new UserWithId($userModel->username, "", $userModel->username, $roles);
         $oauthToken = new UsernamePasswordToken($oauthUser, "", "site", $oauthUser->getRoles());
         $tokenStorage = $app["security.token_storage"];

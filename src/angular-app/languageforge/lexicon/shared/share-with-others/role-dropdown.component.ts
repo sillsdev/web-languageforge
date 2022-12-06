@@ -1,5 +1,6 @@
 import * as angular from 'angular';
-import { ProjectRole } from '../../../../bellows/shared/model/project.model';
+import { Session } from 'src/angular-app/bellows/core/session.service';
+import { Project, ProjectRole } from '../../../../bellows/shared/model/project.model';
 import { User } from '../../../../bellows/shared/model/user.model';
 import { LexRoles } from '../model/lexicon-project.model';
 
@@ -20,10 +21,15 @@ export class RoleDropdownController implements angular.IController {
   roleDetails: RoleDetail[];
   selectedRoleDetail: RoleDetail;
   selectedRole: ProjectRole;
+  projectUrl = 'http://languageforge.org/app/lexicon/real_project_url';
+  project: Project;
+  session: Session;
   allowDisable: boolean;
-  allowDelete: boolean;
+  userIsTechSupport: () => boolean;
+  currentUserIsOwnerOrAdmin: () => boolean;
   onRoleChanged: (params: { $event: { roleDetail: RoleDetail, target: any } }) => void;
   onDeleteTarget: (params: { $event: { target: any } }) => void;
+  onOwnershipTransfer: (params: { $event: { target: any } }) => void;
 
   static $inject = ['$scope'];
   constructor(private readonly $scope: angular.IScope) { }
@@ -82,12 +88,16 @@ export class RoleDropdownController implements angular.IController {
 
 export const RoleDropdownComponent: angular.IComponentOptions = {
   bindings: {
+    project: '<',
+    session: '<',
     target: '<',
     roles: '<',
     selectedRole: '<',
+    onOwnershipTransfer: '&',
     onRoleChanged: '&',
     onDeleteTarget: '&',
-    allowDelete: '<'
+    userIsTechSupport: '&',
+    currentUserIsOwnerOrAdmin: '&',
   },
   controller: RoleDropdownController,
   templateUrl: '/angular-app/languageforge/lexicon/shared/share-with-others/role-dropdown.component.html'

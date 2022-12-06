@@ -4,10 +4,8 @@ namespace Api\Model\Shared\Command;
 
 use Api\Library\Shared\Palaso\Exception\ResourceNotAvailableException;
 use Api\Library\Shared\Palaso\Exception\UserUnauthorizedException;
-use Api\Library\Shared\Website;
 use Api\Model\Languageforge\Lexicon\Command\SendReceiveCommands;
 use Api\Model\Shared\Communicate\EmailSettings;
-use Api\Model\Shared\Communicate\SmsSettings;
 use Api\Model\Shared\Dto\ManageUsersDto;
 use Api\Model\Shared\Mapper\JsonDecoder;
 use Api\Model\Shared\Mapper\JsonEncoder;
@@ -18,6 +16,7 @@ use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Shared\UserModel;
 use Palaso\Utilities\CodeGuard;
+use Api\Library\Shared\UrlHelper;
 
 class ProjectCommands
 {
@@ -27,11 +26,10 @@ class ProjectCommands
      * @param string $projectCode
      * @param string $appName
      * @param string $userId
-     * @param Website $website
      * @param array $srProject send receive project data
      * @return string - projectId
      */
-    public static function createProject($projectName, $projectCode, $appName, $userId, $website, $srProject = null)
+    public static function createProject($projectName, $projectCode, $appName, $userId, $srProject = null)
     {
         // Check for unique project code
         if (ProjectCommands::projectCodeExists($projectCode)) {
@@ -41,7 +39,7 @@ class ProjectCommands
         $project->projectName = $projectName;
         $project->projectCode = $projectCode;
         $project->appName = $appName;
-        $project->siteName = $website->domain;
+        $project->siteName = UrlHelper::getHostname();
         $project->ownerRef->id = $userId;
         $project->addUser($userId, ProjectRoles::MANAGER);
         $projectId = $project->write();
@@ -214,7 +212,7 @@ class ProjectCommands
      * @param string $userId
      * @param string $projectRole
      * @throws \Exception
-     * @return string $userId
+     * @return string $userId - the user that was updated
      */
     public static function updateUserRole($projectId, $userId, $projectRole = ProjectRoles::CONTRIBUTOR)
     {
@@ -237,7 +235,6 @@ class ProjectCommands
             throw new UserUnauthorizedException("Attempted to add non-admin as Tech Support");
         }
 
-        ProjectCommands::usersDto($projectId);
         if (!$project->userIsMember($userId)) {
             ActivityCommands::addUserToProject($project, $userId);
         }
@@ -251,15 +248,59 @@ class ProjectCommands
     }
 
     /**
-     * Removes users from the project (two-way unlink)
      * @param string $projectId
+     * @param string $currentUserId - id of the current user requesting the ownership transfer
+     * @param string $newOwnerId - the id of the user who should become the project owner
+     */
+    public static function transferOwnership($projectId, $currentUserId, $newOwnerId)
+    {
+        $project = ProjectModel::getById($projectId);
+        $currentUser = new UserModel($currentUserId);
+        $newOwner = new UserModel($newOwnerId);
+
+        // check if $currentUserId is actually the owner OR is a site admin; throw if not
+        if ($currentUserId != $project->ownerRef->asString() && $currentUser->role != SystemRoles::SYSTEM_ADMIN) {
+            throw new UserUnauthorizedException("Attempted to transfer project ownership as non-owner and non-admin");
+        }
+
+        // ensure $newOwnerId is part of the project; throw if not
+        if (!$project->userIsMember($newOwnerId)) {
+            throw new UserUnauthorizedException(
+                "Attempted to transfer project ownership to a non-member of the project"
+            );
+        }
+
+        // get the id of the previous owner
+        $previousOwnerId = $project->ownerRef->asString();
+        $previousOwner = new UserModel($previousOwnerId);
+
+        // set the project owner ref to the new owner id
+        $project->ownerRef = $newOwnerId;
+
+        // set the project role of the previous owner id to be manager
+        $project->addUser($previousOwnerId, ProjectRoles::MANAGER);
+        $previousOwner->addProject($projectId);
+        $previousOwner->write();
+
+        // set the project role of the new owner id to be manager
+        $project->addUser($newOwnerId, ProjectRoles::MANAGER);
+        $newOwner->addProject($projectId);
+        $newOwner->write();
+
+        $project->write();
+        return $newOwnerId;
+    }
+
+    /**
+     * Removes users from the project (two-way unlink)
+     * @param string $aProjectId - might not be the session's current project. Any project that the user is part of.
      * @param array<string> $userIds
      * @return string $projectId
      * @throws \Exception
      */
-    public static function removeUsers($projectId, $userIds)
+    public static function removeUsers($aProjectId, $userIds)
     {
-        $project = new ProjectModel($projectId);
+        $project = new ProjectModel($aProjectId);
         foreach ($userIds as $userId) {
             // Guard against removing project owner
             if ($userId != $project->ownerRef->id) {
@@ -273,7 +314,7 @@ class ProjectCommands
             }
         }
 
-        return $projectId;
+        return $aProjectId;
     }
 
     /**
@@ -297,33 +338,18 @@ class ProjectCommands
         // send email notifying of acceptance
     }
 
-    public static function requestAccessForProject($projectId, $userId)
-    {
-        // add userId to request queue
-        // send email to project owner and all managers
-    }
-
-    public static function renameProject($projectId, $oldName, $newName)
-    {
-        // TODO: Write this. (Move renaming logic over from sf->project_update). RM 2013-08
-    }
-
     /**
      * Updates the ProjectSettingsModel which are settings accessible only to site administrators
      * @param string $projectId
-     * @param array<SmsSettings> $smsSettingsArray
      * @param array<EmailSettings> $emailSettingsArray
      * @return string $result id to the projectSettingsModel
      */
-    public static function updateProjectSettings($projectId, $smsSettingsArray, $emailSettingsArray)
+    public static function updateProjectSettings($projectId, $emailSettingsArray)
     {
         $projectSettings = new ProjectSettingsModel($projectId);
         ProjectCommands::checkIfArchivedAndThrow($projectSettings);
-        $smsSettings = new SmsSettings();
         $emailSettings = new EmailSettings();
-        JsonDecoder::decode($smsSettings, $smsSettingsArray);
         JsonDecoder::decode($emailSettings, $emailSettingsArray);
-        $projectSettings->smsSettings = $smsSettings;
         $projectSettings->emailSettings = $emailSettings;
         $result = $projectSettings->write();
 
@@ -335,7 +361,6 @@ class ProjectCommands
         $project = new ProjectSettingsModel($projectId);
 
         return [
-            "sms" => JsonEncoder::encode($project->smsSettings),
             "email" => JsonEncoder::encode($project->emailSettings),
         ];
     }
@@ -365,7 +390,7 @@ class ProjectCommands
 
         $project->write();
 
-        return $project->website()->baseUrl() . "/invite/" . $newAuthToken;
+        return UrlHelper::baseUrl() . "/invite/$newAuthToken";
     }
 
     /**
@@ -380,7 +405,7 @@ class ProjectCommands
         if (empty($project->inviteToken->token)) {
             return "";
         } else {
-            return $project->website()->baseUrl() . "/invite/" . $project->inviteToken->token;
+            return UrlHelper::baseUrl() . "/invite/" . $project->inviteToken->token;
         }
     }
 

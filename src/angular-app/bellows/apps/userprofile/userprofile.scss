@@ -18,11 +18,4 @@
       background-color: white;
     }
   }
-
-  .intl-tel-input {
-    width: 100%;
-    ul.country-list {
-      z-index: 3; // Necessary to keep email & SMS buttons from covering the dropdown
-    }
-  }
 }

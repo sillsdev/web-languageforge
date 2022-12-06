@@ -2,23 +2,15 @@
 
 namespace Api\Model\Shared\Dto;
 
-use Api\Library\Shared\Website;
 use Api\Model\Shared\Mapper\Id;
 use Api\Model\Shared\Mapper\JsonEncoder;
 use Api\Model\Shared\Mapper\ReferenceList;
 use Api\Model\Shared\ProjectModel;
 use Palaso\Utilities\CodeGuard;
+use Api\Library\Shared\UrlHelper;
 
 class UserProfileEncoder extends JsonEncoder
 {
-    public function __construct($website)
-    {
-        $this->_website = $website;
-    }
-
-    /** @var Website */
-    private $_website;
-
     /**
      * @param string $key
      * @param ReferenceList $model
@@ -29,7 +21,6 @@ class UserProfileEncoder extends JsonEncoder
         if ($key != "projects") {
             return parent::encodeReferenceList($key, $model);
         }
-        $domain = $this->_website->domain;
         $result = array_map(function ($id) use ($domain) {
             CodeGuard::checkTypeAndThrow($id, "Api\Model\Shared\Mapper\Id");
             /** @var Id $id */
@@ -41,7 +32,6 @@ class UserProfileEncoder extends JsonEncoder
                 // userProfilePropertiesEnabled is type ArrayOf, so testing for empty() didn't work
                 if (
                     !$projectModel->isArchived &&
-                    $projectModel->siteName == $domain &&
                     count($projectModel->userProperties->userProfilePropertiesEnabled) > 0
                 ) {
                     $projectDto = [];
@@ -56,13 +46,5 @@ class UserProfileEncoder extends JsonEncoder
         }, $model->refs);
         // Filter out empty entries in the project list
         return array_values(array_filter($result));
-    }
-
-    // Not using encode because we need the additional $website param
-    public static function encodeModel($model, $website)
-    {
-        $e = new UserProfileEncoder($website);
-
-        return $e->_encode($model);
     }
 }

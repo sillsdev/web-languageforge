@@ -29,13 +29,13 @@
                                 target="user"
                                 on-role-changed="$ctrl.onUserRoleChanged($event)"
                                 on-delete-target="$ctrl.onDeleteTarget($event)"
+                                on-ownership-transfer="$ctrl.onOwnershipTransfer($event)"
+                                user-is-tech-support="$ctrl.userIsTechSupport(user)"
+                                current-user-is-owner-or-admin="$ctrl.currentUserIsOwnerOrAdmin()"
                                 allow-delete="true"
                                 selected-role="user.role"
                                 roles="$ctrl.memberRoles"></role-dropdown>
         </div>
-        <i class="fa fa-times delete-member d-none d-md-block" ng-click="$ctrl.removeUser(user);"
-            ng-if="!$ctrl.userIsOwner(user) && !$ctrl.userIsCurrentUser(user)"></i>
-        <div class="delete-member d-none d-md-block" ng-if="$ctrl.userIsOwner(user) || $ctrl.userIsCurrentUser(user)"></div>
       </li>
       <div class="scroll-gradient" id="scroll-gradient-lower"></div>
     </ul>

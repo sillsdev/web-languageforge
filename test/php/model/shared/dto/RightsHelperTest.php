@@ -31,7 +31,7 @@ class RightsHelperTest extends TestCase
         $this->expectException(Exception::class);
 
         $userId = self::$environ->createUser("user", "user", "user@user.com", SystemRoles::USER);
-        $rh = new RightsHelper($userId, null, self::$environ->website);
+        $rh = new RightsHelper($userId, null);
 
         $rh->userCanAccessMethod("bogusMethodName", []);
 
@@ -50,7 +50,7 @@ class RightsHelperTest extends TestCase
         $user->addProject($projectId);
         $user->write();
         $project = ProjectModel::getById($projectId);
-        $rh = new RightsHelper($userId, $project, self::$environ->website);
+        $rh = new RightsHelper($userId, $project);
         $result = $rh->userCanAccessMethod("project_settings", []);
         $this->assertTrue($result);
     }
@@ -67,7 +67,7 @@ class RightsHelperTest extends TestCase
         $user->addProject($projectId);
         $user->write();
         $project = ProjectModel::getById($projectId);
-        $rh = new RightsHelper($userId, $project, self::$environ->website);
+        $rh = new RightsHelper($userId, $project);
         $result = $rh->userCanAccessMethod("project_settings", []);
         $this->assertFalse($result);
     }
@@ -80,7 +80,7 @@ class RightsHelperTest extends TestCase
         $project->write();
         $projectId = $project->id->asString();
         $project = ProjectModel::getById($projectId);
-        $rh = new RightsHelper($userId, $project, self::$environ->website);
+        $rh = new RightsHelper($userId, $project);
         $result = $rh->userCanAccessMethod("project_pageDto", []);
         $this->assertFalse($result);
     }

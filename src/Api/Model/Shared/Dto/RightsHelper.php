@@ -2,7 +2,6 @@
 
 namespace Api\Model\Shared\Dto;
 
-use Api\Library\Shared\Website;
 use Api\Model\Shared\Command\LdapiCommands;
 use Api\Model\Shared\Rights\Domain;
 use Api\Model\Shared\Rights\Operation;
@@ -18,9 +17,6 @@ class RightsHelper
 
     /** @var ProjectModel */
     private $_projectModel;
-
-    /** @var Website */
-    private $_website;
 
     /**
      * @param UserModel $userModel
@@ -64,13 +60,11 @@ class RightsHelper
     /**
      * @param string $userId
      * @param ProjectModel $projectModel
-     * @param Website $website
      */
-    public function __construct($userId, $projectModel, $website)
+    public function __construct($userId, $projectModel)
     {
         $this->_userId = $userId;
         $this->_projectModel = $projectModel;
-        $this->_website = $website;
     }
 
     /**
@@ -106,7 +100,6 @@ class RightsHelper
                 return $this->userHasProjectRight(Domain::USERS + Operation::EDIT);
             case "project_sendJoinRequest":
                 return true;
-
             case "project_getInviteLink":
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::VIEW);
 
@@ -136,8 +129,6 @@ class RightsHelper
             case "project_read":
             case "set_project":
             case "project_settings":
-            case "project_updateSettings":
-            case "project_readSettings":
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
 
             case "project_update":
@@ -155,6 +146,9 @@ class RightsHelper
 
             case "project_removeUsers":
                 return $this->userHasProjectRight(Domain::USERS + Operation::DELETE);
+
+            case "project_removeSelf":
+                return $this->userHasProjectRight(Domain::PROJECTS + Operation::VIEW);
 
             // Admin (system context)
             case "user_read":
@@ -191,6 +185,10 @@ class RightsHelper
             case "project_delete":
                 return $this->userHasSiteRight(Domain::PROJECTS + Operation::DELETE) ||
                     $this->userHasSiteRight(Domain::PROJECTS + Operation::CREATE);
+
+            case "project_transferOwnership":
+                // user is a project manager
+                return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
 
             case "projectcode_exists":
                 return $this->userHasSiteRight(Domain::PROJECTS + Operation::CREATE);

@@ -33,11 +33,7 @@ class Redirect extends App
         }
         try {
             // Get most recent project ID, either from PHP session or from user's lastUsedProjectID in MongoDB
-            $projectId = SilexSessionHelper::requireValidProjectIdForThisWebsiteAndValidateUserMembership(
-                $app,
-                $this->website,
-                ""
-            );
+            $projectId = SilexSessionHelper::requireValidProjectIdAndValidateUserMembership($app, "");
         } catch (UserUnauthorizedException $e) {
             if (SilexSessionHelper::getUserId($app)) {
                 // User tried to access project they're not a member of, so show them projects view so they can pick a different one

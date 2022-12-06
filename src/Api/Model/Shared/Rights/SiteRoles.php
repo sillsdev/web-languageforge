@@ -2,8 +2,8 @@
 
 namespace Api\Model\Shared\Rights;
 
-use Api\Library\Shared\Website;
 use Api\Model\Shared\Mapper\MapOf;
+use Api\Library\Shared\UrlHelper;
 
 class SiteRoles extends RolesBase
 {
@@ -44,13 +44,13 @@ class SiteRoles extends RolesBase
     /**
      *
      * @param MapOf $roleMap
-     * @param Website $website
      * @return array
      */
-    public static function getRightsArray($roleMap, $website)
+    public static function getRightsArray($roleMap)
     {
-        if ($roleMap->offsetExists($website->domain)) {
-            return self::_getRightsArray(self::$_rights, $roleMap[$website->domain]);
+        $hostname = UrlHelper::getHostname();
+        if ($roleMap->offsetExists($hostname)) {
+            return self::_getRightsArray(self::$_rights, $roleMap[$hostname]);
         }
 
         return [];
@@ -65,9 +65,9 @@ class SiteRoles extends RolesBase
      */
     public static function hasRight($roleMap, $right)
     {
-        global $WEBSITE;
-        if ($roleMap->offsetExists($WEBSITE->domain)) {
-            return self::_hasRight(self::$_rights, $roleMap[$WEBSITE->domain], $right);
+        $hostname = UrlHelper::getHostname();
+        if ($roleMap->offsetExists($hostname)) {
+            return self::_hasRight(self::$_rights, $roleMap[$hostname], $right);
         }
 
         return false;

@@ -10,7 +10,7 @@ export class NoticeController implements angular.IController {
   constructor(private noticeService: NoticeService, private sessionService: SessionService) {
     this.issueEmail = 'issues@languageforge.org';
     sessionService.getSession().then((session: Session) => {
-      this.issueEmail = 'issues@' + session.baseSite() + '.org';
+      this.issueEmail = 'issues@languageforge.org';
     });
   }
 

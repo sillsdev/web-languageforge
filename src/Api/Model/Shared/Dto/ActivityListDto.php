@@ -3,7 +3,6 @@
 namespace Api\Model\Shared\Dto;
 
 use Api\Library\Shared\Palaso\StringUtil;
-use Api\Library\Shared\Website;
 use Api\Model\Languageforge\Lexicon\Config\LexConfig;
 use Api\Model\Languageforge\Lexicon\LexEntryModel;
 use Api\Model\Languageforge\Lexicon\LexProjectModel;
@@ -30,12 +29,11 @@ class ActivityListDto
     const DELETED_FIELD = "deleted_field";
 
     /**
-     * @param Website $site
      * @return array
      */
-    public static function getActivityTypes($site)
+    public static function getActivityTypes()
     {
-        return ActivityModel::getActivityTypesForSiteBase($site->base);
+        return ActivityModel::getActivityTypesForSiteBase();
     }
 
     /**
@@ -87,15 +85,14 @@ class ActivityListDto
     }
 
     /**
-     * @param string $site
      * @param string $userId
      * @param array $filterParams
      * @return array - the DTO array
      * @throws \Exception
      */
-    public static function getActivityForUser($site, $userId, $filterParams = [])
+    public static function getActivityForUser($userId, $filterParams = [])
     {
-        $projectList = new ProjectList_UserModel($site);
+        $projectList = new ProjectList_UserModel();
         $projectList->readUserProjects($userId);
         $activity = [];
         $unreadItems = [];

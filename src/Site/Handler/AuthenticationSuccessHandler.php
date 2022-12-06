@@ -2,7 +2,6 @@
 
 namespace Site\Handler;
 
-use Api\Library\Shared\Website;
 use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\Rights\SiteRoles;
 use Api\Model\Shared\Rights\SystemRoles;
@@ -38,7 +37,6 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
         } else {
             $user->readByUserName($username);
         }
-        $website = Website::get();
 
         $session = $request->getSession();
         if (OAuthBase::sessionHasOAuthId($session)) {
@@ -50,14 +48,14 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
         $user->last_login = time();
         $user->write();
 
-        $projectId = $user->getCurrentProjectId($website->domain);
+        $projectId = $user->getCurrentProjectId();
 
         // redirect to page before the login screen was presented, or to the default project for this user
         $referer = $this->determineTargetUrl($request);
         $url = "/app/projects";
         if ($referer and strpos($referer, "/app/") !== false) {
             $url = $referer;
-        } elseif ($projectId && ProjectModel::projectExistsOnWebsite($projectId, $website)) {
+        } elseif ($projectId) {
             $project = ProjectModel::getById($projectId);
             if ($project->userIsMember($user->id->asString())) {
                 $url = "/app/" . $project->appName . "/" . $projectId;

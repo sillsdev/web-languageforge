@@ -7,6 +7,11 @@ on:
 env:
   DOCKER_BUILDKIT: 1
 
+# https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#concurrency
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   unit-tests:
     runs-on: ubuntu-latest
@@ -59,7 +64,7 @@ jobs:
       -
         name: Playwright E2E Tests
         # see https://playwright.dev/docs/ci#github-actions
-        run: make playwright-tests-ci
+        run: make e2e-tests-ci
 
       -
         name: Upload Playwright test results
@@ -82,24 +87,3 @@ jobs:
       -
         name: Run prettier check
         run: npx prettier --check .
-
-  # protractor-tests:
-  #   runs-on: ubuntu-latest
-
-  #   steps:
-  #     -
-  #       uses: actions/checkout@v3
-  #     -
-  #       name: Build app
-  #       run: make build
-  #     -
-  #       name: Run E2E Tests
-  #       run: make e2e-tests-ci
-  #     -
-  #       name: Publish Test Results
-  #       uses: docker://ghcr.io/enricomi/publish-unit-test-result-action:v1
-  #       if: always()
-  #       with:
-  #         check_name: E2E Test Results
-  #         github_token: ${{ github.token }}
-  #         files: docker/e2e-results.xml

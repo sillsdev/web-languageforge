@@ -9,19 +9,6 @@
                                 data-ng-click="$ctrl.startProject()">
                             <i class="fa fa-plus"></i> Start or Join a New Project</button>
                     </form>
-                    <div class="new-item" uib-collapse="$ctrl.newProjectCollapsed">
-                        <form class="form-horizontal card card-background" name="newProjectForm">
-                            <div data-ng-repeat="appName in $ctrl.projectTypesBySite()" class="col-xs-3">
-                                <a data-ng-href="/app/{{appName}}/new-project">
-                                    <figure>
-                                        <img data-ng-src="/Site/views/{{$ctrl.siteName}}/image/{{appName}}-newProjectBadge.png">
-                                        <figcaption>{{$ctrl.projectTypeNames[appName]}}</figcaption>
-                                    </figure>
-                                </a>
-                            </div>
-                            <div class="clearfix"></div>
-                        </form>
-                    </div>
                 </div>
             </div>
         </div>
@@ -47,18 +34,22 @@
                       items="$ctrl.projects" filtered-items="filteredProjects" visible-items="visibleProjects" select="">
                 <div data-ng-repeat="project in visibleProjects">
                     <div class="row align-items-center mb-3 project" data-ng-class="{active: $ctrl.isSelected(project)}">
-                        <div class="col-md-4">
+                        <div class="col-5">
                             <a data-ng-show="$ctrl.isInProject(project)" data-ng-href="/app/lexicon/{{project.id}}">
                                 <span class="larger-text">{{project.projectName}}</span></a>
                             <span data-ng-show="!$ctrl.isInProject(project)" class="larger-text">{{project.projectName}}</span>
                             <small class="text-muted"> {{project.projectCode}}</small>
                         </div>
-                        <div class="col-7 col-md-5" data-ng-show="$ctrl.rights.canEditProjects">
-                            <small class="text-muted">{{$ctrl.projectTypeNames[project.appName]}}</small>
+                        <div class="col-3" data-ng-show="$ctrl.rights.canEditProjects">
+                            <small class="text-muted">Dictionary</small>
                         </div>
-                        <div class="col-5 col-md-3 text-right" data-ng-show="$ctrl.rights.canEditProjects">
-                            <button id="techSupportButton" class="btn btn-std" data-ng-show="!$ctrl.isManager(project)"
-                                    data-ng-click="$ctrl.addTechSupportToProject(project)">
+                        <div class="col-2" data-ng-show="$ctrl.rights.canEditProjects">
+                            <button id="removeSelfButton" class="btn btn-std" data-ng-show="!$ctrl.isOwner(project) && $ctrl.isInProject(project)"
+                                    data-ng-click="$ctrl.removeSelfFromProject(project)">
+                                <i class="fa fa-chain-broken"></i> Leave this project</button>
+                        </div>
+                        <div class="col-2" data-ng-show="$ctrl.rights.canEditProjects">
+                            <button id="techSupportButton" class="btn btn-std" data-ng-show="!$ctrl.isManager(project)" ng-click="$ctrl.addTechSupportToProject(project)">
                                 <i class="fa fa-plus"></i> Tech Support</button>
                         </div>
                     </div>

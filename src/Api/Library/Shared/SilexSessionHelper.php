@@ -23,7 +23,7 @@ class SilexSessionHelper
         return $userId;
     }
 
-    public static function getProjectId(Application $app, Website $website, $projectId = "")
+    public static function getProjectId(Application $app, $projectId = "")
     {
         if ($projectId == "") {
             $projectId = $app["session"]->get("projectId");
@@ -31,15 +31,15 @@ class SilexSessionHelper
         if (!$projectId) {
             $userId = self::getUserId($app);
             $user = new UserModel($userId);
-            $projectId = $user->getCurrentProjectId($website);
+            $projectId = $user->getCurrentProjectId();
         }
         return $projectId;
     }
 
-    public static function requireValidProjectIdForThisWebsite(Application $app, Website $website, $projectId)
+    public static function requireValidProjectId(Application $app, $projectId)
     {
-        $projectId = self::getProjectId($app, $website, $projectId);
-        if ($projectId != "" && ProjectModel::projectExistsOnWebsite($projectId, $website)) {
+        $projectId = self::getProjectId($app, $projectId);
+        if ($projectId != "") {
             // ensure project is not archived
             $projectModel = ProjectModel::getById($projectId);
             if ($projectModel->isArchived) {
@@ -62,12 +62,9 @@ class SilexSessionHelper
         return $projectId;
     }
 
-    public static function requireValidProjectIdForThisWebsiteAndValidateUserMembership(
-        Application $app,
-        Website $website,
-        $projectId
-    ) {
-        $projectId = self::requireValidProjectIdForThisWebsite($app, $website, $projectId);
+    public static function requireValidProjectIdAndValidateUserMembership(Application $app, $projectId)
+    {
+        $projectId = self::requireValidProjectId($app, $projectId);
         $userId = self::getUserId($app);
         if ($userId) {
             $project = ProjectModel::getById($projectId);

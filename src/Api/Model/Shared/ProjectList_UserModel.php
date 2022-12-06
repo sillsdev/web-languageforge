@@ -10,17 +10,10 @@ use Api\Model\Shared\Mapper\MapperListModel;
  */
 class ProjectList_UserModel extends MapperListModel
 {
-    /**
-     * @param string $site
-     */
-    public function __construct($site)
+    public function __construct()
     {
-        $this->_site = $site;
         parent::__construct(ProjectModelMongoMapper::instance());
     }
-
-    /** @var string */
-    private $_site;
 
     /**
      * Reads all published projects or all archived projects
@@ -29,11 +22,11 @@ class ProjectList_UserModel extends MapperListModel
     public function readAll($isArchivedList = false)
     {
         if ($isArchivedList) {
-            $query = ["siteName" => ['$in' => [$this->_site]], "isArchived" => true];
+            $query = ["isArchived" => true];
         } else {
-            $query = ["siteName" => ['$in' => [$this->_site]], "isArchived" => ['$ne' => true]];
+            $query = ["isArchived" => ['$ne' => true]];
         }
-        $fields = ["projectName", "projectCode", "appName", "siteName", "ownerRef"];
+        $fields = ["projectName", "projectCode", "appName", "ownerRef"];
 
         $this->_mapper->readList($this, $query, $fields);
     }
@@ -46,10 +39,9 @@ class ProjectList_UserModel extends MapperListModel
     {
         $query = [
             "users." . $userId => ['$exists' => true],
-            "siteName" => ['$in' => [$this->_site]],
             "isArchived" => ['$ne' => true],
         ];
-        $fields = ["projectName", "projectCode", "appName", "siteName", "ownerRef"];
+        $fields = ["projectName", "projectCode", "appName", "ownerRef"];
 
         $this->_mapper->readList($this, $query, $fields);
 
