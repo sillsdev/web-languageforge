@@ -13,6 +13,23 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  require-label:
+    runs-on: ubuntu-latest
+    outputs:
+      status: ${{ steps.check-labels.outputs.status }}
+    steps:
+      - uses: mheap/github-action-required-labels@v2
+        id: check-labels
+        with:
+          mode: exactly
+          count: 1
+          labels: "bug, feature, engineering, security fix, testing"
+      - uses: mheap/github-action-required-labels@v2
+        with:
+          mode: exactly
+          count: 0
+          labels: "do not merge"
+
   unit-tests:
     runs-on: ubuntu-latest
 
