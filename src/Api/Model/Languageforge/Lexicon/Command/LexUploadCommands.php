@@ -86,8 +86,8 @@ class LexUploadCommands
 
             // recorded audio and uploaded audio have different settings
             $recordedInBrowser = false;
-            if (array_key_exists("recordedInBrowser", $_POST)) {
-                $recordedInBrowser = $_POST["recordedInBrowser"];
+            if (array_key_exists("recordedInBrowser", $_POST) && $_POST["recordedInBrowser"] === "true") {
+                $recordedInBrowser = true;
             }
 
             if ($recordedInBrowser) {
