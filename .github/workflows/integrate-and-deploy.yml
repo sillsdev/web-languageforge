@@ -80,10 +80,10 @@ jobs:
       -
         name: Upload Playwright test results
         if: always()
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: test-results
-          path: test-results
+          path: test/e2e/test-results
       -
         name: Log in to Docker Hub
         uses: docker/login-action@v2
