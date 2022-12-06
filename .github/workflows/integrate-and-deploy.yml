@@ -40,8 +40,8 @@ jobs:
       -
         name: Verify version stamping
         run: |
-          docker run --rm lf-app cat build-version.txt version.php
-          docker run --rm lf-app cat version.php | grep ${{ steps.image.outputs.TAG_APP }}
+          docker run --rm lf-app head build-version.txt version.php
+          docker run --rm lf-app head version.php | grep ${{ steps.image.outputs.TAG_APP }}
       -
         name: Log in to Docker Hub
         uses: docker/login-action@v2
