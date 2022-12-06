@@ -99,9 +99,6 @@ jobs:
       -
         run: docker images
       -
-        name: Verify version stamping
-        run: docker run --rm ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG_APP }} head build-version.txt version.php
-      -
         name: Publish images
         run: docker push --all-tags ${{ steps.image.outputs.NAMESPACE }}
 
