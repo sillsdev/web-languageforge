@@ -72,11 +72,20 @@ jobs:
         name: Build "next" images
         run: make build-next
       -
+        name: Verify version stamping
+        run: docker run --rm lf-app head build-version.txt version.php
+      -
         name: Unit Tests
         run: make unit-tests-ci
       -
+        name: Verify version stamping
+        run: docker run --rm lf-app head build-version.txt version.php
+      -
         name: Playwright E2E Tests
         run: make e2e-tests-ci
+      -
+        name: Verify version stamping
+        run: docker run --rm lf-app head build-version.txt version.php
       -
         name: Upload Playwright test results
         if: always()
@@ -97,10 +106,19 @@ jobs:
           docker tag lf-next-proxy ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG_PROXY }}
           docker tag lf-next-app ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG_NEXT_APP }}
       -
+        name: Verify version stamping
+        run: docker run --rm ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG_APP }} head build-version.txt version.php
+      -
         run: docker images
+      -
+        name: Verify version stamping
+        run: docker run --rm ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG_APP }} head build-version.txt version.php
       -
         name: Publish images
         run: docker push --all-tags ${{ steps.image.outputs.NAMESPACE }}
+      -
+        name: Verify version stamping
+        run: docker run --rm ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG_APP }} head build-version.txt version.php
 
     outputs:
       IMAGE_APP: ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG_APP }}
