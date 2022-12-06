@@ -43,8 +43,17 @@ jobs:
           docker compose run --rm app cat build-version.txt version.php
           docker compose run --rm app cat version.php | grep ${{ steps.image.outputs.TAG_APP }}
       -
+        name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.image-repo-username }}
+          password: ${{ secrets.image-repo-password }}
+      -
         name: Tag images
         run: |
           docker tag lf-app ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG_APP }}
       -
         run: docker images
+      -
+        name: Publish images
+        run: docker push --all-tags ${{ steps.image.outputs.NAMESPACE }}
