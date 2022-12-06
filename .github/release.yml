@@ -1,0 +1,23 @@
+changelog:
+  categories:
+    - title: New features 🚀
+      labels:
+        - feature
+    - title: User experience improvements 🧑‍🤝‍🧑
+      labels:
+        - user experience
+    - title: Bug fixes 🐛
+      labels:
+        - bug
+    - title: Security improvements 🔒
+      labels:
+        - security fix
+    - title: Automated testing 🤖
+      labels:
+        - testing
+    - title: Developer improvements 🤓
+      labels:
+        - engineering
+    - title: Other Stuff 🤔
+      labels:
+        - "*"
