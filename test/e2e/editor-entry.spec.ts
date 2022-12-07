@@ -10,11 +10,11 @@ import { addAudioVisualFileToProject, addLexEntry, addPictureFileToProject, addU
 import constants from './testConstants.json';
 import { ConfigurationPageFieldsTab } from './pages/configuration-fields.tab';
 import { testFile } from './utils';
+import { EntryListPage } from './pages/entry-list.page';
 
 test.describe('Lexicon E2E Entry Editor and Entries List', () => {
 
   const lexemeLabel = 'Word';
-  let editorPageManager: EditorPage;
 
   const project: Project = {
     name: 'editor_entry_spec_ts Project 01' + Date.now(),
@@ -23,7 +23,7 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
   };
   let lexEntriesIds: string[] = [];
 
-  test.beforeAll(async ({ request, manager, managerTab, member, member2 }) => {
+  test.beforeAll(async ({ request, manager, member, member2 }) => {
     project.id = (await initTestProject(request, project.code, project.name, manager.username, [member.username])).id;
     await addUserToProject(request, project, member2.username, "observer");
     await addWritingSystemToProject(request, project, 'th-fonipa', 'tipa');
@@ -35,38 +35,42 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
     lexEntriesIds.push(await addLexEntry(request, project.code, constants.testEntry1));
     lexEntriesIds.push(await addLexEntry(request, project.code, constants.testEntry2));
     lexEntriesIds.push(await addLexEntry(request, project.code, constants.testMultipleMeaningEntry1));
-    editorPageManager = new EditorPage(managerTab, project);
   });
 
   test.describe('Entries List', () => {
-    test.beforeEach(async ({ }) => {
-      await editorPageManager.entriesListPage.goto();
+
+    let entryListPageManager: EntryListPage;
+
+    test.beforeEach(async ({ managerTab }) => {
+      entryListPageManager = await new EntryListPage(managerTab, project).goto();
     });
 
     test.afterEach(async ({ }, testInfo) => {
       if (testInfo.status !== testInfo.expectedStatus)
-        await editorPageManager.page.reload();
+        await entryListPageManager.page.reload();
     });
 
     test('Entries list has correct number of entries', async () => {
-      await editorPageManager.entriesListPage.expectTotalNumberOfEntries(lexEntriesIds.length);
+      await entryListPageManager.expectTotalNumberOfEntries(lexEntriesIds.length);
     });
 
     test('Search function works correctly', async () => {
-      await editorPageManager.entriesListPage.filterInput.fill('asparagus');
-      await expect(editorPageManager.entriesListPage.matchCount).toContainText(/1(?= \/)/);
+      await entryListPageManager.filterInput.fill('asparagus');
+      await expect(entryListPageManager.matchCount).toContainText(/1(?= \/)/);
 
       // remove filter, filter again, have same result
-      await editorPageManager.entriesListPage.filterInputClearButton.click();
-      await editorPageManager.entriesListPage.filterInput.fill('asparagus');
-      await expect(editorPageManager.entriesListPage.matchCount).toContainText(/1(?= \/)/);
+      await entryListPageManager.filterInputClearButton.click();
+      await entryListPageManager.filterInput.fill('asparagus');
+      await expect(entryListPageManager.matchCount).toContainText(/1(?= \/)/);
       // remove filter for next test - if this tests fails, the afterEach ensure that it does not impact the next test
-      await editorPageManager.entriesListPage.filterInputClearButton.click();
+      await entryListPageManager.filterInputClearButton.click();
     });
 
     test('Can click on first entry', async () => {
-      await editorPageManager.entriesListPage.clickOnEntry(constants.testEntry1.lexeme.th.value);
-      //await expect(editorPage.entryCard.entryName).toHaveValue(constants.testEntry1.lexeme.th.value);
+      const [, editorPageManager] = await Promise.all([
+        entryListPageManager.clickOnEntry(constants.testEntry1.lexeme.th.value),
+        new EditorPage(entryListPageManager.page, project).waitForPage(),
+      ])
       await expect(editorPageManager.getTextarea(editorPageManager.entryCard, lexemeLabel, 'th')).toHaveValue(constants.testEntry1.lexeme.th.value);
     });
 
@@ -74,10 +78,18 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
 
   test.describe('Entry Editor', () => {
 
+    let editorPageManager: EditorPage;
+
+    test.beforeEach(async ({ managerTab }) => {
+      editorPageManager = new EditorPage(managerTab, project);
+    });
+
     test('Can go from entry editor to entries list', async () => {
       await editorPageManager.goto();
-      await editorPageManager.navigateToEntriesList();
-      expect(editorPageManager.page.url()).toContain(editorPageManager.entriesListPage.url);
+      await Promise.all([
+        editorPageManager.navigateToEntriesList(),
+        new EntryListPage(editorPageManager.page, project).waitForPage(),
+      ]);
     });
 
     // left side bar entries list
@@ -541,15 +553,15 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
         });
 
         test('Back to browse page, create new word, check word count, modify new word, autosaves changes, new word visible in editor and list', async () => {
-          await editorPageManager.entriesListPage.goto();
-          await editorPageManager.entriesListPage.createNewWordButton.click();
+          const entryListPage = await new EntryListPage(editorPageManager.page, project).goto();
+          await entryListPage.createNewWordButton.click();
           // clicking on new word button automatically takes user to entry editor
           const entryCount = lexEntriesIds.length + 1;
 
           await expect(editorPageManager.compactEntryListItem).toHaveCount(entryCount);
 
-          await editorPageManager.entriesListPage.goto();
-          await editorPageManager.entriesListPage.expectTotalNumberOfEntries(entryCount);
+          await entryListPage.goto();
+          await entryListPage.expectTotalNumberOfEntries(entryCount);
 
           // go back to editor
           await editorPageManager.page.goBack();
@@ -582,16 +594,16 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
           await expect(editorPageManager.search.matchCount).toContainText(/1(?= \/)/);
 
           // new word is visible in list page
-          await editorPageManager.entriesListPage.goto();
-          await editorPageManager.entriesListPage.filterInput.fill(constants.testEntry3.senses[0].definition.en.value);
-          await expect(editorPageManager.entriesListPage.matchCount).toContainText(/1(?= \/)/);
-          await editorPageManager.entriesListPage.filterInputClearButton.click();
+          await entryListPage.goto();
+          await entryListPage.filterInput.fill(constants.testEntry3.senses[0].definition.en.value);
+          await expect(entryListPage.matchCount).toContainText(/1(?= \/)/);
+          await entryListPage.filterInputClearButton.click();
 
           // word count is still correct in browse page
-          await editorPageManager.entriesListPage.expectTotalNumberOfEntries(entryCount);
+          await entryListPage.expectTotalNumberOfEntries(entryCount);
 
           // remove new word to restore original word count
-          await editorPageManager.entriesListPage.clickOnEntry(constants.testEntry3.lexeme.th.value);
+          await entryListPage.clickOnEntry(constants.testEntry3.lexeme.th.value);
           await editorPageManager.entryCard.first().locator(editorPageManager.deleteCardButtonSelector).first().click();
 
           const confirmModal = new ConfirmModalElement(editorPageManager.page);

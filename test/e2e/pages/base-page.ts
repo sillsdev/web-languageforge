@@ -10,6 +10,7 @@ export abstract class BasePage<T extends BasePage<T>> implements Pick<Page, 'loc
   readonly header = new PageHeader(this.page);
 
   private readonly waitFor: Locator[];
+  private readonly urlPattern = new RegExp(`${this.url}(#|$)`);
 
   private get self(): T {
     return this as unknown as T;
@@ -30,7 +31,7 @@ export abstract class BasePage<T extends BasePage<T>> implements Pick<Page, 'loc
 
   async waitForPage(): Promise<T> {
     await Promise.all([
-      this.page.waitForURL(new RegExp(`${this.url}(#|$)`)),
+      this.page.url().match(this.urlPattern) ?? this.page.waitForURL(this.urlPattern),
       ...this.waitFor.map(wait => wait.waitFor()),
     ]);
     return this.self;

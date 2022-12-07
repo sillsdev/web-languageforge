@@ -61,18 +61,15 @@
   "fourthProjectName": "Fourth Project for Testing",
   "fourthProjectCode": "fourthproject",
   "fourthProjectAllowInvites": true,
-  "newProjectName": "New Project",
-  "newProjectCode": "new_project",
-  "emptyProjectName": "Empty Project",
-  "emptyProjectCode": "empty_project",
-  "srProjectName": "SR Project",
-  "srProjectCode": "sr_project",
   "srIdentifier": "mock-id1",
-  "srName": "mock-name1",
   "srUsername": "sr-mock-username",
   "srPassword": "sr-mock-password",
-
-  "LanguageForge_Test_Constants": "",
+  "srMockProjects": {
+    "1": { "id": "mock-id1", "name": "mock-name1" },
+    "2": { "id": "mock-id2", "name": "mock-name2" },
+    "3": { "id": "mock-id3", "name": "mock-name3" },
+    "4": { "id": "mock-id4", "name": "mock-name4" }
+  },
 
   "Language added to new project": "",
   "searchLanguage": "Spanish",

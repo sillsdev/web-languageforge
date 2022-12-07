@@ -2,13 +2,13 @@ import { expect } from '@playwright/test';
 import { test } from './utils/fixtures';
 
 import { NewLexProjectPage } from './pages/new-lex-project.page';
-import { EntriesListPage } from './pages/entries-list.page';
 import { NoticeElement } from './components/notice.component';
 
 import { Project, toProject } from './utils/types';
 import { initTestProject } from './utils/testSetup';
 import constants from './testConstants.json';
 import { testFile } from './utils';
+import { EditorPage } from './pages/editor.page';
 
 test.describe('Lexicon E2E New Project wizard app', () => {
   let newLexProjectPageMember: NewLexProjectPage;
@@ -164,8 +164,8 @@ test.describe('Lexicon E2E New Project wizard app', () => {
     test('Cannot move on if not a manager of the project', async () => {
       await newLexProjectPageMember.srCredentialsPage.loginInput.fill(constants.srUsername);
       await newLexProjectPageMember.srCredentialsPage.passwordInput.type(constants.srPassword);
-      // TODO: consider putting the name of the mock project in testConstants
-      await newLexProjectPageMember.srCredentialsPage.projectSelect.selectOption({ label: 'mock-name2 (mock-id2, contributor)' });
+      const proj = constants.srMockProjects[2];
+      await newLexProjectPageMember.srCredentialsPage.projectSelect.selectOption({ label: `${proj.name} (${proj.id}, contributor)` });
       await expect(newLexProjectPageMember.srCredentialsPage.projectNoAccess).toBeVisible();
       await newLexProjectPageMember.expectFormStatusHasError();
       await expect(newLexProjectPageMember.formStatus).toContainText('select a Project that you are the Manager of');
@@ -174,7 +174,8 @@ test.describe('Lexicon E2E New Project wizard app', () => {
     test('Can move on when a managed project is selected', async () => {
       await newLexProjectPageMember.srCredentialsPage.loginInput.fill(constants.srUsername);
       await newLexProjectPageMember.srCredentialsPage.passwordInput.type(constants.srPassword);
-      await newLexProjectPageMember.srCredentialsPage.projectSelect.selectOption({ label: 'mock-name4 (mock-id4, manager)' });
+      const proj = constants.srMockProjects[4];
+      await newLexProjectPageMember.srCredentialsPage.projectSelect.selectOption({ label: `${proj.name} (${proj.id}, contributor)` });
       await expect(newLexProjectPageMember.srCredentialsPage.projectOk).toBeVisible();
       await newLexProjectPageMember.expectFormStatusHasNoError();
     });
@@ -444,12 +445,12 @@ test.describe('Lexicon E2E New Project wizard app', () => {
       // --can go to lexicon ------------------------------------------------------------
       await expect(newLexProjectPageMember.nextButton).toBeVisible();
       await newLexProjectPageMember.expectFormIsValid();
-      await newLexProjectPageMember.nextButton.click();
-      await newLexProjectPageMember.page.waitForURL(/editor\/entry/);
-      const myRe = /(?<=(.*app\/lexicon\/))(.*)(?=(#!\/editor\/entry\/.*))/;
-      newProject01.id = myRe.exec(newLexProjectPageMember.page.url())[0];
-      const entriesListPage: EntriesListPage = new EntriesListPage(newLexProjectPageMember.page, newProject01);
-      await entriesListPage.expectTotalNumberOfEntries(numberOfEntriesInTestLexProjectFile);
+
+      const [, editorPage] = await Promise.all([
+        newLexProjectPageMember.nextButton.click(),
+        EditorPage.waitForNewProject(newLexProjectPageMember.page, newProject01),
+      ]);
+      await editorPage.entryList.expectTotalNumberOfEntries(numberOfEntriesInTestLexProjectFile);
     });
 
     // step 2: initial data & step 3: verify data
@@ -479,20 +480,16 @@ test.describe('Lexicon E2E New Project wizard app', () => {
 
       await newLexProjectPageMember.namePage.projectNameInput.fill(newProject03.name)
       await newLexProjectPageMember.nextButton.click();
+      await expect(newLexProjectPageMember.initialDataPageBrowseButton).toBeVisible();
       await newLexProjectPageMember.nextButton.click();
 
       // --Can go back to initial data page (then forward again) ----------------------
-      //  skip test because of flakiness
-      /* await expect(newLexProjectPageMember.backButton).toBeVisible();
-      await expect(newLexProjectPageMember.backButton).toBeEnabled();
-      // TODO: find out why the following line is flaky
       await newLexProjectPageMember.backButton.click();
       await expect(newLexProjectPageMember.initialDataPageBrowseButton).toBeVisible();
-      await expect(newLexProjectPageMember.nextButton).toBeEnabled();
       await newLexProjectPageMember.expectFormIsNotValid();
       await newLexProjectPageMember.nextButton.click();
       await expect(newLexProjectPageMember.primaryLanguagePageSelectButton).toBeVisible();
-      await expect(newLexProjectPageMember.backButton).toBeVisible(); */
+      await expect(newLexProjectPageMember.backButton).toBeVisible();
 
       // --Cannot move on if language is not selected ----------------------------------
       await newLexProjectPageMember.nextButton.click();
@@ -519,6 +516,20 @@ test.describe('Lexicon E2E New Project wizard app', () => {
       await expect(newLexProjectPageMember.selectLanguage.addButton).toHaveText('Add ' + constants.foundLanguage);
       await newLexProjectPageMember.selectLanguage.addButton.click();
       await expect(newLexProjectPageMember.selectLanguage.searchLanguageInput).not.toBeVisible();
+
+      await newLexProjectPageMember.expectFormStatusHasNoError();
+      await expect(newLexProjectPageMember.nextButton).toBeEnabled();
+      await newLexProjectPageMember.expectFormIsValid();
+
+      const [, editorPage] = await Promise.all([
+        newLexProjectPageMember.nextButton.click(),
+        EditorPage.waitForNewProject(newLexProjectPageMember.page, newProject03),
+      ]);
+
+      await expect(editorPage.noEntries).toBeVisible();
+      await editorPage.entryList.createNewWordButton.click();
+      await editorPage.entryList.expectTotalNumberOfEntries(1);
+      await expect(editorPage.field('Word', 'es')).toBeVisible();
     });
   });
 });

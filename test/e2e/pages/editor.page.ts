@@ -2,7 +2,7 @@ import { expect, Locator, Page } from '@playwright/test';
 import { Project } from '../utils/types';
 import { BasePage, GotoOptions } from './base-page';
 import { ConfigurationPageFieldsTab } from './configuration-fields.tab';
-import { EntriesListPage } from './entries-list.page';
+import { EntryListPage } from './entry-list.page';
 import { ProjectSettingsPage } from './project-settings.page';
 import { EditorComment } from '../components/editor-comment';
 
@@ -11,13 +11,15 @@ export interface EditorGotoOptions extends GotoOptions {
 }
 
 type UploadType =
-    'Audio' |
-    'Picture'
-;
+  'Audio' |
+  'Picture'
+  ;
+
+export type EntryList = Omit<EntryListPage, keyof BasePage<EntryListPage>>;
 
 export class EditorPage extends BasePage<EditorPage> {
 
-  readonly entriesListPage = new EntriesListPage(this.page, this.project);
+  readonly entryList: EntryList = new EntryListPage(this.page, this.project);
 
   readonly settingsMenuLink = this.locator('#settings-dropdown-button');
   readonly settingsMenu = {
@@ -37,6 +39,7 @@ export class EditorPage extends BasePage<EditorPage> {
     matchCount: this.locator('#totalNumberOfEntries >> span')
   };
 
+  readonly noEntries = this.locator('.no-entries');
   readonly entryCard = this.locator('.entry-card');
   readonly senseCard = this.locator('.dc-sense.card');
   readonly exampleCardSelector = '.dc-example';
@@ -73,11 +76,18 @@ export class EditorPage extends BasePage<EditorPage> {
 
   readonly addPictureButtonSelector = 'a >> text=Add Picture';
 
-  commentBubble(fieldName: string, inputSystemAbbr?: string): Locator {
-    const fieldGroup = this.locator(`.field-container:has(label:has-text("${fieldName}"))`);
-    return fieldGroup.locator('.comment-bubble-group', {
+  fieldGroup(name: string): Locator {
+    return this.locator(`.field-container:has(label:has-text("${name}"))`);
+  }
+
+  field(name: string, inputSystemAbbr?: string): Locator {
+    return this.fieldGroup(name).locator('.comment-bubble-group', {
       has: inputSystemAbbr ? this.locator(`.wsid:text("${inputSystemAbbr}")`) : undefined,
-    }).locator('a');
+    });
+  }
+
+  commentBubble(fieldName: string, inputSystemAbbr?: string): Locator {
+    return this.field(fieldName, inputSystemAbbr).locator('a');
   }
 
   commentCount(fieldName: string, inputSystemAbbr?: string): Locator {
@@ -93,8 +103,19 @@ export class EditorPage extends BasePage<EditorPage> {
   readonly comments = this.commentContainer.locator(`> div:visible`);
   readonly comment = (n: number) => this.locator(`.commentListContainer > div:nth-child(${n}) .commentContainer`);
 
+  /**
+   * Use when creating a new project via the UI
+   * when no Project-ID is available for the EditorPage
+   */
+  static async waitForNewProject(page: Page, project: Omit<Project, 'id'>): Promise<EditorPage> {
+    const projectIdPattern = new RegExp('app/lexicon/([^#]*)#');
+    await page.waitForURL(projectIdPattern);
+    const id = page.url().match(projectIdPattern)[1];
+    return new EditorPage(page, {...project, id}).waitForPage();
+  }
+
   constructor(page: Page, readonly project: Project) {
-    super(page, `/app/lexicon/${project.id}/`, page.locator('.words-container-title, .no-entries'));
+    super(page, `/app/lexicon/${project.id}`, page.locator('.words-container-title, .no-entries'));
   }
 
   async goto(options?: EditorGotoOptions): Promise<EditorPage> {

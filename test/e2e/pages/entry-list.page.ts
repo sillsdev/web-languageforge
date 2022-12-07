@@ -2,12 +2,12 @@ import { expect, Page } from '@playwright/test';
 import { Project } from '../utils/types';
 import { BasePage } from './base-page';
 
-export class EntriesListPage extends BasePage<EntriesListPage> {
+export class EntryListPage extends BasePage<EntryListPage> {
   readonly totalNumberOfEntries = this.page.locator('#totalNumberOfEntries');
   readonly filterInput = this.page.locator('[placeholder="Search"]');
   readonly filterInputClearButton = this.page.locator('.clear-search-button');
   readonly matchCount = this.page.locator('#totalNumberOfEntries >> span');
-  readonly createNewWordButton = this.page.locator('#newWord');
+  readonly createNewWordButton = this.page.locator('#newWord:visible, #noEntriesNewWord:visible');
 
   constructor(page: Page, readonly project: Project) {
     super(page, `/app/lexicon/${project.id}/#!/editor/list`);
