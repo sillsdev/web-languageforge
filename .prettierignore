@@ -38,9 +38,6 @@ next-app/**/.env.*
 
 ## Extras
 # Libraries and generated code
-src/help/template/scripts/
-src/help/template/Theme3_Black/
-src/help/whxdata/
 src/js/lib/
 src/Site/views/languageforge/theme/default/page/home/assets/
 *.generated-data.*
