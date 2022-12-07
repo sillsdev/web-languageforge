@@ -12,7 +12,7 @@ use Silex\Application;
 
 class Upload extends Base
 {
-    public function receive(Application $app, $appType, $mediaType)
+    public function receive(Application $app, $mediaType)
     {
         // e.g. 'lf', 'entry-audio'
         // user-defined error handler to catch annoying php errors and throw them as exceptions
@@ -45,34 +45,26 @@ class Upload extends Base
                     $tmpFilePath = $this->moveUploadedFile();
                 }
 
-                if ($appType == "sf-checks") {
-                    $api = new Sf($app);
-                    $api->checkPermissions("sfChecks_uploadFile");
-                    $response = $api->sfChecks_uploadFile($mediaType, $tmpFilePath);
-                } elseif ($appType == "lf-lexicon") {
-                    $api = new Sf($app);
-                    switch ($mediaType) {
-                        case "audio":
-                            $api->checkPermissions("lex_uploadAudioFile");
-                            $response = $api->lex_uploadAudioFile($mediaType, $tmpFilePath);
-                            break;
-                        case "sense-image":
-                            $api->checkPermissions("lex_uploadImageFile");
-                            $response = $api->lex_uploadImageFile($mediaType, $tmpFilePath);
-                            break;
-                        case "import-zip":
-                            $api->checkPermissions("lex_upload_importProjectZip");
-                            $response = $api->lex_upload_importProjectZip($mediaType, $tmpFilePath);
-                            break;
-                        case "import-lift":
-                            $api->checkPermissions("lex_upload_importLift");
-                            $response = $api->lex_upload_importLift($mediaType, $tmpFilePath);
-                            break;
-                        default:
-                            throw new \Exception("Unsupported upload type: $mediaType");
-                    }
-                } else {
-                    throw new \Exception("Unsupported upload app: $appType");
+                $api = new Sf($app);
+                switch ($mediaType) {
+                    case "audio":
+                        $api->checkPermissions("lex_uploadAudioFile");
+                        $response = $api->lex_uploadAudioFile($tmpFilePath);
+                        break;
+                    case "sense-image":
+                        $api->checkPermissions("lex_uploadImageFile");
+                        $response = $api->lex_uploadImageFile($tmpFilePath);
+                        break;
+                    case "import-zip":
+                        $api->checkPermissions("lex_upload_importProjectZip");
+                        $response = $api->lex_upload_importProjectZip($tmpFilePath);
+                        break;
+                    case "import-lift":
+                        $api->checkPermissions("lex_upload_importLift");
+                        $response = $api->lex_upload_importLift($tmpFilePath);
+                        break;
+                    default:
+                        throw new \Exception("Unsupported upload type: $mediaType");
                 }
 
                 // cleanup uploaded file if it hasn't been moved

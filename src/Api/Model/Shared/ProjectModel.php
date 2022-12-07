@@ -36,6 +36,8 @@ class ProjectModel extends MapperModel
         $this->isArchived = false;
         $this->allowInviteAFriend = true;
         $this->interfaceLanguageCode = "en";
+        $this->audioRecordingCodec = "webm";
+        $this->whenToConvertAudio = "never";
 
         $this->inviteToken = new InviteToken();
 
@@ -65,6 +67,12 @@ class ProjectModel extends MapperModel
 
     /** @var string Web app interface language code */
     public $interfaceLanguageCode;
+
+    /** @var string Codec for recordings made on LanguageForge.org */
+    public $audioRecordingCodec;
+
+    /** @var string setting for which audio files to convert to webm format */
+    public $whenToConvertAudio;
 
     /** @var string */
     // TODO move this to a subclass cjh 2014-02

@@ -633,27 +633,27 @@ class Sf
         return LexOptionListCommands::updateList($this->projectId, $params);
     }
 
-    public function lex_uploadAudioFile($mediaType, $tmpFilePath)
+    public function lex_uploadAudioFile($tmpFilePath)
     {
-        $response = LexUploadCommands::uploadAudioFile($this->projectId, $mediaType, $tmpFilePath);
+        $response = LexUploadCommands::uploadAudioFile($this->projectId, $tmpFilePath);
         return JsonEncoder::encode($response);
     }
 
-    public function lex_uploadImageFile($mediaType, $tmpFilePath)
+    public function lex_uploadImageFile($tmpFilePath)
     {
-        $response = LexUploadCommands::uploadImageFile($this->projectId, $mediaType, $tmpFilePath);
+        $response = LexUploadCommands::uploadImageFile($this->projectId, $tmpFilePath);
         return JsonEncoder::encode($response);
     }
 
-    public function lex_upload_importProjectZip($mediaType, $tmpFilePath)
+    public function lex_upload_importProjectZip($tmpFilePath)
     {
-        $response = LexUploadCommands::importProjectZip($this->projectId, $mediaType, $tmpFilePath);
+        $response = LexUploadCommands::importProjectZip($this->projectId, $tmpFilePath);
         return JsonEncoder::encode($response);
     }
 
-    public function lex_upload_importLift($mediaType, $tmpFilePath)
+    public function lex_upload_importLift($tmpFilePath)
     {
-        $response = LexUploadCommands::importLiftFile($this->projectId, $mediaType, $tmpFilePath);
+        $response = LexUploadCommands::importLiftFile($this->projectId, $tmpFilePath);
         return JsonEncoder::encode($response);
     }
 

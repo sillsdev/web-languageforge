@@ -57,7 +57,9 @@ export class LexiconProjectSettingsController implements angular.IController {
     const settings = {
       projectName: this.project.projectName,
       interfaceLanguageCode: this.project.interfaceLanguageCode,
-      featured: this.project.featured
+      featured: this.project.featured,
+      audioRecordingCodec: this.project.audioRecordingCodec,
+      whenToConvertAudio: this.project.whenToConvertAudio
     };
 
     if (this.project.interfaceLanguageCode !== this.lpsProject.interfaceLanguageCode &&

@@ -66,9 +66,6 @@ test.describe('E2E Project Settings app', () => {
   test('Manager cannot view delete tab if not owner', async ({ admin, manager, managerTab }) => {
     const projectSettingsPage = new ProjectSettingsPage(managerTab, projects[0])
     await projectSettingsPage.goto();
-
-    await expect(projectSettingsPage.projectTab.projectOwner).toHaveText(admin.username);
-    await expect(projectSettingsPage.projectTab.projectOwner).not.toHaveText(manager.username);
     await expect(projectSettingsPage.deleteTab.tabTitle).not.toBeVisible();
   });
 
