@@ -1,1 +1,0 @@
-gXMLBuffer="<?xml version=\"1.0\" encoding=\"utf-8\"?><cki><ck fm=\"&apos;\" to=\"associat\"/><ck fm=\"at\" to=\"entry\"/><ck fm=\"exampl\" to=\"look\"/><ck fm=\"lowest\" to=\"receiv\"/><ck fm=\"receiver\" to=\"the\"/><ck fm=\"their\" to=\"zip\"/></cki>";

@@ -35,7 +35,7 @@ export class NewProjectInitialDataController implements angular.IController {
 
       this.notice.setLoading('Importing ' + file.name + '...');
       this.Upload.upload({
-        url: '/upload/lf-lexicon/import-zip',
+        url: '/upload/import-zip',
         data: { file }
       }).then((response: UploadResponse) => {
           this.notice.cancelLoading();

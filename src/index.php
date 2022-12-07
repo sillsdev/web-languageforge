@@ -190,7 +190,7 @@ $app->before(function (Request $request) {
  */
 
 // secured
-$app->post("/upload/{appType}/{mediaType}", "Site\Controller\Upload::receive");
+$app->post("/upload/{mediaType}", "Site\Controller\Upload::receive");
 
 $app->get("/app/{appName}/{projectId}/", "Site\Controller\App::view");
 $app->get("/app/{appName}/{projectId}", "Site\Controller\App::view");
