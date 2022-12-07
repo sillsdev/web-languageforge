@@ -14,15 +14,14 @@ export async function load({ params: { project_code }, request: { headers }}) {
 	}
 
 	const { role } = await current_user(args.cookie)
-	if (! can_view_activity(role)) {
-		return result
-	}
+	if (can_view_activity(role)) {
+		const last_30_days = {
+			start_date: daysAgo(30),
+			end_date: new Date(),
+		}
 
-	const last_30_days = {
-		start_date: daysAgo(30),
-		end_date: new Date(),
+		result.activities = await get_activities({ ...last_30_days, ...args })
 	}
-	result.activities = await get_activities({ ...last_30_days, ...args })
 
 	return result
 }
