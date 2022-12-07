@@ -104,7 +104,7 @@ test.describe('Lexicon E2E New Project wizard app', () => {
       // passwordValid is, incredibly, an invalid password.
       // It's valid only in the sense that it follows the password rules
       await newLexProjectPageMember.srCredentialsPage.passwordInput.type(constants.passwordValid);
-      // tab should trigger validation of the password thus making the test less flaky
+      // tab triggers validation of the password
       await newLexProjectPageMember.srCredentialsPage.passwordInput.press('Tab');
       await expect(newLexProjectPageMember.srCredentialsPage.credentialsInvalid).toBeVisible();
       await newLexProjectPageMember.expectFormStatusHasNoError();
@@ -351,8 +351,7 @@ test.describe('Lexicon E2E New Project wizard app', () => {
       await newLexProjectPageMember.namePage.projectNameInput.type(newProject01.name);
       await newLexProjectPageMember.namePage.projectNameInput.press('Tab'); // trigger project code check
       await expect(newLexProjectPageMember.nextButton).toBeEnabled();
-      // TODO: understand why the following line causes test failure
-      // await newLexProjectPageMember.expectFormIsValid();
+      await newLexProjectPageMember.expectFormIsValid();
       await newLexProjectPageMember.nextButton.click();
       await expect(newLexProjectPageMember.namePage.projectNameInput).not.toBeVisible();
       await expect(newLexProjectPageMember.initialDataPageBrowseButton).toBeVisible();
@@ -375,8 +374,7 @@ test.describe('Lexicon E2E New Project wizard app', () => {
         newLexProjectPageMember.initialDataPageBrowseButton.click(),
       ]);
       await expect(noticeElement.notice).toHaveCount(0);
-      // TODO: consider putting the name of this file in testConstants
-      await fileChooser.setFiles(testFile('dummy_large_file.zip'));
+      await fileChooser.setFiles(testFile(constants.files.dummy_large_file));
       await expect(newLexProjectPageMember.initialDataPageBrowseButton).toBeVisible();
       await expect(newLexProjectPageMember.verifyDataPage.entriesImported).not.toBeVisible();
       await expect(noticeElement.notice).toBeVisible();
@@ -409,8 +407,6 @@ test.describe('Lexicon E2E New Project wizard app', () => {
         newLexProjectPageMember.initialDataPageBrowseButton.click(),
       ]);
       await expect(noticeElement.notice).toHaveCount(0);
-      // TODO: potentially add another test testing for invalid zip file, notice text "Import failed. Status: 400 Bad Request- [object Object]"
-      // const dummySmallFileName: string = 'dummy_small_file.zip';
       const testLexProjectFileName: string = 'TestLexProject.zip';
       const numberOfEntriesInTestLexProjectFile: number = 2;
       await fileChooser3.setFiles(testFile(testLexProjectFileName));

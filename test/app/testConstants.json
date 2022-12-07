@@ -36,10 +36,6 @@
   "observerName": "Test ObserverUser",
   "observerPassword": "normaluser5",
   "observerEmail": "test_runner_observer_normal_user@example.com",
-  "writableUsername": "test_runner_writable_user",
-  "writableName": "Test WritableUser",
-  "writablePassword": "writableuser5",
-  "writableEmail": "test_runner_writable_user@example.com",
   "unusedUsername": "test_runner_unused_user",
   "unusedName": "Test UnusedUser",
   "unusedEmail": "test_runner_unused_user+test@example.com",
@@ -79,7 +75,7 @@
   "testEntry1": {
     "lexeme": {
       "th": { "value": "ข้าวผัดหมู" },
-      "th-fonipa": { "value": "khâaw phàt mǔu" },
+      "th-fonipa": { "value": "khâaw phàt mǔu" },
       "th-Zxxx-x-audio": { "value": "TestAudio.mp3" }
     },
     "senses": [
@@ -187,6 +183,9 @@
     "size": 21064,
     "type": "",
     "webkitRelativePath": ""
+  },
+  "files": {
+    "dummy_large_file": "dummy_large_file.zip"
   },
 
   "End_of_constants": ""

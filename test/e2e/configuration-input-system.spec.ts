@@ -2,7 +2,6 @@ import { projectPerTest, test } from './utils/fixtures';
 import { EditorPage } from './pages/editor.page';
 import { expect } from '@playwright/test';
 import { ConfigurationPageInputSystemsTab } from './pages/configuration-input-systems.tab';
-import { random } from './utils';
 
 test.describe('Configuration Input Systems', async () => {
 
@@ -35,11 +34,11 @@ test.describe('Configuration Input Systems', async () => {
 
     await test.step('Change abbreviation, font and RTL', async () => {
       await inputSystemsTab.abbreviationTextBox.fill('');
-      const abbreviationSuffix_tooLong = random(3).toString();
+      const abbreviationSuffix_tooLong = 'looong';
       const abbreviation_tooLong = `th${abbreviationSuffix_tooLong}`;
       await inputSystemsTab.abbreviationTextBox.type(abbreviation_tooLong);
 
-      const newFont = `My font - ${random()}`;
+      const newFont = `My new font`;
       await inputSystemsTab.fontNameTextBox.type(newFont);
 
       const newRtl = !(await inputSystemsTab.rtlCheckbox.isChecked());

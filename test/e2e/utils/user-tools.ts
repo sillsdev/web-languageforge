@@ -56,6 +56,17 @@ export class UserTestService {
   constructor(private readonly request: APIRequestContext) {
   }
 
+  async createRandomUser(): Promise<UserDetails & { id: string }> {
+    const time = Date.now();
+    const user: UserDetails = {
+      username: `random_user_${time}`,
+      password: `random_user_password`,
+      name: `Random user - ${time}`,
+      email: `random_user_${time}@example.com`,
+    };
+    return { ...user, id: await this.createUser(user) };
+  }
+
   createUser(user: UserDetails): Promise<string> {
     return createUser(this.request, user);
   }

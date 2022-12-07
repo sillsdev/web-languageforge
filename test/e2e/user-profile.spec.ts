@@ -1,24 +1,13 @@
-import { test, UserTab, UserDetails } from './utils/fixtures';
+import { test, UserDetails } from './utils/fixtures';
 import { UserProfilePage } from './pages/user-profile.page';
-import { expect } from '@playwright/test';
+import { expect, Page } from '@playwright/test';
 import { LoginPage } from './pages/login.page';
 import { ProjectsPage } from './pages/projects.page';
-import { random } from './utils';
+import { login } from './utils/login';
 
 test.describe('E2E User Profile', () => {
 
-  /*
-  Ultimately the "writable" user should get reset each time to prevent it from getting stuck in an invalid state.
-  I would expect `initUser` to do that, but it doesn't.
-  If this test ever gives us trouble as a result then
-  it would be worth looking into getting this to work properly.
-
-  test.beforeEach(async ({context}) => {
-    await initUser(context, 'writable');
-  });
-  */
-
-  test('Generated user account and about me info', async ({member2Tab}) => {
+  test('Generated user account and about me info', async ({ member2Tab }) => {
     const userProfilePage = new UserProfilePage(member2Tab);
     await userProfilePage.goto();
 
@@ -32,14 +21,17 @@ test.describe('E2E User Profile', () => {
   });
 
 
-  test('Update user account info', async ({writableTab}) => {
-    const userProfilePage = new UserProfilePage(writableTab);
+  test('Update user account info', async ({ page, userService }) => {
+    const user = await userService.createRandomUser();
+    await login(page, user.username, user.password);
+
+    const userProfilePage = new UserProfilePage(page);
     await userProfilePage.goto();
 
-    const newEmail = `newemail-${Date.now()}@example.com`;
+    const newEmail = `newemail-fun-fun-fun@example.com`;
     await userProfilePage.accountTab.emailField.fill(newEmail);
-    await userProfilePage.accountTab.colorField.selectOption({label: 'Steel Blue'});
-    await userProfilePage.accountTab.animalField.selectOption({label: 'Otter'});
+    await userProfilePage.accountTab.colorField.selectOption({ label: 'Steel Blue' });
+    await userProfilePage.accountTab.animalField.selectOption({ label: 'Otter' });
 
     await userProfilePage.saveBtn.click();
     await Promise.all([
@@ -48,20 +40,23 @@ test.describe('E2E User Profile', () => {
     ]);
 
     await expect(userProfilePage.accountTab.emailField).toHaveValue(newEmail);
-    await expect(userProfilePage.accountTab.colorField).toHaveSelectedOption({label: 'Steel Blue'});
-    await expect(userProfilePage.accountTab.animalField).toHaveSelectedOption({label: 'Otter'});
+    await expect(userProfilePage.accountTab.colorField).toHaveSelectedOption({ label: 'Steel Blue' });
+    await expect(userProfilePage.accountTab.animalField).toHaveSelectedOption({ label: 'Otter' });
   });
 
-  test('Update username and re-login', async ({writableTab}) => {
-    const currUsername = writableTab.username;
-    const newUsername = `${writableTab.username}-new`;
+  test('Update username and re-login', async ({ page, userService }) => {
+    const user = await userService.createRandomUser();
+    await login(page, user.username, user.password);
 
-    await changeUsernameAndLogin(newUsername, writableTab, writableTab);
-    const newDetails = {...writableTab, username: newUsername};
-    await changeUsernameAndLogin(currUsername, newDetails, writableTab);
+    const currUsername = user.username;
+    const newUsername = `${user.username}-new`;
+
+    await changeUsernameAndLogin(newUsername, user, page);
+    const newDetails = { ...user, username: newUsername };
+    await changeUsernameAndLogin(currUsername, newDetails, page);
   });
 
-  const changeUsernameAndLogin = async (newUsername: string, currDetails: UserDetails, tab: UserTab): Promise<void> => {
+  const changeUsernameAndLogin = async (newUsername: string, currDetails: UserDetails, tab: Page): Promise<void> => {
     const userProfilePage = new UserProfilePage(tab);
     await userProfilePage.goto();
 
@@ -82,26 +77,26 @@ test.describe('E2E User Profile', () => {
     ]);
   };
 
-  test('Update user about me info', async ({writableTab}) => {
-    const userProfilePage = new UserProfilePage(writableTab);
+  test('Update user about me info', async ({ page, userService }) => {
+    const user = await userService.createRandomUser();
+    await login(page, user.username, user.password);
+
+    const userProfilePage = new UserProfilePage(page);
     await userProfilePage.goto();
     await userProfilePage.tabs.aboutMe.click();
 
-    const newName = `Name - ${random()}`;
+    const newName = `New name`;
     await userProfilePage.aboutMeTab.nameField.fill(newName);
-    const newAge = random(2).toString();
+    const newAge = '25';
     await userProfilePage.aboutMeTab.ageField.fill(newAge);
-    await userProfilePage.aboutMeTab.genderField.selectOption({label: 'Female'});
+    await userProfilePage.aboutMeTab.genderField.selectOption({ label: 'Female' });
 
     await userProfilePage.saveBtn.click();
-    await Promise.all([
-      userProfilePage.page.reload(),
-      userProfilePage.waitForPage(),
-    ]);
+    await userProfilePage.reload();
 
     await expect(userProfilePage.aboutMeTab.nameField).toHaveValue(newName);
     await expect(userProfilePage.aboutMeTab.ageField).toHaveValue(newAge);
-    await expect(userProfilePage.aboutMeTab.genderField).toHaveSelectedOption({label:'Female'});
+    await expect(userProfilePage.aboutMeTab.genderField).toHaveSelectedOption({ label: 'Female' });
   });
 
 });

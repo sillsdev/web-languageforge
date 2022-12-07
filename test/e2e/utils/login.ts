@@ -2,19 +2,16 @@ import { Browser, Page } from '@playwright/test';
 import constants from '../testConstants.json';
 import type { E2EUsernames } from './e2e-users';
 import { getStorageStatePath } from './user-tools';
+import { LoginPage } from '../pages/login.page';
 
-export async function login(page: Page, username: string, password: string) {
-  await page.goto('/auth/login');
-  await page.locator('input[name="_username"]').fill(username);
-  await page.locator('input[name="_password"]').fill(password);
-  return Promise.all([
-    page.waitForNavigation(),
-    page.locator('button:has-text("Login")').click()
-  ]);
+export async function login(page: Page, username: string, password: string): Promise<void> {
+  const loginPage = await new LoginPage(page).goto();
+  await loginPage.loginAs(username, password);
 }
 
-export async function logout(page: Page) {
-  return await page.goto('/auth/logout');
+export async function logout(page: Page): Promise<LoginPage> {
+  await page.goto('/auth/logout');
+  return new LoginPage(page).waitForPage();
 }
 
 export function getLoginInfo(name: E2EUsernames) {
@@ -30,7 +27,7 @@ export function getLoginInfo(name: E2EUsernames) {
   }
 }
 
-export function loginAs(page: Page, name: E2EUsernames) {
+export function loginAs(page: Page, name: E2EUsernames): Promise<void> {
   const { username, password } = getLoginInfo(name);
   return login(page, username, password);
 }

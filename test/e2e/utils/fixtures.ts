@@ -51,14 +51,12 @@ export const test = base
     memberTab: UserTab,
     member2Tab: UserTab,
     observerTab: UserTab,
-    writableTab: UserTab,
     anonTab: Page,
     admin: UserDetails,
     manager: UserDetails,
     member: UserDetails,
     member2: UserDetails,
     observer: UserDetails,
-    writable: UserDetails,
     userService: UserTestService,
   }>({
     adminTab: userTab('admin'),
@@ -66,7 +64,6 @@ export const test = base
     memberTab: userTab('member'),
     member2Tab: userTab('member2'),
     observerTab: userTab('observer'),
-    writableTab: userTab('writable'),
     anonTab: async ({ browser }: { browser: Browser }, use: (r: Page) => Promise<void>) => {
       const context = await browser.newContext();
       const page = await context.newPage();
@@ -78,7 +75,6 @@ export const test = base
     member: userDetails('member'),
     member2: userDetails('member2'),
     observer: userDetails('observer'),
-    writable: userDetails('writable'),
     userService: async ({ request }: {request: APIRequestContext}, use: (userService: UserTestService) => Promise<void>) => {
       const userService = new UserTestService(request);
       await use(userService);

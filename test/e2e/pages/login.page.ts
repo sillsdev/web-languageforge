@@ -1,4 +1,5 @@
 import { Page } from '@playwright/test';
+import { PageHeader } from '../components/page-header.component';
 import { BasePage } from './base-page';
 
 export class LoginPage extends BasePage<LoginPage> {
@@ -13,9 +14,10 @@ export class LoginPage extends BasePage<LoginPage> {
     super(page, '/auth/login', page.locator('#password'))
   }
 
-  async loginAs(username: string, password: string) {
+  async loginAs(username: string, password: string): Promise<void> {
     await this.usernameInput.fill(username);
     await this.passwordInput.fill(password);
     await this.submitButton.click();
+    await new PageHeader(this.page).userDropdownButton.waitFor();
   }
 }

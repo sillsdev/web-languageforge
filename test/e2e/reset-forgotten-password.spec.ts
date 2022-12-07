@@ -1,12 +1,10 @@
-import { test, UserDetails } from './utils/fixtures';
+import { test } from './utils/fixtures';
 import { SignupPage } from './pages/signup.page';
 import { ProjectsPage } from './pages/projects.page';
 import { LoginPage } from './pages/login.page';
 import { ForgotPasswordPage } from './pages/forgot-password.page';
 import { expect } from '@playwright/test';
 import { ResetPasswordPage } from './pages/reset-password.page';
-import { random } from './utils';
-import constants from './testConstants.json';
 
 test.describe('Reset forgotten password', () => {
 
@@ -87,23 +85,13 @@ test.describe('Reset forgotten password', () => {
 
   test('Can\'t reset password for non-existent account', async ({ anonTab }) => {
     const forgotPasswordPage = await new ForgotPasswordPage(anonTab).goto();
-    await forgotPasswordPage.usernameOrEmailInput.type(random(10).toString());
+    await forgotPasswordPage.usernameOrEmailInput.type('nope I definitely do not exists hehe');
     await forgotPasswordPage.submitButton.click();
     await expect(forgotPasswordPage.errors).toContainText('User not found');
   });
 
   test('Can\'t use expired reset password link', async ({ anonTab, userService }) => {
-    const user = await test.step('Create test user', async () => {
-      const time = Date.now();
-      const user: UserDetails = {
-        username: `test_user${time}`,
-        password: `test_password`,
-        name: `Test user - ${time}`,
-        email: `test_user_${time}@example.com`,
-      };
-      await userService.createUser(user);
-      return user;
-    });
+    const user = await userService.createRandomUser();
 
     await test.step('Request password reset email', async () => {
       const loginPage = await new LoginPage(anonTab).goto();

@@ -17,8 +17,8 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
   const lexemeLabel = 'Word';
 
   const project: Project = {
-    name: 'editor_entry_spec_ts Project 01' + Date.now(),
-    code: 'p01_editor_entry_spec_ts__project_01' + Date.now(),
+    name: 'editor_entry_spec_ts Project 01',
+    code: 'p01_editor_entry_spec_ts__project_01',
     id: ''
   };
   let lexEntriesIds: string[] = [];
@@ -103,7 +103,6 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
       await expect(editorPageManager.getTextarea(
         editorPageManager.senseCard, 'Definition', 'en'))
         .toHaveValue(constants.testEntry1.senses[0].definition.en.value);
-      // TODO: when the partOfSpeech bug is fixed, we can uncomment the following line
       expect(await editorPageManager.getSelectedValueFromSelectDropdown(editorPageManager.senseCard, 'Part of Speech'))
          .toEqual(constants.testEntry1.senses[0].partOfSpeech.displayName);
     });
@@ -117,33 +116,36 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
       await expect(editorPageManager.getTextarea(editorPageManager.entryCard, 'Citation Form', 'th')).toBeVisible();
     });
 
-    test('Citation form field overrides lexeme form in dictionary citation view', async () => {
+    test('Citation form field overrides lexeme form in dictionary citation view', async ({managerTab}) => {
+      const configurationPage = await new ConfigurationPageFieldsTab(managerTab, project).goto();
+      await configurationPage.toggleField('Entry Fields', 'Word');
+      await (await configurationPage.getFieldCheckbox('Entry Fields', 'Word', 'ภาษาไทย (IPA)')).check();
+      await configurationPage.applyButton.click();
+
       await editorPageManager.goto();
+
       // Dictionary citation reflects lexeme form when citation form is empty
       await expect(editorPageManager.renderedDivs).toContainText([constants.testEntry1.lexeme.th.value, constants.testEntry1.lexeme.th.value]);
-      // TODO: uncomment when testSetup has a call to add writing systems to a field (e.g., th-fonipa to the Word field)  - 2022-06 RM
-      // await expect(editorPage.renderedDivs).toContainText([constants.testEntry1.lexeme['th-fonipa'].value, constants.testEntry1.lexeme['th-fonipa'].value]);
+      await expect(editorPageManager.renderedDivs).toContainText([constants.testEntry1.lexeme['th-fonipa'].value, constants.testEntry1.lexeme['th-fonipa'].value]);
       await expect(editorPageManager.renderedDivs).not.toContainText(['citation form', 'citation form']);
-      if ((await editorPageManager.lexAppToolbar.toggleExtraFieldsButton.innerText()).includes('Show Extra Fields')) {
-        await editorPageManager.lexAppToolbar.toggleExtraFieldsButton.click();
-      }
+      await editorPageManager.showExtraFields();
       const citationFormInput = editorPageManager.getTextarea(editorPageManager.entryCard, 'Citation Form', 'th');
       await citationFormInput.fill('citation form');
 
       await expect(editorPageManager.renderedDivs).toContainText(['citation form', 'citation form']);
       await expect(editorPageManager.renderedDivs).not.toContainText([constants.testEntry1.lexeme.th.value, constants.testEntry1.lexeme.th.value]);
-      // await expect(editorPage.renderedDivs).toContainText([constants.testEntry1.lexeme['th-fonipa'].value, constants.testEntry1.lexeme['th-fonipa'].value]);
+      await expect(editorPageManager.renderedDivs).toContainText([constants.testEntry1.lexeme['th-fonipa'].value, constants.testEntry1.lexeme['th-fonipa'].value]);
 
       await citationFormInput.fill('');
       await expect(editorPageManager.renderedDivs).not.toContainText(['citation form', 'citation form']);
       await expect(editorPageManager.renderedDivs).toContainText([constants.testEntry1.lexeme.th.value, constants.testEntry1.lexeme.th.value]);
-      // await expect(editorPage.renderedDivs).toContainText([constants.testEntry1.lexeme['th-fonipa'].value, constants.testEntry1.lexeme['th-fonipa'].value]);
+      await expect(editorPageManager.renderedDivs).toContainText([constants.testEntry1.lexeme['th-fonipa'].value, constants.testEntry1.lexeme['th-fonipa'].value]);
     });
 
     test.describe('Picture', () => {
       test('First picture and caption is present', async () => {
         await editorPageManager.goto();
-        // TODO: eventually use locator.screenshot https://playwright.dev/docs/screenshots#element-screenshot
+        await expect(editorPageManager.page).toHaveScreenshot(); // ensure the screenshot (incuding the image) stays the same
         const picture: Locator = await editorPageManager.getPicture(editorPageManager.senseCard, constants.testEntry1.senses[0].pictures[0].fileName);
         expect(picture).not.toBeUndefined();
         const caption = await editorPageManager.getPictureCaption(picture);
@@ -183,9 +185,7 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
         await configurationPage.applyButton.click();
 
         await editorPageManager.goto();
-        if ((await editorPageManager.lexAppToolbar.toggleExtraFieldsButton.innerText()).includes('Hide Extra Fields')) {
-          await editorPageManager.lexAppToolbar.toggleExtraFieldsButton.click();
-        }
+        await editorPageManager.showExtraFields(false);
         const picture: Locator = await editorPageManager.getPicture(editorPageManager.senseCard, constants.testEntry1.senses[0].pictures[0].fileName);
         expect(picture).not.toBeUndefined();
         const caption = await editorPageManager.getPictureCaption(picture);
@@ -228,13 +228,9 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
         picture = await editorPageManager.getPicture(editorPageManager.senseCard, constants.testEntry1.senses[0].pictures[0].fileName);
         expect(picture).toBeUndefined();
         expect(editorPageManager.getPicturesOuterDiv(editorPageManager.senseCard)).not.toBeVisible();
-        // TODO: potentially put this in a function
-        if ((await editorPageManager.lexAppToolbar.toggleExtraFieldsButton.innerText()).includes('Show Extra Fields')) {
-          await editorPageManager.lexAppToolbar.toggleExtraFieldsButton.click();
-        }
+        await editorPageManager.showExtraFields();
         expect(editorPageManager.getPicturesOuterDiv(editorPageManager.senseCard)).toBeVisible();
-        // hide extra fields
-        await editorPageManager.lexAppToolbar.toggleExtraFieldsButton.click();
+        await editorPageManager.showExtraFields(false);
         expect(editorPageManager.getPicturesOuterDiv(editorPageManager.senseCard)).not.toBeVisible();
         picture = await editorPageManager.getPicture(editorPageManager.senseCard, constants.testEntry1.senses[0].pictures[0].fileName);
         expect(picture).toBeUndefined();
@@ -245,8 +241,8 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
       test.beforeAll(async ({managerTab}) => {
         const configurationPage = await new ConfigurationPageFieldsTab(managerTab, project).goto();
         await configurationPage.toggleField('Entry Fields', lexemeLabel);
-        await (await configurationPage.getFieldCheckbox('Entry Fields', lexemeLabel, 'IPA')).check();
-        await (await configurationPage.getFieldCheckbox('Entry Fields', lexemeLabel, 'Voice')).check();
+        await (await configurationPage.getFieldCheckbox('Entry Fields', lexemeLabel, 'ภาษาไทย (IPA)')).check();
+        await (await configurationPage.getFieldCheckbox('Entry Fields', lexemeLabel, 'ภาษาไทย (Voice)')).check();
         await configurationPage.applyButton.click();
       });
 
@@ -508,31 +504,27 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
         });
 
         test('While Show Hidden Fields has not been clicked, hidden fields are hidden if they are empty', async () => {
-          await editorPageManager.goto({entryId: lexEntriesIds[2]});
+          await editorPageManager.goto({ entryId: lexEntriesIds[2] });
           await expect(editorPageManager.getTextarea(
             editorPageManager.senseCard.nth(0), 'Semantics Note', 'en')).toHaveCount(0);
-            await expect(editorPageManager.getTextarea(
+          await expect(editorPageManager.getTextarea(
             editorPageManager.senseCard.nth(0), 'General Note', 'en')).toBeVisible();
-          if ((await editorPageManager.lexAppToolbar.toggleExtraFieldsButton.innerText()).includes('Show Extra Fields')) {
-            await editorPageManager.lexAppToolbar.toggleExtraFieldsButton.click();
-          }
+          await editorPageManager.showExtraFields();
           await expect(editorPageManager.getTextarea(
             editorPageManager.senseCard.nth(0), 'Semantics Note', 'en')).toBeVisible();
-            await expect(editorPageManager.getTextarea(
+          await expect(editorPageManager.getTextarea(
             editorPageManager.senseCard.nth(0), 'General Note', 'en')).toBeVisible();
         });
 
         test('Word with multiple meanings: edit page has correct general notes, sources', async () => {
-          await editorPageManager.goto({entryId: lexEntriesIds[2]});
+          await editorPageManager.goto({ entryId: lexEntriesIds[2] });
           await expect(editorPageManager.getTextarea(
             editorPageManager.senseCard.nth(0), 'General Note', 'en'))
             .toHaveValue(constants.testMultipleMeaningEntry1.senses[0].generalNote.en.value);
           await expect(editorPageManager.getTextarea(
             editorPageManager.senseCard.nth(1), 'General Note', 'en'))
             .toHaveValue(constants.testMultipleMeaningEntry1.senses[1].generalNote.en.value);
-          if ((await editorPageManager.lexAppToolbar.toggleExtraFieldsButton.innerText()).includes('Show Extra Fields')) {
-            await editorPageManager.lexAppToolbar.toggleExtraFieldsButton.click();
-          }
+          await editorPageManager.showExtraFields();
           await expect(editorPageManager.getTextarea(
             editorPageManager.senseCard.nth(0), 'Source', 'en'))
             .toHaveValue(constants.testMultipleMeaningEntry1.senses[0].source.en.value);
@@ -640,16 +632,10 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
 
       test.beforeAll(async ({ managerTab }) => {
         const configurationPage = new ConfigurationPageFieldsTab(managerTab, project);
-
-        // copied from above from audio tests, because also needed here
-        // TODO: eventually put this code somewhere else and in only one in this file
-
-        // in the Protractor tests, the row label 'Thai Voice (Voice)' was used. Here, we only
-        // require the row label to contain the substring 'Voice' as the label was changed to 'ภาษาไทย (Voice)'
         await configurationPage.goto();
         await configurationPage.toggleField('Entry Fields', lexemeLabel);
-        await (await configurationPage.getFieldCheckbox('Entry Fields', lexemeLabel, 'IPA')).check();
-        await (await configurationPage.getFieldCheckbox('Entry Fields', lexemeLabel, 'Voice')).check();
+        await (await configurationPage.getFieldCheckbox('Entry Fields', lexemeLabel, 'ภาษาไทย (IPA)')).check();
+        await (await configurationPage.getFieldCheckbox('Entry Fields', lexemeLabel, 'ภาษาไทย (Voice)')).check();
         await configurationPage.applyButton.click();
       });
 

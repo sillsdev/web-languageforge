@@ -26,12 +26,6 @@ export class EditorPage extends BasePage<EditorPage> {
     projectSettingsLink: this.locator('#dropdown-project-settings'),
     configurationLink: this.locator('#dropdown-configuration'),
   };
-
-  readonly lexAppToolbar = {
-    backToListButton: this.locator('#toListLink'),
-    toggleCommentsButton: this.locator('#toCommentsLink'),
-    toggleExtraFieldsButton: this.locator('#toggleHiddenFieldsBtn')
-  };
   readonly renderedDivs = this.locator('.dc-rendered-entryContainer');
 
   readonly search = {
@@ -102,6 +96,12 @@ export class EditorPage extends BasePage<EditorPage> {
   readonly commentContainer = this.locator(`.commentListContainer`);
   readonly comments = this.commentContainer.locator(`> div:visible`);
   readonly comment = (n: number) => this.locator(`.commentListContainer > div:nth-child(${n}) .commentContainer`);
+
+  private readonly lexAppToolbar = {
+    backToListButton: this.locator('#toListLink'),
+    toggleCommentsButton: this.locator('#toCommentsLink'),
+    toggleExtraFieldsButton: this.locator('#toggleHiddenFieldsBtn')
+  };
 
   /**
    * Use when creating a new project via the UI
@@ -212,6 +212,13 @@ export class EditorPage extends BasePage<EditorPage> {
 
       default:
         throw new Error('Warning: invalid upload type, something went wrong');
+    }
+  }
+
+  async showExtraFields(show = true): Promise<void> {
+    const showingExtraFields = (await this.lexAppToolbar.toggleExtraFieldsButton.innerText()).includes('Show Extra Fields');
+    if (show !== showingExtraFields) {
+      await this.lexAppToolbar.toggleExtraFieldsButton.click();
     }
   }
 
