@@ -9,3 +9,4 @@ const roles = [
 ]
 
 export const can_view_comments = role => roles.filter(_role => _role != 'observer').includes(role)
+export const can_view_activity = role => roles.filter(_role => ! _role.startsWith('observer')).includes(role)

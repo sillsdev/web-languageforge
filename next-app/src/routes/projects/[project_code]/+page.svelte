@@ -76,13 +76,15 @@
 	{/each}
 </Stats>
 
-<h2>Activity</h2>
-<Activity { activities } />
+{#if activities}
+	<h2>Activity</h2>
+	<Activity { activities } />
 
-{#if only_showing_subset}
-	<footer class='flex justify-center mt-2'>
-		<Button on:click={ load_all_activities } class='btn-outline btn-xs sm:btn-sm'>
-			show all
-		</Button>
-	</footer>
+	{#if only_showing_subset}
+		<footer class='flex justify-center mt-2'>
+			<Button on:click={ load_all_activities } class='btn-outline btn-xs sm:btn-sm'>
+				show all
+			</Button>
+		</footer>
+	{/if}
 {/if}

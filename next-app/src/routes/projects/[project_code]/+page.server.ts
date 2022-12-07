@@ -1,5 +1,7 @@
 import { get_activities } from './activities/+server'
 import { get as get_project_info } from './meta/+server'
+import { can_view_activity } from '$lib/auth'
+import { current_user } from '$lib/data/user'
 
 export async function load({ params: { project_code }, request: { headers }}) {
 	const args = {
@@ -7,18 +9,22 @@ export async function load({ params: { project_code }, request: { headers }}) {
 		cookie: headers.get('cookie'),
 	}
 
-	const project = await get_project_info(args)
+	const result = {
+		project: await get_project_info(args),
+	}
+
+	const { role } = await current_user(args.cookie)
+	if (! can_view_activity(role)) {
+		return result
+	}
 
 	const last_30_days = {
 		start_date: daysAgo(30),
 		end_date: new Date(),
 	}
-	const activities = await get_activities({ ...last_30_days, ...args })
+	result.activities = await get_activities({ ...last_30_days, ...args })
 
-	return {
-		project,
-		activities,
-	}
+	return result
 }
 
 function daysAgo(num_days) {
