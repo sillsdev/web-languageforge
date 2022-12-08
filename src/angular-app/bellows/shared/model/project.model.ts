@@ -24,6 +24,8 @@ export interface Project {
     token: string;
     defaultRole: string;
   };
+  audioRecordingCodec: string;
+  whenToConvertAudio: string;
 }
 
 export interface ProjectRole {

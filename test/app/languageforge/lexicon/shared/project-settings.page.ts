@@ -37,7 +37,11 @@ export class ProjectSettingsPage {
   projectTab = {
     saveButton: this.tabDivs.get(0).element(by.id('project-settings-save-btn')),
     defaultLanguageSelect: element(by.id('language')),
-    defaultLanguageSelected: element(by.css('#language option:checked'))
+    defaultLanguageSelected: element(by.css('#language option:checked')),
+    audioRecordingCodecSelect: element(by.id('codec')),
+    audioRecordingCodecSelected: element(by.id('#codec option:checked')),
+    whenToConvertAudioSelect: element(by.id('conversion')),
+    whenToConvertAudioSelected: element(by.id('#conversion option:checked')),
   };
 
   /** Second parameter is optional, default false. If true, fieldName will be considered

@@ -57,6 +57,8 @@ class LexProjectDto
         $data["project"] = [];
         $data["project"]["interfaceLanguageCode"] = $projectDto["interfaceLanguageCode"];
         $data["project"]["ownerRef"] = $projectDto["ownerRef"];
+        $data["project"]["audioRecordingCodec"] = $projectDto["audioRecordingCodec"];
+        $data["project"]["whenToConvertAudio"] = $projectDto["whenToConvertAudio"];
         $data["project"]["projectCode"] = $projectDto["projectCode"];
         $data["project"]["featured"] = $projectDto["featured"];
         if ($project->hasSendReceive()) {

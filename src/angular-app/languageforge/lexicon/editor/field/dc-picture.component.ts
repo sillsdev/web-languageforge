@@ -106,7 +106,7 @@ export class FieldPictureController implements angular.IController {
       this.upload.file = file;
       this.upload.progress = 0;
       this.Upload.upload({
-        url: '/upload/lf-lexicon/sense-image',
+        url: '/upload/sense-image',
         data: {file}
       }).then((response: UploadResponse) => {
           const isUploadSuccess = response.data.result;

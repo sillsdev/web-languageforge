@@ -66,8 +66,8 @@ jobs:
       -
         name: Verify version stamping
         run: |
-          docker compose run --rm app cat build-version.txt version.php
-          docker compose run --rm app cat version.php | grep ${{ steps.image.outputs.TAG_APP }}
+          docker run --rm lf-app head build-version.txt version.php
+          docker run --rm lf-app head version.php | grep -q ${{ steps.image.outputs.TAG_APP }}
       -
         name: Build "next" images
         run: make build-next

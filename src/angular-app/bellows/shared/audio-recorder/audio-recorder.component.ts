@@ -1,9 +1,13 @@
+import { Project } from 'src/angular-app/bellows/shared/model/project.model';
+import { Session, SessionService } from 'src/angular-app/bellows/core/session.service';
 import { webmFixDuration } from "webm-fix-duration";
 import * as angular from "angular";
 
 export class AudioRecorderController implements angular.IController {
-  static $inject = ["$interval", "$scope"];
+  static $inject = ["$interval", "$scope", "sessionService"];
 
+  project: Project;
+  session: Session;
   mediaRecorder: MediaRecorder;
   chunks: string[] = [];
   isRecording = false;
@@ -19,11 +23,26 @@ export class AudioRecorderController implements angular.IController {
 
   constructor(
     private $interval: angular.IIntervalService,
-    private $scope: angular.IScope
+    private $scope: angular.IScope,
+    private sessionService: SessionService
   ) {}
+
+  $onInit(): void {
+    this.sessionService.getSession().then((session: Session) => {
+      this.session = session;
+      this.project = session.data.project;
+    });
+  }
 
   private startRecording() {
     this.recordingTime = "0:00";
+    var codecSpecs: string;
+    if(this.project.audioRecordingCodec === 'webm'){
+      codecSpecs = "audio/webm; codecs=opus";
+    }
+    else{
+      codecSpecs = "audio/webm; codecs=pcm";
+    }
 
     navigator.mediaDevices.getUserMedia({ audio: true }).then(
       (stream) => {
@@ -40,14 +59,14 @@ export class AudioRecorderController implements angular.IController {
           async (e: { data: any }) => {
             this.chunks.push(e.data);
             var roughBlob = new Blob(this.chunks, {
-              type: "audio/webm; codecs=opus",
+              type: codecSpecs,
             });
             //In some browsers (Chrome, Edge, ...) navigator.mediaDevices.getUserMedia with MediaRecorder creates WEBM files without duration metadata  //2022-09
             //webmFixDuration appends missing duration metadata to a WEBM file blob.
             this.blob = await webmFixDuration(
               roughBlob,
               this.durationInMilliseconds,
-              "audio/webm; codecs=opus"
+              codecSpecs
             );
             this.chunks = [];
             this.audioSrc = window.URL.createObjectURL(this.blob);

@@ -1,5 +1,0 @@
-/angular-app/**/*.js
-/assets/**
-/js/lib/languageforge.js
-/js/lib/scriptureforge.js
-/site_wide_notices.json
