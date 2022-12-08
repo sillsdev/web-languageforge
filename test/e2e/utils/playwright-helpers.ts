@@ -2,7 +2,7 @@ import { expect, Locator } from '@playwright/test';
 
 export const toHaveSelectedOption = async (select: Locator, option: {label?: string, value?: string}) => {
   if (option.label === undefined && option.value === undefined) {
-    throw new  Error('At least one of either label or value must be set');
+    throw new Error('At least one of either label or value must be set');
   }
 
   const value = await select.inputValue();
