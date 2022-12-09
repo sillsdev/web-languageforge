@@ -2,7 +2,7 @@ import { throwError } from '$lib/error'
 
 interface Rpc {
 	name: string,
-	args?: string[],
+	args?: string[] | object[],
 	cookie?: string,
 }
 export async function sf(rpc: Rpc) {
