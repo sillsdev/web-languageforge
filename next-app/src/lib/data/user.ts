@@ -1,7 +1,7 @@
 import { throwError } from '$lib/error'
 import { sf } from '$lib/fetch/server'
 
-export async function current_user(cookie) {
+export async function fetch_current_user(cookie) {
 	const { userId, userProjectRole } = await sf({
 		name: 'session_getSessionData',
 		cookie,
