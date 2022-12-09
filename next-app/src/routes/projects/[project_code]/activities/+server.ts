@@ -13,7 +13,12 @@ export async function GET({ params: { project_code }, request: { headers } }) {
 
 // src/Api/Model/Shared/Dto/ActivityListDto.php
 // src/Api/Model/Shared/Dto/ActivityListDto.php->ActivityListModel.__construct
-export async function fetch_activities({ cookie, start_date, end_date }) {
+interface FetchInput {
+	cookie: string,
+	start_date?: Date,
+	end_date?: Date,
+}
+export async function fetch_activities({ cookie, start_date, end_date }: FetchInput) {
 	const args = {
 		name: 'activity_list_dto_for_current_project',
 		args: [
