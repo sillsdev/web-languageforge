@@ -13,7 +13,7 @@ export async function load({ params: { project_code }, request: { headers }}) {
 		project: await get_project_info(args),
 	}
 
-	const { role } = await current_user(args.cookie)
+	const { role } = await fetch_current_user(args.cookie)
 	if (can_view_activity(role)) {
 		const last_30_days = {
 			start_date: daysAgo(30),
