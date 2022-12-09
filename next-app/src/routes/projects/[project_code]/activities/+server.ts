@@ -6,14 +6,14 @@ export async function GET({ params: { project_code }, request: { headers } }) {
 
 	await sf({ name: 'set_project', args: [ project_code ], cookie })
 
-	const activities = await get_activities({ cookie })
+	const activities = await fetch_activities({ cookie })
 
 	return json(activities)
 }
 
 // src/Api/Model/Shared/Dto/ActivityListDto.php
 // src/Api/Model/Shared/Dto/ActivityListDto.php->ActivityListModel.__construct
-export async function get_activities({ cookie, start_date, end_date }) {
+export async function fetch_activities({ cookie, start_date, end_date }) {
 	const args = {
 		name: 'activity_list_dto_for_current_project',
 		args: [

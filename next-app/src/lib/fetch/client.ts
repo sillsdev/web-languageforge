@@ -23,25 +23,18 @@ async function customFetch(method, url, body) {
 		body = JSON.stringify(body)
 	}
 
-	let response = {}
-	try {
-		start(url)
-
-		response = await fetch(url, {
-			method,
-			headers,
-			body,
-		})
-	} catch (e) {
-		// these only occur for network errors, like these:
-		//	request made with a bad host, e.g., //httpbin
-		//	the host is refusing connections
-		//	client is offline, i.e., airplane mode or something
-		//	CORS preflight failures
-		throwError(e)
-	} finally {
-		stop(url)
-	}
+	start(url)
+	const response = await fetch(url, {
+		method,
+		headers,
+		body,
+	})
+	.catch (throwError) // these only occur for network errors, like these:
+						//	  * request made with a bad host, e.g., //httpbin
+						//	  * the host is refusing connections
+						//	  * client is offline, i.e., airplane mode or something
+						//	  * CORS preflight failures
+	.finally(() => stop(url))
 
 	// reminder: fetch does not throw exceptions for non-200 responses (https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch)
 	if (! response.ok) {

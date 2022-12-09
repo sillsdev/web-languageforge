@@ -1,4 +1,5 @@
 import { json } from '@sveltejs/kit'
+import { fetch_current_user } from '$lib/data/user'
 import { throwError } from '$lib/error'
 import { sf } from '$lib/fetch/server'
 
@@ -14,18 +15,11 @@ export async function PUT({ request }) {
 
 	const cookie = request.headers.get('cookie')
 
-	const { userId } = await sf({
-		name: 'session_getSessionData',
-		cookie,
-	})
-
-	if (! userId) {
-		throwError('User unknown', 404)
-	}
+	const { id } = await fetch_current_user(cookie)
 
 	await sf({
 		name: 'change_password',
-		args: [userId, password],
+		args: [id, password],
 		cookie,
 	})
 
