@@ -38,25 +38,21 @@ export async function sf(rpc) {
 async function customFetch(url, method, body, cookie) {
 	const bodyAsJSON = JSON.stringify(body)
 
-	let response : Response
-
-	try {
-		// https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch#Supplying_request_options
-		response = await fetch(url, {
-			method,
-			headers: {
-				'content-type': 'application/json',
-				cookie,
-			},
-			body: bodyAsJSON,
-		})
-	} catch (e) {
+	// https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch#Supplying_request_options
+	const response = await fetch(url, {
+		method,
+		headers: {
+			'content-type': 'application/json',
+			cookie,
+		},
+		body: bodyAsJSON,
+	}).catch(e => {
 		// these only occur for network errors, like these:
 		//	request made with a bad host, e.g., //httpbin
 		//	the host is refusing connections
 		console.log(`fetch/server.ts.customFetch caught error on ${url}=>${bodyAsJSON}: `, e)
 		throwError('NETWORK ERROR', 500)
-	}
+	})
 
 	if (! response.ok) {
 		console.log('fetch/server.ts.customFetch response !ok: ', await response.text())
