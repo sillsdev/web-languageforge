@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit'
-import { current_user } from '$lib/data/user'
+import { fetch_current_user } from '$lib/data/user'
 import { throwError } from '$lib/error'
 import { sf } from '$lib/fetch/server'
 
