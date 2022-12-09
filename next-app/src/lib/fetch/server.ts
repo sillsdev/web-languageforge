@@ -1,16 +1,11 @@
 import { throwError } from '$lib/error'
 
-/**
- *
- * @typedef RPC
- * @type {object}
- * @property {string} name Name of the remote procedure to call
- * @property {string[]} [args] Arguments to pass to the remote procedure
- * @property {string} [cookie] https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie
- *
- * @param { RPC } rpc
- */
-export async function sf(rpc) {
+interface Rpc {
+	name: string,
+	args?: string[],
+	cookie?: string,
+}
+export async function sf(rpc: Rpc) {
 	const { name, args = [], cookie } = rpc
 
 	const body = {
@@ -36,7 +31,7 @@ export async function sf(rpc) {
 }
 
 async function customFetch(url, method, body, cookie) {
-	const bodyAsJSON = JSON.stringify(body)
+	const bodyAsJsonString = JSON.stringify(body)
 
 	// https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch#Supplying_request_options
 	const response = await fetch(url, {
@@ -45,12 +40,12 @@ async function customFetch(url, method, body, cookie) {
 			'content-type': 'application/json',
 			cookie,
 		},
-		body: bodyAsJSON,
+		body: bodyAsJsonString,
 	}).catch(e => {
 		// these only occur for network errors, like these:
 		//	request made with a bad host, e.g., //httpbin
 		//	the host is refusing connections
-		console.log(`fetch/server.ts.customFetch caught error on ${url}=>${bodyAsJSON}: `, e)
+		console.log(`fetch/server.ts.customFetch caught error on ${url}=>${bodyAsJsonString}: `, e)
 		throwError('NETWORK ERROR', 500)
 	})
 
