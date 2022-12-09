@@ -1,5 +1,5 @@
 import { can_view_comments } from '$lib/auth'
-import { current_user } from '$lib/data/user'
+import { fetch_current_user } from '$lib/data/user'
 import { sf } from '$lib/fetch/server'
 
 export async function get({ project_code, cookie }) {
