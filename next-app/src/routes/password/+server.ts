@@ -15,7 +15,7 @@ export async function PUT({ request }) {
 
 	const cookie = request.headers.get('cookie')
 
-	const { id } = await current_user(cookie)
+	const { id } = await fetch_current_user(cookie)
 
 	if (! id) {
 		throwError('User unknown', 404)
