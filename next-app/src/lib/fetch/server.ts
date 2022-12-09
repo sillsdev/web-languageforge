@@ -5,9 +5,7 @@ interface Rpc {
 	args?: string[] | object[],
 	cookie?: string,
 }
-export async function sf(rpc: Rpc) {
-	const { name, args = [], cookie } = rpc
-
+export async function sf({ name, args = [], cookie }: Rpc) {
 	const body = {
 		id: Date.now(),
 		method: name,
