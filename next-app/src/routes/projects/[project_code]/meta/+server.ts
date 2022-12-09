@@ -16,7 +16,7 @@ export async function get({ project_code, cookie }) {
 		num_entries_with_pictures: entries.filter(has_picture).length,
 	}
 
-	const { role } = await current_user(cookie)
+	const { role } = await fetch_current_user(cookie)
 	if (can_view_comments(role)) {
 		const unresolved_comments = comments.filter(({ status }) => status !== 'resolved')
 
