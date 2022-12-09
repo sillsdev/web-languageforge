@@ -17,10 +17,6 @@ export async function PUT({ request }) {
 
 	const { id } = await fetch_current_user(cookie)
 
-	if (! id) {
-		throwError('User unknown', 404)
-	}
-
 	await sf({
 		name: 'change_password',
 		args: [id, password],
