@@ -1,5 +1,5 @@
-import { get_activities } from './activities/+server'
-import { get as get_project_info } from './meta/+server'
+import { fetch_activities } from './activities/+server'
+import { fetch_project_details } from './meta/+server'
 import { can_view_activity } from '$lib/auth'
 import { fetch_current_user } from '$lib/data/user'
 
@@ -10,7 +10,7 @@ export async function load({ params: { project_code }, request: { headers }}) {
 	}
 
 	const result = {
-		project: await get_project_info(args),
+		project: await fetch_project_details(args),
 	}
 
 	const { role } = await fetch_current_user(args.cookie)
@@ -20,7 +20,7 @@ export async function load({ params: { project_code }, request: { headers }}) {
 			end_date: new Date(),
 		}
 
-		result.activities = await get_activities({ ...last_30_days, ...args })
+		result.activities = await fetch_activities({ ...last_30_days, ...args })
 	}
 
 	return result
