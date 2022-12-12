@@ -3,6 +3,7 @@ import { PageHeader } from "../components/page-header.component";
 
 export interface GotoOptions {
   waitFor?: Locator;
+  expectRedirect?: boolean;
 }
 
 export abstract class BasePage<T extends BasePage<T>> implements Pick<Page, 'locator'> {
@@ -10,7 +11,8 @@ export abstract class BasePage<T extends BasePage<T>> implements Pick<Page, 'loc
   readonly header = new PageHeader(this.page);
 
   private readonly waitFor: Locator[];
-  private readonly urlPattern = new RegExp(`${this.url}(#|$)`);
+  private readonly urlPattern = this.url.includes('#') ?
+    new RegExp(`${this.url}`) : new RegExp(`${this.url}/?(#|$)`);
 
   private get self(): T {
     return this as unknown as T;
@@ -23,7 +25,7 @@ export abstract class BasePage<T extends BasePage<T>> implements Pick<Page, 'loc
   async goto(options?: GotoOptions): Promise<T> {
     await Promise.all([
       this.page.goto(this.url),
-      this.waitForPage(),
+      options?.expectRedirect || this.waitForPage(), // this page won't load if a redirect happens
       options?.waitFor?.waitFor(),
     ]);
     return this.self;

@@ -115,7 +115,7 @@ export class EditorPage extends BasePage<EditorPage> {
   }
 
   constructor(page: Page, readonly project: Project) {
-    super(page, `/app/lexicon/${project.id}`, page.locator('.words-container-title, .no-entries'));
+    super(page, `/app/lexicon/${project.id}`, page.locator('.words-container-title:visible, .no-entries:visible'));
   }
 
   async goto(options?: EditorGotoOptions): Promise<EditorPage> {

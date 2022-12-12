@@ -1,5 +1,5 @@
 import { expect, Locator } from '@playwright/test';
-import { test } from './utils/fixtures';
+import { test, projectPerTest } from './utils/fixtures';
 
 import { EditorPage } from './pages/editor.page';
 import { ConfirmModalElement } from './components/confirm-modal.component';
@@ -68,7 +68,7 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
 
     test('Can click on first entry', async () => {
       const [, editorPageManager] = await Promise.all([
-        entryListPageManager.clickOnEntry(constants.testEntry1.lexeme.th.value),
+        entryListPageManager.entry(constants.testEntry1.lexeme.th.value).click(),
         new EditorPage(entryListPageManager.page, project).waitForPage(),
       ])
       await expect(editorPageManager.getTextarea(editorPageManager.entryCard, lexemeLabel, 'th')).toHaveValue(constants.testEntry1.lexeme.th.value);
@@ -79,9 +79,11 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
   test.describe('Entry Editor', () => {
 
     let editorPageManager: EditorPage;
+    let audio: Locator;
 
     test.beforeEach(async ({ managerTab }) => {
       editorPageManager = new EditorPage(managerTab, project);
+      audio = editorPageManager.getSoundplayer(editorPageManager.entryCard, lexemeLabel, 'taud');
     });
 
     test('Can go from entry editor to entries list', async () => {
@@ -143,12 +145,19 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
     });
 
     test.describe('Picture', () => {
-      test('First picture and caption is present', async () => {
-        await editorPageManager.goto();
-        await expect(editorPageManager.page).toHaveScreenshot(); // ensure the screenshot (incuding the image) stays the same
-        const picture: Locator = await editorPageManager.getPicture(editorPageManager.senseCard, constants.testEntry1.senses[0].pictures[0].fileName);
+
+      const newProject = projectPerTest(true);
+
+      test('First picture and caption is present', async ({request, managerTab}) => {
+        const screenshotProject: Project = await newProject();
+        await addLexEntry(request, screenshotProject.code, constants.testEntry1);
+        await addPictureFileToProject(request, screenshotProject, constants.testEntry1.senses[0].pictures[0].fileName);
+
+        const editorPagePicture = await new EditorPage(managerTab, screenshotProject).goto();
+        await expect(editorPagePicture.page).toHaveScreenshot(); // ensure the screenshot (incuding the image) stays the same
+        const picture: Locator = await editorPagePicture.getPicture(editorPagePicture.senseCard, constants.testEntry1.senses[0].pictures[0].fileName);
         expect(picture).not.toBeUndefined();
-        const caption = await editorPageManager.getPictureCaption(picture);
+        const caption = await editorPagePicture.getPictureCaption(picture);
         expect(caption).not.toBeUndefined();
         await expect(caption).toHaveValue(constants.testEntry1.senses[0].pictures[0].caption.en.value);
       });
@@ -256,7 +265,6 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
 
         test('Audio input system is present, playable and has "more" control (member)', async () => {
           await editorPageMember.goto();
-          const audio: Locator = editorPageMember.getSoundplayer(editorPageMember.entryCard, lexemeLabel, 'taud');
           await expect(audio).toBeVisible();
           await expect(audio.locator(editorPageMember.audioPlayer.playIconSelector)).toBeVisible();
           // check if this audio player is the only one in this card
@@ -314,10 +322,6 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
       });
 
       test.describe('Manager', () => {
-        let audio: Locator;
-        test.beforeAll(async () => {
-          audio = editorPageManager.getSoundplayer(editorPageManager.entryCard, lexemeLabel, 'taud');
-        })
 
         test('Audio input system is present, playable and has "more" control (manager)', async () => {
           await editorPageManager.goto();
@@ -595,7 +599,7 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
           await entryListPage.expectTotalNumberOfEntries(entryCount);
 
           // remove new word to restore original word count
-          await entryListPage.clickOnEntry(constants.testEntry3.lexeme.th.value);
+          await entryListPage.entry(constants.testEntry3.lexeme.th.value).click();
           await editorPageManager.entryCard.first().locator(editorPageManager.deleteCardButtonSelector).first().click();
 
           const confirmModal = new ConfirmModalElement(editorPageManager.page);

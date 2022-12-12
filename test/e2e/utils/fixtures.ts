@@ -82,16 +82,32 @@ export const test = base
   });
 
 /**
- * When called a LF project will be created for each playwright test (i.e. test.beforeEach)
+ * When called a LF project will be created before hand for each playwright test (i.e. test.beforeEach)
+ * If lazy = true, a project will only be created when explicitly "accessed" by calling
+ * the returned function. This is useful if not every test in the describe block really needs its own project.
  * @returns a function for accessing the project that was created for the current test
  */
-export const projectPerTest = (): () => Project => {
+export function projectPerTest(lazy: true): () => Promise<Project>
+export function projectPerTest(lazy?: false): () => Project
+export function projectPerTest(lazy?: boolean): () => Project | Promise<Project> {
 
+  let currentTestProjectGetter: () => Promise<Project>;
   let currentTestProject: Project;
 
   test.beforeEach(async ({ request, manager }, testInfo) => {
-    currentTestProject = await initTestProjectForTest(request, testInfo, manager);
+    currentTestProject = undefined;
+    currentTestProjectGetter = () => initTestProjectForTest(request, testInfo, manager);
+    if (!lazy) {
+      currentTestProject = await initTestProjectForTest(request, testInfo, manager);
+    }
   });
 
-  return () => currentTestProject;
+  if (lazy) {
+    return async () => {
+      currentTestProject ??= await currentTestProjectGetter();
+      return currentTestProject;
+    }
+  } else {
+    () => currentTestProject;
+  }
 }
