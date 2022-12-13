@@ -416,11 +416,11 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
             editorPageManager.page.waitForEvent('filechooser'),
             editorPageManager.page.locator(editorPageManager.dropbox.browseButtonSelector).click(),
           ]);
-          await fileChooser.setFiles(testFile(constants.testMockPngUploadFile.name));
+          await fileChooser.setFiles(testFile('png'));
 
           await expect(noticeElement.notice).toHaveCount(1);
           await expect(noticeElement.notice).toBeVisible();
-          await expect(noticeElement.notice).toContainText(constants.testMockPngUploadFile.name + ' is not an allowed audio file. Ensure the file is');
+          await expect(noticeElement.notice).toContainText(constants.files.png.name + ' is not an allowed audio file. Ensure the file is');
           const dropbox = editorPageManager.entryCard.locator(editorPageManager.dropbox.dragoverFieldSelector);
           await expect(dropbox).toBeVisible();
           await noticeElement.closeButton.click();
@@ -431,7 +431,7 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
             editorPageManager.page.waitForEvent('filechooser'),
             editorPageManager.page.locator(editorPageManager.dropbox.browseButtonSelector).click(),
           ]);
-          await fileChooser2.setFiles(testFile(constants.testMockMp3UploadFile.name));
+          await fileChooser2.setFiles(testFile('mp3'));
           await expect(noticeElement.notice).toHaveCount(1);
           await expect(noticeElement.notice).toBeVisible();
           await expect(noticeElement.notice).toContainText('File uploaded successfully');

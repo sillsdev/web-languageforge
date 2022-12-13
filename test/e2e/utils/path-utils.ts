@@ -1,4 +1,5 @@
 import path from "path";
+import { files } from '../testConstants.json';
 
 export const testPath = (relativeTestPath: string): string => {
   const testRoot = 'test/e2e';
@@ -8,6 +9,9 @@ export const testPath = (relativeTestPath: string): string => {
     : path.join(testRoot, relativeTestPath);
 };
 
-export const testFile = (file: string): string => {
-  return testPath(`shared-files/${file}`);
+export type TestFileName = keyof typeof files;
+
+export const testFile = (file: TestFileName): string => {
+  const fileName = files[file].name;
+  return testPath(`shared-files/${fileName}`);
 }

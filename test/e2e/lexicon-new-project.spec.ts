@@ -374,7 +374,7 @@ test.describe('Lexicon E2E New Project wizard app', () => {
         newLexProjectPageMember.initialDataPageBrowseButton.click(),
       ]);
       await expect(noticeElement.notice).toHaveCount(0);
-      await fileChooser.setFiles(testFile(constants.files.dummy_large_file));
+      await fileChooser.setFiles(testFile('large_project_zip'));
       await expect(newLexProjectPageMember.initialDataPageBrowseButton).toBeVisible();
       await expect(newLexProjectPageMember.verifyDataPage.entriesImported).not.toBeVisible();
       await expect(noticeElement.notice).toBeVisible();
@@ -391,7 +391,7 @@ test.describe('Lexicon E2E New Project wizard app', () => {
       ]);
       await expect(noticeElement.notice).toHaveCount(0);
       const jpgFileName: string = 'FriedRiceWithPork.jpg'
-      await fileChooser2.setFiles(testFile(jpgFileName));
+      await fileChooser2.setFiles(testFile('jpg'));
       await expect(noticeElement.notice).toBeVisible();
       await expect(noticeElement.notice).toHaveCount(1);
       await expect(noticeElement.notice).toContainText(jpgFileName + ' is not an allowed compressed file. Ensure the file is');
@@ -407,12 +407,11 @@ test.describe('Lexicon E2E New Project wizard app', () => {
         newLexProjectPageMember.initialDataPageBrowseButton.click(),
       ]);
       await expect(noticeElement.notice).toHaveCount(0);
-      const testLexProjectFileName: string = 'TestLexProject.zip';
       const numberOfEntriesInTestLexProjectFile: number = 2;
-      await fileChooser3.setFiles(testFile(testLexProjectFileName));
+      await fileChooser3.setFiles(testFile('project_zip'));
       await expect(newLexProjectPageMember.verifyDataPage.entriesImported).toBeVisible();
       await expect(noticeElement.notice).toHaveCount(1);
-      await expect(noticeElement.notice).toContainText('Successfully imported ' + testLexProjectFileName);
+      await expect(noticeElement.notice).toContainText(`Successfully imported ${constants.files.project_zip.name}`);
       await newLexProjectPageMember.expectFormStatusHasNoError();
 
       // step 3: verify data
