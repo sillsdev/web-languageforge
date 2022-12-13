@@ -323,31 +323,15 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
         });
 
 
-        test('Slider is present and updates with seeking', async ({ page }) => {
+        test('Slider is present and updates with seeking', async () => {
           await editorPageManager.goto();
           await expect(audio.locator(editorPageManager.audioPlayer.slider)).toBeVisible();
           const slider = audio.locator(editorPageManager.audioPlayer.slider);
           let originalTime = (await audio.locator(editorPageManager.audioPlayer.audioProgressTime).innerText()).substring(3, 4);
-
-          let isCompleted = false;
-
-          if (slider){
-            while (!isCompleted){
-              let bounds = await slider.boundingBox();
-              let yMiddle = bounds.y + bounds.height/2;
-              if(bounds){
-                await page.mouse.move(bounds.x, yMiddle);
-                await page.mouse.down();
-                await page.mouse.move(bounds.x + 1, yMiddle);
-                await page.mouse.up();
-                let time = (await audio.locator(editorPageManager.audioPlayer.audioProgressTime).innerText()).substring(3, 4);
-                if (time != originalTime){
-                  isCompleted = true;
-                }
-              }
-            }
-          }
-
+          let bounds = await slider.boundingBox();
+          let yMiddle = bounds.y + bounds.height/2;
+          await editorPageManager.page.mouse.click(bounds.x+200, yMiddle);
+          await expect(audio.locator(editorPageManager.audioPlayer.audioProgressTime)).toContainText("0:01 / 0:02");
         });
 
 
