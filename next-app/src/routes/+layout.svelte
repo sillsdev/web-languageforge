@@ -35,7 +35,7 @@
 		</main>
 	</div>
 
-	<div class=drawer-side on:click={ close }>
+	<div class=drawer-side on:click={ close } on:keydown={ close }>
 	  <div class=drawer-overlay></div>
 
 	  <!-- https://daisyui.com/components/menu  -->
@@ -50,13 +50,13 @@
 		<li><a href=/app rel=external>My projects</a></li>
 
 		<li class='menu-title mt-6'><span>About</span></li>
-		<li><a href=https://community.software.sil.org/t/w/5454 target=_blank rel=external>What's new</a></li>
-		<li><a href='https://www.youtube.com/playlist?list=PLJLUPwIFOI8d8lmQVAcBapyw87jCtmDNA' target=_blank rel=external>Videos</a></li>
-		<li><a href=https://github.com/sillsdev/web-languageforge/wiki/Known-Issues-and-Limitations target=_blank rel=external>Known issues and limitations</a></li>
+		<li><a href=https://community.software.sil.org/t/w/5454 target=_blank rel=noreferrer>What's new</a></li>
+		<li><a href='https://www.youtube.com/playlist?list=PLJLUPwIFOI8d8lmQVAcBapyw87jCtmDNA' target=_blank rel=noreferrer>Videos</a></li>
+		<li><a href=https://github.com/sillsdev/web-languageforge/wiki/Known-Issues-and-Limitations target=_blank rel=noreferrer>Known issues and limitations</a></li>
 
 		<li class='menu-title mt-6'><span>Help</span></li>
-		<li><a href=https://community.software.sil.org/c/language-forge target=_blank rel=external>Community Support</a></li>
-		<li><a href=mailto:issues@languageforge.org target=_blank rel=external>Report a Problem</a></li>
+		<li><a href=https://community.software.sil.org/c/language-forge target=_blank rel=noreferrer>Community Support</a></li>
+		<li><a href=mailto:issues@languageforge.org target=_blank rel=noreferrer>Report a Problem</a></li>
 	  </ul>
 	</div>
   </div>
