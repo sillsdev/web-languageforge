@@ -1,4 +1,4 @@
-FROM php:7.3.28-apache
+FROM php:7.4-apache
 
 # install apt packages
 # p7zip-full - used by LF application for unzipping lexicon uploads
