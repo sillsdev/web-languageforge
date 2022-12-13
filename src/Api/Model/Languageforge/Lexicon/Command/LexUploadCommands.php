@@ -20,21 +20,14 @@ class LexUploadCommands
      * Upload an audio file
      *
      * @param string $projectId
-     * @param string $mediaType
      * @param string $tmpFilePath
      * @throws \Exception
      * @return UploadResponse
      */
-    public static function uploadAudioFile($projectId, $mediaType, $tmpFilePath)
+    public static function uploadAudioFile($projectId, $tmpFilePath)
     {
         $project = new LexProjectModel($projectId);
         ProjectCommands::checkIfArchivedAndThrow($project);
-        if ($mediaType != "audio") {
-            throw new \Exception("Unsupported upload type.");
-        }
-        if (!$tmpFilePath) {
-            throw new \Exception("Upload controller did not move the uploaded file.");
-        }
 
         $file = $_FILES["file"];
         $fileName = $file["name"];
@@ -87,18 +80,44 @@ class LexUploadCommands
             $filePath = self::mediaFilePath($folderPath, $fileNamePrefix, $fileName);
             $moveOk = copy($tmpFilePath, $filePath);
 
-            if (
-                strcmp(strtolower($fileExt), ".mp3") !== 0 &&
-                strcmp(strtolower($fileExt), ".wav") !== 0 &&
-                strcmp(strtolower($fileExt), ".webm") !== 0
-            ) {
-                //First, find the duration of the file
-                $ffprobeCommand = `ffprobe -i $tmpFilePath -show_entries format=duration -v quiet -of csv="p=0" 2> /dev/null`;
-                $audioDuration = floatval($ffprobeCommand);
+            $convertAudio = false;
+            $targetFileExtension = ".webm";
+            $codecFlag = "";
 
+            // recorded audio and uploaded audio have different settings
+            $recordedInBrowser = false;
+            if (array_key_exists("recordedInBrowser", $_POST) && $_POST["recordedInBrowser"] === "true") {
+                $recordedInBrowser = true;
+            }
+
+            if ($recordedInBrowser) {
+                // audio recorded with pcm codec is saved in .webm files, which is then converted to .wav files 12-2022
+                if (strcmp($project->audioRecordingCodec, "wav") == 0) {
+                    $convertAudio = true;
+                    $targetFileExtension = ".wav";
+                }
+            } else {
+                // for audio uploaded from a device, NOT recorded in browser
+
+                if (
+                    strcmp($project->whenToConvertAudio, "always") == 0 ||
+                    (strcmp($project->whenToConvertAudio, "sr") == 0 && // restrictions on send/receive files 12-2022
+                        (filesize($filePath) > 1000000 ||
+                            (strcmp(strtolower($fileExt), ".mp3") !== 0 &&
+                                strcmp(strtolower($fileExt), ".wav") !== 0 &&
+                                strcmp(strtolower($fileExt), ".webm") !== 0)))
+                ) {
+                    $convertAudio = true;
+                    $targetFileExtension = ".webm";
+                    $codecFlag = "-c:a libopus";
+                }
+            }
+
+            if ($convertAudio == true) {
                 $extensionlessFileName = substr($fileName, 0, strrpos($fileName, strtolower($fileExt)));
-                $fileName = "$extensionlessFileName.webm"; //$fileName ->> the converted file
-                `ffmpeg -i $tmpFilePath -c:a libopus $fileName 2> /dev/null`; //original file is at the tmpFilePath. convert that file and save it to be $fileName
+
+                $fileName = $extensionlessFileName . $targetFileExtension; //$fileName ->> the converted file
+                `ffmpeg -i $tmpFilePath $codecFlag $fileName 2> /dev/null`; //original file is at the tmpFilePath. convert that file and save it to be $fileName
                 $filePath = self::mediaFilePath($folderPath, $fileNamePrefix, $fileName);
                 $moveOk = copy($fileName, $filePath);
 
@@ -120,7 +139,7 @@ class LexUploadCommands
                 //If this audio upload is replacing old audio, the previous file(s) for the entry are deleted from the assets
                 if (array_key_exists("previousFilename", $_POST)) {
                     $previousFilename = $_POST["previousFilename"];
-                    self::deleteMediaFile($projectId, $mediaType, $previousFilename);
+                    self::deleteMediaFile($projectId, "audio", $previousFilename);
                 }
             } else {
                 $data = new ErrorResult();
@@ -150,21 +169,14 @@ class LexUploadCommands
      * Upload an image file
      *
      * @param string $projectId
-     * @param string $mediaType
      * @param string $tmpFilePath
      * @throws \Exception
      * @return UploadResponse
      */
-    public static function uploadImageFile($projectId, $mediaType, $tmpFilePath)
+    public static function uploadImageFile($projectId, $tmpFilePath)
     {
         $project = new LexProjectModel($projectId);
         ProjectCommands::checkIfArchivedAndThrow($project);
-        if ($mediaType != "sense-image") {
-            throw new \Exception("Unsupported upload type.");
-        }
-        if (!$tmpFilePath) {
-            throw new \Exception("Upload controller did not move the uploaded file.");
-        }
 
         $file = $_FILES["file"];
         $fileName = $file["name"];
@@ -335,20 +347,12 @@ class LexUploadCommands
      * Import a project zip file
      *
      * @param string $projectId
-     * @param string $mediaType
      * @param string $tmpFilePath
      * @throws \Exception
      * @return UploadResponse
      */
-    public static function importProjectZip($projectId, $mediaType, $tmpFilePath)
+    public static function importProjectZip($projectId, $tmpFilePath)
     {
-        if ($mediaType != "import-zip") {
-            throw new \Exception("Unsupported upload type.");
-        }
-        if (!$tmpFilePath) {
-            throw new \Exception("Upload controller did not move the uploaded file.");
-        }
-
         $file = $_FILES["file"];
         $fileName = $file["name"];
         $mergeRule = self::extractStringFromArray($_POST, "mergeRule", LiftMergeRule::IMPORT_WINS);
@@ -446,20 +450,12 @@ class LexUploadCommands
      * Import a LIFT file
      *
      * @param string $projectId
-     * @param string $mediaType
      * @param string $tmpFilePath
      * @throws \Exception
      * @return UploadResponse
      */
-    public static function importLiftFile($projectId, $mediaType, $tmpFilePath)
+    public static function importLiftFile($projectId, $tmpFilePath)
     {
-        if ($mediaType != "import-lift") {
-            throw new \Exception("Unsupported upload type.");
-        }
-        if (!$tmpFilePath) {
-            throw new \Exception("Upload controller did not move the uploaded file.");
-        }
-
         $file = $_FILES["file"];
         $fileName = $file["name"];
         $mergeRule = self::extractStringFromArray($_POST, "mergeRule", LiftMergeRule::IMPORT_WINS);

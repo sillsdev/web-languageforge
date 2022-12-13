@@ -13,6 +13,25 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  require-label:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ github.token }}
+    outputs:
+      status: ${{ steps.check-labels.outputs.status }}
+    steps:
+      - uses: mheap/github-action-required-labels@v2
+        id: check-labels
+        with:
+          mode: exactly
+          count: 1
+          labels: "bug, feature, engineering, security fix, testing"
+      - uses: mheap/github-action-required-labels@v2
+        with:
+          mode: exactly
+          count: 0
+          labels: "do not merge"
+
   unit-tests:
     runs-on: ubuntu-latest
 
@@ -68,11 +87,11 @@ jobs:
 
       -
         name: Upload Playwright test results
-        if: always()
         uses: actions/upload-artifact@v3
         with:
           name: test-results
           path: test/e2e/test-results
+          if-no-files-found: error
 
   check-code-formatting:
     runs-on: ubuntu-latest

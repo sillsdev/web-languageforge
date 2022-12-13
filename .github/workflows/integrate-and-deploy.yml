@@ -66,8 +66,8 @@ jobs:
       -
         name: Verify version stamping
         run: |
-          docker compose run --rm app cat build-version.txt version.php
-          docker compose run --rm app cat version.php | grep ${{ steps.image.outputs.TAG_APP }}
+          docker run --rm lf-app head build-version.txt version.php
+          docker run --rm lf-app head version.php | grep -q ${{ steps.image.outputs.TAG_APP }}
       -
         name: Build "next" images
         run: make build-next
@@ -79,11 +79,11 @@ jobs:
         run: make e2e-tests-ci
       -
         name: Upload Playwright test results
-        if: always()
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: test-results
-          path: test-results
+          path: test/e2e/test-results
+          if-no-files-found: error
       -
         name: Log in to Docker Hub
         uses: docker/login-action@v2

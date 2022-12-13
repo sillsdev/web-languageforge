@@ -191,7 +191,7 @@ services:
     command: sh -c "postconf -e 'default_transport = retry:no outbound email allowed' && /run.sh"
 
   db:
-    image: mongo:4.4
+    image: mongo:5
     container_name: lf-db
     ports:
       # exposed this to host for admin tools
@@ -241,7 +241,7 @@ services:
       dockerfile: docker/app/Dockerfile
       args:
         - ENVIRONMENT=development
-    image: lf-app
+    image: lf-app-for-playwright
     container_name: app-for-playwright
     platform: linux/amd64
     depends_on:

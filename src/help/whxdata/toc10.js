@@ -1,1 +1,0 @@
-gXMLBuffer ="<?xml version=\"1.0\" encoding=\"utf-8\" ?><data  src=\"toc4.js\"  name=\"Manage Project\"><item name=\"Manage Project overview\" url=\"Language_Forge_Tasks/Manger_and_Proj_Owner_tasks/Manage_Project/Manage_Project_overview.htm\" /></data>";

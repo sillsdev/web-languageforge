@@ -10,25 +10,39 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-form-label col-12" for="language">Default Interface Language</label>
-                        <div class="controls col-12">
-                            <select class="form-control custom-select" id="language"
-                                data-ng-model="$ctrl.project.interfaceLanguageCode"
-                                data-ng-options="$ctrl.lpsInterfaceConfig.selectLanguages.options[code].option for code in $ctrl.lpsInterfaceConfig.selectLanguages.optionsOrder">
-                                <option value="">-- choose a language --</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group row">
                         <label class="col-form-label col-12">Project Code</label>
                         <div class="controls col-12 notranslate">
                             {{$ctrl.project.projectCode}}
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-form-label col-12">Project Owner</label>
-                        <div class="controls col-12 notranslate">
-                            {{$ctrl.project.ownerRef.username}}
+                        <label class="col-form-label col-12" for="language">Default Interface Language</label>
+                        <div class="controls col-12">
+                            <select class="form-control custom-select" id="language"
+                                data-ng-model="$ctrl.project.interfaceLanguageCode"
+                                data-ng-options="$ctrl.lpsInterfaceConfig.selectLanguages.options[code].option for code in $ctrl.lpsInterfaceConfig.selectLanguages.optionsOrder">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-form-label col-12" for="codec">Preferred Audio Recording Codec</label>
+                        <div class="controls col-12">
+                            <select class="form-control custom-select" id="codec"
+                                data-ng-model="$ctrl.project.audioRecordingCodec">
+                                <option value="webm">OPUS/WEBM</option>
+                                <option value="wav">PCM/WAV</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-form-label col-12" for="conversion">Convert Uploaded Audio To OPUS/WEBM... </label>
+                        <div class="controls col-12">
+                            <select class="form-control custom-select" id="conversion"
+                                data-ng-model="$ctrl.project.whenToConvertAudio">
+                                <option value="never">Never</option>
+                                <option value="sr">Only if necessary for Send/Receive</option>
+                                <option value="always">Always</option>
+                            </select>
                         </div>
                     </div>
                     <!--

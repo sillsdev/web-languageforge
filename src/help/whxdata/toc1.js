@@ -1,1 +1,0 @@
-gXMLBuffer ="<?xml version=\"1.0\" encoding=\"utf-8\" ?><data  src=\"toc.js\"  name=\"Overview\"><item name=\"Getting Started\" url=\"Overview/Getting_Started.htm\" /><item name=\"Language Forge overview\" url=\"Overview/Language_Forge_overview.htm\" /><item name=\"Frequently Asked Questions\" url=\"Overview/Frequently_Asked_Questions.htm\" /></data>";

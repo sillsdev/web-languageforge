@@ -34,7 +34,7 @@ class LexUploadCommandsTest extends TestCase
         $fileName = "TestAudio.mp3";
         $tmpFilePath = self::$environ->uploadFile(TestCommonPath . "$fileName", $fileName);
 
-        $response = LexUploadCommands::uploadAudioFile($projectId, "audio", $tmpFilePath);
+        $response = LexUploadCommands::uploadAudioFile($projectId, $tmpFilePath);
 
         $folderPath = $project->getAudioFolderPath();
         $filePath = $folderPath . DIRECTORY_SEPARATOR . $response->data->fileName;
@@ -61,7 +61,7 @@ class LexUploadCommandsTest extends TestCase
         $fileName = "TestAudio.MP3";
         $tmpFilePath = self::$environ->uploadFile(TestCommonPath . "TestAudio.mp3", $fileName);
 
-        $response = LexUploadCommands::uploadAudioFile($projectId, "audio", $tmpFilePath);
+        $response = LexUploadCommands::uploadAudioFile($projectId, $tmpFilePath);
 
         $folderPath = $project->getAudioFolderPath();
         $filePath = $folderPath . DIRECTORY_SEPARATOR . $response->data->fileName;
@@ -87,7 +87,7 @@ class LexUploadCommandsTest extends TestCase
         $fileName = "TestAudio.wav";
         $tmpFilePath = self::$environ->uploadFile(TestCommonPath . "$fileName", $fileName);
 
-        $response = LexUploadCommands::uploadAudioFile($projectId, "audio", $tmpFilePath);
+        $response = LexUploadCommands::uploadAudioFile($projectId, $tmpFilePath);
 
         $folderPath = $project->getAudioFolderPath();
         $filePath = $folderPath . DIRECTORY_SEPARATOR . $response->data->fileName;
@@ -113,7 +113,7 @@ class LexUploadCommandsTest extends TestCase
         $projectId = $project->id->asString();
         $tmpFilePath = self::$environ->uploadFile(TestCommonPath . "TestImage.tif", "TestAudio.mp3");
 
-        $response = LexUploadCommands::uploadAudioFile($projectId, "audio", $tmpFilePath);
+        $response = LexUploadCommands::uploadAudioFile($projectId, $tmpFilePath);
 
         $this->assertFalse($response->result, "Upload should fail");
         $this->assertEquals("UserMessage", $response->data->errorType, "Error response should be a user message");
@@ -125,7 +125,7 @@ class LexUploadCommandsTest extends TestCase
 
         $tmpFilePath = self::$environ->uploadFile(TestCommonPath . "TestAudio.mp3", "TestImage.tif");
 
-        $response = LexUploadCommands::uploadAudioFile($projectId, "audio", $tmpFilePath);
+        $response = LexUploadCommands::uploadAudioFile($projectId, $tmpFilePath);
 
         $this->assertFalse($response->result, "Upload should fail");
         $this->assertEquals("UserMessage", $response->data->errorType, "Error response should be a user message");
@@ -143,14 +143,14 @@ class LexUploadCommandsTest extends TestCase
         $fileName = "TestAudio.wav";
         $tmpFilePath = self::$environ->uploadFile(TestCommonPath . "$fileName", $fileName);
 
-        $response = LexUploadCommands::uploadAudioFile($projectId, "audio", $tmpFilePath);
+        $response = LexUploadCommands::uploadAudioFile($projectId, $tmpFilePath);
 
         $this->assertTrue($response->result, "Upload should succeed");
         $_POST["previousFilename"] = $fileName;
         $fileName = "TestAudio.mp3";
         $tmpFilePath = self::$environ->uploadFile(TestCommonPath . "$fileName", $fileName);
 
-        $response = LexUploadCommands::uploadAudioFile($projectId, "audio", $tmpFilePath);
+        $response = LexUploadCommands::uploadAudioFile($projectId, $tmpFilePath);
 
         $folderPath = $project->getAudioFolderPath();
         $filePath = $folderPath . DIRECTORY_SEPARATOR . $response->data->fileName;
@@ -179,7 +179,7 @@ class LexUploadCommandsTest extends TestCase
         $fileName = "TestImage.jpg";
         $tmpFilePath = self::$environ->uploadFile(TestCommonPath . "$fileName", $fileName);
 
-        $response = LexUploadCommands::uploadImageFile($projectId, "sense-image", $tmpFilePath);
+        $response = LexUploadCommands::uploadImageFile($projectId, $tmpFilePath);
 
         $folderPath = $project->getImageFolderPath();
         $filePath = $folderPath . "/" . $response->data->fileName;
@@ -206,7 +206,7 @@ class LexUploadCommandsTest extends TestCase
         $fileName = "TestImage.JPG";
         $tmpFilePath = self::$environ->uploadFile(TestCommonPath . "TestImage.jpg", $fileName);
 
-        $response = LexUploadCommands::uploadImageFile($projectId, "sense-image", $tmpFilePath);
+        $response = LexUploadCommands::uploadImageFile($projectId, $tmpFilePath);
 
         $folderPath = $project->getImageFolderPath();
         $filePath = $folderPath . DIRECTORY_SEPARATOR . $response->data->fileName;
@@ -231,7 +231,7 @@ class LexUploadCommandsTest extends TestCase
         $projectId = $project->id->asString();
         $tmpFilePath = self::$environ->uploadFile(TestCommonPath . "TestImage.tif", "TestImage.jpg");
 
-        $response = LexUploadCommands::uploadImageFile($projectId, "sense-image", $tmpFilePath);
+        $response = LexUploadCommands::uploadImageFile($projectId, $tmpFilePath);
 
         $this->assertFalse($response->result, "Upload should fail");
         $this->assertEquals("UserMessage", $response->data->errorType, "Error response should be a user message");
@@ -243,7 +243,7 @@ class LexUploadCommandsTest extends TestCase
 
         $tmpFilePath = self::$environ->uploadFile(TestCommonPath . "TestImage.jpg", "TestImage.tif");
 
-        $response = LexUploadCommands::uploadImageFile($projectId, "sense-image", $tmpFilePath);
+        $response = LexUploadCommands::uploadImageFile($projectId, $tmpFilePath);
 
         $this->assertFalse($response->result, "Upload should fail");
         $this->assertEquals("UserMessage", $response->data->errorType, "Error response should be a user message");
@@ -261,7 +261,7 @@ class LexUploadCommandsTest extends TestCase
         $fileName = "TestAudio.mp3";
         $tmpFilePath = self::$environ->uploadFile(TestCommonPath . "$fileName", $fileName);
 
-        $response = LexUploadCommands::uploadAudioFile($projectId, "audio", $tmpFilePath);
+        $response = LexUploadCommands::uploadAudioFile($projectId, $tmpFilePath);
 
         $this->assertTrue($response->result, "Upload should succeed");
 
@@ -284,7 +284,7 @@ class LexUploadCommandsTest extends TestCase
         $fileName = "TestImage.jpg";
         $tmpFilePath = self::$environ->uploadFile(TestCommonPath . "$fileName", $fileName);
 
-        $response = LexUploadCommands::uploadImageFile($projectId, "sense-image", $tmpFilePath);
+        $response = LexUploadCommands::uploadImageFile($projectId, $tmpFilePath);
 
         $this->assertTrue($response->result, "Upload should succeed");
 
@@ -323,7 +323,7 @@ class LexUploadCommandsTest extends TestCase
         $this->assertArrayHasKey("th", $project->inputSystems);
         $this->assertArrayNotHasKey("th-fonipa", $project->inputSystems);
 
-        $response = LexUploadCommands::importProjectZip($projectId, "import-zip", $tmpFilePath);
+        $response = LexUploadCommands::importProjectZip($projectId, $tmpFilePath);
 
         $project->read($project->id->asString());
         $filePath = $project->getAssetsFolderPath() . DIRECTORY_SEPARATOR . $response->data->fileName;
@@ -386,7 +386,7 @@ class LexUploadCommandsTest extends TestCase
             "custom field userView config doesn't yet exist"
         );
 
-        $response = LexUploadCommands::importProjectZip($projectId, "import-zip", $tmpFilePath);
+        $response = LexUploadCommands::importProjectZip($projectId, $tmpFilePath);
 
         $project->read($project->id->asString());
         $filePath = $project->getAssetsFolderPath() . DIRECTORY_SEPARATOR . $response->data->fileName;
@@ -514,7 +514,7 @@ class LexUploadCommandsTest extends TestCase
         $projectId = $project->id->asString();
         $tmpFilePath = self::$environ->uploadFile(TestCommonPath . "TestImage.jpg", "TestLexProject.zip");
 
-        $response = LexUploadCommands::importProjectZip($projectId, "import-zip", $tmpFilePath);
+        $response = LexUploadCommands::importProjectZip($projectId, $tmpFilePath);
 
         $this->assertFalse($response->result, "Import should fail");
         $this->assertEquals("UserMessage", $response->data->errorType, "Error response should be a user message");
@@ -526,7 +526,7 @@ class LexUploadCommandsTest extends TestCase
 
         $tmpFilePath = self::$environ->uploadFile(TestCommonPath . "TestLexProject.zip", "TestImage.jpg");
 
-        $response = LexUploadCommands::importProjectZip($projectId, "import-zip", $tmpFilePath);
+        $response = LexUploadCommands::importProjectZip($projectId, $tmpFilePath);
 
         $this->assertFalse($response->result, "Import should fail");
         $this->assertEquals("UserMessage", $response->data->errorType, "Error response should be a user message");
@@ -568,7 +568,7 @@ EOD;
         $this->assertArrayHasKey("th", $project->inputSystems);
         $this->assertArrayNotHasKey("th-fonipa", $project->inputSystems);
 
-        $response = LexUploadCommands::importLiftFile($projectId, "import-lift", $tmpFilePath);
+        $response = LexUploadCommands::importLiftFile($projectId, $tmpFilePath);
 
         $project->read($project->id->asString());
         $filePath = $project->getAssetsFolderPath() . "/" . $response->data->fileName;
@@ -602,7 +602,7 @@ EOD;
 
         // importLoses: LIFT file added
         $tmpFilePath = self::$environ->uploadLiftFile(self::liftOneEntryV0_13, $fileName, LiftMergeRule::IMPORT_LOSES);
-        $response = LexUploadCommands::importLiftFile($projectId, "import-lift", $tmpFilePath);
+        $response = LexUploadCommands::importLiftFile($projectId, $tmpFilePath);
         $this->assertTrue($response->result, "Import should succeed");
         $this->assertRegExp("/lexicon\/$projectSlug/", $response->data->path);
         $this->assertRegExp(
@@ -626,7 +626,7 @@ EOD;
 
         // importLoses: LIFT file not added, other still exists
         $tmpFilePath = self::$environ->uploadLiftFile(self::liftOneEntryV0_13, $fileName, LiftMergeRule::IMPORT_LOSES);
-        $response = LexUploadCommands::importLiftFile($projectId, "import-lift", $tmpFilePath);
+        $response = LexUploadCommands::importLiftFile($projectId, $tmpFilePath);
         $this->assertTrue($response->result, "Import should succeed");
         $this->assertTrue(file_exists($filePathOther), "Other LIFT file should exist");
         $this->assertFalse(file_exists($filePath), "Imported LIFT file should not exist");
@@ -639,7 +639,7 @@ EOD;
 
         // importWins: LIFT file added, other removed
         $tmpFilePath = self::$environ->uploadLiftFile(self::liftOneEntryV0_13, $fileName, LiftMergeRule::IMPORT_WINS);
-        $response = LexUploadCommands::importLiftFile($projectId, "import-lift", $tmpFilePath);
+        $response = LexUploadCommands::importLiftFile($projectId, $tmpFilePath);
         $this->assertFalse(file_exists($filePathOther), "Other LIFT file should not exist");
         $this->assertTrue(file_exists($filePath), "Imported LIFT file should exist");
         $this->assertEquals(1, $response->data->stats->existingEntries);
@@ -661,7 +661,7 @@ EOD;
             $fileName,
             LiftMergeRule::CREATE_DUPLICATES
         );
-        $response = LexUploadCommands::importLiftFile($projectId, "import-lift", $tmpFilePath);
+        $response = LexUploadCommands::importLiftFile($projectId, $tmpFilePath);
         $this->assertFalse(file_exists($filePathOther), "Other LIFT file should not exist");
         $this->assertTrue(file_exists($filePath), "Imported LIFT file should exist");
         $this->assertEquals(1, $response->data->stats->existingEntries);
@@ -682,7 +682,7 @@ EOD;
             LiftMergeRule::IMPORT_LOSES
         );
 
-        $response = LexUploadCommands::importLiftFile($projectId, "import-lift", $tmpFilePath);
+        $response = LexUploadCommands::importLiftFile($projectId, $tmpFilePath);
 
         $this->assertFalse($response->result, "Import should fail");
         $this->assertEquals("UserMessage", $response->data->errorType, "Error response should be a user message");
@@ -694,7 +694,7 @@ EOD;
 
         $tmpFilePath = self::$environ->uploadFile(TestCommonPath . "TestImage.jpg", "TestImage.lift");
 
-        $response = LexUploadCommands::importLiftFile($projectId, "import-lift", $tmpFilePath);
+        $response = LexUploadCommands::importLiftFile($projectId, $tmpFilePath);
 
         $this->assertFalse($response->result, "Import should fail");
         $this->assertEquals("UserMessage", $response->data->errorType, "Error response should be a user message");

@@ -21,6 +21,7 @@ Please provide screenshots / animations for any change that involves the UI. Ple
 
 ## Checklist
 
+- [ ] I have labeled my PR with: bug, feature, engineering, security fix or testing
 - [ ] I have performed a self-review of my own code
 - [ ] I have reviewed the title & description of this PR which I will use as the squashed PR commit message
 - [ ] I have commented my code, particularly in hard-to-understand areas

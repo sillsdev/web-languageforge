@@ -56,7 +56,7 @@ COPY --from=sillsdev/web-languageforge:wait-latest /wait /wait
 
 # DEVELOPMENT IMAGE
 FROM sillsdev/web-languageforge:base-php AS development-app
-RUN install-php-extensions xdebug
+RUN install-php-extensions xdebug-^3.1
 COPY docker/app/docker-php-ext-xdebug.ini /usr/local/etc/php/conf.d
 RUN mv $PHP_INI_DIR/php.ini-development $PHP_INI_DIR/php.ini
 COPY --from=sillsdev/web-languageforge:wait-latest /wait /wait
