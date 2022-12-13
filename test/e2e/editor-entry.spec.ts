@@ -79,11 +79,9 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
   test.describe('Entry Editor', () => {
 
     let editorPageManager: EditorPage;
-    let audio: Locator;
 
     test.beforeEach(async ({ managerTab }) => {
       editorPageManager = new EditorPage(managerTab, project);
-      audio = editorPageManager.getSoundplayer(editorPageManager.entryCard, lexemeLabel, 'taud');
     });
 
     test('Can go from entry editor to entries list', async () => {
@@ -154,11 +152,10 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
         await addPictureFileToProject(request, screenshotProject, constants.testEntry1.senses[0].pictures[0].fileName);
 
         const editorPagePicture = await new EditorPage(managerTab, screenshotProject).goto();
-        await expect(editorPagePicture.page).toHaveScreenshot(); // ensure the screenshot (incuding the image) stays the same
         const picture: Locator = await editorPagePicture.getPicture(editorPagePicture.senseCard, constants.testEntry1.senses[0].pictures[0].fileName);
-        expect(picture).not.toBeUndefined();
+        const img = await picture.elementHandle();
+        await expect(editorPagePicture.page).toHaveScreenshot({ clip: await img.boundingBox() });
         const caption = await editorPagePicture.getPictureCaption(picture);
-        expect(caption).not.toBeUndefined();
         await expect(caption).toHaveValue(constants.testEntry1.senses[0].pictures[0].caption.en.value);
       });
 
@@ -224,8 +221,7 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
         picture = await editorPageManager.getPicture(editorPageManager.senseCard, constants.testEntry1.senses[0].pictures[0].fileName);
         expect(picture).toBeUndefined();
 
-        const configurationPage = await new ConfigurationPageFieldsTab(managerTab, project).goto();
-        await configurationPage.goto();
+        const configurationPage = await new ConfigurationPageFieldsTab(managerTab, testProject).goto();
         await configurationPage.tabLinks.fields.click();
         await (await configurationPage.getCheckbox('Meaning Fields', 'Pictures', 'Hidden if Empty')).check();
         await configurationPage.toggleField('Meaning Fields', 'Pictures');
@@ -265,28 +261,25 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
 
         test('Audio input system is present, playable and has "more" control (member)', async () => {
           await editorPageMember.goto();
-          await expect(audio).toBeVisible();
-          await expect(audio.locator(editorPageMember.audioPlayer.playIconSelector)).toBeVisible();
-          // check if this audio player is the only one in this card
-          await expect(editorPageMember.entryCard.locator(editorPageMember.audioPlayer.playIconSelector + ' >> visible=true')).toHaveCount(1);
-          await expect(audio.locator(editorPageMember.audioPlayer.togglePlaybackAnchorSelector)).toBeEnabled();
+          const audio = editorPageMember.getAudioPlayer(lexemeLabel, 'taud');
+          await expect(audio.playIcon).toBeVisible();
+          await expect(audio.togglePlaybackAnchor).toBeEnabled();
 
-          await expect(audio.locator(editorPageMember.audioPlayer.dropdownToggleSelector)).toBeVisible();
-          await expect(audio.locator(editorPageMember.audioPlayer.dropdownToggleSelector)).toBeEnabled();
-          await expect(audio.locator(editorPageMember.audioPlayer.uploadButtonSelector)).not.toBeVisible();
+          await expect(audio.dropdownToggle).toBeVisible();
+          await expect(audio.dropdownToggle).toBeEnabled();
+          await expect(audio.uploadButton).not.toBeVisible();
           // this button is only visible when user is observer and has only the right to download
-          await expect(audio.locator(editorPageMember.audioPlayer.downloadButtonSelector)).not.toBeVisible();
+          await expect(audio.downloadButton).not.toBeVisible();
         });
 
         test('Word 2 (without audio): audio input system is not playable but has "upload" button (member)', async () => {
           await editorPageMember.goto({entryId: lexEntriesIds[1]});
-          const audio: Locator = editorPageMember.getSoundplayer(editorPageMember.entryCard, lexemeLabel, 'taud');
-          await expect(editorPageMember.entryCard.locator(editorPageMember.audioPlayer.playIconSelector + ' >> visible=true')).toHaveCount(0);
-          await expect(audio.locator(editorPageMember.audioPlayer.togglePlaybackAnchorSelector)).not.toBeVisible();
-          await expect(audio.locator(editorPageMember.audioPlayer.dropdownToggleSelector)).toBeEnabled();
-          await expect(audio.locator(editorPageMember.audioPlayer.uploadButtonSelector)).toBeVisible();
-          await expect(audio.locator(editorPageMember.audioPlayer.uploadButtonSelector)).toBeEnabled();
-          await expect(audio.locator(editorPageMember.audioPlayer.downloadButtonSelector)).not.toBeVisible();
+          const audio = editorPageMember.getAudioPlayer(lexemeLabel, 'taud');
+          await expect(audio.togglePlaybackAnchor).not.toBeVisible();
+          await expect(audio.dropdownToggle).toBeEnabled();
+          await expect(audio.uploadButton).toBeVisible();
+          await expect(audio.uploadButton).toBeEnabled();
+          await expect(audio.downloadButton).not.toBeVisible();
         });
       });
 
@@ -299,25 +292,22 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
 
         test('Audio Input System is playable but does not have "more" control (observer)', async () => {
           await editorPageObserver.goto();
-          const audio: Locator = editorPageObserver.getSoundplayer(editorPageObserver.entryCard, lexemeLabel, 'taud');
-          await expect(audio.locator(editorPageObserver.audioPlayer.playIconSelector)).toBeVisible();
-          // check if this audio player is the only one in this card
-          await expect(editorPageObserver.entryCard.locator(editorPageObserver.audioPlayer.playIconSelector + ' >> visible=true')).toHaveCount(1);
-          await expect(audio.locator(editorPageObserver.audioPlayer.togglePlaybackAnchorSelector)).toBeVisible();
-          await expect(audio.locator(editorPageObserver.audioPlayer.togglePlaybackAnchorSelector)).toBeEnabled();
-          await expect(audio.locator(editorPageObserver.audioPlayer.dropdownToggleSelector)).not.toBeVisible();
-          await expect(audio.locator(editorPageObserver.audioPlayer.uploadButtonSelector)).not.toBeVisible();
-          await expect(audio.locator(editorPageObserver.audioPlayer.downloadButtonSelector)).toBeVisible();
+          const audio = editorPageObserver.getAudioPlayer(lexemeLabel, 'taud');
+          await expect(audio.playIcon).toBeVisible();
+          await expect(audio.togglePlaybackAnchor).toBeVisible();
+          await expect(audio.togglePlaybackAnchor).toBeEnabled();
+          await expect(audio.dropdownToggle).not.toBeVisible();
+          await expect(audio.uploadButton).not.toBeVisible();
+          await expect(audio.downloadButton).toBeVisible();
         });
 
         test('Word 2 (without audio): audio input system is not playable and does not have "upload" button (observer)', async () => {
           await editorPageObserver.goto({entryId: lexEntriesIds[1]});
-          const audio: Locator = editorPageObserver.getSoundplayer(editorPageObserver.entryCard, lexemeLabel, 'taud');
-          await expect(editorPageObserver.entryCard.locator(editorPageObserver.audioPlayer.playIconSelector + ' >> visible=true')).toHaveCount(0);
-          await expect(audio.locator(editorPageObserver.audioPlayer.togglePlaybackAnchorSelector)).not.toBeVisible();
-          await expect(audio.locator(editorPageObserver.audioPlayer.dropdownToggleSelector)).not.toBeVisible();
-          await expect(audio.locator(editorPageObserver.audioPlayer.uploadButtonSelector)).not.toBeVisible();
-          await expect(audio.locator(editorPageObserver.audioPlayer.downloadButtonSelector)).not.toBeVisible();
+          const audio = editorPageObserver.getAudioPlayer(lexemeLabel, 'taud');
+          await expect(audio.togglePlaybackAnchor).not.toBeVisible();
+          await expect(audio.dropdownToggle).not.toBeVisible();
+          await expect(audio.uploadButton).not.toBeVisible();
+          await expect(audio.downloadButton).not.toBeVisible();
         });
       });
 
@@ -325,30 +315,25 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
 
         test('Audio input system is present, playable and has "more" control (manager)', async () => {
           await editorPageManager.goto();
-          await expect(audio).toBeVisible();
-          await expect(audio.locator(editorPageManager.audioPlayer.playIconSelector)).toBeVisible();
-          // check if this audio player is the only one in this card
-          await expect(editorPageManager.entryCard.locator(editorPageManager.audioPlayer.playIconSelector + ' >> visible=true')).toHaveCount(1);
-          await expect(audio.locator(editorPageManager.audioPlayer.togglePlaybackAnchorSelector)).toBeEnabled();
-          await expect(audio.locator(editorPageManager.audioPlayer.dropdownToggleSelector)).toBeVisible();
-          await expect(audio.locator(editorPageManager.audioPlayer.dropdownToggleSelector)).toBeEnabled();
-          await expect(audio.locator(editorPageManager.audioPlayer.uploadButtonSelector)).not.toBeVisible();
+          const audio = editorPageManager.getAudioPlayer(lexemeLabel, 'taud');
+          await expect(audio.playIcon).toBeVisible();
+          await expect(audio.togglePlaybackAnchor).toBeEnabled();
+          await expect(audio.dropdownToggle).toBeVisible();
+          await expect(audio.dropdownToggle).toBeEnabled();
+          await expect(audio.uploadButton).not.toBeVisible();
           // this button is only visible when user is observer and has only the right to download
-          await expect(audio.locator(editorPageManager.audioPlayer.downloadButtonSelector)).not.toBeVisible();
+          await expect(audio.downloadButton).not.toBeVisible();
         });
-
 
         test('Slider is present and updates with seeking', async () => {
           await editorPageManager.goto();
-          await expect(audio.locator(editorPageManager.audioPlayer.slider)).toBeVisible();
-          const slider = audio.locator(editorPageManager.audioPlayer.slider);
-          let originalTime = (await audio.locator(editorPageManager.audioPlayer.audioProgressTime).innerText()).substring(3, 4);
-          let bounds = await slider.boundingBox();
-          let yMiddle = bounds.y + bounds.height/2;
+          const audio = editorPageManager.getAudioPlayer(lexemeLabel, 'taud');
+          await expect(audio.slider).toBeVisible();
+          const bounds = await audio.slider.boundingBox();
+          const yMiddle = bounds.y + bounds.height/2;
           await editorPageManager.page.mouse.click(bounds.x+200, yMiddle);
-          await expect(audio.locator(editorPageManager.audioPlayer.audioProgressTime)).toContainText("0:01 / 0:02");
+          await expect(audio.audioProgressTime).toContainText("0:01 / 0:02");
         });
-
 
         test('File upload drop box is displayed when Upload is clicked & not displayed if upload cancelled (manager)', async () => {
           await editorPageManager.goto();
@@ -358,47 +343,49 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
           const cancelAddingAudio = editorPageManager.getCancelDropboxButton(editorPageManager.entryCard, 'Audio');
           await expect(cancelAddingAudio).not.toBeVisible();
 
-          await audio.locator(editorPageManager.audioPlayer.dropdownToggleSelector).click();
-          await editorPageManager.entryCard.locator(editorPageManager.audioDropdownMenu.uploadReplacementButtonSelector).click();
-          await expect(audio.locator(editorPageManager.audioPlayer.dropdownToggleSelector)).not.toBeVisible();
+          const audio = editorPageManager.getAudioPlayer(lexemeLabel, 'taud');
+          await audio.dropdownToggle.click();
+          await audio.dropdownMenu.uploadReplacementButton.click();
+          await expect(audio.dropdownToggle).not.toBeVisible();
           await expect(dropbox).toBeVisible();
 
           await expect(cancelAddingAudio).toBeVisible();
           await cancelAddingAudio.click();
-          await expect(audio.locator(editorPageManager.audioPlayer.dropdownToggleSelector)).toBeVisible();
+          await expect(audio.dropdownToggle).toBeVisible();
           await expect(dropbox).not.toBeVisible();
           await expect(cancelAddingAudio).not.toBeVisible();
         });
 
         test('Navigate to other entries with left entry bar', async () => {
           await editorPageManager.goto({entryId: lexEntriesIds[1]});
-          await editorPageManager.page.locator('text=' + constants.testMultipleMeaningEntry1.senses[0].definition.en.value).click();
 
-          await editorPageManager.page.waitForURL(
-            new RegExp(`.*\/app\/lexicon\/${project.id}\/#!\/editor\/entry\/${lexEntriesIds[2]}.*`, 'gm')
-          );
+          await Promise.all([
+            editorPageManager.page.locator('text=' + constants.testMultipleMeaningEntry1.senses[0].definition.en.value).click(),
+            editorPageManager.page.waitForURL(editorPageManager.entryUrl(lexEntriesIds[2])),
+          ]);
           await expect(editorPageManager.getTextarea(
             editorPageManager.senseCard.first(), 'Definition', 'en')).toHaveValue(constants.testMultipleMeaningEntry1.senses[0].definition.en.value);
         });
 
         test('Word 2 (without audio): audio input system is not playable but has "upload" button (manager)', async () => {
           await editorPageManager.goto({entryId: lexEntriesIds[1]});
-          await expect(editorPageManager.entryCard.locator(editorPageManager.audioPlayer.playIconSelector)).not.toBeVisible();
+          const audio = editorPageManager.getAudioPlayer(lexemeLabel, 'taud');
+          await expect(audio.playIcon).not.toBeVisible();
 
-          await expect(audio.locator(editorPageManager.audioPlayer.dropdownToggleSelector)).not.toBeVisible();
-          await expect(audio.locator(editorPageManager.audioPlayer.uploadButtonSelector)).toBeVisible();
-          await expect(audio.locator(editorPageManager.audioPlayer.uploadButtonSelector)).toBeEnabled();
-          await expect(audio.locator(editorPageManager.audioPlayer.downloadButtonSelector)).not.toBeVisible();
+          await expect(audio.dropdownToggle).not.toBeVisible();
+          await expect(audio.uploadButton).toBeVisible();
+          await expect(audio.uploadButton).toBeEnabled();
+          await expect(audio.downloadButton).not.toBeVisible();
         });
 
         test('Can delete audio input system (manager)', async () => {
           await editorPageManager.goto();
-          // there is a beforeEach above so we are now on the right page
-          await audio.locator(editorPageManager.audioPlayer.dropdownToggleSelector).click();
-          await audio.locator(editorPageManager.audioDropdownMenu.deleteAudioButtonSelector).click();
+          const audio = editorPageManager.getAudioPlayer(lexemeLabel, 'taud');
+          await audio.dropdownToggle.click();
+          await audio.dropdownMenu.deleteAudioButton.click();
           const confirmModal = new ConfirmModalElement(editorPageManager.page);
           await confirmModal.confirmButton.click();
-          await expect(audio.locator(editorPageManager.audioPlayer.uploadButtonSelector)).toBeVisible();
+          await expect(audio.uploadButton).toBeVisible();
         });
 
         test('Can\'t upload a non-audio file & can upload audio file', async () => {
@@ -408,17 +395,17 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
           await expect(noticeElement.notice).toHaveCount(0);
 
           // Can't upload a non-audio file
-          await audio.locator(editorPageManager.audioPlayer.uploadButtonSelector).click();
+          const audio = editorPageManager.getAudioPlayer(lexemeLabel, 'taud');
+          await audio.uploadButton.click();
 
           // Note that Promise.all prevents a race condition between clicking and waiting for the file chooser.
           const [fileChooser] = await Promise.all([
             // It is important to call waitForEvent before click to set up waiting.
             editorPageManager.page.waitForEvent('filechooser'),
-            editorPageManager.page.locator(editorPageManager.dropbox.browseButtonSelector).click(),
+            audio.browseButton.click(),
           ]);
           await fileChooser.setFiles(testFile('png'));
 
-          await expect(noticeElement.notice).toHaveCount(1);
           await expect(noticeElement.notice).toBeVisible();
           await expect(noticeElement.notice).toContainText(constants.files.png.name + ' is not an allowed audio file. Ensure the file is');
           const dropbox = editorPageManager.entryCard.locator(editorPageManager.dropbox.dragoverFieldSelector);
@@ -429,15 +416,15 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
           // Can upload audio file
           const [fileChooser2] = await Promise.all([
             editorPageManager.page.waitForEvent('filechooser'),
-            editorPageManager.page.locator(editorPageManager.dropbox.browseButtonSelector).click(),
+            audio.browseButton.click(),
           ]);
           await fileChooser2.setFiles(testFile('mp3'));
           await expect(noticeElement.notice).toHaveCount(1);
           await expect(noticeElement.notice).toBeVisible();
           await expect(noticeElement.notice).toContainText('File uploaded successfully');
-          await expect(editorPageManager.entryCard.locator(editorPageManager.audioPlayer.playIconSelector + ' >> visible=true')).toHaveCount(1);
-          await expect(audio.locator(editorPageManager.audioPlayer.togglePlaybackAnchorSelector)).toBeEnabled();
-          await expect(audio.locator(editorPageManager.audioPlayer.dropdownToggleSelector)).toBeVisible();
+          await expect(audio.playIcon).toBeVisible();
+          await expect(audio.togglePlaybackAnchor).toBeEnabled();
+          await expect(audio.dropdownToggle).toBeVisible();
         });
 
         test('Word 2: edit page has correct definition, part of speech', async () => {
@@ -650,7 +637,7 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
         await expect(editorPageManager.label(lexemeLabel, editorPageManager.entryCard)).toHaveCount(3);
         await expect(editorPageManager.getTextarea(editorPageManager.entryCard, lexemeLabel, 'th')).toBeVisible();
         await expect(editorPageManager.getTextarea(editorPageManager.entryCard, lexemeLabel, 'tipa')).toBeVisible();
-        await expect(editorPageManager.getSoundplayer(editorPageManager.entryCard, lexemeLabel, 'taud')).toBeVisible();
+        await expect(editorPageManager.audioPlayer(lexemeLabel, 'taud')).toBeVisible();
 
         // make "en" input system visible for "Word" field
         const configurationPage = await new ConfigurationPageFieldsTab(managerTab, project).goto();
@@ -668,7 +655,6 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
         await configurationPage.toggleField('Entry Fields', lexemeLabel);
         await (await configurationPage.getFieldCheckbox('Entry Fields', lexemeLabel, 'English')).uncheck();
         await configurationPage.applyButton.click();
-
 
         // check if "en" is invisible
         await editorPageManager.goto();
@@ -707,7 +693,7 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
         await editorPageManager.goto();
         await expect(editorPageManager.label(lexemeLabel, editorPageManager.entryCard)).toHaveCount(2);
         await expect(editorPageManager.getTextarea(editorPageManager.entryCard, lexemeLabel, 'th')).toBeVisible();
-        await expect(editorPageManager.getSoundplayer(editorPageManager.entryCard, lexemeLabel, 'taud')).toBeVisible();
+        await expect(editorPageManager.audioPlayer(lexemeLabel, 'taud')).toBeVisible();
 
         // restore visibility of "tipa" input system for manager role
         await configurationPage.goto();

@@ -5,6 +5,7 @@ import { ConfigurationPageFieldsTab } from './configuration-fields.tab';
 import { EntryListPage } from './entry-list.page';
 import { ProjectSettingsPage } from './project-settings.page';
 import { EditorComment } from '../components/editor-comment';
+import { AudioPlayer } from '../components/audio-player';
 
 export interface EditorGotoOptions extends GotoOptions {
   entryId?: string;
@@ -46,29 +47,17 @@ export class EditorPage extends BasePage<EditorPage> {
   readonly compactEntryListContainer = this.locator('#compactEntryListContainer');
   readonly compactEntryListItem = this.compactEntryListContainer.locator('.lexiconListItemCompact');
 
-  readonly audioPlayer = {
-    togglePlaybackAnchorSelector: '[ng-click="$ctrl.togglePlayback()"]',
-    playIconSelector: 'i.fa-play',
-    dropdownToggleSelector: 'a.dropdown-toggle',
-    uploadButtonSelector: 'button.upload-audio',
-    downloadButtonSelector: 'a.buttonAppend',
-    slider: 'input.seek-slider',
-    audioProgressTime: 'span.audio-progress'
-  };
-
   readonly dropbox = {
     dragoverFieldSelector: '.drop-box',
     audioCancelButtonSelector: '#audioAddCancel',
-    pictureCancelButtonSelector: '#addCancel',
-    browseButtonSelector: '#browseButton'
-  };
-
-  readonly audioDropdownMenu = {
-    uploadReplacementButtonSelector: 'a >> text=Upload a replacement',
-    deleteAudioButtonSelector: 'a >> text=Delete'
+    pictureCancelButtonSelector: '#addCancel'
   };
 
   readonly addPictureButtonSelector = 'a >> text=Add Picture';
+
+  entryUrl(entryId: string): RegExp {
+    return new RegExp(`${this.url}/?#!/editor/entry/${entryId}`)
+  }
 
   fieldGroup(name: string): Locator {
     return this.locator(`.field-container:has(label:has-text("${name}"))`);
@@ -78,6 +67,10 @@ export class EditorPage extends BasePage<EditorPage> {
     return this.fieldGroup(name).locator('.comment-bubble-group', {
       has: inputSystemAbbr ? this.locator(`.wsid:text("${inputSystemAbbr}")`) : undefined,
     });
+  }
+
+  audioPlayer(fieldName: string, inputSystemAbbr?: string): Locator {
+    return this.field(fieldName, inputSystemAbbr).locator('dc-audio');
   }
 
   commentBubble(fieldName: string, inputSystemAbbr?: string): Locator {
@@ -178,8 +171,8 @@ export class EditorPage extends BasePage<EditorPage> {
     return card.locator(`label:has-text("${field}") >> xpath=.. >> select >> [selected="selected"]`).innerText();
   }
 
-  getSoundplayer(card: Locator, field: string, ws: string): Locator {
-    return card.locator(`label:has-text("${field}") >> xpath=.. >> div.input-group:has(span.wsid:has-text("${ws}")) >> dc-audio`);
+  getAudioPlayer(fieldName: string, inputSystemAbbr?: string): AudioPlayer {
+    return new AudioPlayer(this.audioPlayer(fieldName, inputSystemAbbr));
   }
 
   getPicturesOuterDiv(card: Locator): Locator {
@@ -216,7 +209,7 @@ export class EditorPage extends BasePage<EditorPage> {
   }
 
   async showExtraFields(show = true): Promise<void> {
-    const showingExtraFields = (await this.lexAppToolbar.toggleExtraFieldsButton.innerText()).includes('Show Extra Fields');
+    const showingExtraFields = !(await this.lexAppToolbar.toggleExtraFieldsButton.innerText()).includes('Show Extra Fields');
     if (show !== showingExtraFields) {
       await this.lexAppToolbar.toggleExtraFieldsButton.click();
     }

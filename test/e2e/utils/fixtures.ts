@@ -108,6 +108,6 @@ export function projectPerTest(lazy?: boolean): () => Project | Promise<Project>
       return currentTestProject;
     }
   } else {
-    () => currentTestProject;
+    return () => currentTestProject;
   }
 }

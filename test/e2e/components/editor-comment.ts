@@ -1,6 +1,7 @@
 import { Locator } from "@playwright/test";
+import { BaseComponent } from './base-component';
 
-export class EditorComment {
+export class EditorComment extends BaseComponent<EditorComment> {
 
   readonly content = this.locator('.commentContentContainer .commentContent');
   readonly replyTextArea = this.locator('.commentNewReplyForm textarea');
@@ -19,7 +20,8 @@ export class EditorComment {
   readonly reply = (n: number = 1): Locator => this.locator(`.comment-replies > div:nth-child(${n}) .comment-reply`);
   readonly likes = this.locator('.likes');
 
-  constructor(private readonly commentLocator: Locator) {
+  constructor(locator: Locator) {
+    super(locator);
   }
 
   async toggleReplies() {
@@ -39,21 +41,14 @@ export class EditorComment {
     await reply.replyDate.waitFor();
     return reply;
   }
-
-  private locator(selector: string): Locator {
-    return this.commentLocator.locator(selector);
-  }
 }
 
-export class EditorReply {
+export class EditorReply extends BaseComponent<EditorReply> {
 
   readonly content = this.locator('.reply-content');
   readonly replyDate = this.locator('.comment-date');
 
-  constructor(readonly replyLocator: Locator) {
-  }
-
-  private locator(selector: string): Locator {
-    return this.replyLocator.locator(selector);
+  constructor(locator: Locator) {
+    super(locator);
   }
 }
