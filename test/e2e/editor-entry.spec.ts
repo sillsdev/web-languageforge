@@ -9,10 +9,10 @@ import { Project } from './utils/types';
 import { addAudioVisualFileToProject, addLexEntry, addPictureFileToProject, addUserToProject, addWritingSystemToProject, initTestProject } from './utils/testSetup';
 import constants from './testConstants.json';
 import { ConfigurationPageFieldsTab } from './pages/configuration-fields.tab';
-import { testFile } from './utils';
+import { testFilePath } from './utils';
 import { EntryListPage } from './pages/entry-list.page';
 
-test.describe('Lexicon E2E Entry Editor and Entries List', () => {
+test.describe('Entry Editor and Entries List', () => {
 
   const lexemeLabel = 'Word';
 
@@ -210,15 +210,19 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
         await expect(caption).toBeVisible();
       });
 
-      test('Picture is removed when Delete is clicked & can change config to hide pictures and hide captions', async ({managerTab}) => {
-        await editorPageManager.goto();
+      test('Picture is removed when Delete is clicked & can change config to hide pictures and hide captions', async ({request, managerTab}) => {
+        const testProject: Project = await newProject();
+        await addLexEntry(request, testProject, constants.testEntry1);
+        await addPictureFileToProject(request, testProject, constants.testEntry1.senses[0].pictures[0].fileName);
+        const editorPagePicture = await new EditorPage(managerTab, testProject).goto();
+
         // Picture is removed when Delete is clicked
-        let picture: Locator = await editorPageManager.getPicture(editorPageManager.senseCard, constants.testEntry1.senses[0].pictures[0].fileName);
+        let picture: Locator = await editorPagePicture.getPicture(editorPagePicture.senseCard, constants.testEntry1.senses[0].pictures[0].fileName);
         expect(picture).not.toBeUndefined();
-        await (await editorPageManager.getPictureDeleteButton(editorPageManager.senseCard, constants.testEntry1.senses[0].pictures[0].fileName)).click();
-        const confirmModal = new ConfirmModalElement(editorPageManager.page);
+        await (await editorPagePicture.getPictureDeleteButton(editorPagePicture.senseCard, constants.testEntry1.senses[0].pictures[0].fileName)).click();
+        const confirmModal = new ConfirmModalElement(editorPagePicture.page);
         await confirmModal.confirmButton.click();
-        picture = await editorPageManager.getPicture(editorPageManager.senseCard, constants.testEntry1.senses[0].pictures[0].fileName);
+        picture = await editorPagePicture.getPicture(editorPagePicture.senseCard, constants.testEntry1.senses[0].pictures[0].fileName);
         expect(picture).toBeUndefined();
 
         const configurationPage = await new ConfigurationPageFieldsTab(managerTab, testProject).goto();
@@ -229,15 +233,15 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
         await configurationPage.applyButton.click();
 
         // can change config to hide pictures and hide captions
-        await editorPageManager.goto();
-        picture = await editorPageManager.getPicture(editorPageManager.senseCard, constants.testEntry1.senses[0].pictures[0].fileName);
+        await editorPagePicture.goto();
+        picture = await editorPagePicture.getPicture(editorPagePicture.senseCard, constants.testEntry1.senses[0].pictures[0].fileName);
         expect(picture).toBeUndefined();
-        expect(editorPageManager.getPicturesOuterDiv(editorPageManager.senseCard)).not.toBeVisible();
-        await editorPageManager.showExtraFields();
-        expect(editorPageManager.getPicturesOuterDiv(editorPageManager.senseCard)).toBeVisible();
-        await editorPageManager.showExtraFields(false);
-        expect(editorPageManager.getPicturesOuterDiv(editorPageManager.senseCard)).not.toBeVisible();
-        picture = await editorPageManager.getPicture(editorPageManager.senseCard, constants.testEntry1.senses[0].pictures[0].fileName);
+        expect(editorPagePicture.getPicturesOuterDiv(editorPagePicture.senseCard)).not.toBeVisible();
+        await editorPagePicture.showExtraFields();
+        expect(editorPagePicture.getPicturesOuterDiv(editorPagePicture.senseCard)).toBeVisible();
+        await editorPagePicture.showExtraFields(false);
+        expect(editorPagePicture.getPicturesOuterDiv(editorPagePicture.senseCard)).not.toBeVisible();
+        picture = await editorPagePicture.getPicture(editorPagePicture.senseCard, constants.testEntry1.senses[0].pictures[0].fileName);
         expect(picture).toBeUndefined();
       });
     });
@@ -404,10 +408,10 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
             editorPageManager.page.waitForEvent('filechooser'),
             audio.browseButton.click(),
           ]);
-          await fileChooser.setFiles(testFile('png'));
+          await fileChooser.setFiles(testFilePath('TestImage.png'));
 
           await expect(noticeElement.notice).toBeVisible();
-          await expect(noticeElement.notice).toContainText(constants.files.png.name + ' is not an allowed audio file. Ensure the file is');
+          await expect(noticeElement.notice).toContainText(`TestImage.png is not an allowed audio file. Ensure the file is`);
           const dropbox = editorPageManager.entryCard.locator(editorPageManager.dropbox.dragoverFieldSelector);
           await expect(dropbox).toBeVisible();
           await noticeElement.closeButton.click();
@@ -418,7 +422,7 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
             editorPageManager.page.waitForEvent('filechooser'),
             audio.browseButton.click(),
           ]);
-          await fileChooser2.setFiles(testFile('mp3'));
+          await fileChooser2.setFiles(testFilePath('TestAudio.mp3'));
           await expect(noticeElement.notice).toHaveCount(1);
           await expect(noticeElement.notice).toBeVisible();
           await expect(noticeElement.notice).toContainText('File uploaded successfully');

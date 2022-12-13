@@ -1,11 +1,6 @@
 {
   "Bellows_Test_Constants": "",
 
-  "siteType": "languageforge",
-  "siteHostname": "e2e",
-  "baseUrl": "http://e2e",
-  "conditionTimeout": 8000,
-
   "adminUsername": "test_runner_admin",
   "adminName": "Test Admin",
   "adminPassword": "hammertime",
@@ -43,8 +38,6 @@
   "passwordValid": "languageforge",
   "emailNoAt": "email",
   "emailValid": "email@example.com",
-
-  "avatar": "/Site/views/shared/image/avatar/anonymoose.png",
 
   "testProjectName": "Test Project",
   "testProjectCode": "test_project",
@@ -157,37 +150,11 @@
   },
 
   "files": {
-    "project_zip": {
-      "lastModified": 1416986856000,
-      "name": "TestLexProject.zip",
-      "size": 28999,
-      "type": "",
-      "webkitRelativePath": ""
-    },
-    "jpg": {
-      "lastModified": 1416986856000,
-      "name": "TestImage.jpg",
-      "size": 2753,
-      "type": "",
-      "webkitRelativePath": ""
-    },
-    "png": {
-      "lastModified": 1416986856000,
-      "name": "TestImage.png",
-      "size": 5652,
-      "type": "",
-      "webkitRelativePath": ""
-    },
-    "mp3": {
-      "lastModified": 1416986856000,
-      "name": "TestAudio.mp3",
-      "size": 21064,
-      "type": "",
-      "webkitRelativePath": ""
-    },
-    "large_project_zip": {
-      "name": "dummy_large_file.zip"
-    }
+    "TestLexProject.zip": {},
+    "FriedRiceWithPork.jpg": {},
+    "TestImage.png": {},
+    "TestAudio.mp3": {},
+    "dummy_large_file.zip": {}
   },
 
   "End_of_constants": ""

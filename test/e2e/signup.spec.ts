@@ -3,7 +3,7 @@ import { test } from './utils/fixtures';
 import { SignupPage } from './pages/signup.page';
 import { ProjectsPage } from './pages/projects.page';
 
-test.describe('E2E Signup app', () => {
+test.describe('Signup', () => {
   const constants = require('./testConstants.json');
   let signupPage: SignupPage;
 

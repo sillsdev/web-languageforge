@@ -5,7 +5,7 @@ import { LoginPage } from './pages/login.page';
 import { ProjectsPage } from './pages/projects.page';
 import { login } from './utils/login';
 
-test.describe('E2E User Profile', () => {
+test.describe('User Profile', () => {
 
   test('Generated user account and about me info', async ({ member2Tab }) => {
     const userProfilePage = new UserProfilePage(member2Tab);

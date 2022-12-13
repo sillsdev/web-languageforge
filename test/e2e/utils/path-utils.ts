@@ -9,9 +9,8 @@ export const testPath = (relativeTestPath: string): string => {
     : path.join(testRoot, relativeTestPath);
 };
 
-export type TestFileName = keyof typeof files;
+export type TestFile = keyof typeof files;
 
-export const testFile = (file: TestFileName): string => {
-  const fileName = files[file].name;
-  return testPath(`shared-files/${fileName}`);
+export const testFilePath = (file: TestFile): string => {
+  return testPath(`shared-files/${file}`);
 }

@@ -7,7 +7,7 @@ import { ProjectsPage } from './pages/projects.page';
 import { Project } from './utils/types';
 import { EditorPage } from './pages/editor.page';
 
-test.describe('E2E Project Settings app', () => {
+test.describe('Project Settings', () => {
   const projects: Project[] = [
     {
       name: 'projects_settings_spec_ts Project 01',

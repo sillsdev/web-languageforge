@@ -12,7 +12,7 @@ import { UserProfilePage } from './pages/user-profile.page';
 /**
  * page traversal without testing functionality
  */
-test.describe('E2E Page Traversal', () => {
+test.describe('Page Traversal', () => {
   let signupPage: SignupPage;
   let forgotPasswordPage: ForgotPasswordPage;
   let loginPage: LoginPage;

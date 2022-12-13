@@ -10,7 +10,7 @@ import { initTestProject, addUserToProject } from './utils/testSetup';
 import { EditorPage } from './pages/editor.page';
 
 
-test.describe('E2E Projects List app', () => {
+test.describe('Projects List', () => {
   let projectsPageMember: ProjectsPage;
   let projectsPageAdmin: ProjectsPage;
 
@@ -127,7 +127,7 @@ test.describe('E2E Projects List app', () => {
 
 
 
-  test.describe('Lexicon E2E Project Access', () => {
+  test.describe('Project Access', () => {
 
     test('Admin added to project when accessing without membership', async () => {
       // this is already tested in a test above but makes the test more understandable

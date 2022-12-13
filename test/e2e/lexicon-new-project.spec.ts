@@ -7,10 +7,10 @@ import { NoticeElement } from './components/notice.component';
 import { Project, toProject } from './utils/types';
 import { initTestProject } from './utils/testSetup';
 import constants from './testConstants.json';
-import { testFile } from './utils';
+import { testFilePath } from './utils';
 import { EditorPage } from './pages/editor.page';
 
-test.describe('Lexicon E2E New Project wizard app', () => {
+test.describe('New Project wizard', () => {
   let newLexProjectPageMember: NewLexProjectPage;
   // project will exist before testing the creation of new projects through the UI
   //  this existing project is needed as one test tests whether it is impossible to create a new project with the same name
@@ -175,7 +175,7 @@ test.describe('Lexicon E2E New Project wizard app', () => {
       await newLexProjectPageMember.srCredentialsPage.loginInput.fill(constants.srUsername);
       await newLexProjectPageMember.srCredentialsPage.passwordInput.type(constants.srPassword);
       const proj = constants.srMockProjects[4];
-      await newLexProjectPageMember.srCredentialsPage.projectSelect.selectOption({ label: `${proj.name} (${proj.id}, contributor)` });
+      await newLexProjectPageMember.srCredentialsPage.projectSelect.selectOption({ label: `${proj.name} (${proj.id}, manager)` });
       await expect(newLexProjectPageMember.srCredentialsPage.projectOk).toBeVisible();
       await newLexProjectPageMember.expectFormStatusHasNoError();
     });
@@ -374,7 +374,7 @@ test.describe('Lexicon E2E New Project wizard app', () => {
         newLexProjectPageMember.initialDataPageBrowseButton.click(),
       ]);
       await expect(noticeElement.notice).toHaveCount(0);
-      await fileChooser.setFiles(testFile('large_project_zip'));
+      await fileChooser.setFiles(testFilePath('dummy_large_file.zip'));
       await expect(newLexProjectPageMember.initialDataPageBrowseButton).toBeVisible();
       await expect(newLexProjectPageMember.verifyDataPage.entriesImported).not.toBeVisible();
       await expect(noticeElement.notice).toBeVisible();
@@ -390,11 +390,10 @@ test.describe('Lexicon E2E New Project wizard app', () => {
         newLexProjectPageMember.initialDataPageBrowseButton.click(),
       ]);
       await expect(noticeElement.notice).toHaveCount(0);
-      const jpgFileName: string = 'FriedRiceWithPork.jpg'
-      await fileChooser2.setFiles(testFile('jpg'));
+      await fileChooser2.setFiles(testFilePath('FriedRiceWithPork.jpg'));
       await expect(noticeElement.notice).toBeVisible();
       await expect(noticeElement.notice).toHaveCount(1);
-      await expect(noticeElement.notice).toContainText(jpgFileName + ' is not an allowed compressed file. Ensure the file is');
+      await expect(noticeElement.notice).toContainText(`FriedRiceWithPork.jpg is not an allowed compressed file. Ensure the file is`);
       await expect(newLexProjectPageMember.initialDataPageBrowseButton).toBeVisible();
       await expect(newLexProjectPageMember.verifyDataPage.entriesImported).not.toBeVisible();
       await newLexProjectPageMember.expectFormStatusHasNoError();
@@ -408,10 +407,10 @@ test.describe('Lexicon E2E New Project wizard app', () => {
       ]);
       await expect(noticeElement.notice).toHaveCount(0);
       const numberOfEntriesInTestLexProjectFile: number = 2;
-      await fileChooser3.setFiles(testFile('project_zip'));
+      await fileChooser3.setFiles(testFilePath('TestLexProject.zip'));
       await expect(newLexProjectPageMember.verifyDataPage.entriesImported).toBeVisible();
       await expect(noticeElement.notice).toHaveCount(1);
-      await expect(noticeElement.notice).toContainText(`Successfully imported ${constants.files.project_zip.name}`);
+      await expect(noticeElement.notice).toContainText(`Successfully imported TestLexProject.zip`);
       await newLexProjectPageMember.expectFormStatusHasNoError();
 
       // step 3: verify data
