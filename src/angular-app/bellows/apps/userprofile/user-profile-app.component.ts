@@ -173,44 +173,16 @@ export class UserProfileAppController implements angular.IController {
         this.initColor = this.user.avatar_color;
         this.initShape = this.user.avatar_shape;
         this.projectsSettings = result.data.projectsSettings;
-        this.breadcrumbService.set('top', [
+
+		this.breadcrumbService.set('top', [
           { label: 'User Profile' }
         ]);
         this.applicationHeaderService.setPageName(this.user.name + '\'s User Profile');
-
-        // populate the project pickList default values with the userProfile picked values
-        for (const project of this.projectsSettings) {
-          if (project.userProperties && project.userProperties.userProfilePickLists) {
-            angular.forEach(project.userProperties.userProfilePickLists,
-              (pickList, pickListId) => {
-                // ensure user has profile data
-                if (this.user.projectUserProfiles[project.id]) {
-                  if (this.user.projectUserProfiles[project.id][pickListId]) {
-                    project.userProperties.userProfilePickLists[pickListId]
-                      .defaultKey = this.user.projectUserProfiles[project.id][pickListId];
-                  }
-                }
-              }
-            );
-          }
-        }
       }
     });
   }
 
   private updateUser(): void {
-    // populate the userProfile picked values from the project pickLists
-    for (const project of this.projectsSettings) {
-      this.user.projectUserProfiles[project.id] = {};
-      if (project.userProperties && project.userProperties.userProfilePickLists) {
-        angular.forEach(project.userProperties.userProfilePickLists,
-          (pickList, pickListId) => {
-            this.user.projectUserProfiles[project.id][pickListId] = pickList.defaultKey;
-          }
-        );
-      }
-    }
-
     this.userService.updateProfile(this.user, result => {
       if (result.ok) {
         if (this.user.avatar_color !== this.initColor || this.user.avatar_shape !== this.initShape) {
