@@ -11,7 +11,7 @@ export default {
 		adapter: adapter(),
 		prerender: {
 			// https://kit.svelte.dev/docs/configuration#prerender
-			onError: ({ path, status }) => {
+			handleHttpError: ({ path, status }) => {
 				const externalLinks = [
 					'/app',
 					'/auth/login',
