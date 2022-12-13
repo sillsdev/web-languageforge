@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      IMAGE: sillsdev/web-languageforge:base-php
+      IMAGE: sillsdev/web-languageforge:base-php-8.2
 
     steps:
       - uses: actions/checkout@v3
