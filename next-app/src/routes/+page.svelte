@@ -18,8 +18,8 @@
 <section>
 	<h2>Migrated capabilities</h2>
 	<ol>
-		<li><a href=/password/change sveltekit:prefetch>Change password</a></li>
-		<li><a href=/projects/abc-123 sveltekit:prefetch>Project landing page</a></li>
+		<li><a href=/password/change>Change password</a></li>
+		<li><a href=/projects/abc-123>Project landing page</a></li>
 	</ol>
 </section>
 
@@ -48,7 +48,7 @@
 </section>
 
 <section>
-	<h2>UI library <small><a href=//daisyui.com rel='external noopener' target=_blank>//daisyui.com</a></small></h2>
+	<h2>UI library <small><a href=//daisyui.com rel=noreferrer target=_blank>//daisyui.com</a></small></h2>
 
 	<h3>Button</h3>
 	<button class='btn btn-primary'>primary</button>
