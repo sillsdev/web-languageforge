@@ -9,22 +9,5 @@ export default {
 
 	kit: {
 		adapter: adapter(),
-		prerender: {
-			// https://kit.svelte.dev/docs/configuration#prerender
-			handleHttpError: ({ path, status }) => {
-				const externalLinks = [
-					'/app',
-					'/auth/login',
-					'/projects',
-				]
-
-				if (externalLinks.some(link => path.startsWith(link))) {
-					// :-( https://github.com/sveltejs/kit/issues/3402
-					console.warn(yellow(`${status} on ${path}: skipping since it's an external link`))
-				} else {
-					throw new Error(`${status} error while crawling ${path}`)
-				}
-			}
-		},
 	},
 }
