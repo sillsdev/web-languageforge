@@ -51,7 +51,7 @@ export class EditorPage extends BasePage {
     dropdownToggleSelector: 'a.dropdown-toggle',
     uploadButtonSelector: 'button.upload-audio',
     downloadButtonSelector: 'a.buttonAppend',
-    slider: '#slider',
+    slider: 'input.seek-slider',
     audioProgressTime: 'span.audio-progress'
   };
 
