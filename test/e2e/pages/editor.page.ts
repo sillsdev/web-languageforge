@@ -1,5 +1,5 @@
 import { expect, Locator, Page } from '@playwright/test';
-import { Project } from '../utils/types';
+import { Project } from '../utils';
 import { BasePage, GotoOptions } from './base-page';
 import { ConfigurationPageFieldsTab } from './configuration-fields.tab';
 import { EntryListPage } from './entry-list.page';

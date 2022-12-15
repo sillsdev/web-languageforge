@@ -1,11 +1,11 @@
 import { expect } from '@playwright/test';
-import { test } from './utils/fixtures';
-import { ProjectSettingsPage } from './pages/project-settings.page';
-import { initTestProject, addUserToProject } from './utils/testSetup';
-import { ProjectsPage } from './pages/projects.page';
-
-import { Project } from './utils/types';
 import { EditorPage } from './pages/editor.page';
+import { ProjectSettingsPage } from './pages/project-settings.page';
+import { ProjectsPage } from './pages/projects.page';
+import { Project } from './utils';
+import { test } from './utils/fixtures';
+import { addUserToProject, initTestProject } from './utils/testSetup';
+import { users } from './constants';
 
 test.describe('Project Settings', () => {
   const projects: Project[] = [
@@ -31,13 +31,13 @@ test.describe('Project Settings', () => {
     id: ''
   };
 
-  test.beforeAll(async ({ request, admin, member, manager }) => {
+  test.beforeAll(async ({ request }) => {
     for (const project of projects) {
-      const projectId = (await initTestProject(request, project.code, project.name, admin.username, [member.username])).id;
+      const projectId = (await initTestProject(request, project.code, project.name, users.admin, [users.member])).id;
       project.id = projectId;
     }
-    await addUserToProject(request, projects[0], manager.username, 'manager');
-    project4.id = (await initTestProject(request, project4.code, project4.name, manager.username, [])).id;
+    await addUserToProject(request, projects[0], users.manager, 'manager');
+    project4.id = (await initTestProject(request, project4.code, project4.name, users.manager, [])).id;
   });
 
   // test if can change project name
@@ -63,7 +63,7 @@ test.describe('Project Settings', () => {
     await expect(projectSettingsPage.deleteTab.deleteProjectButton).toBeDisabled();
   });
 
-  test('Manager cannot view delete tab if not owner', async ({ admin, manager, managerTab }) => {
+  test('Manager cannot view delete tab if not owner', async ({ managerTab }) => {
     const projectSettingsPage = new ProjectSettingsPage(managerTab, projects[0])
     await projectSettingsPage.goto();
     await expect(projectSettingsPage.deleteTab.tabTitle).not.toBeVisible();

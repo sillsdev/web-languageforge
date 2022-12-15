@@ -1,14 +1,11 @@
 import { expect } from '@playwright/test';
-import { test } from './utils/fixtures';
-
-import { ProjectsPage } from './pages/projects.page';
 import { NoticeElement } from './components/notice.component';
-
-import { Project } from './utils/types';
-
-import { initTestProject, addUserToProject } from './utils/testSetup';
 import { EditorPage } from './pages/editor.page';
-
+import { ProjectsPage } from './pages/projects.page';
+import { Project } from './utils';
+import { test } from './utils/fixtures';
+import { addUserToProject, initTestProject } from './utils/testSetup';
+import { users } from './constants';
 
 test.describe('Projects List', () => {
   let projectsPageMember: ProjectsPage;
@@ -42,16 +39,16 @@ test.describe('Projects List', () => {
     id: ''
   };
 
-  test.beforeAll(async ({ request, member, manager, memberTab, admin, adminTab }) => {
+  test.beforeAll(async ({ request, memberTab, adminTab }) => {
     projectsPageMember = new ProjectsPage(memberTab);
     projectsPageAdmin = new ProjectsPage(adminTab);
 
     for (const project of projects) {
-      const projectId = (await initTestProject(request, project.code, project.name, manager.username, [member.username])).id;
+      const projectId = (await initTestProject(request, project.code, project.name, users.manager, [users.member])).id;
       project.id = projectId;
     }
-    project4.id = (await initTestProject(request, project4.code, project4.name, manager.username, [admin.username])).id;
-    project5.id = (await initTestProject(request, project5.code, project5.name, manager.username, [])).id;
+    project4.id = (await initTestProject(request, project4.code, project4.name, users.manager, [users.admin])).id;
+    project5.id = (await initTestProject(request, project5.code, project5.name, users.manager, [])).id;
   });
 
   test.describe('for Normal User', () => {
@@ -70,9 +67,9 @@ test.describe('Projects List', () => {
       await expect(projectsPageMember.projectRow(project4.name)).not.toBeVisible();
     });
 
-    test('Project to which user is added shows up when page reloaded', async ({ request, member }) => {
+    test('Project to which user is added shows up when page reloaded', async ({ request }) => {
       await expect(projectsPageMember.projectRow(project4.name)).not.toBeVisible();
-      await addUserToProject(request, project4, member.username);
+      await addUserToProject(request, project4, users.member);
       await projectsPageMember.page.reload();
       await projectsPageMember.goto();
       await expect(projectsPageMember.projectRow(project4.name)).toBeVisible();
@@ -124,8 +121,6 @@ test.describe('Projects List', () => {
     });
 
   });
-
-
 
   test.describe('Project Access', () => {
 

@@ -1,5 +1,5 @@
 import { expect, Locator, Page } from '@playwright/test';
-import { Project } from '../utils/types';
+import { Project } from '../utils';
 import { BasePage } from './base-page';
 
 export class EntryListPage extends BasePage<EntryListPage> {

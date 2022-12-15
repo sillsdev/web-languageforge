@@ -1,5 +1,5 @@
 import { Locator, Page } from '@playwright/test';
-import { Project } from '../utils/types';
+import { Project } from '../utils';
 import { TabbedBasePage as TabbedPage } from './tabbed-page';
 
 const tabSelector = (tab: string) => `.tab-links .tab-link:text("${tab}")`;

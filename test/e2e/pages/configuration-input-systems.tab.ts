@@ -1,6 +1,6 @@
 import { Locator, Page } from '@playwright/test';
 import { ConfigurationPage } from './configuration.page';
-import { Project } from '../utils/types';
+import { Project } from '../utils';
 import { GotoOptions } from './base-page';
 
 const inputSystemListSelector = 'dt:text("Language Names") ~ dd .controls';

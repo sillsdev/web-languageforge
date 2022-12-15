@@ -1,8 +1,7 @@
-// playwright.config.ts
 import { FullConfig } from '@playwright/test';
 import { chromium, firefox, webkit } from '@playwright/test';
 import { initE2EUser } from './user-tools';
-import { usersToCreate } from './e2e-users';
+import { users } from '../constants';
 
 export default async function globalSetup(config: FullConfig) {
   try {
@@ -20,7 +19,7 @@ export default async function globalSetup(config: FullConfig) {
               chromium
       );
       const browser = await projectBrowser.launch();
-      for (const user of usersToCreate) {
+      for (const user of Object.values(users)) {
         const context = await browser.newContext({ baseURL });
         await initE2EUser(context, user);
         await context.close();

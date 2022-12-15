@@ -5,12 +5,13 @@ import { EditorPage } from './pages/editor.page';
 import { ConfirmModalElement } from './components/confirm-modal.component';
 import { NoticeElement } from './components/notice.component';
 
-import { Project } from './utils/types';
+import { Project } from './utils';
 import { addAudioVisualFileToProject, addLexEntry, addPictureFileToProject, addUserToProject, addWritingSystemToProject, initTestProject } from './utils/testSetup';
-import constants from './testConstants.json';
+import { entries, users } from './constants';
 import { ConfigurationPageFieldsTab } from './pages/configuration-fields.tab';
 import { testFilePath } from './utils';
 import { EntryListPage } from './pages/entry-list.page';
+
 
 test.describe('Entry Editor and Entries List', () => {
 
@@ -23,18 +24,18 @@ test.describe('Entry Editor and Entries List', () => {
   };
   let lexEntriesIds: string[] = [];
 
-  test.beforeAll(async ({ request, manager, member, member2 }) => {
-    project.id = (await initTestProject(request, project.code, project.name, manager.username, [member.username])).id;
-    await addUserToProject(request, project, member2.username, "observer");
+  test.beforeAll(async ({ request }) => {
+    project.id = (await initTestProject(request, project.code, project.name, users.manager, [users.member])).id;
+    await addUserToProject(request, project, users.observer, "observer");
     await addWritingSystemToProject(request, project, 'th-fonipa', 'tipa');
     await addWritingSystemToProject(request, project, 'th-Zxxx-x-audio', 'taud');
 
-    await addPictureFileToProject(request, project, constants.testEntry1.senses[0].pictures[0].fileName);
-    await addAudioVisualFileToProject(request, project, constants.testEntry1.lexeme['th-Zxxx-x-audio'].value);
+    await addPictureFileToProject(request, project, entries.entry1.senses[0].pictures[0].fileName);
+    await addAudioVisualFileToProject(request, project, entries.entry1.lexeme['th-Zxxx-x-audio'].value);
     // put in data
-    lexEntriesIds.push(await addLexEntry(request, project.code, constants.testEntry1));
-    lexEntriesIds.push(await addLexEntry(request, project.code, constants.testEntry2));
-    lexEntriesIds.push(await addLexEntry(request, project.code, constants.testMultipleMeaningEntry1));
+    lexEntriesIds.push(await addLexEntry(request, project.code, entries.entry1));
+    lexEntriesIds.push(await addLexEntry(request, project.code, entries.entry2));
+    lexEntriesIds.push(await addLexEntry(request, project.code, entries.multipleMeaningEntry));
   });
 
   test.describe('Entries List', () => {
@@ -68,10 +69,10 @@ test.describe('Entry Editor and Entries List', () => {
 
     test('Can click on first entry', async () => {
       const [, editorPageManager] = await Promise.all([
-        entryListPageManager.entry(constants.testEntry1.lexeme.th.value).click(),
+        entryListPageManager.entry(entries.entry1.lexeme.th.value).click(),
         new EditorPage(entryListPageManager.page, project).waitForPage(),
       ])
-      await expect(editorPageManager.getTextarea(editorPageManager.entryCard, lexemeLabel, 'th')).toHaveValue(constants.testEntry1.lexeme.th.value);
+      await expect(editorPageManager.getTextarea(editorPageManager.entryCard, lexemeLabel, 'th')).toHaveValue(entries.entry1.lexeme.th.value);
     });
 
   });
@@ -102,9 +103,9 @@ test.describe('Entry Editor and Entries List', () => {
       await editorPageManager.goto();
       await expect(editorPageManager.getTextarea(
         editorPageManager.senseCard, 'Definition', 'en'))
-        .toHaveValue(constants.testEntry1.senses[0].definition.en.value);
+        .toHaveValue(entries.entry1.senses[0].definition.en.value);
       expect(await editorPageManager.getSelectedValueFromSelectDropdown(editorPageManager.senseCard, 'Part of Speech'))
-         .toEqual(constants.testEntry1.senses[0].partOfSpeech.displayName);
+         .toEqual(entries.entry1.senses[0].partOfSpeech.displayName);
     });
 
     test('Add citation form as visible field', async ({managerTab}) => {
@@ -125,21 +126,21 @@ test.describe('Entry Editor and Entries List', () => {
       await editorPageManager.goto();
 
       // Dictionary citation reflects lexeme form when citation form is empty
-      await expect(editorPageManager.renderedDivs).toContainText([constants.testEntry1.lexeme.th.value, constants.testEntry1.lexeme.th.value]);
-      await expect(editorPageManager.renderedDivs).toContainText([constants.testEntry1.lexeme['th-fonipa'].value, constants.testEntry1.lexeme['th-fonipa'].value]);
+      await expect(editorPageManager.renderedDivs).toContainText([entries.entry1.lexeme.th.value, entries.entry1.lexeme.th.value]);
+      await expect(editorPageManager.renderedDivs).toContainText([entries.entry1.lexeme['th-fonipa'].value, entries.entry1.lexeme['th-fonipa'].value]);
       await expect(editorPageManager.renderedDivs).not.toContainText(['citation form', 'citation form']);
       await editorPageManager.showExtraFields();
       const citationFormInput = editorPageManager.getTextarea(editorPageManager.entryCard, 'Citation Form', 'th');
       await citationFormInput.fill('citation form');
 
       await expect(editorPageManager.renderedDivs).toContainText(['citation form', 'citation form']);
-      await expect(editorPageManager.renderedDivs).not.toContainText([constants.testEntry1.lexeme.th.value, constants.testEntry1.lexeme.th.value]);
-      await expect(editorPageManager.renderedDivs).toContainText([constants.testEntry1.lexeme['th-fonipa'].value, constants.testEntry1.lexeme['th-fonipa'].value]);
+      await expect(editorPageManager.renderedDivs).not.toContainText([entries.entry1.lexeme.th.value, entries.entry1.lexeme.th.value]);
+      await expect(editorPageManager.renderedDivs).toContainText([entries.entry1.lexeme['th-fonipa'].value, entries.entry1.lexeme['th-fonipa'].value]);
 
       await citationFormInput.fill('');
       await expect(editorPageManager.renderedDivs).not.toContainText(['citation form', 'citation form']);
-      await expect(editorPageManager.renderedDivs).toContainText([constants.testEntry1.lexeme.th.value, constants.testEntry1.lexeme.th.value]);
-      await expect(editorPageManager.renderedDivs).toContainText([constants.testEntry1.lexeme['th-fonipa'].value, constants.testEntry1.lexeme['th-fonipa'].value]);
+      await expect(editorPageManager.renderedDivs).toContainText([entries.entry1.lexeme.th.value, entries.entry1.lexeme.th.value]);
+      await expect(editorPageManager.renderedDivs).toContainText([entries.entry1.lexeme['th-fonipa'].value, entries.entry1.lexeme['th-fonipa'].value]);
     });
 
     test.describe('Picture', () => {
@@ -148,15 +149,15 @@ test.describe('Entry Editor and Entries List', () => {
 
       test('First picture and caption is present', async ({request, managerTab}) => {
         const screenshotProject: Project = await newProject();
-        await addLexEntry(request, screenshotProject.code, constants.testEntry1);
-        await addPictureFileToProject(request, screenshotProject, constants.testEntry1.senses[0].pictures[0].fileName);
+        await addLexEntry(request, screenshotProject.code, entries.entry1);
+        await addPictureFileToProject(request, screenshotProject, entries.entry1.senses[0].pictures[0].fileName);
 
         const editorPagePicture = await new EditorPage(managerTab, screenshotProject).goto();
-        const picture: Locator = await editorPagePicture.getPicture(editorPagePicture.senseCard, constants.testEntry1.senses[0].pictures[0].fileName);
+        const picture: Locator = await editorPagePicture.getPicture(editorPagePicture.senseCard, entries.entry1.senses[0].pictures[0].fileName);
         const img = await picture.elementHandle();
         await expect(editorPagePicture.page).toHaveScreenshot({ clip: await img.boundingBox() });
         const caption = await editorPagePicture.getPictureCaption(picture);
-        await expect(caption).toHaveValue(constants.testEntry1.senses[0].pictures[0].caption.en.value);
+        await expect(caption).toHaveValue(entries.entry1.senses[0].pictures[0].caption.en.value);
       });
 
       test('File upload drop box is displayed when Add Picture is clicked and can be cancelled', async () => {
@@ -192,7 +193,7 @@ test.describe('Entry Editor and Entries List', () => {
 
         await editorPageManager.goto();
         await editorPageManager.showExtraFields(false);
-        const picture: Locator = await editorPageManager.getPicture(editorPageManager.senseCard, constants.testEntry1.senses[0].pictures[0].fileName);
+        const picture: Locator = await editorPageManager.getPicture(editorPageManager.senseCard, entries.entry1.senses[0].pictures[0].fileName);
         expect(picture).not.toBeUndefined();
         const caption = await editorPageManager.getPictureCaption(picture);
         await expect(caption).toBeVisible();
@@ -212,17 +213,17 @@ test.describe('Entry Editor and Entries List', () => {
 
       test('Picture is removed when Delete is clicked & can change config to hide pictures and hide captions', async ({request, managerTab}) => {
         const testProject: Project = await newProject();
-        await addLexEntry(request, testProject, constants.testEntry1);
-        await addPictureFileToProject(request, testProject, constants.testEntry1.senses[0].pictures[0].fileName);
+        await addLexEntry(request, testProject, entries.entry1);
+        await addPictureFileToProject(request, testProject, entries.entry1.senses[0].pictures[0].fileName);
         const editorPagePicture = await new EditorPage(managerTab, testProject).goto();
 
         // Picture is removed when Delete is clicked
-        let picture: Locator = await editorPagePicture.getPicture(editorPagePicture.senseCard, constants.testEntry1.senses[0].pictures[0].fileName);
+        let picture: Locator = await editorPagePicture.getPicture(editorPagePicture.senseCard, entries.entry1.senses[0].pictures[0].fileName);
         expect(picture).not.toBeUndefined();
-        await (await editorPagePicture.getPictureDeleteButton(editorPagePicture.senseCard, constants.testEntry1.senses[0].pictures[0].fileName)).click();
+        await (await editorPagePicture.getPictureDeleteButton(editorPagePicture.senseCard, entries.entry1.senses[0].pictures[0].fileName)).click();
         const confirmModal = new ConfirmModalElement(editorPagePicture.page);
         await confirmModal.confirmButton.click();
-        picture = await editorPagePicture.getPicture(editorPagePicture.senseCard, constants.testEntry1.senses[0].pictures[0].fileName);
+        picture = await editorPagePicture.getPicture(editorPagePicture.senseCard, entries.entry1.senses[0].pictures[0].fileName);
         expect(picture).toBeUndefined();
 
         const configurationPage = await new ConfigurationPageFieldsTab(managerTab, testProject).goto();
@@ -234,14 +235,14 @@ test.describe('Entry Editor and Entries List', () => {
 
         // can change config to hide pictures and hide captions
         await editorPagePicture.goto();
-        picture = await editorPagePicture.getPicture(editorPagePicture.senseCard, constants.testEntry1.senses[0].pictures[0].fileName);
+        picture = await editorPagePicture.getPicture(editorPagePicture.senseCard, entries.entry1.senses[0].pictures[0].fileName);
         expect(picture).toBeUndefined();
         expect(editorPagePicture.getPicturesOuterDiv(editorPagePicture.senseCard)).not.toBeVisible();
         await editorPagePicture.showExtraFields();
         expect(editorPagePicture.getPicturesOuterDiv(editorPagePicture.senseCard)).toBeVisible();
         await editorPagePicture.showExtraFields(false);
         expect(editorPagePicture.getPicturesOuterDiv(editorPagePicture.senseCard)).not.toBeVisible();
-        picture = await editorPagePicture.getPicture(editorPagePicture.senseCard, constants.testEntry1.senses[0].pictures[0].fileName);
+        picture = await editorPagePicture.getPicture(editorPagePicture.senseCard, entries.entry1.senses[0].pictures[0].fileName);
         expect(picture).toBeUndefined();
       });
     });
@@ -290,8 +291,8 @@ test.describe('Entry Editor and Entries List', () => {
       test.describe('Observer', () => {
         let editorPageObserver: EditorPage;
 
-        test.beforeAll(async ({ member2Tab }) => {
-          editorPageObserver = new EditorPage(member2Tab, project);
+        test.beforeAll(async ({ observerTab }) => {
+          editorPageObserver = new EditorPage(observerTab, project);
         });
 
         test('Audio Input System is playable but does not have "more" control (observer)', async () => {
@@ -364,11 +365,11 @@ test.describe('Entry Editor and Entries List', () => {
           await editorPageManager.goto({entryId: lexEntriesIds[1]});
 
           await Promise.all([
-            editorPageManager.page.locator('text=' + constants.testMultipleMeaningEntry1.senses[0].definition.en.value).click(),
+            editorPageManager.page.locator('text=' + entries.multipleMeaningEntry.senses[0].definition.en.value).click(),
             editorPageManager.page.waitForURL(editorPageManager.entryUrl(lexEntriesIds[2])),
           ]);
           await expect(editorPageManager.getTextarea(
-            editorPageManager.senseCard.first(), 'Definition', 'en')).toHaveValue(constants.testMultipleMeaningEntry1.senses[0].definition.en.value);
+            editorPageManager.senseCard.first(), 'Definition', 'en')).toHaveValue(entries.multipleMeaningEntry.senses[0].definition.en.value);
         });
 
         test('Word 2 (without audio): audio input system is not playable but has "upload" button (manager)', async () => {
@@ -435,38 +436,38 @@ test.describe('Entry Editor and Entries List', () => {
           await editorPageManager.goto({entryId: lexEntriesIds[1]});
           await expect(editorPageManager.getTextarea(
             editorPageManager.senseCard, 'Definition', 'en'))
-            .toHaveValue(constants.testEntry2.senses[0].definition.en.value);
+            .toHaveValue(entries.entry2.senses[0].definition.en.value);
 
           expect(await editorPageManager.getSelectedValueFromSelectDropdown(editorPageManager.senseCard, 'Part of Speech'))
-            .toEqual(constants.testEntry2.senses[0].partOfSpeech.displayName);
+            .toEqual(entries.entry2.senses[0].partOfSpeech.displayName);
         });
 
         test('Dictionary citation reflects example sentences and translations', async () => {
           await editorPageManager.goto({entryId: lexEntriesIds[2]});
 
-          await expect(editorPageManager.renderedDivs).toContainText([constants.testMultipleMeaningEntry1.senses[0].examples[0].sentence.th.value, constants.testMultipleMeaningEntry1.senses[0].examples[0].sentence.th.value]);
-          await expect(editorPageManager.renderedDivs).toContainText([constants.testMultipleMeaningEntry1.senses[0].examples[0].translation.en.value, constants.testMultipleMeaningEntry1.senses[0].examples[0].translation.en.value]);
-          await expect(editorPageManager.renderedDivs).toContainText([constants.testMultipleMeaningEntry1.senses[0].examples[1].sentence.th.value, constants.testMultipleMeaningEntry1.senses[0].examples[1].sentence.th.value]);
-          await expect(editorPageManager.renderedDivs).toContainText([constants.testMultipleMeaningEntry1.senses[0].examples[1].translation.en.value, constants.testMultipleMeaningEntry1.senses[0].examples[1].translation.en.value]);
-          await expect(editorPageManager.renderedDivs).toContainText([constants.testMultipleMeaningEntry1.senses[1].examples[0].sentence.th.value, constants.testMultipleMeaningEntry1.senses[1].examples[0].sentence.th.value]);
-          await expect(editorPageManager.renderedDivs).toContainText([constants.testMultipleMeaningEntry1.senses[1].examples[0].translation.en.value, constants.testMultipleMeaningEntry1.senses[1].examples[0].translation.en.value]);
-          await expect(editorPageManager.renderedDivs).toContainText([constants.testMultipleMeaningEntry1.senses[1].examples[1].sentence.th.value, constants.testMultipleMeaningEntry1.senses[1].examples[1].sentence.th.value]);
-          await expect(editorPageManager.renderedDivs).toContainText([constants.testMultipleMeaningEntry1.senses[1].examples[1].translation.en.value, constants.testMultipleMeaningEntry1.senses[1].examples[1].translation.en.value]);
+          await expect(editorPageManager.renderedDivs).toContainText([entries.multipleMeaningEntry.senses[0].examples[0].sentence.th.value, entries.multipleMeaningEntry.senses[0].examples[0].sentence.th.value]);
+          await expect(editorPageManager.renderedDivs).toContainText([entries.multipleMeaningEntry.senses[0].examples[0].translation.en.value, entries.multipleMeaningEntry.senses[0].examples[0].translation.en.value]);
+          await expect(editorPageManager.renderedDivs).toContainText([entries.multipleMeaningEntry.senses[0].examples[1].sentence.th.value, entries.multipleMeaningEntry.senses[0].examples[1].sentence.th.value]);
+          await expect(editorPageManager.renderedDivs).toContainText([entries.multipleMeaningEntry.senses[0].examples[1].translation.en.value, entries.multipleMeaningEntry.senses[0].examples[1].translation.en.value]);
+          await expect(editorPageManager.renderedDivs).toContainText([entries.multipleMeaningEntry.senses[1].examples[0].sentence.th.value, entries.multipleMeaningEntry.senses[1].examples[0].sentence.th.value]);
+          await expect(editorPageManager.renderedDivs).toContainText([entries.multipleMeaningEntry.senses[1].examples[0].translation.en.value, entries.multipleMeaningEntry.senses[1].examples[0].translation.en.value]);
+          await expect(editorPageManager.renderedDivs).toContainText([entries.multipleMeaningEntry.senses[1].examples[1].sentence.th.value, entries.multipleMeaningEntry.senses[1].examples[1].sentence.th.value]);
+          await expect(editorPageManager.renderedDivs).toContainText([entries.multipleMeaningEntry.senses[1].examples[1].translation.en.value, entries.multipleMeaningEntry.senses[1].examples[1].translation.en.value]);
         });
 
         test('Word with multiple definitions: edit page has correct definitions, parts of speech', async () => {
           await editorPageManager.goto({entryId: lexEntriesIds[2]});
           await expect(editorPageManager.getTextarea(
             editorPageManager.senseCard.first(), 'Definition', 'en'))
-            .toHaveValue(constants.testMultipleMeaningEntry1.senses[0].definition.en.value);
+            .toHaveValue(entries.multipleMeaningEntry.senses[0].definition.en.value);
           await expect(editorPageManager.getTextarea(
             editorPageManager.senseCard.nth(1), 'Definition', 'en'))
-            .toHaveValue(constants.testMultipleMeaningEntry1.senses[1].definition.en.value);
+            .toHaveValue(entries.multipleMeaningEntry.senses[1].definition.en.value);
 
           expect(await editorPageManager.getSelectedValueFromSelectDropdown(editorPageManager.senseCard.nth(0), 'Part of Speech'))
-            .toEqual(constants.testMultipleMeaningEntry1.senses[0].partOfSpeech.displayName);
+            .toEqual(entries.multipleMeaningEntry.senses[0].partOfSpeech.displayName);
           expect(await editorPageManager.getSelectedValueFromSelectDropdown(editorPageManager.senseCard.nth(1), 'Part of Speech'))
-            .toEqual(constants.testMultipleMeaningEntry1.senses[1].partOfSpeech.displayName);
+            .toEqual(entries.multipleMeaningEntry.senses[1].partOfSpeech.displayName);
         });
 
         test('Word with multiple meanings: edit page has correct example sentences, translations', async () => {
@@ -474,28 +475,28 @@ test.describe('Entry Editor and Entries List', () => {
 
           await expect(editorPageManager.getTextarea(
             editorPageManager.senseCard.first().locator(editorPageManager.exampleCardSelector + ' >> nth=0'), 'Sentence', 'th'))
-            .toHaveValue(constants.testMultipleMeaningEntry1.senses[0].examples[0].sentence.th.value);
+            .toHaveValue(entries.multipleMeaningEntry.senses[0].examples[0].sentence.th.value);
           await expect(editorPageManager.getTextarea(
             editorPageManager.senseCard.first().locator(editorPageManager.exampleCardSelector + ' >> nth=0'), 'Translation', 'en'))
-            .toHaveValue(constants.testMultipleMeaningEntry1.senses[0].examples[0].translation.en.value);
+            .toHaveValue(entries.multipleMeaningEntry.senses[0].examples[0].translation.en.value);
           await expect(editorPageManager.getTextarea(
             editorPageManager.senseCard.first().locator(editorPageManager.exampleCardSelector + ' >> nth=1'), 'Sentence', 'th'))
-            .toHaveValue(constants.testMultipleMeaningEntry1.senses[0].examples[1].sentence.th.value);
+            .toHaveValue(entries.multipleMeaningEntry.senses[0].examples[1].sentence.th.value);
           await expect(editorPageManager.getTextarea(
             editorPageManager.senseCard.first().locator(editorPageManager.exampleCardSelector + ' >> nth=1'), 'Translation', 'en'))
-            .toHaveValue(constants.testMultipleMeaningEntry1.senses[0].examples[1].translation.en.value);
+            .toHaveValue(entries.multipleMeaningEntry.senses[0].examples[1].translation.en.value);
           await expect(editorPageManager.getTextarea(
             editorPageManager.senseCard.nth(1).locator(editorPageManager.exampleCardSelector + ' >> nth=0'), 'Sentence', 'th'))
-            .toHaveValue(constants.testMultipleMeaningEntry1.senses[1].examples[0].sentence.th.value);
+            .toHaveValue(entries.multipleMeaningEntry.senses[1].examples[0].sentence.th.value);
           await expect(editorPageManager.getTextarea(
             editorPageManager.senseCard.nth(1).locator(editorPageManager.exampleCardSelector + ' >> nth=0'), 'Translation', 'en'))
-            .toHaveValue(constants.testMultipleMeaningEntry1.senses[1].examples[0].translation.en.value);
+            .toHaveValue(entries.multipleMeaningEntry.senses[1].examples[0].translation.en.value);
           await expect(editorPageManager.getTextarea(
             editorPageManager.senseCard.nth(1).locator(editorPageManager.exampleCardSelector + ' >> nth=1'), 'Sentence', 'th'))
-            .toHaveValue(constants.testMultipleMeaningEntry1.senses[1].examples[1].sentence.th.value);
+            .toHaveValue(entries.multipleMeaningEntry.senses[1].examples[1].sentence.th.value);
           await expect(editorPageManager.getTextarea(
             editorPageManager.senseCard.nth(1).locator(editorPageManager.exampleCardSelector + ' >> nth=1'), 'Translation', 'en'))
-            .toHaveValue(constants.testMultipleMeaningEntry1.senses[1].examples[1].translation.en.value);
+            .toHaveValue(entries.multipleMeaningEntry.senses[1].examples[1].translation.en.value);
         });
 
         test('While Show Hidden Fields has not been clicked, hidden fields are hidden if they are empty', async () => {
@@ -515,17 +516,17 @@ test.describe('Entry Editor and Entries List', () => {
           await editorPageManager.goto({ entryId: lexEntriesIds[2] });
           await expect(editorPageManager.getTextarea(
             editorPageManager.senseCard.nth(0), 'General Note', 'en'))
-            .toHaveValue(constants.testMultipleMeaningEntry1.senses[0].generalNote.en.value);
+            .toHaveValue(entries.multipleMeaningEntry.senses[0].generalNote.en.value);
           await expect(editorPageManager.getTextarea(
             editorPageManager.senseCard.nth(1), 'General Note', 'en'))
-            .toHaveValue(constants.testMultipleMeaningEntry1.senses[1].generalNote.en.value);
+            .toHaveValue(entries.multipleMeaningEntry.senses[1].generalNote.en.value);
           await editorPageManager.showExtraFields();
           await expect(editorPageManager.getTextarea(
             editorPageManager.senseCard.nth(0), 'Source', 'en'))
-            .toHaveValue(constants.testMultipleMeaningEntry1.senses[0].source.en.value);
+            .toHaveValue(entries.multipleMeaningEntry.senses[0].source.en.value);
           await expect(editorPageManager.getTextarea(
             editorPageManager.senseCard.nth(1), 'Source', 'en'))
-            .toHaveValue(constants.testMultipleMeaningEntry1.senses[1].source.en.value);
+            .toHaveValue(entries.multipleMeaningEntry.senses[1].source.en.value);
         });
 
         test('Senses can be reordered and deleted', async () => {
@@ -533,10 +534,10 @@ test.describe('Entry Editor and Entries List', () => {
           await editorPageManager.senseCard.first().locator(editorPageManager.moveDownButtonSelector).first().click();
           await expect(editorPageManager.getTextarea(
             editorPageManager.senseCard.first(), 'Definition', 'en'))
-            .toHaveValue(constants.testMultipleMeaningEntry1.senses[1].definition.en.value);
+            .toHaveValue(entries.multipleMeaningEntry.senses[1].definition.en.value);
           await expect(editorPageManager.getTextarea(
             editorPageManager.senseCard.nth(1), 'Definition', 'en'))
-            .toHaveValue(constants.testMultipleMeaningEntry1.senses[0].definition.en.value);
+            .toHaveValue(entries.multipleMeaningEntry.senses[0].definition.en.value);
         });
 
         test('Back to browse page, create new word, check word count, modify new word, autosaves changes, new word visible in editor and list', async () => {
@@ -553,9 +554,9 @@ test.describe('Entry Editor and Entries List', () => {
           // go back to editor
           await editorPageManager.page.goBack();
           await (editorPageManager.getTextarea(editorPageManager.entryCard, lexemeLabel, 'th'))
-            .fill(constants.testEntry3.lexeme.th.value);
+            .fill(entries.entry3.lexeme.th.value);
           await (editorPageManager.getTextarea(editorPageManager.senseCard, 'Definition', 'en'))
-            .fill(constants.testEntry3.senses[0].definition.en.value);
+            .fill(entries.entry3.senses[0].definition.en.value);
 
           const partOfSpeedDropdown = editorPageManager.getDropdown(editorPageManager.senseCard, 'Part of Speech');
           partOfSpeedDropdown.selectOption({label: 'Noun (n)'});
@@ -572,17 +573,17 @@ test.describe('Entry Editor and Entries List', () => {
           await editorPageManager.page.reload();
           await expect((editorPageManager.getTextarea(
             editorPageManager.entryCard, lexemeLabel, 'th')))
-            .toHaveValue(constants.testEntry3.lexeme.th.value + 'a');
+            .toHaveValue(entries.entry3.lexeme.th.value + 'a');
           await (editorPageManager.getTextarea(editorPageManager.entryCard, lexemeLabel, 'th'))
-            .fill(constants.testEntry3.lexeme.th.value);
+            .fill(entries.entry3.lexeme.th.value);
 
           // New word is visible in edit page
-          await editorPageManager.search.searchInput.fill(constants.testEntry3.senses[0].definition.en.value);
+          await editorPageManager.search.searchInput.fill(entries.entry3.senses[0].definition.en.value);
           await expect(editorPageManager.search.matchCount).toContainText(/1(?= \/)/);
 
           // new word is visible in list page
           await entryListPage.goto();
-          await entryListPage.filterInput.fill(constants.testEntry3.senses[0].definition.en.value);
+          await entryListPage.filterInput.fill(entries.entry3.senses[0].definition.en.value);
           await expect(entryListPage.matchCount).toContainText(/1(?= \/)/);
           await entryListPage.filterInputClearButton.click();
 
@@ -590,7 +591,7 @@ test.describe('Entry Editor and Entries List', () => {
           await entryListPage.expectTotalNumberOfEntries(entryCount);
 
           // remove new word to restore original word count
-          await entryListPage.entry(constants.testEntry3.lexeme.th.value).click();
+          await entryListPage.entry(entries.entry3.lexeme.th.value).click();
           await editorPageManager.entryCard.first().locator(editorPageManager.deleteCardButtonSelector).first().click();
 
           const confirmModal = new ConfirmModalElement(editorPageManager.page);
@@ -601,7 +602,7 @@ test.describe('Entry Editor and Entries List', () => {
           // previous entry is selected after delete
           await expect(editorPageManager.getTextarea(
               editorPageManager.entryCard, lexemeLabel, 'th'))
-            .toHaveValue(constants.testEntry1.lexeme.th.value);
+            .toHaveValue(entries.entry1.lexeme.th.value);
         });
       });
 

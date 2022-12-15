@@ -1,29 +1,31 @@
-import { test, UserDetails } from './utils/fixtures';
+import { test } from './utils/fixtures';
 import { UserProfilePage } from './pages/user-profile.page';
 import { expect, Page } from '@playwright/test';
 import { LoginPage } from './pages/login.page';
 import { ProjectsPage } from './pages/projects.page';
-import { login } from './utils/login';
+import { login, UserDetails } from './utils';
 
 test.describe('User Profile', () => {
 
-  test('Generated user account and about me info', async ({ member2Tab }) => {
-    const userProfilePage = new UserProfilePage(member2Tab);
-    await userProfilePage.goto();
+  test('Generated user account and about me info', async ({ page, userService }) => {
+    const user = await userService.createRandomUser();
+    await login(page, user);
 
-    await expect(userProfilePage.accountTab.emailField).toHaveValue(member2Tab.email);
-    await expect(userProfilePage.accountTab.usernameField).toHaveValue(member2Tab.username);
+    const userProfilePage = await new UserProfilePage(page).goto();
+
+    await expect(userProfilePage.accountTab.emailField).toHaveValue(user.email);
+    await expect(userProfilePage.accountTab.usernameField).toHaveValue(user.username);
 
     await userProfilePage.tabs.aboutMe.click();
 
-    await expect(userProfilePage.aboutMeTab.nameField).toHaveValue(member2Tab.name);
+    await expect(userProfilePage.aboutMeTab.nameField).toHaveValue(user.name);
     await expect(userProfilePage.aboutMeTab.ageField).toHaveValue('');
   });
 
 
   test('Update user account info', async ({ page, userService }) => {
     const user = await userService.createRandomUser();
-    await login(page, user.username, user.password);
+    await login(page, user);
 
     const userProfilePage = new UserProfilePage(page);
     await userProfilePage.goto();
@@ -46,7 +48,7 @@ test.describe('User Profile', () => {
 
   test('Update username and re-login', async ({ page, userService }) => {
     const user = await userService.createRandomUser();
-    await login(page, user.username, user.password);
+    await login(page, user);
 
     const currUsername = user.username;
     const newUsername = `${user.username}-new`;
@@ -72,14 +74,17 @@ test.describe('User Profile', () => {
     ]);
 
     await Promise.all([
-      loginPage.loginAs(newUsername, currDetails.password),
+      loginPage.login({
+        ...currDetails,
+        username: newUsername,
+      }),
       new ProjectsPage(tab).waitForPage(),
     ]);
   };
 
   test('Update user about me info', async ({ page, userService }) => {
     const user = await userService.createRandomUser();
-    await login(page, user.username, user.password);
+    await login(page, user);
 
     const userProfilePage = new UserProfilePage(page);
     await userProfilePage.goto();

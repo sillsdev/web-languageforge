@@ -2,7 +2,7 @@ import { expect } from '@playwright/test';
 import { projectPerTest, test } from './utils/fixtures';
 import { EditorPage } from './pages/editor.page';
 import { addLexEntry, addWritingSystemToProject } from './utils/testSetup';
-import constants from './testConstants.json';
+import { entries } from './constants';
 import { ConfigurationPageFieldsTab } from './pages/configuration-fields.tab';
 
 test.describe('Lexicon Editor Comments', () => {
@@ -14,9 +14,9 @@ test.describe('Lexicon Editor Comments', () => {
       await addWritingSystemToProject(request, project(), 'th-fonipa', 'tipa');
       await addWritingSystemToProject(request, project(), 'th-Zxxx-x-audio', 'taud');
 
-      await addLexEntry(request, project(), constants.testEntry1);
-      await addLexEntry(request, project(), constants.testEntry2);
-      await addLexEntry(request, project(), constants.testMultipleMeaningEntry1);
+      await addLexEntry(request, project(), entries.entry1);
+      await addLexEntry(request, project(), entries.entry2);
+      await addLexEntry(request, project(), entries.multipleMeaningEntry);
 
       const configurationPage = await new ConfigurationPageFieldsTab(managerTab, project()).goto();
       await configurationPage.toggleField('Entry Fields', 'Word');

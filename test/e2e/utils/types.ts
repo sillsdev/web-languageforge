@@ -1,16 +1,6 @@
-// Types used in various E2E tests
-
-export type Project = {
+export type UserDetails = {
+  username: string,
+  password: string,
   name: string,
-  code: string,
-  id: string
+  email: string,
 }
-
-// code as it is generated based on the project name
-export const toProjectCode = (name: string): string => name.toLowerCase().replace(/ /g, '_');
-
-export const toProject = (name: string, id?: string): Project => ({
-  name,
-  code: toProjectCode(name),
-  id: id ?? '',
-});

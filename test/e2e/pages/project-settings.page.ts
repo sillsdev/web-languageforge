@@ -1,6 +1,6 @@
 import { expect, Page } from '@playwright/test';
 import { BasePage } from './base-page';
-import { Project } from '../utils/types';
+import { Project } from '../utils';
 
 export class ProjectSettingsPage extends BasePage<ProjectSettingsPage> {
   readonly noticeList = this.page.locator('[ng-repeat="notice in $ctrl.notices()"]');

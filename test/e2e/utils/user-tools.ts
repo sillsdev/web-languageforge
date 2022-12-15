@@ -1,35 +1,18 @@
 import { APIRequestContext, BrowserContext } from "@playwright/test";
 import { testControl } from "./jsonrpc";
-import { loginAs } from "./login";
-import { E2EUsernames } from "./e2e-users";
+import { login } from "./login";
 import * as fs from 'fs';
-import constants from "../testConstants.json";
 import path from "path";
 import { testPath } from './path-utils';
-import { UserDetails } from './fixtures';
+import { UserDetails } from './types';
 
 const SESSION_LIFETIME = 365 * 24 * 60 * 60 * 1000; // 1 year, in milliseconds
 
-type UserArray = [string, string, string, string];
-
-function getUserArray(user: E2EUsernames | UserDetails): UserArray {
-  if (typeof user === 'string') {
-    const username = constants[`${user}Username`] ?? user;
-    const fullName = constants[`${user}Name`] ?? username;
-    const password = constants[`${user}Password`] ?? 'x';
-    const email = constants[`${user}Email`] ?? `${username}@example.com`;
-    return [username, fullName, password, email];
-  } else {
-    return [user.username, user.name, user.password, user.email];
-  }
+export async function createUser(request: APIRequestContext, user: UserDetails): Promise<string> {
+  return await testControl(request, 'create_user', [user.username, user.name, user.password, user.email]);
 }
 
-export async function createUser(request: APIRequestContext, user: E2EUsernames | UserDetails): Promise<string> {
-  const userArray = getUserArray(user);
-  return await testControl(request, 'create_user', userArray);
-}
-
-export async function initE2EUser(context: BrowserContext, user: E2EUsernames) {
+export async function initE2EUser(context: BrowserContext, user: UserDetails) {
   await createUser(context.request, user);
 
   // Now log in and ensure there's a storage state saved
@@ -41,13 +24,13 @@ export async function initE2EUser(context: BrowserContext, user: E2EUsernames) {
     return;
   }
   const page = await context.newPage();
-  await loginAs(page, user);
+  await login(page, user);
   await context.storageState({ path });
 }
 
-export function getStorageStatePath(browser: string, user: string): string {
+export function getStorageStatePath(browser: string, user: UserDetails): string {
   const storageRoot = 'test-storage-state'
-  const storageState = `${browser}-${user}-storageState.json`;
+  const storageState = `${browser}-${user.username}-storageState.json`;
   return testPath(path.join(storageRoot, storageState));
 }
 
@@ -58,7 +41,7 @@ export class UserTestService {
 
   async createRandomUser(): Promise<UserDetails & { id: string }> {
     const time = Date.now();
-    const user: UserDetails = {
+    const user = {
       username: `random_user_${time}`,
       password: `random_user_password`,
       name: `Random user - ${time}`,

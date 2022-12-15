@@ -41,10 +41,6 @@ class TestControl
     public function __construct(Application $app)
     {
         $this->app = $app;
-        // $rootPath = realpath(__DIR__.'/../../');
-
-        // $TestPath = $rootPath.'/test/';
-        // $this->constants = json_decode(file_get_contents($TestPath . 'app/testConstants.json'), true);
     }
 
     /** @var Application */
@@ -98,16 +94,6 @@ class TestControl
         ]);
 
         return $userId;
-    }
-
-    public function change_password($username, $password)
-    {
-        $user = new UserModelWithPassword();
-        if ($user->readByUserName($username)) {
-            $user->changePassword($password);
-            return $user->write();
-        }
-        return "";
     }
 
     public function get_reset_password_key($usernameOrEmail)
@@ -283,98 +269,6 @@ class TestControl
         return true;
     }
 
-    public function add_custom_field(
-        string $projectCode,
-        string $customFieldName,
-        string $parentField = "entry",
-        string $customFieldType = "MultiString",
-        $extraOptions = null
-    ) {
-        error_log("add_custom_field");
-        $prefix = "customField_" . $parentField . "_";
-        if (\strpos($customFieldName, $prefix) !== 0) {
-            $customFieldName = $prefix . $customFieldName;
-        }
-        $project = ProjectModel::getByProjectCode($projectCode);
-        error_log($project->id->asString());
-        switch ($parentField) {
-            case "entry":
-                $config = $project->config->entry;
-                break;
-            case "senses":
-                $config = $project->config->entry->fields[LexConfig::SENSES_LIST];
-                break;
-            case "examples":
-                $config = $project->config->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST];
-                break;
-        }
-        $config->fieldOrder->ensureValueExists($customFieldName);
-        if (!array_key_exists($customFieldName, $config->fields)) {
-            switch ($customFieldType) {
-                case "ReferenceAtom":
-                    $config->fields[$customFieldName] = new LexConfigOptionList();
-                    $config->fields[$customFieldName]->listCode = $extraOptions["listCode"];
-                    break;
-                case "ReferenceCollection":
-                    $config->fields[$customFieldName] = new LexConfigMultiOptionList();
-                    $config->fields[$customFieldName]->listCode = $extraOptions["listCode"];
-                    break;
-                case "OwningAtom":
-                    $config->fields[$customFieldName] = new LexConfigMultiParagraph();
-                    break;
-                default:
-                    $config->fields[$customFieldName] = new LexConfigMultiText();
-                    $config->fields[$customFieldName]->inputSystems = new ArrayOf();
-                    if ($extraOptions["inputSystems"]) {
-                        foreach ($extraOptions["inputSystems"] as $ws) {
-                            $config->fields[$customFieldName]->inputSystems->ensureValueExists($ws);
-                        }
-                    }
-            }
-            $label = str_replace($prefix, "", $customFieldName);
-            $config->fields[$customFieldName]->label = str_replace(" ", "_", $label);
-            $config->fields[$customFieldName]->hideIfEmpty = false;
-        }
-        // PHP copies objects by value, not reference, so now we have to write the config back
-        switch ($parentField) {
-            case "entry":
-                $project->config->entry = $config;
-                break;
-            case "senses":
-                $project->config->entry->fields[LexConfig::SENSES_LIST] = $config;
-                break;
-            case "examples":
-                $project->config->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST] = $config;
-                break;
-        }
-
-        // Now make the custom field visible in all views
-        foreach ($project->config->roleViews as $role => $roleView) {
-            if (!array_key_exists($customFieldName, $roleView->fields)) {
-                if ($customFieldType == "MultiUnicode" || $customFieldType == "MultiString") {
-                    $roleView->fields[$customFieldName] = new LexViewMultiTextFieldConfig();
-                } else {
-                    $roleView->fields[$customFieldName] = new LexViewFieldConfig();
-                }
-                $roleView->fields[$customFieldName]->show = true;
-            }
-        }
-        foreach ($project->config->userViews as $userId => $userView) {
-            if (!array_key_exists($customFieldName, $userView->fields)) {
-                if ($customFieldType == "MultiUnicode" || $customFieldType == "MultiString") {
-                    $userView->fields[$customFieldName] = new LexViewMultiTextFieldConfig();
-                } else {
-                    $userView->fields[$customFieldName] = new LexViewFieldConfig();
-                }
-                $userView->fields[$customFieldName]->show = true;
-            }
-        }
-
-        $project->write();
-
-        return $customFieldName;
-    }
-
     public function add_lexical_entry(string $projectCode, array $data)
     {
         $project = ProjectModel::getByProjectCode($projectCode);
@@ -382,12 +276,5 @@ class TestControl
         LexEntryDecoder::decode($entry, $data);
         $entry->guid = Guid::makeValid("");
         return $entry->write();
-    }
-
-    public function get_project_json(string $projectCode)
-    {
-        $db = MongoStore::connect(DATABASE);
-        $project = $db->projects->findOne(["projectCode" => $projectCode]);
-        return $project;
     }
 }

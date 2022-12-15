@@ -1,80 +1,44 @@
-// example.spec.ts
 import { test as base, APIRequestContext } from '@playwright/test';
 import type { Browser, Page } from '@playwright/test';
-import type { E2EUsernames } from './e2e-users';
-import constants from '../testConstants.json';
 import { getStorageStatePath, UserTestService } from './user-tools';
-import { Project } from './types';
+import { UserDetails } from './types';
 import { initTestProjectForTest } from './testSetup';
-
-export type UserDetails = {
-  username: string,
-  password: string,
-  name: string,
-  email: string,
-}
+import { Project } from './project-utils';
+import { users } from '../constants';
 
 export type UserTab = Page & UserDetails;
+export type E2EUsername = keyof typeof users;
 
-function setupUserDetails(obj: UserDetails, username: E2EUsernames) {
-  obj.username = constants[`${username}Username`] ?? username;
-  obj.name = constants[`${username}Name`] ?? username;
-  obj.password = constants[`${username}Password`] ?? 'x';
-  obj.email = constants[`${username}Email`] ?? `${username}@example.com`;
-}
-
-const userTab = (username: E2EUsernames) => async ({ browser, browserName }: { browser: Browser, browserName: string }, use: (r: UserTab) => Promise<void>) => {
-  const storageState = getStorageStatePath(browserName, username);
+const userTab = (user: UserDetails) => async ({ browser, browserName }: { browser: Browser, browserName: string }, use: (r: UserTab) => Promise<void>) => {
+  const storageState = getStorageStatePath(browserName, user);
   const context = await browser.newContext({ storageState })
   const page = await context.newPage();
   const tab = page as UserTab;
-  setupUserDetails(tab, username);
   await use(tab);
-}
-
-const userDetails = (username: E2EUsernames) => async ({ }, use: (r: UserDetails) => Promise<void>) => {
-  let user = {} as UserDetails;
-  setupUserDetails(user, username);
-  await use(user);
 };
 
-// Add user fixtures to test function
-// Two kinds of fixtures: userTab and user, where "user" is one of "admin", "manager", "member", "member2", or "observer"
 // The userTab fixture represents a browser tab (a "page" in Playwright terms) that's already logged in as that user
 // The anonTab fixture represents a browser tab (a "page" in Playwright terms) where nobody is logged in; this tab can be used across different tests (like userTab)
-// The user fixture just carries that user's details (username, password, name and email)
 // Note: "Tab" was chosen instead of "Page" to avoid confusion with Page Object Model classes like SiteAdminPage
 export const test = base
   .extend<{
     adminTab: UserTab,
     managerTab: UserTab,
     memberTab: UserTab,
-    member2Tab: UserTab,
     observerTab: UserTab,
     anonTab: Page,
-    admin: UserDetails,
-    manager: UserDetails,
-    member: UserDetails,
-    member2: UserDetails,
-    observer: UserDetails,
     userService: UserTestService,
   }>({
-    adminTab: userTab('admin'),
-    managerTab: userTab('manager'),
-    memberTab: userTab('member'),
-    member2Tab: userTab('member2'),
-    observerTab: userTab('observer'),
+    adminTab: userTab(users.admin),
+    managerTab: userTab(users.manager),
+    memberTab: userTab(users.member),
+    observerTab: userTab(users.observer),
     anonTab: async ({ browser }: { browser: Browser }, use: (r: Page) => Promise<void>) => {
       const context = await browser.newContext();
       const page = await context.newPage();
       const tab = page;
       await use(tab);
     },
-    admin: userDetails('admin'),
-    manager: userDetails('manager'),
-    member: userDetails('member'),
-    member2: userDetails('member2'),
-    observer: userDetails('observer'),
     userService: async ({ request }: {request: APIRequestContext}, use: (userService: UserTestService) => Promise<void>) => {
       const userService = new UserTestService(request);
       await use(userService);
@@ -94,11 +58,11 @@ export function projectPerTest(lazy?: boolean): () => Project | Promise<Project>
   let currentTestProjectGetter: () => Promise<Project>;
   let currentTestProject: Project;
 
-  test.beforeEach(async ({ request, manager }, testInfo) => {
+  test.beforeEach(async ({ request }, testInfo) => {
     currentTestProject = undefined;
-    currentTestProjectGetter = () => initTestProjectForTest(request, testInfo, manager);
+    currentTestProjectGetter = () => initTestProjectForTest(request, testInfo, users.manager);
     if (!lazy) {
-      currentTestProject = await initTestProjectForTest(request, testInfo, manager);
+      currentTestProject = await initTestProjectForTest(request, testInfo, users.manager);
     }
   });
 

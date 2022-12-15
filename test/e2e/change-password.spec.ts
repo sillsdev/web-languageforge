@@ -1,7 +1,7 @@
 import { expect } from '@playwright/test';
 import { test } from './utils/fixtures';
 import { ChangePasswordPage } from './pages/change-password.page';
-import { login, logout } from './utils/login';
+import { login, logout } from './utils';
 
 test.describe('Change Password', () => {
   const newPassword = '12345678';
@@ -10,7 +10,7 @@ test.describe('Change Password', () => {
     const changePasswordPage = await test.step('Login as new user', async () => {
       const user = await userService.createRandomUser();
       expect(user.password).not.toBe(newPassword);
-      await login(page, user.username, user.password);
+      await login(page, user);
       return new ChangePasswordPage(page).goto();
     });
 
@@ -38,7 +38,7 @@ test.describe('Change Password', () => {
     const user = await test.step('Login as new user', async () => {
       const user = await userService.createRandomUser();
       expect(user.password).not.toBe(newPassword);
-      await login(page, user.username, user.password);
+      await login(page, user);
       return user;
     });
 
@@ -55,7 +55,10 @@ test.describe('Change Password', () => {
 
     await test.step('Logout and login with new password', async () => {
       await logout(page);
-      await login(page, user.username, newPassword);
+      await login(page, {
+        ...user,
+        password: newPassword,
+      });
     });
   });
 

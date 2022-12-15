@@ -4,9 +4,9 @@ import { test } from './utils/fixtures';
 import { NewLexProjectPage } from './pages/new-lex-project.page';
 import { NoticeElement } from './components/notice.component';
 
-import { Project, toProject } from './utils/types';
+import { Project, toProject } from './utils';
 import { initTestProject } from './utils/testSetup';
-import constants from './testConstants.json';
+import { sendReceiveMockUser, sendReceiveMockProjects, users } from './constants';
 import { testFilePath } from './utils';
 import { EditorPage } from './pages/editor.page';
 
@@ -20,9 +20,9 @@ test.describe('New Project wizard', () => {
     id: ''
   };
 
-  test.beforeAll(async ({ memberTab, request, manager, member }) => {
+  test.beforeAll(async ({ memberTab, request }) => {
     newLexProjectPageMember = new NewLexProjectPage(memberTab);
-    existingProject.id = (await initTestProject(request, existingProject.code, existingProject.name, manager.username, [member.username])).id;
+    existingProject.id = (await initTestProject(request, existingProject.code, existingProject.name, users.manager, [users.member])).id;
   });
 
   test('Admin can get to wizard', async ({ adminTab }) => {
@@ -66,11 +66,11 @@ test.describe('New Project wizard', () => {
       await expect(newLexProjectPageMember.chooserPage.sendReceiveButton).toBeVisible();
     });
 
-    test('Can navigate to Send and Receive form and back', async ({ member }) => {
+    test('Can navigate to Send and Receive form and back', async () => {
       await expect(newLexProjectPageMember.chooserPage.sendReceiveButton).toBeEnabled();
       await newLexProjectPageMember.chooserPage.sendReceiveButton.click();
       await expect(newLexProjectPageMember.srCredentialsPage.loginInput).toBeVisible();
-      await expect(newLexProjectPageMember.srCredentialsPage.loginInput).toHaveValue(member.username);
+      await expect(newLexProjectPageMember.srCredentialsPage.loginInput).toHaveValue(users.member.username);
       await expect(newLexProjectPageMember.srCredentialsPage.passwordInput).toBeVisible();
       await expect(newLexProjectPageMember.srCredentialsPage.projectSelect).not.toBeVisible();
 
@@ -100,13 +100,13 @@ test.describe('New Project wizard', () => {
       await expect(newLexProjectPageMember.formStatus).toContainText('Password cannot be empty.');
     });
 
-    test('Cannot move on if username is incorrect and can go back to Chooser page, user and password preserved', async ({ member }) => {
-      // passwordValid is, incredibly, an invalid password.
-      // It's valid only in the sense that it follows the password rules
-      await newLexProjectPageMember.srCredentialsPage.passwordInput.type(constants.passwordValid);
+    test('Cannot move on if username is incorrect and can go back to Chooser page, user and password preserved', async () => {
+      const invalidPassword = 'invalid password';
+      await newLexProjectPageMember.srCredentialsPage.passwordInput.type(invalidPassword);
       // tab triggers validation of the password
       await newLexProjectPageMember.srCredentialsPage.passwordInput.press('Tab');
       await expect(newLexProjectPageMember.srCredentialsPage.credentialsInvalid).toBeVisible();
+      await expect(newLexProjectPageMember.srCredentialsPage.loginOk).not.toBeVisible();
       await newLexProjectPageMember.expectFormStatusHasNoError();
       await newLexProjectPageMember.nextButton.click();
       await expect(newLexProjectPageMember.srCredentialsPage.loginInput).toBeVisible();
@@ -120,8 +120,8 @@ test.describe('New Project wizard', () => {
       await expect(newLexProjectPageMember.chooserPage.sendReceiveButton).toBeVisible();
       await newLexProjectPageMember.chooserPage.sendReceiveButton.click();
       await expect(newLexProjectPageMember.srCredentialsPage.loginInput).toBeVisible();
-      await expect(newLexProjectPageMember.srCredentialsPage.loginInput).toHaveValue(member.username);
-      await expect(newLexProjectPageMember.srCredentialsPage.passwordInput).toHaveValue(constants.passwordValid);
+      await expect(newLexProjectPageMember.srCredentialsPage.loginInput).toHaveValue(users.member.username);
+      await expect(newLexProjectPageMember.srCredentialsPage.passwordInput).toHaveValue(invalidPassword);
     });
 
     test('Cannot move on if Login is empty', async () => {
@@ -134,20 +134,9 @@ test.describe('New Project wizard', () => {
       await expect(newLexProjectPageMember.formStatus).toContainText('Login cannot be empty.');
     });
 
-    test('Cannot move on if credentials are invalid', async () => {
-      await newLexProjectPageMember.srCredentialsPage.loginInput.fill(constants.srUsername);
-      await newLexProjectPageMember.srCredentialsPage.passwordInput.fill(constants.passwordValid);
-      await expect(newLexProjectPageMember.srCredentialsPage.credentialsInvalid).toBeVisible();
-      await expect(newLexProjectPageMember.srCredentialsPage.loginOk).not.toBeVisible();
-      await newLexProjectPageMember.expectFormStatusHasNoError();
-      await newLexProjectPageMember.nextButton.click();
-      await expect(newLexProjectPageMember.srCredentialsPage.loginInput).toBeVisible();
-      await expect(newLexProjectPageMember.srCredentialsPage.projectSelect).not.toBeVisible();
-    });
-
     test('Can move on when the credentials are valid but cannot move further if no project is selected', async () => {
-      await newLexProjectPageMember.srCredentialsPage.loginInput.fill(constants.srUsername);
-      await newLexProjectPageMember.srCredentialsPage.passwordInput.type(constants.srPassword);
+      await newLexProjectPageMember.srCredentialsPage.loginInput.fill(sendReceiveMockUser.username);
+      await newLexProjectPageMember.srCredentialsPage.passwordInput.type(sendReceiveMockUser.password);
       await expect(newLexProjectPageMember.srCredentialsPage.loginOk).toBeVisible();
       await expect(newLexProjectPageMember.srCredentialsPage.passwordOk).toBeVisible();
       await expect(newLexProjectPageMember.srCredentialsPage.loginInput).toBeVisible();
@@ -162,9 +151,9 @@ test.describe('New Project wizard', () => {
     });
 
     test('Cannot move on if not a manager of the project', async () => {
-      await newLexProjectPageMember.srCredentialsPage.loginInput.fill(constants.srUsername);
-      await newLexProjectPageMember.srCredentialsPage.passwordInput.type(constants.srPassword);
-      const proj = constants.srMockProjects[2];
+      await newLexProjectPageMember.srCredentialsPage.loginInput.fill(sendReceiveMockUser.username);
+      await newLexProjectPageMember.srCredentialsPage.passwordInput.type(sendReceiveMockUser.password);
+      const proj = sendReceiveMockProjects[2];
       await newLexProjectPageMember.srCredentialsPage.projectSelect.selectOption({ label: `${proj.name} (${proj.id}, contributor)` });
       await expect(newLexProjectPageMember.srCredentialsPage.projectNoAccess).toBeVisible();
       await newLexProjectPageMember.expectFormStatusHasError();
@@ -172,9 +161,9 @@ test.describe('New Project wizard', () => {
     });
 
     test('Can move on when a managed project is selected', async () => {
-      await newLexProjectPageMember.srCredentialsPage.loginInput.fill(constants.srUsername);
-      await newLexProjectPageMember.srCredentialsPage.passwordInput.type(constants.srPassword);
-      const proj = constants.srMockProjects[4];
+      await newLexProjectPageMember.srCredentialsPage.loginInput.fill(sendReceiveMockUser.username);
+      await newLexProjectPageMember.srCredentialsPage.passwordInput.type(sendReceiveMockUser.password);
+      const proj = sendReceiveMockProjects[4];
       await newLexProjectPageMember.srCredentialsPage.projectSelect.selectOption({ label: `${proj.name} (${proj.id}, manager)` });
       await expect(newLexProjectPageMember.srCredentialsPage.projectOk).toBeVisible();
       await newLexProjectPageMember.expectFormStatusHasNoError();
@@ -499,7 +488,7 @@ test.describe('New Project wizard', () => {
       await expect(newLexProjectPageMember.primaryLanguagePageSelectButton).toBeEnabled();
       await newLexProjectPageMember.primaryLanguagePageSelectButton.click();
       await expect(newLexProjectPageMember.selectLanguage.searchLanguageInput).toBeVisible();
-      await newLexProjectPageMember.selectLanguage.searchLanguageInput.fill(constants.searchLanguage);
+      await newLexProjectPageMember.selectLanguage.searchLanguageInput.fill('Spanish');
       await newLexProjectPageMember.selectLanguage.searchLanguageInput.press('Enter');
       await expect(newLexProjectPageMember.selectLanguage.languageRows.first()).toBeVisible();
 
@@ -507,7 +496,7 @@ test.describe('New Project wizard', () => {
       await expect(newLexProjectPageMember.selectLanguage.addButton).not.toBeEnabled();
       await newLexProjectPageMember.selectLanguage.languageRows.first().click();
       await expect(newLexProjectPageMember.selectLanguage.addButton).toBeEnabled();
-      await expect(newLexProjectPageMember.selectLanguage.addButton).toHaveText('Add ' + constants.foundLanguage);
+      await expect(newLexProjectPageMember.selectLanguage.addButton).toHaveText('Add español');
       await newLexProjectPageMember.selectLanguage.addButton.click();
       await expect(newLexProjectPageMember.selectLanguage.searchLanguageInput).not.toBeVisible();
 
