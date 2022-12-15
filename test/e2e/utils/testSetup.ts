@@ -1,11 +1,8 @@
 import { testControl } from './jsonrpc';
-import { copyFile } from 'fs/promises';
-import { existsSync } from 'fs';
-import * as path from 'path';
-import { cwd } from 'process';
 import { APIRequestContext, TestInfo } from '@playwright/test';
 import { Project, toProjectCode } from './types';
 import { UserDetails } from './fixtures';
+import { TestFile, serverTestFilePath } from './path-utils';
 
 type CustomFieldType =
   'MultiString' |
@@ -13,15 +10,6 @@ type CustomFieldType =
   'ReferenceCollection' |
   'OwningAtom'
   // TODO: Add more (look at LfMerge custom field code to find out what they can be)
-;
-
-type LfFieldType =
-  'fields' |
-  'multitext' |
-  'multiparagraph' |
-  'optionlist' |
-  'multioptionlist' |
-  'pictures'
 ;
 
 export async function initTestProject(request: APIRequestContext,
@@ -55,43 +43,14 @@ export function addUserToProject(request: APIRequestContext, project: Project, u
   return testControl(request, 'add_user_to_project', [project.code, username, role]);
 }
 
-// Returns absolute path to file location *inside* the container
-async function copyFileToSharedDir(filename: string): Promise<string> {
-  const commonDir = await findTestCommonDir();
-  if (commonDir) {
-    const srcPath = path.resolve(commonDir, filename);
-    const sharedDir = path.resolve(commonDir, '..', 'e2e', 'shared-files');
-    const serverDir = '/tmp/e2e-shared-files';
-    const destPath = path.join(sharedDir, filename);
-    const serverPath = path.join(serverDir, filename);
-    await copyFile(srcPath, destPath);
-    return serverPath;
-  } else {
-    throw new Error('Dir test/common not found; E2E tests should be run from inside Git repo');
-  }
+export async function addPictureFileToProject(request: APIRequestContext, project: Project, filename: TestFile) {
+  const filePath = serverTestFilePath(filename);
+  return testControl(request, 'add_picture_file_to_project', [project.code, filePath]);
 }
 
-async function findTestCommonDir() {
-  let cur = cwd();
-  while (! existsSync(path.resolve(cur, 'test', 'common'))) {
-    const newPath = path.resolve(cur, '..');
-    if (newPath === cur) {
-      // We've hit the top of the directory structure without finding it
-      return undefined;
-    }
-    cur = newPath;
-  }
-  return path.resolve(cur, 'test', 'common');
-}
-
-export async function addPictureFileToProject(request: APIRequestContext, project: Project, filename: string) {
-  const destPath = await copyFileToSharedDir(filename);
-  return testControl(request, 'add_picture_file_to_project', [project.code, destPath]);
-}
-
-export async function addAudioVisualFileToProject(request: APIRequestContext, project: Project, filename: string) {
-  const destPath = await copyFileToSharedDir(filename);
-  return testControl(request, 'add_audio_visual_file_to_project', [project.code, destPath]);
+export async function addAudioVisualFileToProject(request: APIRequestContext, project: Project, filename: TestFile) {
+  const filePath = serverTestFilePath(filename);
+  return testControl(request, 'add_audio_visual_file_to_project', [project.code, filePath]);
 }
 
 export function addCustomField(request: APIRequestContext,

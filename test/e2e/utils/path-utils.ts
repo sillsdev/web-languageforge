@@ -12,5 +12,9 @@ export const testPath = (relativeTestPath: string): string => {
 export type TestFile = keyof typeof files;
 
 export const testFilePath = (file: TestFile): string => {
-  return testPath(`shared-files/${file}`);
+  return testPath(`../data/${file}`);
+}
+
+export const serverTestFilePath = (file: TestFile): string => {
+  return testPath(`/tmp/e2e-test-data/${file}`);
 }

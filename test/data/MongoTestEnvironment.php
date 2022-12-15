@@ -165,7 +165,7 @@ class MongoTestEnvironment
     public static function usxSample()
     {
         global $rootPath;
-        $testFilePath = $rootPath . "test/common/usx/043JHN.usx";
+        $testFilePath = $rootPath . "test/php/data/usx/043JHN.usx";
         $usx = file_get_contents($testFilePath);
 
         return $usx;
@@ -174,7 +174,7 @@ class MongoTestEnvironment
     public static function usxSampleWithNotes()
     {
         global $rootPath;
-        $testFilePath = $rootPath . "test/common/usx/CEV_PSA001.usx";
+        $testFilePath = $rootPath . "test/php/data/usx/CEV_PSA001.usx";
         $usx = file_get_contents($testFilePath);
 
         return $usx;
