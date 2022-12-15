@@ -322,6 +322,19 @@ test.describe('Lexicon E2E Entry Editor and Entries List', () => {
           await expect(audio.locator(editorPageManager.audioPlayer.downloadButtonSelector)).not.toBeVisible();
         });
 
+
+        test('Slider is present and updates with seeking', async () => {
+          await editorPageManager.goto();
+          await expect(audio.locator(editorPageManager.audioPlayer.slider)).toBeVisible();
+          const slider = audio.locator(editorPageManager.audioPlayer.slider);
+          let originalTime = (await audio.locator(editorPageManager.audioPlayer.audioProgressTime).innerText()).substring(3, 4);
+          let bounds = await slider.boundingBox();
+          let yMiddle = bounds.y + bounds.height/2;
+          await editorPageManager.page.mouse.click(bounds.x+200, yMiddle);
+          await expect(audio.locator(editorPageManager.audioPlayer.audioProgressTime)).toContainText("0:01 / 0:02");
+        });
+
+
         test('File upload drop box is displayed when Upload is clicked & not displayed if upload cancelled (manager)', async () => {
           await editorPageManager.goto();
           const dropbox = editorPageManager.entryCard.locator(editorPageManager.dropbox.dragoverFieldSelector);

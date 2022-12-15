@@ -50,7 +50,9 @@ export class EditorPage extends BasePage {
     playIconSelector: 'i.fa-play',
     dropdownToggleSelector: 'a.dropdown-toggle',
     uploadButtonSelector: 'button.upload-audio',
-    downloadButtonSelector: 'a.buttonAppend'
+    downloadButtonSelector: 'a.buttonAppend',
+    slider: 'input.seek-slider',
+    audioProgressTime: 'span.audio-progress'
   };
 
   readonly dropbox = {
