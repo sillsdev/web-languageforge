@@ -38,6 +38,8 @@ require_once APPPATH . "vendor/autoload.php";
 
 class TestControl
 {
+    private static $testFileRoot = "/tmp/e2e-test-data";
+
     public function __construct(Application $app)
     {
         $this->app = $app;
@@ -186,26 +188,26 @@ class TestControl
         return $langTag;
     }
 
-    public function add_audio_visual_file_to_project($projectCode, $tmpFilePath)
+    public function add_audio_visual_file_to_project($projectCode, $testFile)
     {
         $project = ProjectModel::getByProjectCode($projectCode);
-        $response = TestControl::uploadMediaFile($project, "audio", $tmpFilePath);
+        $response = TestControl::uploadMediaFile($project, "audio", $testFile);
         return JsonEncoder::encode($response);
     }
 
-    public function add_picture_file_to_project($projectCode, $tmpFilePath)
+    public function add_picture_file_to_project($projectCode, $testFile)
     {
         $project = ProjectModel::getByProjectCode($projectCode);
-        $response = TestControl::uploadMediaFile($project, "sense-image", $tmpFilePath);
+        $response = TestControl::uploadMediaFile($project, "sense-image", $testFile);
         return JsonEncoder::encode($response);
     }
 
-    public static function uploadMediaFile($project, $mediaType, $tmpFilePath)
+    public static function uploadMediaFile($project, $mediaType, $testFile)
     {
         if ($mediaType != "audio" && $mediaType != "sense-image") {
             throw new \Exception("Unsupported upload type.");
         }
-        if (!$tmpFilePath) {
+        if (!$testFile) {
             throw new \Exception("No file given.");
         }
 
@@ -214,14 +216,15 @@ class TestControl
         $folderPath = $mediaType == "audio" ? $project->getAudioFolderPath() : $project->getImageFolderPath();
 
         // move uploaded file from tmp location to assets
-        $filename = FileUtilities::replaceSpecialCharacters(\basename($tmpFilePath));
+        $filename = FileUtilities::replaceSpecialCharacters(\basename($testFile));
         $filePath = $folderPath . DIRECTORY_SEPARATOR . $filename;
-        $moveOk = copy($tmpFilePath, $filePath);
-        // Do NOT delete $tmpFilePath as we're doing E2E tests and probably want to keep the original around
+        $srcFilePath = TestControl::$testFileRoot . DIRECTORY_SEPARATOR . $testFile;
+        $moveOk = copy($srcFilePath, $filePath);
+        // Do NOT delete $srcFilePath as we're doing E2E tests and probably want to keep the original around
 
         // construct server response
         $response = new UploadResponse();
-        if ($moveOk && $tmpFilePath) {
+        if ($moveOk) {
             $data = new MediaResult();
             $assetsPath = $project->getAssetsRelativePath();
             $data->path =

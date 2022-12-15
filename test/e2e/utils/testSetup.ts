@@ -1,6 +1,6 @@
 import { APIRequestContext, TestInfo } from '@playwright/test';
 import { testControl } from './jsonrpc';
-import { serverTestFilePath, TestFile } from './path-utils';
+import { TestFile } from './path-utils';
 import { Project, toProjectCode } from './project-utils';
 import { UserDetails } from './types';
 
@@ -34,13 +34,11 @@ export function addUserToProject(request: APIRequestContext, project: Project, u
 }
 
 export async function addPictureFileToProject(request: APIRequestContext, project: Project, filename: TestFile) {
-  const filePath = serverTestFilePath(filename);
-  return testControl(request, 'add_picture_file_to_project', [project.code, filePath]);
+  return testControl(request, 'add_picture_file_to_project', [project.code, filename]);
 }
 
 export async function addAudioVisualFileToProject(request: APIRequestContext, project: Project, filename: TestFile) {
-  const filePath = serverTestFilePath(filename);
-  return testControl(request, 'add_audio_visual_file_to_project', [project.code, filePath]);
+  return testControl(request, 'add_audio_visual_file_to_project', [project.code, filename]);
 }
 
 export function addLexEntry(request: APIRequestContext, projectCode: string | Project, data: any) {

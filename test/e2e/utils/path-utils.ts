@@ -14,7 +14,3 @@ export type TestFile = typeof files[number];
 export const testFilePath = (file: TestFile): string => {
   return testPath(`../data/${file}`);
 }
-
-export const serverTestFilePath = (file: TestFile): string => {
-  return testPath(`/tmp/e2e-test-data/${file}`);
-}
