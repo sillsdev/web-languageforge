@@ -1,5 +1,5 @@
-import { Locator } from "@playwright/test";
 import { BaseComponent } from "./base-component";
+import { Locator } from "@playwright/test";
 
 export class AudioPlayer extends BaseComponent<AudioPlayer> {
 

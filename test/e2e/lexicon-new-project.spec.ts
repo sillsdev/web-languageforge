@@ -1,14 +1,10 @@
 import { expect } from '@playwright/test';
-import { test } from './utils/fixtures';
-
-import { NewLexProjectPage } from './pages/new-lex-project.page';
-import { NoticeElement } from './components/notice.component';
-
-import { Project, toProject } from './utils';
-import { initTestProject } from './utils/testSetup';
-import { sendReceiveMockUser, sendReceiveMockProjects, users } from './constants';
-import { testFilePath } from './utils';
+import { sendReceiveMockProjects, sendReceiveMockUser, users } from './constants';
 import { EditorPage } from './pages/editor.page';
+import { NewLexProjectPage } from './pages/new-lex-project.page';
+import { Project, testFilePath, toProject } from './utils';
+import { test } from './utils/fixtures';
+import { initTestProject } from './utils/testSetup';
 
 test.describe('New Project wizard', () => {
   let newLexProjectPageMember: NewLexProjectPage;
@@ -357,18 +353,18 @@ test.describe('New Project wizard', () => {
 
       // Initial Data page with upload
       // --cannot upload large file ---------------------------------------------------
-      const noticeElement = new NoticeElement(newLexProjectPageMember.page);
+      const noticeElement = newLexProjectPageMember.noticeList;
       const [fileChooser] = await Promise.all([
         newLexProjectPageMember.page.waitForEvent('filechooser'),
         newLexProjectPageMember.initialDataPageBrowseButton.click(),
       ]);
-      await expect(noticeElement.notice).toHaveCount(0);
+      await expect(noticeElement.notices).toHaveCount(0);
       await fileChooser.setFiles(testFilePath('dummy_large_file.zip'));
       await expect(newLexProjectPageMember.initialDataPageBrowseButton).toBeVisible();
       await expect(newLexProjectPageMember.verifyDataPage.entriesImported).not.toBeVisible();
-      await expect(noticeElement.notice).toBeVisible();
-      await expect(noticeElement.notice).toHaveCount(1);
-      await expect(noticeElement.notice).toContainText('is too large. It must be smaller than');
+      await expect(noticeElement.notices).toBeVisible();
+      await expect(noticeElement.notices).toHaveCount(1);
+      await expect(noticeElement.notices).toContainText('is too large. It must be smaller than');
       await newLexProjectPageMember.expectFormStatusHasNoError();
       await noticeElement.closeButton.click();
 
@@ -378,11 +374,11 @@ test.describe('New Project wizard', () => {
         newLexProjectPageMember.page.waitForEvent('filechooser'),
         newLexProjectPageMember.initialDataPageBrowseButton.click(),
       ]);
-      await expect(noticeElement.notice).toHaveCount(0);
+      await expect(noticeElement.notices).toHaveCount(0);
       await fileChooser2.setFiles(testFilePath('FriedRiceWithPork.jpg'));
-      await expect(noticeElement.notice).toBeVisible();
-      await expect(noticeElement.notice).toHaveCount(1);
-      await expect(noticeElement.notice).toContainText(`FriedRiceWithPork.jpg is not an allowed compressed file. Ensure the file is`);
+      await expect(noticeElement.notices).toBeVisible();
+      await expect(noticeElement.notices).toHaveCount(1);
+      await expect(noticeElement.notices).toContainText(`FriedRiceWithPork.jpg is not an allowed compressed file. Ensure the file is`);
       await expect(newLexProjectPageMember.initialDataPageBrowseButton).toBeVisible();
       await expect(newLexProjectPageMember.verifyDataPage.entriesImported).not.toBeVisible();
       await newLexProjectPageMember.expectFormStatusHasNoError();
@@ -394,12 +390,12 @@ test.describe('New Project wizard', () => {
         newLexProjectPageMember.page.waitForEvent('filechooser'),
         newLexProjectPageMember.initialDataPageBrowseButton.click(),
       ]);
-      await expect(noticeElement.notice).toHaveCount(0);
+      await expect(noticeElement.notices).toHaveCount(0);
       const numberOfEntriesInTestLexProjectFile: number = 2;
       await fileChooser3.setFiles(testFilePath('TestLexProject.zip'));
       await expect(newLexProjectPageMember.verifyDataPage.entriesImported).toBeVisible();
-      await expect(noticeElement.notice).toHaveCount(1);
-      await expect(noticeElement.notice).toContainText(`Successfully imported TestLexProject.zip`);
+      await expect(noticeElement.notices).toHaveCount(1);
+      await expect(noticeElement.notices).toContainText(`Successfully imported TestLexProject.zip`);
       await newLexProjectPageMember.expectFormStatusHasNoError();
 
       // step 3: verify data

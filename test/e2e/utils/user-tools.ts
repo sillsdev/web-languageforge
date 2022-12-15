@@ -1,8 +1,8 @@
 import { APIRequestContext, BrowserContext } from "@playwright/test";
-import { testControl } from "./jsonrpc";
-import { login } from "./login";
 import * as fs from 'fs';
 import path from "path";
+import { testControl } from "./jsonrpc";
+import { login } from "./login";
 import { testPath } from './path-utils';
 import { UserDetails } from './types';
 

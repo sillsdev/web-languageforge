@@ -1,6 +1,6 @@
 import { Locator, Page } from '@playwright/test';
-import { ConfigurationPage } from './configuration.page';
 import { Project } from '../utils';
+import { ConfigurationPage } from './configuration.page';
 
 export class ConfigurationPageFieldsTab extends ConfigurationPage<ConfigurationPageFieldsTab> {
 
@@ -26,9 +26,9 @@ export class ConfigurationPageFieldsTab extends ConfigurationPage<ConfigurationP
     const row: Locator = this.getRow(this.getTable(tableTitle), field);
     const parentOfRow: Locator = row.locator('xpath=..');
     const positionInTable = await this.getChildPosition(parentOfRow, 'tr', await row.innerText());
-    let checkbox = parentOfRow.locator('tr').nth(positionInTable+2).locator(`tr:has-text("${inputSystem}") >> input[type="checkbox"] >> visible=true`);
+    let checkbox = parentOfRow.locator('tr').nth(positionInTable + 2).locator(`tr:has-text("${inputSystem}") >> input[type="checkbox"] >> visible=true`);
     if (await checkbox.count() == 0) {
-      checkbox = parentOfRow.locator('tr').nth(positionInTable+1).locator(`input[type="checkbox"] >> visible=true`);
+      checkbox = parentOfRow.locator('tr').nth(positionInTable + 1).locator(`input[type="checkbox"] >> visible=true`);
     }
     return checkbox;
   }
@@ -44,7 +44,7 @@ export class ConfigurationPageFieldsTab extends ConfigurationPage<ConfigurationP
 
   private async getChildPosition(parentLocator: Locator, childElementType: string, innerText: string): Promise<number> {
     const children = parentLocator.locator(childElementType);
-    for (let i=0; i < await children.count(); i++) {
+    for (let i = 0; i < await children.count(); i++) {
       if (await children.nth(i).innerText() == innerText) {
         return i;
       }

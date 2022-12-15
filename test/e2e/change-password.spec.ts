@@ -1,12 +1,12 @@
 import { expect } from '@playwright/test';
-import { test } from './utils/fixtures';
 import { ChangePasswordPage } from './pages/change-password.page';
 import { login, logout } from './utils';
+import { test } from './utils/fixtures';
 
 test.describe('Change Password', () => {
   const newPassword = '12345678';
 
-  test('Password rules', async ({userService, page}) => {
+  test('Password rules', async ({ userService, page }) => {
     const changePasswordPage = await test.step('Login as new user', async () => {
       const user = await userService.createRandomUser();
       expect(user.password).not.toBe(newPassword);

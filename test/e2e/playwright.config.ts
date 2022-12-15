@@ -1,6 +1,5 @@
 import type { PlaywrightTestConfig } from '@playwright/test';
-import { expect } from '@playwright/test';
-import { devices } from '@playwright/test';
+import { devices, expect } from '@playwright/test';
 import { matchers } from './utils/custom-matchers';
 
 /**
@@ -9,7 +8,7 @@ import { matchers } from './utils/custom-matchers';
  */
 // require('dotenv').config();
 
-expect.extend({...matchers});
+expect.extend({ ...matchers });
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -39,7 +38,7 @@ const config: PlaywrightTestConfig = {
     // Putting the HTML report in a subdirectory of the main output directory results in a warning log
     // stating that it will "lead to artifact loss" but the warning in this case is not accurate
     // npx playwright show-report test-results/_html-report
-    : [['html', {outputFolder: 'test-results/_html-report', open: 'never'}]],
+    : [['html', { outputFolder: 'test-results/_html-report', open: 'never' }]],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Maximum time each action such as `click()` can take. Defaults to 0 (no limit). */

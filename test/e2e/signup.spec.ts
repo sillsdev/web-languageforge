@@ -1,8 +1,8 @@
 import { expect } from '@playwright/test';
-import { test } from './utils/fixtures';
-import { SignupPage } from './pages/signup.page';
-import { ProjectsPage } from './pages/projects.page';
 import { users } from './constants';
+import { ProjectsPage } from './pages/projects.page';
+import { SignupPage } from './pages/signup.page';
+import { test } from './utils/fixtures';
 
 test.describe('Signup', () => {
   let signupPage: SignupPage;
@@ -96,13 +96,13 @@ test.describe('Signup', () => {
   });
 
   test('Can prefill email address that can\'t be changed', async () => {
-    await signupPage.goto({email: unusedEmail});
+    await signupPage.goto({ email: unusedEmail });
 
     await expect(signupPage.emailInput).toBeDisabled();
   });
 
   test('Can prefill email address that already exists', async () => {
-    await signupPage.goto({email: users.admin.email});
+    await signupPage.goto({ email: users.admin.email });
 
     await signupPage.nameInput.fill(unusedName);
     await signupPage.passwordInput.fill(validPassword);

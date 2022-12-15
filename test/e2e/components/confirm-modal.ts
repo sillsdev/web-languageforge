@@ -1,6 +1,6 @@
 import { Locator, Page } from "@playwright/test";
 
-export class ConfirmModalElement {
+export class ConfirmModal {
   readonly page: Page;
   readonly modalDialog: Locator;
   readonly confirmButton: Locator;

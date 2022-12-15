@@ -18,7 +18,7 @@ export class EntryListPage extends BasePage<EntryListPage> {
   }
 
   async expectTotalNumberOfEntries(nEntries: number) {
-      // format: "3 / 3"
-      await expect(this.totalNumberOfEntries).toHaveText(`${nEntries.toString()} / ${nEntries.toString()}`);
+    // format: "3 / 3"
+    await expect(this.totalNumberOfEntries).toHaveText(`${nEntries.toString()} / ${nEntries.toString()}`);
   }
 }

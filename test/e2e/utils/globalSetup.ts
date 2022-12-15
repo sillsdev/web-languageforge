@@ -1,7 +1,6 @@
-import { FullConfig } from '@playwright/test';
-import { chromium, firefox, webkit } from '@playwright/test';
-import { initE2EUser } from './user-tools';
+import { chromium, firefox, FullConfig, webkit } from '@playwright/test';
 import { users } from '../constants';
+import { initE2EUser } from './user-tools';
 
 export default async function globalSetup(config: FullConfig) {
   try {

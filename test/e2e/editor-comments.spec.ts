@@ -1,9 +1,9 @@
 import { expect } from '@playwright/test';
-import { projectPerTest, test } from './utils/fixtures';
-import { EditorPage } from './pages/editor.page';
-import { addLexEntry, addWritingSystemToProject } from './utils/testSetup';
 import { entries } from './constants';
 import { ConfigurationPageFieldsTab } from './pages/configuration-fields.tab';
+import { EditorPage } from './pages/editor.page';
+import { projectPerTest, test } from './utils/fixtures';
+import { addLexEntry, addWritingSystemToProject } from './utils/testSetup';
 
 test.describe('Lexicon Editor Comments', () => {
 

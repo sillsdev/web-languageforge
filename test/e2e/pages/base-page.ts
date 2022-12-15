@@ -1,5 +1,5 @@
 import { Locator, Page } from "@playwright/test";
-import { PageHeader } from "../components/page-header.component";
+import { NoticeElement, PageHeader } from "../components";
 
 export interface GotoOptions {
   waitFor?: Locator;
@@ -9,6 +9,7 @@ export interface GotoOptions {
 export abstract class BasePage<T extends BasePage<T>> implements Pick<Page, 'locator'> {
 
   readonly header = new PageHeader(this.page);
+  readonly noticeList = new NoticeElement(this.page);
 
   private readonly waitFor: Locator[];
   private readonly urlPattern = this.url.includes('#') ?

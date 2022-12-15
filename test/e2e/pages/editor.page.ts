@@ -1,11 +1,10 @@
 import { expect, Locator, Page } from '@playwright/test';
+import { AudioPlayer, EditorComment } from '../components';
 import { Project } from '../utils';
 import { BasePage, GotoOptions } from './base-page';
 import { ConfigurationPageFieldsTab } from './configuration-fields.tab';
 import { EntryListPage } from './entry-list.page';
 import { ProjectSettingsPage } from './project-settings.page';
-import { EditorComment } from '../components/editor-comment';
-import { AudioPlayer } from '../components/audio-player';
 
 export interface EditorGotoOptions extends GotoOptions {
   entryId?: string;
@@ -104,7 +103,7 @@ export class EditorPage extends BasePage<EditorPage> {
     const projectIdPattern = new RegExp('app/lexicon/([^#]*)#');
     await page.waitForURL(projectIdPattern);
     const id = page.url().match(projectIdPattern)[1];
-    return new EditorPage(page, {...project, id}).waitForPage();
+    return new EditorPage(page, { ...project, id }).waitForPage();
   }
 
   constructor(page: Page, readonly project: Project) {
@@ -242,7 +241,7 @@ export class EditorPage extends BasePage<EditorPage> {
   private async waitIfCommentsAreClosing(): Promise<void> {
     const isClosing = await this.locator(`#lexAppCommentView.panel-closing`).isVisible();
     if (isClosing) {
-      await this.locator(`#lexAppCommentView:not(.panel-closing)`).waitFor({state: 'attached'});
+      await this.locator(`#lexAppCommentView:not(.panel-closing)`).waitFor({ state: 'attached' });
     }
   }
 }

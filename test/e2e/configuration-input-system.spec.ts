@@ -1,7 +1,7 @@
-import { projectPerTest, test } from './utils/fixtures';
-import { EditorPage } from './pages/editor.page';
 import { expect } from '@playwright/test';
 import { ConfigurationPageInputSystemsTab } from './pages/configuration-input-systems.tab';
+import { EditorPage } from './pages/editor.page';
+import { projectPerTest, test } from './utils/fixtures';
 
 test.describe('Configuration Input Systems', async () => {
 
@@ -54,7 +54,7 @@ test.describe('Configuration Input Systems', async () => {
 
       await expect(inputSystemsTab.fontNameTextBox).toHaveValue(newFont);
 
-      await expect(inputSystemsTab.rtlCheckbox).toBeChecked({checked: newRtl});
+      await expect(inputSystemsTab.rtlCheckbox).toBeChecked({ checked: newRtl });
     });
   });
 });

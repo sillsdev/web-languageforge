@@ -1,9 +1,9 @@
-import { test } from './utils/fixtures';
-import { UserProfilePage } from './pages/user-profile.page';
 import { expect, Page } from '@playwright/test';
 import { LoginPage } from './pages/login.page';
 import { ProjectsPage } from './pages/projects.page';
+import { UserProfilePage } from './pages/user-profile.page';
 import { login, UserDetails } from './utils';
+import { test } from './utils/fixtures';
 
 test.describe('User Profile', () => {
 

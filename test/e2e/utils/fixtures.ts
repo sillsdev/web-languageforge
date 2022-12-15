@@ -1,10 +1,10 @@
-import { test as base, APIRequestContext } from '@playwright/test';
 import type { Browser, Page } from '@playwright/test';
-import { getStorageStatePath, UserTestService } from './user-tools';
-import { UserDetails } from './types';
-import { initTestProjectForTest } from './testSetup';
-import { Project } from './project-utils';
+import { APIRequestContext, test as base } from '@playwright/test';
 import { users } from '../constants';
+import { Project } from './project-utils';
+import { initTestProjectForTest } from './testSetup';
+import { UserDetails } from './types';
+import { getStorageStatePath, UserTestService } from './user-tools';
 
 export type UserTab = Page & UserDetails;
 export type E2EUsername = keyof typeof users;
@@ -39,7 +39,7 @@ export const test = base
       const tab = page;
       await use(tab);
     },
-    userService: async ({ request }: {request: APIRequestContext}, use: (userService: UserTestService) => Promise<void>) => {
+    userService: async ({ request }: { request: APIRequestContext }, use: (userService: UserTestService) => Promise<void>) => {
       const userService = new UserTestService(request);
       await use(userService);
     },

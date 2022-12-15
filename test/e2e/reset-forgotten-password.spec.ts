@@ -1,10 +1,10 @@
-import { test } from './utils/fixtures';
-import { SignupPage } from './pages/signup.page';
-import { ProjectsPage } from './pages/projects.page';
-import { LoginPage } from './pages/login.page';
-import { ForgotPasswordPage } from './pages/forgot-password.page';
 import { expect } from '@playwright/test';
+import { ForgotPasswordPage } from './pages/forgot-password.page';
+import { LoginPage } from './pages/login.page';
+import { ProjectsPage } from './pages/projects.page';
 import { ResetPasswordPage } from './pages/reset-password.page';
+import { SignupPage } from './pages/signup.page';
+import { test } from './utils/fixtures';
 
 test.describe('Reset forgotten password', () => {
 
@@ -58,7 +58,7 @@ test.describe('Reset forgotten password', () => {
 
     await test.step('Reset password', async () => {
       const resetKey = await userService.getResetPasswordKey(user.email);
-      const resetPasswordPage = await new ResetPasswordPage(anonTab, resetKey).goto({expectRedirect: true});
+      const resetPasswordPage = await new ResetPasswordPage(anonTab, resetKey).goto({ expectRedirect: true });
       await expect(resetPasswordPage.page.getByText('Please choose a new password')).toBeVisible();
 
       await resetPasswordPage.newPasswordField.type(user.newPassword);
@@ -114,7 +114,7 @@ test.describe('Reset forgotten password', () => {
 
     await test.step('Try to use expired reset password key', async () => {
       const [, loginPage] = await Promise.all([
-        new ResetPasswordPage(anonTab, resetKey).goto({expectRedirect: true}),
+        new ResetPasswordPage(anonTab, resetKey).goto({ expectRedirect: true }),
         new LoginPage(anonTab).waitForPage(),
       ])
       await expect(loginPage.errors).toContainText('Your password reset cannot be completed. It may have expired.');

@@ -1,6 +1,6 @@
-import { testControl } from './jsonrpc';
 import { APIRequestContext, TestInfo } from '@playwright/test';
-import { TestFile, serverTestFilePath } from './path-utils';
+import { testControl } from './jsonrpc';
+import { serverTestFilePath, TestFile } from './path-utils';
 import { Project, toProjectCode } from './project-utils';
 import { UserDetails } from './types';
 

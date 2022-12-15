@@ -1,11 +1,10 @@
 import { expect } from '@playwright/test';
-import { NoticeElement } from './components/notice.component';
+import { users } from './constants';
 import { EditorPage } from './pages/editor.page';
 import { ProjectsPage } from './pages/projects.page';
 import { Project } from './utils';
 import { test } from './utils/fixtures';
 import { addUserToProject, initTestProject } from './utils/testSetup';
-import { users } from './constants';
 
 test.describe('Projects List', () => {
   let projectsPageMember: ProjectsPage;
@@ -102,15 +101,15 @@ test.describe('Projects List', () => {
     });
 
 
-    test('Should allow admin (tech support) to remove him- or herself from a project' , async () => {
+    test('Should allow admin (tech support) to remove him- or herself from a project', async () => {
       await expect(projectsPageAdmin.projectLink(project4.name)).toBeVisible();
       await expect(projectsPageAdmin.projectAddTechSupportButtonLocator(project4.name)).toBeVisible();
 
       await projectsPageAdmin.projectLeaveProjectButtonLocator(project4.name).click();
 
-      const noticeElement = new NoticeElement(projectsPageAdmin.page);
-      await expect(noticeElement.notice).toBeVisible();
-      await expect(noticeElement.notice).toContainText(`${project4.name} is no longer in your projects.`);
+      const noticeElement = projectsPageAdmin.noticeList;
+      await expect(noticeElement.notices).toBeVisible();
+      await expect(noticeElement.notices).toContainText(`${project4.name} is no longer in your projects.`);
       await expect(projectsPageAdmin.projectLeaveProjectButtonLocator(project4.name)).not.toBeVisible();
       await expect(projectsPageAdmin.projectLink(project4.name)).not.toBeVisible();
 

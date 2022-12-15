@@ -1,11 +1,11 @@
 import { expect } from '@playwright/test';
+import { users } from './constants';
 import { EditorPage } from './pages/editor.page';
 import { ProjectSettingsPage } from './pages/project-settings.page';
 import { ProjectsPage } from './pages/projects.page';
 import { Project } from './utils';
 import { test } from './utils/fixtures';
 import { addUserToProject, initTestProject } from './utils/testSetup';
-import { users } from './constants';
 
 test.describe('Project Settings', () => {
   const projects: Project[] = [
@@ -47,7 +47,7 @@ test.describe('Project Settings', () => {
     await expect(editorPage.settingsMenuLink).not.toBeVisible();
   });
 
-  test('Project member can navigate from editor to settings', async({ managerTab }) => {
+  test('Project member can navigate from editor to settings', async ({ managerTab }) => {
     const editorPage = new EditorPage(managerTab, projects[0]);
     await editorPage.goto();
     const projectSettingsPage = await editorPage.navigateToProjectSettings();
@@ -57,7 +57,7 @@ test.describe('Project Settings', () => {
   test('Project owner can manage project they own', async ({ adminTab }) => {
     const projectSettingsPage = new ProjectSettingsPage(adminTab, projects[0]);
     await projectSettingsPage.goto();
-    await expect(projectSettingsPage.noticeList).toHaveCount(0);
+    await expect(projectSettingsPage.noticeList.notices).toHaveCount(0);
     await projectSettingsPage.deleteTab.tabTitle.click();
     await expect(projectSettingsPage.deleteTab.deleteProjectButton).toBeVisible();
     await expect(projectSettingsPage.deleteTab.deleteProjectButton).toBeDisabled();
@@ -69,13 +69,13 @@ test.describe('Project Settings', () => {
     await expect(projectSettingsPage.deleteTab.tabTitle).not.toBeVisible();
   });
 
-  test('Manager can delete if owner', async ({managerTab}) => {
+  test('Manager can delete if owner', async ({ managerTab }) => {
     const projectsPage = new ProjectsPage(managerTab);
     await projectsPage.goto();
     await expect(projectsPage.projectRow(project4.name)).toBeVisible();
     const projectSettingsPage = new ProjectSettingsPage(managerTab, project4);
     await projectSettingsPage.goto();
-    await expect(projectSettingsPage.noticeList).toHaveCount(0);
+    await expect(projectSettingsPage.noticeList.notices).toHaveCount(0);
 
     await projectSettingsPage.deleteTab.tabTitle.click();
     await expect(projectSettingsPage.deleteTab.deleteProjectButton).toBeVisible();

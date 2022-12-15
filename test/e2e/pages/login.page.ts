@@ -1,7 +1,7 @@
 import { Page } from '@playwright/test';
-import { PageHeader } from '../components/page-header.component';
-import { BasePage } from './base-page';
+import { PageHeader } from '../components';
 import { UserDetails } from '../utils';
+import { BasePage } from './base-page';
 
 export class LoginPage extends BasePage<LoginPage> {
   readonly usernameInput = this.page.locator('#username');
