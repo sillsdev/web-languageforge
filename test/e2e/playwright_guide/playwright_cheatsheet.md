@@ -27,7 +27,7 @@ Standard usage:
 - From root: `npx playwright test -c ./test/e2e/playwright.config.ts [other options]`
 - Or simply: `npm run test-e2e [-- other options]`
 
-Tipps:
+Tips:
 
 - [`await page.pause()`](https://playwright.dev/docs/api/class-page#page-pause) acts as a breakpoint in `--headed` and `--debug` mode
 - [Playwright's debugging inspector](https://playwright.dev/docs/debug#playwright-inspector) provides a toolkit for debugging Playwright locators. It is available in [`--debug`](https://playwright.dev/docs/debug#--debug) mode or by using `await page.pause()` in `--headed` mode
