@@ -29,6 +29,7 @@ Standard usage:
 
 Tips:
 
+- `test-e2e-report` opens the latest [HTML report](https://playwright.dev/docs/trace-viewer-intro#opening-the-html-report) with results, traces & screenshots (valuable for debugging after the fact)
 - [`await page.pause()`](https://playwright.dev/docs/api/class-page#page-pause) acts as a breakpoint in `--headed` and `--debug` mode
 - [Playwright's debugging inspector](https://playwright.dev/docs/debug#playwright-inspector) provides a toolkit for debugging Playwright locators. It is available in [`--debug`](https://playwright.dev/docs/debug#--debug) mode or by using `await page.pause()` in `--headed` mode
 - Test for flakiness by running tests multiple times `--repeat-each <N>` and only running specific tests with [`test.only(...)`](https://playwright.dev/docs/next/test-annotations#focus-a-test) or [`test.skip(...)`](https://playwright.dev/docs/next/test-annotations#skip-a-test)
