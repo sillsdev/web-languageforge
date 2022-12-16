@@ -10,6 +10,8 @@ test.describe('Lexicon Editor Comments', () => {
   const project = projectPerTest();
 
   test('Creating and viewing comments', async ({ request, managerTab }) => {
+    test.slow();
+
     await test.step('And input systems and entries', async () => {
       await addWritingSystemToProject(request, project(), 'th-fonipa', 'tipa');
       await addWritingSystemToProject(request, project(), 'th-Zxxx-x-audio', 'taud');
