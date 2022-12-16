@@ -66,7 +66,7 @@ test.describe('Entry Editor and Entries List', () => {
     test('Can click on first entry', async () => {
       const [, editorPageManager] = await Promise.all([
         entryListPageManager.entry(entries.entry1.lexeme.th.value).click(),
-        new EditorPage(entryListPageManager.page, project).waitForPage(),
+        new EditorPage(entryListPageManager.page, project).waitFor(),
       ])
       await expect(editorPageManager.getTextarea(editorPageManager.entryCard, lexemeLabel, 'th')).toHaveValue(entries.entry1.lexeme.th.value);
     });
@@ -85,7 +85,7 @@ test.describe('Entry Editor and Entries List', () => {
       await editorPageManager.goto();
       await Promise.all([
         editorPageManager.navigateToEntriesList(),
-        new EntryListPage(editorPageManager.page, project).waitForPage(),
+        new EntryListPage(editorPageManager.page, project).waitFor(),
       ]);
     });
 

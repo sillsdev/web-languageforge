@@ -15,6 +15,7 @@ const userTab = (user: UserDetails) => async ({ browser, browserName }: { browse
   const page = await context.newPage();
   const tab = page as UserTab;
   await use(tab);
+  await context.close();
 };
 
 // The userTab fixture represents a browser tab (a "page" in Playwright terms) that's already logged in as that user
@@ -38,6 +39,7 @@ export const test = base
       const page = await context.newPage();
       const tab = page;
       await use(tab);
+      await context.close();
     },
     userService: async ({ request }: { request: APIRequestContext }, use: (userService: UserTestService) => Promise<void>) => {
       const userService = new UserTestService(request);

@@ -15,7 +15,7 @@ test.describe('Configuration Input Systems', async () => {
         const configPage = await editorPage.navigateToProjectConfiguration();
         const [_, inputSystemsTab] = await Promise.all([
           configPage.tabLinks.inputSystems.click(),
-          new ConfigurationPageInputSystemsTab(managerTab, project()).waitForPage(),
+          new ConfigurationPageInputSystemsTab(managerTab, project()).waitFor(),
         ]);
         return inputSystemsTab;
       });

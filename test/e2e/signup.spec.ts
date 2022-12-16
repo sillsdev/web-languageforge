@@ -122,13 +122,13 @@ test.describe('Signup', () => {
     await signupPage.signupButton.click();
 
     // Verify new user logged in and redirected to projects page
-    await new ProjectsPage(signupPage.page).waitForPage();
+    await new ProjectsPage(signupPage.page).waitFor();
   });
 
   test('Redirects to projects page if already logged in', async ({ memberTab }) => {
     const signupPageMember = new SignupPage(memberTab);
     await Promise.all([
-      new ProjectsPage(memberTab).waitForPage(),
+      new ProjectsPage(memberTab).waitFor(),
       signupPageMember.goto(),
     ]);
   });

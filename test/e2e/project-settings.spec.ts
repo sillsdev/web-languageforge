@@ -85,7 +85,7 @@ test.describe('Project Settings', () => {
     await projectSettingsPage.deleteTab.deleteProjectButton.click();
     await projectSettingsPage.deleteModal.confirm.click();
 
-    await projectsPage.waitForPage();
+    await projectsPage.waitFor();
     await expect(projectsPage.projectRow(project4.name)).not.toBeVisible();
   });
 

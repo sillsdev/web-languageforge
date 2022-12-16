@@ -1,12 +1,14 @@
 import { Page } from "@playwright/test";
+import { BaseComponent } from './base-component';
 
-export class NoticeElement {
+export class NoticeElement extends BaseComponent {
 
-  readonly notices = this.page.locator('[ng-repeat="notice in $ctrl.notices()"]');
-  readonly noticeMessage = this.page.locator('[data-ng-hide="notice.details"]');
-  readonly noticeDetails = this.page.locator('[ng-show="notice.details"]');
-  readonly closeButton = this.notices.locator('.close');
+  readonly notices = this.componentLocator;
+  readonly noticeMessage = this.locator('[data-ng-hide="notice.details"]');
+  readonly noticeDetails = this.locator('[ng-show="notice.details"]');
+  readonly closeButton = this.locator('.close');
 
-  constructor(private readonly page: Page) {
+  constructor(page: Page) {
+    super(page.locator('[ng-repeat="notice in $ctrl.notices()"]'))
   }
 }

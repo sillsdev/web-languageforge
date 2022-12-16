@@ -1,16 +1,16 @@
 import { Locator } from "@playwright/test";
 
-export abstract class BaseComponent<T extends BaseComponent<T>> {
+export abstract class BaseComponent {
 
-    constructor(protected readonly componentLocator: Locator) {
-    }
+  constructor(protected readonly componentLocator: Locator) {
+  }
 
-    protected locator(selector: string): Locator {
-        return this.componentLocator.locator(selector);
-    }
+  protected locator(selector: string): Locator {
+    return this.componentLocator.locator(selector);
+  }
 
-    async waitFor(): Promise<T> {
-        await this.componentLocator.waitFor();
-        return this as unknown as T;
-    }
+  async waitFor(): Promise<this> {
+    await this.componentLocator.waitFor();
+    return this;
+  }
 }

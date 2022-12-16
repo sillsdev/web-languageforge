@@ -1,13 +1,11 @@
 import { Locator, Page } from "@playwright/test";
+import { BaseComponent } from './base-component';
 
-export class ConfirmModal {
-  readonly page: Page;
-  readonly modalDialog: Locator;
-  readonly confirmButton: Locator;
+export class ConfirmModal extends BaseComponent {
+
+  readonly confirmButton = this.locator('[data-ng-click="modalOptions.ok()"]');
 
   constructor(page: Page) {
-    this.page = page;
-    this.modalDialog = page.locator('.modal-dialog');
-    this.confirmButton = this.modalDialog.locator('[data-ng-click="modalOptions.ok()"]');
+    super(page.locator('.modal-dialog'));
   }
 }

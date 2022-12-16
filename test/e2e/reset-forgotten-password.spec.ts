@@ -27,14 +27,14 @@ test.describe('Reset forgotten password', () => {
 
       const [, projectPage] = await Promise.all([
         signupPage.signupButton.click(),
-        new ProjectsPage(anonTab).waitForPage(),
+        new ProjectsPage(anonTab).waitFor(),
       ]);
 
       await projectPage.header.userDropdownButton.click();
 
       const [, loginPage] = await Promise.all([
         projectPage.header.userDropdown.logout.click(),
-        new LoginPage(anonTab).waitForPage(),
+        new LoginPage(anonTab).waitFor(),
       ]);
 
       return loginPage;
@@ -43,13 +43,13 @@ test.describe('Reset forgotten password', () => {
     await test.step('Request password reset email', async () => {
       const [, forgotPasswordPage] = await Promise.all([
         loginPage.forgotPasswordLink.click(),
-        new ForgotPasswordPage(anonTab).waitForPage(),
+        new ForgotPasswordPage(anonTab).waitFor(),
       ]);
 
       await forgotPasswordPage.usernameOrEmailInput.type(user.email);
       await Promise.all([
         forgotPasswordPage.submitButton.click(),
-        loginPage.waitForPage(),
+        loginPage.waitFor(),
       ]);
 
       await expect(loginPage.alertInfo).toContainText(`Password Reset email sent`);
@@ -66,7 +66,7 @@ test.describe('Reset forgotten password', () => {
 
       await Promise.all([
         resetPasswordPage.resetPasswordButton.click(),
-        loginPage.waitForPage(),
+        loginPage.waitFor(),
       ]);
 
       await expect(loginPage.alertInfo).toContainText('Your password has been reset');
@@ -78,7 +78,7 @@ test.describe('Reset forgotten password', () => {
 
       await Promise.all([
         loginPage.submitButton.click(),
-        new ProjectsPage(anonTab).waitForPage(),
+        new ProjectsPage(anonTab).waitFor(),
       ]);
     });
   });
@@ -98,13 +98,13 @@ test.describe('Reset forgotten password', () => {
 
       const [, forgotPasswordPage] = await Promise.all([
         loginPage.forgotPasswordLink.click(),
-        new ForgotPasswordPage(anonTab).waitForPage(),
+        new ForgotPasswordPage(anonTab).waitFor(),
       ]);
 
       await forgotPasswordPage.usernameOrEmailInput.type(user.username);
       await Promise.all([
         forgotPasswordPage.submitButton.click(),
-        loginPage.waitForPage(),
+        loginPage.waitFor(),
       ]);
     });
 
@@ -115,7 +115,7 @@ test.describe('Reset forgotten password', () => {
     await test.step('Try to use expired reset password key', async () => {
       const [, loginPage] = await Promise.all([
         new ResetPasswordPage(anonTab, resetKey).goto({ expectRedirect: true }),
-        new LoginPage(anonTab).waitForPage(),
+        new LoginPage(anonTab).waitFor(),
       ])
       await expect(loginPage.errors).toContainText('Your password reset cannot be completed. It may have expired.');
     });
