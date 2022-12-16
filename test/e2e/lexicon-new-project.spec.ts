@@ -1,15 +1,12 @@
 import { expect } from '@playwright/test';
-import { test } from './utils/fixtures';
-
+import { sendReceiveMockProjects, sendReceiveMockUser, users } from './constants';
+import { EditorPage } from './pages/editor.page';
 import { NewLexProjectPage } from './pages/new-lex-project.page';
-import { EntriesListPage } from './pages/entries-list.page';
-import { NoticeElement } from './components/notice.component';
-
-import { Project, toProject } from './utils/types';
+import { Project, testFilePath, toProject } from './utils';
+import { test } from './utils/fixtures';
 import { initTestProject } from './utils/testSetup';
-import constants from './testConstants.json';
 
-test.describe('Lexicon E2E New Project wizard app', () => {
+test.describe('New Project wizard', () => {
   let newLexProjectPageMember: NewLexProjectPage;
   // project will exist before testing the creation of new projects through the UI
   //  this existing project is needed as one test tests whether it is impossible to create a new project with the same name
@@ -19,9 +16,9 @@ test.describe('Lexicon E2E New Project wizard app', () => {
     id: ''
   };
 
-  test.beforeAll(async ({ memberTab, request, manager, member }) => {
+  test.beforeAll(async ({ memberTab, request }) => {
     newLexProjectPageMember = new NewLexProjectPage(memberTab);
-    existingProject.id = await initTestProject(request, existingProject.code, existingProject.name, manager.username, [member.username]);
+    existingProject.id = (await initTestProject(request, existingProject.code, existingProject.name, users.manager, [users.member])).id;
   });
 
   test('Admin can get to wizard', async ({ adminTab }) => {
@@ -65,11 +62,11 @@ test.describe('Lexicon E2E New Project wizard app', () => {
       await expect(newLexProjectPageMember.chooserPage.sendReceiveButton).toBeVisible();
     });
 
-    test('Can navigate to Send and Receive form and back', async ({ member }) => {
+    test('Can navigate to Send and Receive form and back', async () => {
       await expect(newLexProjectPageMember.chooserPage.sendReceiveButton).toBeEnabled();
       await newLexProjectPageMember.chooserPage.sendReceiveButton.click();
       await expect(newLexProjectPageMember.srCredentialsPage.loginInput).toBeVisible();
-      await expect(newLexProjectPageMember.srCredentialsPage.loginInput).toHaveValue(member.username);
+      await expect(newLexProjectPageMember.srCredentialsPage.loginInput).toHaveValue(users.member.username);
       await expect(newLexProjectPageMember.srCredentialsPage.passwordInput).toBeVisible();
       await expect(newLexProjectPageMember.srCredentialsPage.projectSelect).not.toBeVisible();
 
@@ -99,13 +96,13 @@ test.describe('Lexicon E2E New Project wizard app', () => {
       await expect(newLexProjectPageMember.formStatus).toContainText('Password cannot be empty.');
     });
 
-    test('Cannot move on if username is incorrect and can go back to Chooser page, user and password preserved', async ({ member }) => {
-      // passwordValid is, incredibly, an invalid password.
-      // It's valid only in the sense that it follows the password rules
-      await newLexProjectPageMember.srCredentialsPage.passwordInput.type(constants.passwordValid);
-      // tab should trigger validation of the password thus making the test less flaky
+    test('Cannot move on if username is incorrect and can go back to Chooser page, user and password preserved', async () => {
+      const invalidPassword = 'invalid password';
+      await newLexProjectPageMember.srCredentialsPage.passwordInput.type(invalidPassword);
+      // tab triggers validation of the password
       await newLexProjectPageMember.srCredentialsPage.passwordInput.press('Tab');
       await expect(newLexProjectPageMember.srCredentialsPage.credentialsInvalid).toBeVisible();
+      await expect(newLexProjectPageMember.srCredentialsPage.loginOk).not.toBeVisible();
       await newLexProjectPageMember.expectFormStatusHasNoError();
       await newLexProjectPageMember.nextButton.click();
       await expect(newLexProjectPageMember.srCredentialsPage.loginInput).toBeVisible();
@@ -119,8 +116,8 @@ test.describe('Lexicon E2E New Project wizard app', () => {
       await expect(newLexProjectPageMember.chooserPage.sendReceiveButton).toBeVisible();
       await newLexProjectPageMember.chooserPage.sendReceiveButton.click();
       await expect(newLexProjectPageMember.srCredentialsPage.loginInput).toBeVisible();
-      await expect(newLexProjectPageMember.srCredentialsPage.loginInput).toHaveValue(member.username);
-      await expect(newLexProjectPageMember.srCredentialsPage.passwordInput).toHaveValue(constants.passwordValid);
+      await expect(newLexProjectPageMember.srCredentialsPage.loginInput).toHaveValue(users.member.username);
+      await expect(newLexProjectPageMember.srCredentialsPage.passwordInput).toHaveValue(invalidPassword);
     });
 
     test('Cannot move on if Login is empty', async () => {
@@ -133,20 +130,9 @@ test.describe('Lexicon E2E New Project wizard app', () => {
       await expect(newLexProjectPageMember.formStatus).toContainText('Login cannot be empty.');
     });
 
-    test('Cannot move on if credentials are invalid', async () => {
-      await newLexProjectPageMember.srCredentialsPage.loginInput.fill(constants.srUsername);
-      await newLexProjectPageMember.srCredentialsPage.passwordInput.fill(constants.passwordValid);
-      await expect(newLexProjectPageMember.srCredentialsPage.credentialsInvalid).toBeVisible();
-      await expect(newLexProjectPageMember.srCredentialsPage.loginOk).not.toBeVisible();
-      await newLexProjectPageMember.expectFormStatusHasNoError();
-      await newLexProjectPageMember.nextButton.click();
-      await expect(newLexProjectPageMember.srCredentialsPage.loginInput).toBeVisible();
-      await expect(newLexProjectPageMember.srCredentialsPage.projectSelect).not.toBeVisible();
-    });
-
     test('Can move on when the credentials are valid but cannot move further if no project is selected', async () => {
-      await newLexProjectPageMember.srCredentialsPage.loginInput.fill(constants.srUsername);
-      await newLexProjectPageMember.srCredentialsPage.passwordInput.type(constants.srPassword);
+      await newLexProjectPageMember.srCredentialsPage.loginInput.fill(sendReceiveMockUser.username);
+      await newLexProjectPageMember.srCredentialsPage.passwordInput.type(sendReceiveMockUser.password);
       await expect(newLexProjectPageMember.srCredentialsPage.loginOk).toBeVisible();
       await expect(newLexProjectPageMember.srCredentialsPage.passwordOk).toBeVisible();
       await expect(newLexProjectPageMember.srCredentialsPage.loginInput).toBeVisible();
@@ -161,19 +147,20 @@ test.describe('Lexicon E2E New Project wizard app', () => {
     });
 
     test('Cannot move on if not a manager of the project', async () => {
-      await newLexProjectPageMember.srCredentialsPage.loginInput.fill(constants.srUsername);
-      await newLexProjectPageMember.srCredentialsPage.passwordInput.type(constants.srPassword);
-      // TODO: consider putting the name of the mock project in testConstants
-      await newLexProjectPageMember.srCredentialsPage.projectSelect.selectOption({ label: 'mock-name2 (mock-id2, contributor)' });
+      await newLexProjectPageMember.srCredentialsPage.loginInput.fill(sendReceiveMockUser.username);
+      await newLexProjectPageMember.srCredentialsPage.passwordInput.type(sendReceiveMockUser.password);
+      const proj = sendReceiveMockProjects[2];
+      await newLexProjectPageMember.srCredentialsPage.projectSelect.selectOption({ label: `${proj.name} (${proj.id}, contributor)` });
       await expect(newLexProjectPageMember.srCredentialsPage.projectNoAccess).toBeVisible();
       await newLexProjectPageMember.expectFormStatusHasError();
       await expect(newLexProjectPageMember.formStatus).toContainText('select a Project that you are the Manager of');
     });
 
     test('Can move on when a managed project is selected', async () => {
-      await newLexProjectPageMember.srCredentialsPage.loginInput.fill(constants.srUsername);
-      await newLexProjectPageMember.srCredentialsPage.passwordInput.type(constants.srPassword);
-      await newLexProjectPageMember.srCredentialsPage.projectSelect.selectOption({ label: 'mock-name4 (mock-id4, manager)' });
+      await newLexProjectPageMember.srCredentialsPage.loginInput.fill(sendReceiveMockUser.username);
+      await newLexProjectPageMember.srCredentialsPage.passwordInput.type(sendReceiveMockUser.password);
+      const proj = sendReceiveMockProjects[4];
+      await newLexProjectPageMember.srCredentialsPage.projectSelect.selectOption({ label: `${proj.name} (${proj.id}, manager)` });
       await expect(newLexProjectPageMember.srCredentialsPage.projectOk).toBeVisible();
       await newLexProjectPageMember.expectFormStatusHasNoError();
     });
@@ -208,7 +195,7 @@ test.describe('Lexicon E2E New Project wizard app', () => {
         await expect(newLexProjectPageMember.namePage.projectCodeExists).toBeVisible();
         await expect(newLexProjectPageMember.namePage.projectCodeAlphanumeric).not.toBeVisible();
         await expect(newLexProjectPageMember.namePage.projectCodeOk).not.toBeVisible();
-        expect(await newLexProjectPageMember.namePage.projectCodeInput).toHaveValue(existingProject.code);
+        await expect(newLexProjectPageMember.namePage.projectCodeInput).toHaveValue(existingProject.code);
         await newLexProjectPageMember.expectFormStatusHasError();
         await expect(newLexProjectPageMember.formStatus).toContainText(
           'Another project with code \'' + existingProject.code +
@@ -349,8 +336,7 @@ test.describe('Lexicon E2E New Project wizard app', () => {
       await newLexProjectPageMember.namePage.projectNameInput.type(newProject01.name);
       await newLexProjectPageMember.namePage.projectNameInput.press('Tab'); // trigger project code check
       await expect(newLexProjectPageMember.nextButton).toBeEnabled();
-      // TODO: understand why the following line causes test failure
-      // await newLexProjectPageMember.expectFormIsValid();
+      await newLexProjectPageMember.expectFormIsValid();
       await newLexProjectPageMember.nextButton.click();
       await expect(newLexProjectPageMember.namePage.projectNameInput).not.toBeVisible();
       await expect(newLexProjectPageMember.initialDataPageBrowseButton).toBeVisible();
@@ -367,20 +353,18 @@ test.describe('Lexicon E2E New Project wizard app', () => {
 
       // Initial Data page with upload
       // --cannot upload large file ---------------------------------------------------
-      const noticeElement = new NoticeElement(newLexProjectPageMember.page);
+      const noticeElement = newLexProjectPageMember.noticeList;
       const [fileChooser] = await Promise.all([
         newLexProjectPageMember.page.waitForEvent('filechooser'),
         newLexProjectPageMember.initialDataPageBrowseButton.click(),
       ]);
-      expect(noticeElement.notice).toHaveCount(0);
-      // TODO: consider putting the name of this file in testConstants
-      const dummyLargeFileName: string = 'dummy_large_file.zip';
-      await fileChooser.setFiles('test/e2e/shared-files/' + dummyLargeFileName);
+      await expect(noticeElement.notices).toHaveCount(0);
+      await fileChooser.setFiles(testFilePath('dummy_large_file.zip'));
       await expect(newLexProjectPageMember.initialDataPageBrowseButton).toBeVisible();
       await expect(newLexProjectPageMember.verifyDataPage.entriesImported).not.toBeVisible();
-      await expect(noticeElement.notice).toBeVisible();
-      expect(noticeElement.notice).toHaveCount(1);
-      await expect(noticeElement.notice).toContainText('is too large. It must be smaller than');
+      await expect(noticeElement.notices).toBeVisible();
+      await expect(noticeElement.notices).toHaveCount(1);
+      await expect(noticeElement.notices).toContainText('is too large. It must be smaller than');
       await newLexProjectPageMember.expectFormStatusHasNoError();
       await noticeElement.closeButton.click();
 
@@ -390,12 +374,11 @@ test.describe('Lexicon E2E New Project wizard app', () => {
         newLexProjectPageMember.page.waitForEvent('filechooser'),
         newLexProjectPageMember.initialDataPageBrowseButton.click(),
       ]);
-      expect(noticeElement.notice).toHaveCount(0);
-      const jpgFileName: string = 'FriedRiceWithPork.jpg'
-      await fileChooser2.setFiles('test/e2e/shared-files/' + jpgFileName);
-      await expect(noticeElement.notice).toBeVisible();
-      expect(noticeElement.notice).toHaveCount(1);
-      await expect(noticeElement.notice).toContainText(jpgFileName + ' is not an allowed compressed file. Ensure the file is');
+      await expect(noticeElement.notices).toHaveCount(0);
+      await fileChooser2.setFiles(testFilePath('FriedRiceWithPork.jpg'));
+      await expect(noticeElement.notices).toBeVisible();
+      await expect(noticeElement.notices).toHaveCount(1);
+      await expect(noticeElement.notices).toContainText(`FriedRiceWithPork.jpg is not an allowed compressed file. Ensure the file is`);
       await expect(newLexProjectPageMember.initialDataPageBrowseButton).toBeVisible();
       await expect(newLexProjectPageMember.verifyDataPage.entriesImported).not.toBeVisible();
       await newLexProjectPageMember.expectFormStatusHasNoError();
@@ -407,15 +390,12 @@ test.describe('Lexicon E2E New Project wizard app', () => {
         newLexProjectPageMember.page.waitForEvent('filechooser'),
         newLexProjectPageMember.initialDataPageBrowseButton.click(),
       ]);
-      expect(noticeElement.notice).toHaveCount(0);
-      // TODO: potentially add another test testing for invalid zip file, notice text "Import failed. Status: 400 Bad Request- [object Object]"
-      // const dummySmallFileName: string = 'dummy_small_file.zip';
-      const testLexProjectFileName: string = 'TestLexProject.zip';
+      await expect(noticeElement.notices).toHaveCount(0);
       const numberOfEntriesInTestLexProjectFile: number = 2;
-      await fileChooser3.setFiles('test/e2e/shared-files/' + testLexProjectFileName);
+      await fileChooser3.setFiles(testFilePath('TestLexProject.zip'));
       await expect(newLexProjectPageMember.verifyDataPage.entriesImported).toBeVisible();
-      expect(noticeElement.notice).toHaveCount(1);
-      await expect(noticeElement.notice).toContainText('Successfully imported ' + testLexProjectFileName);
+      await expect(noticeElement.notices).toHaveCount(1);
+      await expect(noticeElement.notices).toContainText(`Successfully imported TestLexProject.zip`);
       await newLexProjectPageMember.expectFormStatusHasNoError();
 
       // step 3: verify data
@@ -444,12 +424,12 @@ test.describe('Lexicon E2E New Project wizard app', () => {
       // --can go to lexicon ------------------------------------------------------------
       await expect(newLexProjectPageMember.nextButton).toBeVisible();
       await newLexProjectPageMember.expectFormIsValid();
-      await newLexProjectPageMember.nextButton.click();
-      await newLexProjectPageMember.page.waitForURL(/editor\/entry/);
-      const myRe = /(?<=(.*app\/lexicon\/))(.*)(?=(#!\/editor\/entry\/.*))/;
-      newProject01.id = myRe.exec(newLexProjectPageMember.page.url())[0];
-      const entriesListPage: EntriesListPage = new EntriesListPage(newLexProjectPageMember.page, newProject01);
-      await entriesListPage.expectTotalNumberOfEntries(numberOfEntriesInTestLexProjectFile);
+
+      const [, editorPage] = await Promise.all([
+        newLexProjectPageMember.nextButton.click(),
+        EditorPage.waitForNewProject(newLexProjectPageMember.page, newProject01),
+      ]);
+      await editorPage.entryList.expectTotalNumberOfEntries(numberOfEntriesInTestLexProjectFile);
     });
 
     // step 2: initial data & step 3: verify data
@@ -479,20 +459,16 @@ test.describe('Lexicon E2E New Project wizard app', () => {
 
       await newLexProjectPageMember.namePage.projectNameInput.fill(newProject03.name)
       await newLexProjectPageMember.nextButton.click();
+      await expect(newLexProjectPageMember.initialDataPageBrowseButton).toBeVisible();
       await newLexProjectPageMember.nextButton.click();
 
       // --Can go back to initial data page (then forward again) ----------------------
-      //  skip test because of flakiness
-      /* await expect(newLexProjectPageMember.backButton).toBeVisible();
-      await expect(newLexProjectPageMember.backButton).toBeEnabled();
-      // TODO: find out why the following line is flaky
       await newLexProjectPageMember.backButton.click();
       await expect(newLexProjectPageMember.initialDataPageBrowseButton).toBeVisible();
-      await expect(newLexProjectPageMember.nextButton).toBeEnabled();
       await newLexProjectPageMember.expectFormIsNotValid();
       await newLexProjectPageMember.nextButton.click();
       await expect(newLexProjectPageMember.primaryLanguagePageSelectButton).toBeVisible();
-      await expect(newLexProjectPageMember.backButton).toBeVisible(); */
+      await expect(newLexProjectPageMember.backButton).toBeVisible();
 
       // --Cannot move on if language is not selected ----------------------------------
       await newLexProjectPageMember.nextButton.click();
@@ -508,7 +484,7 @@ test.describe('Lexicon E2E New Project wizard app', () => {
       await expect(newLexProjectPageMember.primaryLanguagePageSelectButton).toBeEnabled();
       await newLexProjectPageMember.primaryLanguagePageSelectButton.click();
       await expect(newLexProjectPageMember.selectLanguage.searchLanguageInput).toBeVisible();
-      await newLexProjectPageMember.selectLanguage.searchLanguageInput.fill(constants.searchLanguage);
+      await newLexProjectPageMember.selectLanguage.searchLanguageInput.fill('Spanish');
       await newLexProjectPageMember.selectLanguage.searchLanguageInput.press('Enter');
       await expect(newLexProjectPageMember.selectLanguage.languageRows.first()).toBeVisible();
 
@@ -516,9 +492,23 @@ test.describe('Lexicon E2E New Project wizard app', () => {
       await expect(newLexProjectPageMember.selectLanguage.addButton).not.toBeEnabled();
       await newLexProjectPageMember.selectLanguage.languageRows.first().click();
       await expect(newLexProjectPageMember.selectLanguage.addButton).toBeEnabled();
-      await expect(newLexProjectPageMember.selectLanguage.addButton).toHaveText('Add ' + constants.foundLanguage);
+      await expect(newLexProjectPageMember.selectLanguage.addButton).toHaveText('Add español');
       await newLexProjectPageMember.selectLanguage.addButton.click();
       await expect(newLexProjectPageMember.selectLanguage.searchLanguageInput).not.toBeVisible();
+
+      await newLexProjectPageMember.expectFormStatusHasNoError();
+      await expect(newLexProjectPageMember.nextButton).toBeEnabled();
+      await newLexProjectPageMember.expectFormIsValid();
+
+      const [, editorPage] = await Promise.all([
+        newLexProjectPageMember.nextButton.click(),
+        EditorPage.waitForNewProject(newLexProjectPageMember.page, newProject03),
+      ]);
+
+      await expect(editorPage.noEntries).toBeVisible();
+      await editorPage.entryList.createNewWordButton.click();
+      await editorPage.entryList.expectTotalNumberOfEntries(1);
+      await expect(editorPage.field('Word', 'es')).toBeVisible();
     });
   });
 });

@@ -1,7 +1,7 @@
 import { expect, Page } from '@playwright/test';
 import { BasePage } from './base-page';
 
-export class NewLexProjectPage extends BasePage {
+export class NewLexProjectPage extends BasePage<NewLexProjectPage> {
 
   // form controls
   readonly backButton = this.page.locator('#back-button');
@@ -65,10 +65,7 @@ export class NewLexProjectPage extends BasePage {
   }
 
   async expectFormStatusHasNoError() {
-    // this expect was flaky; suspicion: await and retry do not work properly with the "not" negation
-    await expect(this.formStatus).not.toHaveClass('alert-danger');
-    // this regular expression finds everything not containing "alert-danger"
-    // await expect(this.formStatus).toHaveClass(/^((?!alert-danger).)*$/);
+    await expect(this.formStatus).not.toHaveClass(/alert-danger/);
   }
 
   async expectFormStatusHasError() {

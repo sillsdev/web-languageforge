@@ -1,7 +1,7 @@
 import { Page } from '@playwright/test';
 import { BasePage } from './base-page';
 
-export class UserProfilePage extends BasePage {
+export class UserProfilePage extends BasePage<UserProfilePage> {
   readonly activitiesList = this.page.locator('[data-ng-repeat="item in filteredActivities"]');
   readonly tabs = {
     aboutMe: this.page.locator('#AboutMeTab'),

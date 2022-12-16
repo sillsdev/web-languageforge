@@ -5,7 +5,7 @@ export interface SignupGotoOptions extends GotoOptions {
   email?: string;
 }
 
-export class SignupPage extends BasePage {
+export class SignupPage extends BasePage<SignupPage> {
   readonly emailInput = this.page.locator('#email');
   readonly emailInvalid = this.page.locator('#emailInvalid');
   readonly emailTaken = this.page.locator('#emailTaken');
@@ -54,7 +54,7 @@ export class SignupPage extends BasePage {
     super(page, '/public/signup', page.locator('#email'));
   }
 
-  async goto(options?: SignupGotoOptions) {
+  async goto(options?: SignupGotoOptions): Promise<SignupPage> {
     if (options?.email) {
       await this.page.goto(this.url + '#!/?e=' + encodeURIComponent(options?.email));
       await Promise.all([
@@ -64,6 +64,7 @@ export class SignupPage extends BasePage {
     } else {
       await super.goto();
     }
+    return this;
   }
 
   async setInvalidCaptcha() {

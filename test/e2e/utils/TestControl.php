@@ -11,6 +11,7 @@ use Api\Model\Shared\Command\UploadResponse;
 use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\UserModel;
 use Api\Model\Shared\UserModelWithPassword;
+use Api\Model\Languageforge\Lexicon\Guid;
 use Api\Model\Languageforge\Lexicon\LexEntryModel;
 use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\Languageforge\Lexicon\Config\LexConfig;
@@ -37,13 +38,11 @@ require_once APPPATH . "vendor/autoload.php";
 
 class TestControl
 {
+    private static $testFileRoot = "/tmp/e2e-test-data";
+
     public function __construct(Application $app)
     {
         $this->app = $app;
-        // $rootPath = realpath(__DIR__.'/../../');
-
-        // $TestPath = $rootPath.'/test/';
-        // $this->constants = json_decode(file_get_contents($TestPath . 'app/testConstants.json'), true);
     }
 
     /** @var Application */
@@ -99,12 +98,22 @@ class TestControl
         return $userId;
     }
 
-    public function change_password($username, $password)
+    public function get_reset_password_key($usernameOrEmail)
     {
         $user = new UserModelWithPassword();
-        if ($user->readByUserName($username)) {
-            $user->changePassword($password);
-            return $user->write();
+        if ($user->readByUsernameOrEmail($usernameOrEmail)) {
+            return $user->resetPasswordKey;
+        }
+        return "";
+    }
+
+    public function expire_and_get_reset_password_key($usernameOrEmail)
+    {
+        $user = new UserModelWithPassword();
+        if ($user->readByUsernameOrEmail($usernameOrEmail)) {
+            $user->resetPasswordExpirationDate = new \DateTime();
+            $user->write();
+            return $user->resetPasswordKey;
         }
         return "";
     }
@@ -140,7 +149,7 @@ class TestControl
         $db = MongoStore::connect(DATABASE);
         $coll = $db->selectCollection("projects");
         $coll->deleteMany(["projectCode" => $projectCode]);
-        $projectModel = new ProjectModel();
+        $projectModel = new LexProjectModel();
         $projectModel->projectName = $projectName;
         $projectModel->projectCode = $projectCode;
         $projectModel->appName = LexProjectModel::LEXICON_APP;
@@ -159,6 +168,7 @@ class TestControl
         MongoStore::dropAllCollections($projectModel->databaseName());
         MongoStore::dropDB($projectModel->databaseName());
         $projectModel->write();
+        $projectModel->initializeNewProject();
         // Now we know projectModel id, so now user models can be updated with membership
         foreach ($memberUsernames as $username) {
             $user = new UserModel();
@@ -178,26 +188,26 @@ class TestControl
         return $langTag;
     }
 
-    public function add_audio_visual_file_to_project($projectCode, $tmpFilePath)
+    public function add_audio_visual_file_to_project($projectCode, $testFile)
     {
         $project = ProjectModel::getByProjectCode($projectCode);
-        $response = TestControl::uploadMediaFile($project, "audio", $tmpFilePath);
+        $response = TestControl::uploadMediaFile($project, "audio", $testFile);
         return JsonEncoder::encode($response);
     }
 
-    public function add_picture_file_to_project($projectCode, $tmpFilePath)
+    public function add_picture_file_to_project($projectCode, $testFile)
     {
         $project = ProjectModel::getByProjectCode($projectCode);
-        $response = TestControl::uploadMediaFile($project, "sense-image", $tmpFilePath);
+        $response = TestControl::uploadMediaFile($project, "sense-image", $testFile);
         return JsonEncoder::encode($response);
     }
 
-    public static function uploadMediaFile($project, $mediaType, $tmpFilePath)
+    public static function uploadMediaFile($project, $mediaType, $testFile)
     {
         if ($mediaType != "audio" && $mediaType != "sense-image") {
             throw new \Exception("Unsupported upload type.");
         }
-        if (!$tmpFilePath) {
+        if (!$testFile) {
             throw new \Exception("No file given.");
         }
 
@@ -206,14 +216,15 @@ class TestControl
         $folderPath = $mediaType == "audio" ? $project->getAudioFolderPath() : $project->getImageFolderPath();
 
         // move uploaded file from tmp location to assets
-        $filename = FileUtilities::replaceSpecialCharacters(\basename($tmpFilePath));
+        $filename = FileUtilities::replaceSpecialCharacters(\basename($testFile));
         $filePath = $folderPath . DIRECTORY_SEPARATOR . $filename;
-        $moveOk = copy($tmpFilePath, $filePath);
-        // Do NOT delete $tmpFilePath as we're doing E2E tests and probably want to keep the original around
+        $srcFilePath = TestControl::$testFileRoot . DIRECTORY_SEPARATOR . $testFile;
+        $moveOk = copy($srcFilePath, $filePath);
+        // Do NOT delete $srcFilePath as we're doing E2E tests and probably want to keep the original around
 
         // construct server response
         $response = new UploadResponse();
-        if ($moveOk && $tmpFilePath) {
+        if ($moveOk) {
             $data = new MediaResult();
             $assetsPath = $project->getAssetsRelativePath();
             $data->path =
@@ -261,110 +272,12 @@ class TestControl
         return true;
     }
 
-    public function add_custom_field(
-        string $projectCode,
-        string $customFieldName,
-        string $parentField = "entry",
-        string $customFieldType = "MultiString",
-        $extraOptions = null
-    ) {
-        error_log("add_custom_field");
-        $prefix = "customField_" . $parentField . "_";
-        if (\strpos($customFieldName, $prefix) !== 0) {
-            $customFieldName = $prefix . $customFieldName;
-        }
-        $project = ProjectModel::getByProjectCode($projectCode);
-        error_log($project->id->asString());
-        switch ($parentField) {
-            case "entry":
-                $config = $project->config->entry;
-                break;
-            case "senses":
-                $config = $project->config->entry->fields[LexConfig::SENSES_LIST];
-                break;
-            case "examples":
-                $config = $project->config->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST];
-                break;
-        }
-        $config->fieldOrder->ensureValueExists($customFieldName);
-        if (!array_key_exists($customFieldName, $config->fields)) {
-            switch ($customFieldType) {
-                case "ReferenceAtom":
-                    $config->fields[$customFieldName] = new LexConfigOptionList();
-                    $config->fields[$customFieldName]->listCode = $extraOptions["listCode"];
-                    break;
-                case "ReferenceCollection":
-                    $config->fields[$customFieldName] = new LexConfigMultiOptionList();
-                    $config->fields[$customFieldName]->listCode = $extraOptions["listCode"];
-                    break;
-                case "OwningAtom":
-                    $config->fields[$customFieldName] = new LexConfigMultiParagraph();
-                    break;
-                default:
-                    $config->fields[$customFieldName] = new LexConfigMultiText();
-                    $config->fields[$customFieldName]->inputSystems = new ArrayOf();
-                    if ($extraOptions["inputSystems"]) {
-                        foreach ($extraOptions["inputSystems"] as $ws) {
-                            $config->fields[$customFieldName]->inputSystems->ensureValueExists($ws);
-                        }
-                    }
-            }
-            $label = str_replace($prefix, "", $customFieldName);
-            $config->fields[$customFieldName]->label = str_replace(" ", "_", $label);
-            $config->fields[$customFieldName]->hideIfEmpty = false;
-        }
-        // PHP copies objects by value, not reference, so now we have to write the config back
-        switch ($parentField) {
-            case "entry":
-                $project->config->entry = $config;
-                break;
-            case "senses":
-                $project->config->entry->fields[LexConfig::SENSES_LIST] = $config;
-                break;
-            case "examples":
-                $project->config->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST] = $config;
-                break;
-        }
-
-        // Now make the custom field visible in all views
-        foreach ($project->config->roleViews as $role => $roleView) {
-            if (!array_key_exists($customFieldName, $roleView->fields)) {
-                if ($customFieldType == "MultiUnicode" || $customFieldType == "MultiString") {
-                    $roleView->fields[$customFieldName] = new LexViewMultiTextFieldConfig();
-                } else {
-                    $roleView->fields[$customFieldName] = new LexViewFieldConfig();
-                }
-                $roleView->fields[$customFieldName]->show = true;
-            }
-        }
-        foreach ($project->config->userViews as $userId => $userView) {
-            if (!array_key_exists($customFieldName, $userView->fields)) {
-                if ($customFieldType == "MultiUnicode" || $customFieldType == "MultiString") {
-                    $userView->fields[$customFieldName] = new LexViewMultiTextFieldConfig();
-                } else {
-                    $userView->fields[$customFieldName] = new LexViewFieldConfig();
-                }
-                $userView->fields[$customFieldName]->show = true;
-            }
-        }
-
-        $project->write();
-
-        return $customFieldName;
-    }
-
     public function add_lexical_entry(string $projectCode, array $data)
     {
         $project = ProjectModel::getByProjectCode($projectCode);
         $entry = new LexEntryModel($project);
         LexEntryDecoder::decode($entry, $data);
+        $entry->guid = Guid::makeValid("");
         return $entry->write();
-    }
-
-    public function get_project_json(string $projectCode)
-    {
-        $db = MongoStore::connect(DATABASE);
-        $project = $db->projects->findOne(["projectCode" => $projectCode]);
-        return $project;
     }
 }

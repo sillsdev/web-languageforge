@@ -6,7 +6,10 @@ start: build
 	docker compose up -d ssl
 
 .PHONY: dev
-dev: start
+dev: start ui-builder
+
+.PHONY: ui-builder
+ui-builder:
 	docker compose up -d ui-builder
 
 .PHONY: e2e-tests-ci
@@ -16,10 +19,9 @@ e2e-tests-ci:
 	npx playwright install chromium && npx playwright test -c ./test/e2e/playwright.config.ts
 
 .PHONY: e2e-tests
-e2e-tests:
+e2e-tests: ui-builder
 	npm install
 	$(MAKE) playwright-app
-	docker compose up -d ui-builder
 	npx playwright install chromium && npx playwright test -c ./test/e2e/playwright.config.ts $(params)
 
 .PHONY: playwright-app
@@ -70,6 +72,7 @@ clean:
 	docker compose down
 	docker system prune -f
 
+.PHONY: clean-test
 clean-test:
 	cd test/e2e && npx rimraf test-storage-state test-results
 

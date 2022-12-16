@@ -1,7 +1,7 @@
 import { Page } from '@playwright/test';
 import { BasePage } from './base-page';
 
-export class ActivityPage extends BasePage {
+export class ActivityPage extends BasePage<ActivityPage> {
   readonly activitiesList = this.page.locator('.activity-content');
 
   constructor(page: Page) {

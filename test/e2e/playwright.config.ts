@@ -1,7 +1,6 @@
 import type { PlaywrightTestConfig } from '@playwright/test';
-import { expect } from '@playwright/test';
-import { devices } from '@playwright/test';
-import { toHaveSelectedOption } from './utils/playwright-helpers';
+import { devices, expect } from '@playwright/test';
+import { matchers } from './utils/custom-matchers';
 
 /**
  * Read environment variables from file.
@@ -9,16 +8,14 @@ import { toHaveSelectedOption } from './utils/playwright-helpers';
  */
 // require('dotenv').config();
 
-expect.extend({
-  toHaveSelectedOption,
-});
+expect.extend({ ...matchers });
 
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
 const config: PlaywrightTestConfig = {
   /* Maximum time one test can run for. */
-  timeout: 30 * 1000,
+  timeout: 60 * 1000,
   expect: {
     /**
      * Maximum time expect() should wait for the condition to be met.
@@ -41,7 +38,7 @@ const config: PlaywrightTestConfig = {
     // Putting the HTML report in a subdirectory of the main output directory results in a warning log
     // stating that it will "lead to artifact loss" but the warning in this case is not accurate
     // npx playwright show-report test-results/_html-report
-    : [['html', {outputFolder: 'test-results/_html-report', open: 'never'}]],
+    : [['html', { outputFolder: 'test-results/_html-report', open: 'never' }]],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Maximum time each action such as `click()` can take. Defaults to 0 (no limit). */
@@ -49,8 +46,8 @@ const config: PlaywrightTestConfig = {
     /* Base URL to use in actions like `await page.goto('/')`. */
     // baseURL: 'http://localhost:3000',
 
-    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: 'retain-on-failure',
+    /* See https://playwright.dev/docs/trace-viewer */
+    trace: process.env.CI ? 'retain-on-failure' : 'on',
     screenshot: 'on',
   },
 
