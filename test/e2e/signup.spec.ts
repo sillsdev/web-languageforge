@@ -10,8 +10,8 @@ test.describe('Signup', () => {
   const unusedName = 'Super amazing unused name';
   const unusedEmail = 'unused-email@valuable-but-unnoticed.com';
 
-  test.beforeAll(async ({ anonTab }) => {
-    signupPage = new SignupPage(anonTab);
+  test.beforeEach(async ({ tab }) => {
+    signupPage = new SignupPage(tab);
   })
 
   test('Cannot submit if email is invalid', async () => {

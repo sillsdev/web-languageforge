@@ -5,12 +5,13 @@ import { Project, toProjectCode } from './project-utils';
 import { UserDetails } from './types';
 
 export async function initTestProject(request: APIRequestContext,
-  code: string,
   name: string,
+  code: string | undefined,
   owner: UserDetails,
   members: UserDetails[] = []): Promise<Project> {
-  const id = await testControl(request, 'init_test_project', [code, name, owner.username, members.map(user => user.username)]);
-  return { name, code, id };
+  const projectCode = code ?? toProjectCode(name);
+  const id = await testControl(request, 'init_test_project', [projectCode, name, owner.username, members.map(user => user.username)]);
+  return { name, code: projectCode, id };
 }
 
 export async function initTestProjectForTest(
@@ -21,7 +22,7 @@ export async function initTestProjectForTest(
   // Make sure it's short enough to be a database name
   const name = `${testInfo.title.slice(0, 40)}`;
   const code = toProjectCode(name);
-  return initTestProject(request, code, name, owner, members);
+  return initTestProject(request, name, code, owner, members);
 }
 
 export function addWritingSystemToProject(request: APIRequestContext, project: Project, languageTag: string, abbr = '', name = '') {

@@ -33,11 +33,11 @@ test.describe('Project Settings', () => {
 
   test.beforeAll(async ({ request }) => {
     for (const project of projects) {
-      const projectId = (await initTestProject(request, project.code, project.name, users.admin, [users.member])).id;
+      const projectId = (await initTestProject(request, project.name, project.code, users.admin, [users.member])).id;
       project.id = projectId;
     }
     await addUserToProject(request, projects[0], users.manager, 'manager');
-    project4.id = (await initTestProject(request, project4.code, project4.name, users.manager, [])).id;
+    project4.id = (await initTestProject(request, project4.name, project4.code, users.manager, [])).id;
   });
 
   // test if can change project name

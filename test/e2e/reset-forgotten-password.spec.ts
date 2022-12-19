@@ -8,7 +8,7 @@ import { test } from './utils/fixtures';
 
 test.describe('Reset forgotten password', () => {
 
-  test('User can reset password', async ({ anonTab, userService }) => {
+  test('User can reset password', async ({ tab, userService }) => {
     const time = Date.now();
     const user = {
       name: `Reset password user - ${time}`,
@@ -18,7 +18,7 @@ test.describe('Reset forgotten password', () => {
     };
 
     const loginPage = await test.step('Create new account and sign out', async () => {
-      const signupPage = await new SignupPage(anonTab).goto();
+      const signupPage = await new SignupPage(tab).goto();
 
       await signupPage.nameInput.fill(user.name);
       await signupPage.emailInput.fill(user.email);
@@ -27,14 +27,14 @@ test.describe('Reset forgotten password', () => {
 
       const [, projectPage] = await Promise.all([
         signupPage.signupButton.click(),
-        new ProjectsPage(anonTab).waitFor(),
+        new ProjectsPage(tab).waitFor(),
       ]);
 
       await projectPage.header.userDropdownButton.click();
 
       const [, loginPage] = await Promise.all([
         projectPage.header.userDropdown.logout.click(),
-        new LoginPage(anonTab).waitFor(),
+        new LoginPage(tab).waitFor(),
       ]);
 
       return loginPage;
@@ -43,7 +43,7 @@ test.describe('Reset forgotten password', () => {
     await test.step('Request password reset email', async () => {
       const [, forgotPasswordPage] = await Promise.all([
         loginPage.forgotPasswordLink.click(),
-        new ForgotPasswordPage(anonTab).waitFor(),
+        new ForgotPasswordPage(tab).waitFor(),
       ]);
 
       await forgotPasswordPage.usernameOrEmailInput.type(user.email);
@@ -58,7 +58,7 @@ test.describe('Reset forgotten password', () => {
 
     await test.step('Reset password', async () => {
       const resetKey = await userService.getResetPasswordKey(user.email);
-      const resetPasswordPage = await new ResetPasswordPage(anonTab, resetKey).goto({ expectRedirect: true });
+      const resetPasswordPage = await new ResetPasswordPage(tab, resetKey).goto({ expectRedirect: true });
       await expect(resetPasswordPage.page.getByText('Please choose a new password')).toBeVisible();
 
       await resetPasswordPage.newPasswordField.type(user.newPassword);
@@ -78,27 +78,27 @@ test.describe('Reset forgotten password', () => {
 
       await Promise.all([
         loginPage.submitButton.click(),
-        new ProjectsPage(anonTab).waitFor(),
+        new ProjectsPage(tab).waitFor(),
       ]);
     });
   });
 
-  test('Can\'t reset password for non-existent account', async ({ anonTab }) => {
-    const forgotPasswordPage = await new ForgotPasswordPage(anonTab).goto();
+  test('Can\'t reset password for non-existent account', async ({ tab }) => {
+    const forgotPasswordPage = await new ForgotPasswordPage(tab).goto();
     await forgotPasswordPage.usernameOrEmailInput.type('nope I definitely do not exists hehe');
     await forgotPasswordPage.submitButton.click();
     await expect(forgotPasswordPage.errors).toContainText('User not found');
   });
 
-  test('Can\'t use expired reset password link', async ({ anonTab, userService }) => {
+  test('Can\'t use expired reset password link', async ({ tab, userService }) => {
     const user = await userService.createRandomUser();
 
     await test.step('Request password reset email', async () => {
-      const loginPage = await new LoginPage(anonTab).goto();
+      const loginPage = await new LoginPage(tab).goto();
 
       const [, forgotPasswordPage] = await Promise.all([
         loginPage.forgotPasswordLink.click(),
-        new ForgotPasswordPage(anonTab).waitFor(),
+        new ForgotPasswordPage(tab).waitFor(),
       ]);
 
       await forgotPasswordPage.usernameOrEmailInput.type(user.username);
@@ -114,8 +114,8 @@ test.describe('Reset forgotten password', () => {
 
     await test.step('Try to use expired reset password key', async () => {
       const [, loginPage] = await Promise.all([
-        new ResetPasswordPage(anonTab, resetKey).goto({ expectRedirect: true }),
-        new LoginPage(anonTab).waitFor(),
+        new ResetPasswordPage(tab, resetKey).goto({ expectRedirect: true }),
+        new LoginPage(tab).waitFor(),
       ])
       await expect(loginPage.errors).toContainText('Your password reset cannot be completed. It may have expired.');
     });

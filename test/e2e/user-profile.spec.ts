@@ -8,11 +8,11 @@ import { test } from './utils/fixtures';
 // Potentially flaky in CI. We're investigating.
 test.describe.fixme('User Profile', () => {
 
-  test('Generated user account and about me info', async ({ page, userService }) => {
+  test('Generated user account and about me info', async ({ tab, userService }) => {
     const user = await userService.createRandomUser();
-    await login(page, user);
+    await login(tab, user);
 
-    const userProfilePage = await new UserProfilePage(page).goto();
+    const userProfilePage = await new UserProfilePage(tab).goto();
 
     await expect(userProfilePage.accountTab.emailField).toHaveValue(user.email);
     await expect(userProfilePage.accountTab.usernameField).toHaveValue(user.username);
@@ -24,14 +24,14 @@ test.describe.fixme('User Profile', () => {
   });
 
 
-  test('Update user account info', async ({ page, userService }) => {
+  test('Update user account info', async ({ tab, userService }) => {
     const user = await userService.createRandomUser();
-    await login(page, user);
+    await login(tab, user);
 
-    const userProfilePage = new UserProfilePage(page);
+    const userProfilePage = new UserProfilePage(tab);
     await userProfilePage.goto();
 
-    const newEmail = `newemail-fun-fun-fun@example.com`;
+    const newEmail = `newemail-${Date.now()}@example.com`;
     await userProfilePage.accountTab.emailField.fill(newEmail);
     await userProfilePage.accountTab.colorField.selectOption({ label: 'Steel Blue' });
     await userProfilePage.accountTab.animalField.selectOption({ label: 'Otter' });
@@ -47,16 +47,16 @@ test.describe.fixme('User Profile', () => {
     await expect(userProfilePage.accountTab.animalField).toHaveSelectedOption({ label: 'Otter' });
   });
 
-  test('Update username and re-login', async ({ page, userService }) => {
+  test('Update username and re-login', async ({ tab, userService }) => {
     const user = await userService.createRandomUser();
-    await login(page, user);
+    await login(tab, user);
 
     const currUsername = user.username;
     const newUsername = `${user.username}-new`;
 
-    await changeUsernameAndLogin(newUsername, user, page);
+    await changeUsernameAndLogin(newUsername, user, tab);
     const newDetails = { ...user, username: newUsername };
-    await changeUsernameAndLogin(currUsername, newDetails, page);
+    await changeUsernameAndLogin(currUsername, newDetails, tab);
   });
 
   const changeUsernameAndLogin = async (newUsername: string, currDetails: UserDetails, tab: Page): Promise<void> => {
@@ -83,11 +83,11 @@ test.describe.fixme('User Profile', () => {
     ]);
   };
 
-  test('Update user about me info', async ({ page, userService }) => {
+  test('Update user about me info', async ({ tab, userService }) => {
     const user = await userService.createRandomUser();
-    await login(page, user);
+    await login(tab, user);
 
-    const userProfilePage = new UserProfilePage(page);
+    const userProfilePage = new UserProfilePage(tab);
     await userProfilePage.goto();
     await userProfilePage.tabs.aboutMe.click();
 

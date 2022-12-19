@@ -8,20 +8,13 @@ import { Project, testFilePath } from './utils';
 import { projectPerTest, test } from './utils/fixtures';
 import { addAudioVisualFileToProject, addLexEntry, addPictureFileToProject, addUserToProject, addWritingSystemToProject, initTestProject } from './utils/testSetup';
 
-
 test.describe('Entry Editor and Entries List', () => {
 
-  const lexemeLabel = 'Word';
-
-  const project: Project = {
-    name: 'editor_entry_spec_ts Project 01',
-    code: 'p01_editor_entry_spec_ts__project_01',
-    id: ''
-  };
+  let project: Project;
   let lexEntriesIds: string[] = [];
 
-  test.beforeAll(async ({ request }) => {
-    project.id = (await initTestProject(request, project.code, project.name, users.manager, [users.member])).id;
+  test.beforeAll(async ({ request }, testInfo) => {
+    project = await initTestProject(request, testInfo.titlePath[0], undefined, users.manager, [users.member]);
     await addUserToProject(request, project, users.observer, "observer");
     await addWritingSystemToProject(request, project, 'th-fonipa', 'tipa');
     await addWritingSystemToProject(request, project, 'th-Zxxx-x-audio', 'taud');
@@ -68,87 +61,96 @@ test.describe('Entry Editor and Entries List', () => {
         entryListPageManager.entry(entries.entry1.lexeme.th.value).click(),
         new EditorPage(entryListPageManager.page, project).waitFor(),
       ])
-      await expect(editorPageManager.getTextarea(editorPageManager.entryCard, lexemeLabel, 'th')).toHaveValue(entries.entry1.lexeme.th.value);
+      await expect(editorPageManager.getTextarea(editorPageManager.entryCard, 'Word', 'th')).toHaveValue(entries.entry1.lexeme.th.value);
     });
 
   });
 
   test.describe('Entry Editor', () => {
 
-    let editorPageManager: EditorPage;
+    test.describe('Entries', () => {
 
-    test.beforeEach(async ({ managerTab }) => {
-      editorPageManager = new EditorPage(managerTab, project);
-    });
+      let editorPageManager: EditorPage;
 
-    test('Can go from entry editor to entries list', async () => {
-      await editorPageManager.goto();
-      await Promise.all([
-        editorPageManager.navigateToEntriesList(),
-        new EntryListPage(editorPageManager.page, project).waitFor(),
-      ]);
-    });
+      test.beforeEach(({ managerTab }) => {
+        editorPageManager = new EditorPage(managerTab, project);
+      });
 
-    // left side bar entries list
-    test('Editor page has correct entry count in left side bar entries list', async () => {
-      await editorPageManager.goto();
-      await expect(editorPageManager.compactEntryListItem).toHaveCount(lexEntriesIds.length);
-    });
+      test('Can go from entry editor to entries list', async () => {
+        await editorPageManager.goto();
+        await Promise.all([
+          editorPageManager.navigateToEntriesList(),
+          new EntryListPage(editorPageManager.page, project).waitFor(),
+        ]);
+      });
 
-    test('Entry 1: edit page has correct definition, part of speech', async () => {
-      await editorPageManager.goto();
-      await expect(editorPageManager.getTextarea(
-        editorPageManager.senseCard, 'Definition', 'en'))
-        .toHaveValue(entries.entry1.senses[0].definition.en.value);
-      expect(await editorPageManager.getSelectedValueFromSelectDropdown(editorPageManager.senseCard, 'Part of Speech'))
-        .toEqual(entries.entry1.senses[0].partOfSpeech.displayName);
-    });
+      // left side bar entries list
+      test('Editor page has correct entry count in left side bar entries list', async () => {
+        await editorPageManager.goto();
+        await expect(editorPageManager.compactEntryListItem).toHaveCount(lexEntriesIds.length);
+      });
 
-    test('Add citation form as visible field', async ({ managerTab }) => {
-      const configurationPage = await new ConfigurationPageFieldsTab(managerTab, project).goto();
-      await configurationPage.tabLinks.fields.click();
-      await (await configurationPage.getCheckbox('Entry Fields', 'Citation Form', 'Hidden if Empty')).uncheck();
-      await configurationPage.applyButton.click();
-      await editorPageManager.goto();
-      await expect(editorPageManager.getTextarea(editorPageManager.entryCard, 'Citation Form', 'th')).toBeVisible();
-    });
+      test('Entry 1: edit page has correct definition, part of speech', async () => {
+        await editorPageManager.goto();
+        await expect(editorPageManager.getTextarea(
+          editorPageManager.senseCard, 'Definition', 'en'))
+          .toHaveValue(entries.entry1.senses[0].definition.en.value);
+        expect(await editorPageManager.getSelectedValueFromSelectDropdown(editorPageManager.senseCard, 'Part of Speech'))
+          .toEqual(entries.entry1.senses[0].partOfSpeech.displayName);
+      });
 
-    test('Citation form field overrides lexeme form in dictionary citation view', async ({ managerTab }) => {
-      const configurationPage = await new ConfigurationPageFieldsTab(managerTab, project).goto();
-      await configurationPage.toggleField('Entry Fields', 'Word');
-      await (await configurationPage.getFieldCheckbox('Entry Fields', 'Word', 'ภาษาไทย (IPA)')).check();
-      await configurationPage.applyButton.click();
+      test('Add citation form as visible field', async ({ managerTab }) => {
+        const configurationPage = await new ConfigurationPageFieldsTab(managerTab, project).goto();
+        await configurationPage.tabLinks.fields.click();
+        await (await configurationPage.getCheckbox('Entry Fields', 'Citation Form', 'Hidden if Empty')).uncheck();
+        await configurationPage.applyButton.click();
+        await editorPageManager.goto();
+        await expect(editorPageManager.getTextarea(editorPageManager.entryCard, 'Citation Form', 'th')).toBeVisible();
+      });
 
-      await editorPageManager.goto();
+      test('Citation form field overrides lexeme form in dictionary citation view', async ({ managerTab }) => {
+        const configurationPage = await new ConfigurationPageFieldsTab(managerTab, project).goto();
+        await configurationPage.toggleField('Entry Fields', 'Word');
+        await (await configurationPage.getFieldCheckbox('Entry Fields', 'Word', 'ภาษาไทย (IPA)')).check();
+        await configurationPage.applyButton.click();
 
-      // Dictionary citation reflects lexeme form when citation form is empty
-      await expect(editorPageManager.renderedDivs).toContainText([entries.entry1.lexeme.th.value, entries.entry1.lexeme.th.value]);
-      await expect(editorPageManager.renderedDivs).toContainText([entries.entry1.lexeme['th-fonipa'].value, entries.entry1.lexeme['th-fonipa'].value]);
-      await expect(editorPageManager.renderedDivs).not.toContainText(['citation form', 'citation form']);
-      await editorPageManager.showExtraFields();
-      const citationFormInput = editorPageManager.getTextarea(editorPageManager.entryCard, 'Citation Form', 'th');
-      await citationFormInput.fill('citation form');
+        await editorPageManager.goto();
 
-      await expect(editorPageManager.renderedDivs).toContainText(['citation form', 'citation form']);
-      await expect(editorPageManager.renderedDivs).not.toContainText([entries.entry1.lexeme.th.value, entries.entry1.lexeme.th.value]);
-      await expect(editorPageManager.renderedDivs).toContainText([entries.entry1.lexeme['th-fonipa'].value, entries.entry1.lexeme['th-fonipa'].value]);
+        // Dictionary citation reflects lexeme form when citation form is empty
+        await expect(editorPageManager.renderedDivs).toContainText([entries.entry1.lexeme.th.value, entries.entry1.lexeme.th.value]);
+        await expect(editorPageManager.renderedDivs).toContainText([entries.entry1.lexeme['th-fonipa'].value, entries.entry1.lexeme['th-fonipa'].value]);
+        await expect(editorPageManager.renderedDivs).not.toContainText(['citation form', 'citation form']);
+        await editorPageManager.showExtraFields();
+        const citationFormInput = editorPageManager.getTextarea(editorPageManager.entryCard, 'Citation Form', 'th');
+        await citationFormInput.fill('citation form');
 
-      await citationFormInput.fill('');
-      await expect(editorPageManager.renderedDivs).not.toContainText(['citation form', 'citation form']);
-      await expect(editorPageManager.renderedDivs).toContainText([entries.entry1.lexeme.th.value, entries.entry1.lexeme.th.value]);
-      await expect(editorPageManager.renderedDivs).toContainText([entries.entry1.lexeme['th-fonipa'].value, entries.entry1.lexeme['th-fonipa'].value]);
+        await expect(editorPageManager.renderedDivs).toContainText(['citation form', 'citation form']);
+        await expect(editorPageManager.renderedDivs).not.toContainText([entries.entry1.lexeme.th.value, entries.entry1.lexeme.th.value]);
+        await expect(editorPageManager.renderedDivs).toContainText([entries.entry1.lexeme['th-fonipa'].value, entries.entry1.lexeme['th-fonipa'].value]);
+
+        await citationFormInput.fill('');
+        await expect(editorPageManager.renderedDivs).not.toContainText(['citation form', 'citation form']);
+        await expect(editorPageManager.renderedDivs).toContainText([entries.entry1.lexeme.th.value, entries.entry1.lexeme.th.value]);
+        await expect(editorPageManager.renderedDivs).toContainText([entries.entry1.lexeme['th-fonipa'].value, entries.entry1.lexeme['th-fonipa'].value]);
+      });
     });
 
     test.describe('Picture', () => {
 
       const newProject = projectPerTest(true);
 
-      test('First picture and caption is present', async ({ request, managerTab }) => {
-        const screenshotProject: Project = await newProject();
-        await addLexEntry(request, screenshotProject.code, entries.entry1);
-        await addPictureFileToProject(request, screenshotProject, entries.entry1.senses[0].pictures[0].fileName);
+      let editorPageManager: EditorPage;
 
-        const editorPagePicture = await new EditorPage(managerTab, screenshotProject).goto();
+      test.beforeEach(({ managerTab }) => {
+        editorPageManager = new EditorPage(managerTab, project);
+      });
+
+      test('First picture and caption is present', async () => {
+        const screenshotProject: Project = await newProject();
+        await addLexEntry(editorPageManager.request, screenshotProject.code, entries.entry1);
+        await addPictureFileToProject(editorPageManager.request, screenshotProject, entries.entry1.senses[0].pictures[0].fileName);
+
+        const editorPagePicture = await new EditorPage(editorPageManager.page, screenshotProject).goto();
         const picture: Locator = await editorPagePicture.getPicture(editorPagePicture.senseCard, entries.entry1.senses[0].pictures[0].fileName);
         const img = await picture.elementHandle();
         await expect(editorPagePicture.page).toHaveScreenshot({ clip: await img.boundingBox() });
@@ -207,11 +209,11 @@ test.describe('Entry Editor and Entries List', () => {
         await expect(caption).toBeVisible();
       });
 
-      test('Picture is removed when Delete is clicked & can change config to hide pictures and hide captions', async ({ request, managerTab }) => {
+      test('Picture is removed when Delete is clicked & can change config to hide pictures and hide captions', async () => {
         const testProject: Project = await newProject();
-        await addLexEntry(request, testProject, entries.entry1);
-        await addPictureFileToProject(request, testProject, entries.entry1.senses[0].pictures[0].fileName);
-        const editorPagePicture = await new EditorPage(managerTab, testProject).goto();
+        await addLexEntry(editorPageManager.request, testProject, entries.entry1);
+        await addPictureFileToProject(editorPageManager.request, testProject, entries.entry1.senses[0].pictures[0].fileName);
+        const editorPagePicture = await new EditorPage(editorPageManager.page, testProject).goto();
 
         // Picture is removed when Delete is clicked
         let picture: Locator = await editorPagePicture.getPicture(editorPagePicture.senseCard, entries.entry1.senses[0].pictures[0].fileName);
@@ -222,7 +224,7 @@ test.describe('Entry Editor and Entries List', () => {
         picture = await editorPagePicture.getPicture(editorPagePicture.senseCard, entries.entry1.senses[0].pictures[0].fileName);
         expect(picture).toBeUndefined();
 
-        const configurationPage = await new ConfigurationPageFieldsTab(managerTab, testProject).goto();
+        const configurationPage = await new ConfigurationPageFieldsTab(editorPageManager.page, testProject).goto();
         await configurationPage.tabLinks.fields.click();
         await (await configurationPage.getCheckbox('Meaning Fields', 'Pictures', 'Hidden if Empty')).check();
         await configurationPage.toggleField('Meaning Fields', 'Pictures');
@@ -246,9 +248,9 @@ test.describe('Entry Editor and Entries List', () => {
     test.describe('Audio', () => {
       test.beforeAll(async ({ managerTab }) => {
         const configurationPage = await new ConfigurationPageFieldsTab(managerTab, project).goto();
-        await configurationPage.toggleField('Entry Fields', lexemeLabel);
-        await (await configurationPage.getFieldCheckbox('Entry Fields', lexemeLabel, 'ภาษาไทย (IPA)')).check();
-        await (await configurationPage.getFieldCheckbox('Entry Fields', lexemeLabel, 'ภาษาไทย (Voice)')).check();
+        await configurationPage.toggleField('Entry Fields', 'Word');
+        await (await configurationPage.getFieldCheckbox('Entry Fields', 'Word', 'ภาษาไทย (IPA)')).check();
+        await (await configurationPage.getFieldCheckbox('Entry Fields', 'Word', 'ภาษาไทย (Voice)')).check();
         await configurationPage.applyButton.click();
       });
 
@@ -256,13 +258,13 @@ test.describe('Entry Editor and Entries List', () => {
       test.describe('Member', () => {
         let editorPageMember: EditorPage;
 
-        test.beforeAll(async ({ memberTab }) => {
+        test.beforeEach(async ({ memberTab }) => {
           editorPageMember = new EditorPage(memberTab, project);
         });
 
         test('Audio input system is present, playable and has "more" control (member)', async () => {
           await editorPageMember.goto();
-          const audio = editorPageMember.getAudioPlayer(lexemeLabel, 'taud');
+          const audio = editorPageMember.getAudioPlayer('Word', 'taud');
           await expect(audio.playIcon).toBeVisible();
           await expect(audio.togglePlaybackAnchor).toBeEnabled();
 
@@ -275,7 +277,7 @@ test.describe('Entry Editor and Entries List', () => {
 
         test('Word 2 (without audio): audio input system is not playable but has "upload" button (member)', async () => {
           await editorPageMember.goto({ entryId: lexEntriesIds[1] });
-          const audio = editorPageMember.getAudioPlayer(lexemeLabel, 'taud');
+          const audio = editorPageMember.getAudioPlayer('Word', 'taud');
           await expect(audio.togglePlaybackAnchor).not.toBeVisible();
           await expect(audio.dropdownToggle).toBeEnabled();
           await expect(audio.uploadButton).toBeVisible();
@@ -287,13 +289,13 @@ test.describe('Entry Editor and Entries List', () => {
       test.describe('Observer', () => {
         let editorPageObserver: EditorPage;
 
-        test.beforeAll(async ({ observerTab }) => {
+        test.beforeEach(async ({ observerTab }) => {
           editorPageObserver = new EditorPage(observerTab, project);
         });
 
         test('Audio Input System is playable but does not have "more" control (observer)', async () => {
           await editorPageObserver.goto();
-          const audio = editorPageObserver.getAudioPlayer(lexemeLabel, 'taud');
+          const audio = editorPageObserver.getAudioPlayer('Word', 'taud');
           await expect(audio.playIcon).toBeVisible();
           await expect(audio.togglePlaybackAnchor).toBeVisible();
           await expect(audio.togglePlaybackAnchor).toBeEnabled();
@@ -304,7 +306,7 @@ test.describe('Entry Editor and Entries List', () => {
 
         test('Word 2 (without audio): audio input system is not playable and does not have "upload" button (observer)', async () => {
           await editorPageObserver.goto({ entryId: lexEntriesIds[1] });
-          const audio = editorPageObserver.getAudioPlayer(lexemeLabel, 'taud');
+          const audio = editorPageObserver.getAudioPlayer('Word', 'taud');
           await expect(audio.togglePlaybackAnchor).not.toBeVisible();
           await expect(audio.dropdownToggle).not.toBeVisible();
           await expect(audio.uploadButton).not.toBeVisible();
@@ -314,9 +316,15 @@ test.describe('Entry Editor and Entries List', () => {
 
       test.describe('Manager', () => {
 
+        let editorPageManager: EditorPage;
+
+        test.beforeEach(async ({ managerTab }) => {
+          editorPageManager = new EditorPage(managerTab, project);
+        });
+
         test('Audio input system is present, playable and has "more" control (manager)', async () => {
           await editorPageManager.goto();
-          const audio = editorPageManager.getAudioPlayer(lexemeLabel, 'taud');
+          const audio = editorPageManager.getAudioPlayer('Word', 'taud');
           await expect(audio.playIcon).toBeVisible();
           await expect(audio.togglePlaybackAnchor).toBeEnabled();
           await expect(audio.dropdownToggle).toBeVisible();
@@ -328,7 +336,7 @@ test.describe('Entry Editor and Entries List', () => {
 
         test('Slider is present and updates with seeking', async () => {
           await editorPageManager.goto();
-          const audio = editorPageManager.getAudioPlayer(lexemeLabel, 'taud');
+          const audio = editorPageManager.getAudioPlayer('Word', 'taud');
           await expect(audio.slider).toBeVisible();
           const bounds = await audio.slider.boundingBox();
           const yMiddle = bounds.y + bounds.height / 2;
@@ -344,7 +352,7 @@ test.describe('Entry Editor and Entries List', () => {
           const cancelAddingAudio = editorPageManager.getCancelDropboxButton(editorPageManager.entryCard, 'Audio');
           await expect(cancelAddingAudio).not.toBeVisible();
 
-          const audio = editorPageManager.getAudioPlayer(lexemeLabel, 'taud');
+          const audio = editorPageManager.getAudioPlayer('Word', 'taud');
           await audio.dropdownToggle.click();
           await audio.dropdownMenu.uploadReplacementButton.click();
           await expect(audio.dropdownToggle).not.toBeVisible();
@@ -370,7 +378,7 @@ test.describe('Entry Editor and Entries List', () => {
 
         test('Word 2 (without audio): audio input system is not playable but has "upload" button (manager)', async () => {
           await editorPageManager.goto({ entryId: lexEntriesIds[1] });
-          const audio = editorPageManager.getAudioPlayer(lexemeLabel, 'taud');
+          const audio = editorPageManager.getAudioPlayer('Word', 'taud');
           await expect(audio.playIcon).not.toBeVisible();
 
           await expect(audio.dropdownToggle).not.toBeVisible();
@@ -381,7 +389,7 @@ test.describe('Entry Editor and Entries List', () => {
 
         test('Can delete audio input system (manager)', async () => {
           await editorPageManager.goto();
-          const audio = editorPageManager.getAudioPlayer(lexemeLabel, 'taud');
+          const audio = editorPageManager.getAudioPlayer('Word', 'taud');
           await audio.dropdownToggle.click();
           await audio.dropdownMenu.deleteAudioButton.click();
           const confirmModal = new ConfirmModal(editorPageManager.page);
@@ -396,7 +404,7 @@ test.describe('Entry Editor and Entries List', () => {
           await expect(noticeElement.notices).toHaveCount(0);
 
           // Can't upload a non-audio file
-          const audio = editorPageManager.getAudioPlayer(lexemeLabel, 'taud');
+          const audio = editorPageManager.getAudioPlayer('Word', 'taud');
           await audio.uploadButton.click();
 
           // Note that Promise.all prevents a race condition between clicking and waiting for the file chooser.
@@ -549,7 +557,7 @@ test.describe('Entry Editor and Entries List', () => {
 
           // go back to editor
           await editorPageManager.page.goBack();
-          await (editorPageManager.getTextarea(editorPageManager.entryCard, lexemeLabel, 'th'))
+          await (editorPageManager.getTextarea(editorPageManager.entryCard, 'Word', 'th'))
             .fill(entries.entry3.lexeme.th.value);
           await (editorPageManager.getTextarea(editorPageManager.senseCard, 'Definition', 'en'))
             .fill(entries.entry3.senses[0].definition.en.value);
@@ -563,14 +571,14 @@ test.describe('Entry Editor and Entries List', () => {
 
           await expect(partOfSpeedDropdown).toHaveSelectedOption({ label: 'Noun (n)' });
 
-          const alreadyThere: string = await editorPageManager.getTextarea(editorPageManager.entryCard, lexemeLabel, 'th').inputValue();
-          await (editorPageManager.getTextarea(editorPageManager.entryCard, lexemeLabel, 'th'))
+          const alreadyThere: string = await editorPageManager.getTextarea(editorPageManager.entryCard, 'Word', 'th').inputValue();
+          await (editorPageManager.getTextarea(editorPageManager.entryCard, 'Word', 'th'))
             .fill(alreadyThere + 'a');
           await editorPageManager.page.reload();
           await expect((editorPageManager.getTextarea(
-            editorPageManager.entryCard, lexemeLabel, 'th')))
+            editorPageManager.entryCard, 'Word', 'th')))
             .toHaveValue(entries.entry3.lexeme.th.value + 'a');
-          await (editorPageManager.getTextarea(editorPageManager.entryCard, lexemeLabel, 'th'))
+          await (editorPageManager.getTextarea(editorPageManager.entryCard, 'Word', 'th'))
             .fill(entries.entry3.lexeme.th.value);
 
           // New word is visible in edit page
@@ -597,7 +605,7 @@ test.describe('Entry Editor and Entries List', () => {
 
           // previous entry is selected after delete
           await expect(editorPageManager.getTextarea(
-            editorPageManager.entryCard, lexemeLabel, 'th'))
+            editorPageManager.entryCard, 'Word', 'th'))
             .toHaveValue(entries.entry1.lexeme.th.value);
         });
       });
@@ -605,8 +613,8 @@ test.describe('Entry Editor and Entries List', () => {
     });
 
     test.describe('Entry ID in URL', () => {
-      test('URL entry id matches selected entry', async () => {
-        await editorPageManager.goto({ entryId: lexEntriesIds[1] });
+      test('URL entry id matches selected entry', async ({ managerTab }) => {
+        const editorPageManager = await new EditorPage(managerTab, project).goto({ entryId: lexEntriesIds[1] });
         expect(editorPageManager.page.url()).toContain(lexEntriesIds[1]);
         expect(editorPageManager.page.url()).not.toContain(lexEntriesIds[0]);
 
@@ -625,49 +633,56 @@ test.describe('Entry Editor and Entries List', () => {
       test.beforeAll(async ({ managerTab }) => {
         const configurationPage = new ConfigurationPageFieldsTab(managerTab, project);
         await configurationPage.goto();
-        await configurationPage.toggleField('Entry Fields', lexemeLabel);
-        await (await configurationPage.getFieldCheckbox('Entry Fields', lexemeLabel, 'ภาษาไทย (IPA)')).check();
-        await (await configurationPage.getFieldCheckbox('Entry Fields', lexemeLabel, 'ภาษาไทย (Voice)')).check();
+        await configurationPage.toggleField('Entry Fields', 'Word');
+        await (await configurationPage.getFieldCheckbox('Entry Fields', 'Word', 'ภาษาไทย (IPA)')).check();
+        await (await configurationPage.getFieldCheckbox('Entry Fields', 'Word', 'ภาษาไทย (Voice)')).check();
         await configurationPage.applyButton.click();
+      });
+
+
+      let editorPageManager: EditorPage;
+
+      test.beforeEach(async ({ managerTab }) => {
+        editorPageManager = new EditorPage(managerTab, project);
       });
 
       test('Can change configuration to make a writing system visible or invisible', async ({ managerTab }) => {
         await editorPageManager.goto();
         // word has only "th", "tipa" and "taud" visible
-        await expect(editorPageManager.label(lexemeLabel, editorPageManager.entryCard)).toHaveCount(3);
-        await expect(editorPageManager.label(lexemeLabel, editorPageManager.entryCard)).toHaveCount(3);
-        await expect(editorPageManager.getTextarea(editorPageManager.entryCard, lexemeLabel, 'th')).toBeVisible();
-        await expect(editorPageManager.getTextarea(editorPageManager.entryCard, lexemeLabel, 'tipa')).toBeVisible();
-        await expect(editorPageManager.audioPlayer(lexemeLabel, 'taud')).toBeVisible();
+        await expect(editorPageManager.label('Word', editorPageManager.entryCard)).toHaveCount(3);
+        await expect(editorPageManager.label('Word', editorPageManager.entryCard)).toHaveCount(3);
+        await expect(editorPageManager.getTextarea(editorPageManager.entryCard, 'Word', 'th')).toBeVisible();
+        await expect(editorPageManager.getTextarea(editorPageManager.entryCard, 'Word', 'tipa')).toBeVisible();
+        await expect(editorPageManager.audioPlayer('Word', 'taud')).toBeVisible();
 
         // make "en" input system visible for "Word" field
         const configurationPage = await new ConfigurationPageFieldsTab(managerTab, project).goto();
-        await configurationPage.toggleField('Entry Fields', lexemeLabel);
-        await (await configurationPage.getFieldCheckbox('Entry Fields', lexemeLabel, 'English')).check();
+        await configurationPage.toggleField('Entry Fields', 'Word');
+        await (await configurationPage.getFieldCheckbox('Entry Fields', 'Word', 'English')).check();
         await configurationPage.applyButton.click();
 
         // check if "en" is visible
         await editorPageManager.goto();
-        await expect(editorPageManager.label(lexemeLabel, editorPageManager.entryCard)).toHaveCount(4);
-        await expect(editorPageManager.getTextarea(editorPageManager.entryCard, lexemeLabel, 'en')).toBeVisible();
+        await expect(editorPageManager.label('Word', editorPageManager.entryCard)).toHaveCount(4);
+        await expect(editorPageManager.getTextarea(editorPageManager.entryCard, 'Word', 'en')).toBeVisible();
 
         // make "en" input system invisible for "Word" field
         await configurationPage.goto();
-        await configurationPage.toggleField('Entry Fields', lexemeLabel);
-        await (await configurationPage.getFieldCheckbox('Entry Fields', lexemeLabel, 'English')).uncheck();
+        await configurationPage.toggleField('Entry Fields', 'Word');
+        await (await configurationPage.getFieldCheckbox('Entry Fields', 'Word', 'English')).uncheck();
         await configurationPage.applyButton.click();
 
         // check if "en" is invisible
         await editorPageManager.goto();
-        await expect(editorPageManager.label(lexemeLabel, editorPageManager.entryCard)).toHaveCount(3);
-        await expect(editorPageManager.getTextarea(editorPageManager.entryCard, lexemeLabel, 'en')).not.toBeVisible();
+        await expect(editorPageManager.label('Word', editorPageManager.entryCard)).toHaveCount(3);
+        await expect(editorPageManager.getTextarea(editorPageManager.entryCard, 'Word', 'en')).not.toBeVisible();
       });
 
       test('Make "taud" input system invisible for "Word" field and "tipa" invisible for manager role, then ensure it worked and change it back', async ({ managerTab, memberTab }) => {
         const configurationPage = await new ConfigurationPageFieldsTab(managerTab, project).goto();
-        await configurationPage.toggleField('Entry Fields', lexemeLabel);
+        await configurationPage.toggleField('Entry Fields', 'Word');
         // Make "taud" input system invisible for "Word" field....
-        await (await configurationPage.getFieldCheckbox('Entry Fields', lexemeLabel, '(Voice)')).uncheck();
+        await (await configurationPage.getFieldCheckbox('Entry Fields', 'Word', '(Voice)')).uncheck();
         // ....and "tipa" invisible for manager role
         await (await configurationPage.getCheckbox('Input Systems', 'IPA', 'Manager')).uncheck();
         await configurationPage.applyButton.click();
@@ -675,26 +690,26 @@ test.describe('Entry Editor and Entries List', () => {
         // verify that contributor can still see "tipa"
         const editorPageMember = new EditorPage(memberTab, project);
         await editorPageMember.goto();
-        await expect(editorPageMember.label(lexemeLabel, editorPageMember.entryCard)).toHaveCount(2);
-        await expect(editorPageMember.getTextarea(editorPageMember.entryCard, lexemeLabel, 'th')).toBeVisible();
-        await expect(editorPageMember.getTextarea(editorPageMember.entryCard, lexemeLabel, 'tipa')).toBeVisible();
+        await expect(editorPageMember.label('Word', editorPageMember.entryCard)).toHaveCount(2);
+        await expect(editorPageMember.getTextarea(editorPageMember.entryCard, 'Word', 'th')).toBeVisible();
+        await expect(editorPageMember.getTextarea(editorPageMember.entryCard, 'Word', 'tipa')).toBeVisible();
 
         // Word then only has "th" visible for manager role
         await editorPageManager.goto();
-        await expect(editorPageManager.label(lexemeLabel, editorPageManager.entryCard)).toHaveCount(1);
-        await expect(editorPageManager.getTextarea(editorPageManager.entryCard, lexemeLabel, 'th')).toBeVisible();
+        await expect(editorPageManager.label('Word', editorPageManager.entryCard)).toHaveCount(1);
+        await expect(editorPageManager.getTextarea(editorPageManager.entryCard, 'Word', 'th')).toBeVisible();
 
         // restore visibility of "taud" for "Word" field
         await configurationPage.goto();
-        await configurationPage.toggleField('Entry Fields', lexemeLabel);
-        await (await configurationPage.getFieldCheckbox('Entry Fields', lexemeLabel, '(Voice)')).check();
+        await configurationPage.toggleField('Entry Fields', 'Word');
+        await (await configurationPage.getFieldCheckbox('Entry Fields', 'Word', '(Voice)')).check();
         await configurationPage.applyButton.click();
 
         // Word has only "th" and "taud" visible for manager role
         await editorPageManager.goto();
-        await expect(editorPageManager.label(lexemeLabel, editorPageManager.entryCard)).toHaveCount(2);
-        await expect(editorPageManager.getTextarea(editorPageManager.entryCard, lexemeLabel, 'th')).toBeVisible();
-        await expect(editorPageManager.audioPlayer(lexemeLabel, 'taud')).toBeVisible();
+        await expect(editorPageManager.label('Word', editorPageManager.entryCard)).toHaveCount(2);
+        await expect(editorPageManager.getTextarea(editorPageManager.entryCard, 'Word', 'th')).toBeVisible();
+        await expect(editorPageManager.audioPlayer('Word', 'taud')).toBeVisible();
 
         // restore visibility of "tipa" input system for manager role
         await configurationPage.goto();
@@ -703,8 +718,8 @@ test.describe('Entry Editor and Entries List', () => {
 
         // Word has "th", "tipa" and "taud" visible again for manager role
         await editorPageManager.goto();
-        await expect(editorPageManager.label(lexemeLabel, editorPageManager.entryCard)).toHaveCount(3);
-        await expect(editorPageManager.getTextarea(editorPageManager.entryCard, lexemeLabel, 'tipa')).toBeVisible();
+        await expect(editorPageManager.label('Word', editorPageManager.entryCard)).toHaveCount(3);
+        await expect(editorPageManager.getTextarea(editorPageManager.entryCard, 'Word', 'tipa')).toBeVisible();
       });
 
     });

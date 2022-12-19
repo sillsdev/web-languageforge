@@ -20,7 +20,8 @@ export default async function globalSetup(config: FullConfig) {
       const browser = await projectBrowser.launch();
       for (const user of Object.values(users)) {
         const context = await browser.newContext({ baseURL });
-        await initE2EUser(context, user);
+        const page = await context.newPage();
+        await initE2EUser(page, user);
         await context.close();
       }
     }

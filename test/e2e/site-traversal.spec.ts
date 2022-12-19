@@ -1,5 +1,4 @@
 import { expect } from '@playwright/test';
-import { ActivityPage } from './pages/activity.page';
 import { ChangePasswordPage } from './pages/change-password.page';
 import { ForgotPasswordPage } from './pages/forgot-password.page';
 import { LoginPage } from './pages/login.page';
@@ -13,28 +12,9 @@ import { test } from './utils/fixtures';
  * page traversal without testing functionality
  */
 test.describe('Page Traversal', () => {
-  let signupPage: SignupPage;
-  let forgotPasswordPage: ForgotPasswordPage;
-  let loginPage: LoginPage;
-  let changePasswordPage: ChangePasswordPage;
-  let activityPage: ActivityPage;
-  let projectsPage: ProjectsPage;
-  let siteAdminPage: SiteAdminPage;
-  let userProfilePage: UserProfilePage;
 
-  test.beforeAll(async ({ anonTab, adminTab }) => {
-    signupPage = new SignupPage(anonTab);
-    forgotPasswordPage = new ForgotPasswordPage(anonTab);
-    loginPage = new LoginPage(anonTab);
-    changePasswordPage = new ChangePasswordPage(adminTab);
-    activityPage = new ActivityPage(adminTab);
-    projectsPage = new ProjectsPage(adminTab);
-    siteAdminPage = new SiteAdminPage(adminTab);
-    userProfilePage = new UserProfilePage(adminTab);
-  })
-
-  test('Explore signup page', async () => {
-    await signupPage.goto();
+  test('Explore signup page', async ({ tab }) => {
+    const signupPage = await SignupPage.goto(tab);
 
     await signupPage.emailInput.fill('');
     await signupPage.nameInput.fill('');
@@ -44,39 +24,39 @@ test.describe('Page Traversal', () => {
     await signupPage.captcha.redTriangleButton.click();
   });
 
-  test('Explore forgot password page', async () => {
-    await forgotPasswordPage.goto();
+  test('Explore forgot password page', async ({ tab }) => {
+    const forgotPasswordPage = await ForgotPasswordPage.goto(tab);
 
     await forgotPasswordPage.usernameOrEmailInput.fill('');
     await forgotPasswordPage.submitButton.click();
   });
 
-  test('Explore login page', async () => {
-    await loginPage.goto();
+  test('Explore login page', async ({ tab }) => {
+    const loginPage = await LoginPage.goto(tab);
 
     await loginPage.usernameInput.type('');
     await loginPage.passwordInput.type('');
     await loginPage.submitButton.click();
   });
 
-  test('Explore change passsword page (admin)', async () => {
-    await changePasswordPage.goto();
+  test('Explore change passsword page (admin)', async ({ adminTab }) => {
+    const changePasswordPage = await ChangePasswordPage.goto(adminTab);
 
     await changePasswordPage.passwordInput.type('');
     await changePasswordPage.confirmInput.type('');
     await expect(changePasswordPage.submitButton).toBeDisabled();
   });
 
-  test('Explore project page (admin)', async () => {
-    await projectsPage.goto();
+  test('Explore project page (admin)', async ({ adminTab }) => {
+    const projectsPage = await ProjectsPage.goto(adminTab);
 
     await projectsPage.projectsList.count();
     await projectsPage.projectNames.count();
     await projectsPage.createButton.click();
   });
 
-  test('Explore site admin page', async () => {
-    await siteAdminPage.goto();
+  test('Explore site admin page', async ({ adminTab }) => {
+    const siteAdminPage = await SiteAdminPage.goto(adminTab);
 
     await siteAdminPage.tabs.archivedProjects.click();
     await expect(siteAdminPage.archivedProjectsTab.republishButton).toBeDisabled();
@@ -84,8 +64,8 @@ test.describe('Page Traversal', () => {
     await siteAdminPage.archivedProjectsTab.projectsList.count();
   });
 
-  test('Explore user profile page (admin)', async () => {
-    await userProfilePage.goto();
+  test('Explore user profile page (admin)', async ({ adminTab }) => {
+    const userProfilePage = await UserProfilePage.goto(adminTab);
 
     await userProfilePage.activitiesList.count();
     await userProfilePage.tabs.aboutMe.click();

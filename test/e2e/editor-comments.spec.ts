@@ -9,16 +9,16 @@ test.describe('Lexicon Editor Comments', () => {
 
   const project = projectPerTest();
 
-  test('Creating and viewing comments', async ({ request, managerTab }) => {
+  test('Creating and viewing comments', async ({ managerTab }) => {
     test.slow();
 
     await test.step('And input systems and entries', async () => {
-      await addWritingSystemToProject(request, project(), 'th-fonipa', 'tipa');
-      await addWritingSystemToProject(request, project(), 'th-Zxxx-x-audio', 'taud');
+      await addWritingSystemToProject(managerTab.request, project(), 'th-fonipa', 'tipa');
+      await addWritingSystemToProject(managerTab.request, project(), 'th-Zxxx-x-audio', 'taud');
 
-      await addLexEntry(request, project(), entries.entry1);
-      await addLexEntry(request, project(), entries.entry2);
-      await addLexEntry(request, project(), entries.multipleMeaningEntry);
+      await addLexEntry(managerTab.request, project(), entries.entry1);
+      await addLexEntry(managerTab.request, project(), entries.entry2);
+      await addLexEntry(managerTab.request, project(), entries.multipleMeaningEntry);
 
       const configurationPage = await new ConfigurationPageFieldsTab(managerTab, project()).goto();
       await configurationPage.toggleField('Entry Fields', 'Word');

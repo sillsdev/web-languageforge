@@ -1,4 +1,4 @@
-import { Locator, Page } from "@playwright/test";
+import { Locator, Page, APIRequestContext } from '@playwright/test';
 import { NoticeElement, PageHeader } from "../components";
 
 export interface GotoOptions {
@@ -10,8 +10,18 @@ export interface GotoOptions {
  * Standardizes how we navigate to a page and wait until it is ready before using/testing it.
  */
 export abstract class BasePage
-  implements Pick<Page, 'locator'> // a nifty way to pull their documentation onto our class
+  implements Pick<Page, 'locator' | 'request'> // a nifty way to pull their documentation onto our class
 {
+
+  get page(): Page {
+    if (this._page.isClosed()) {
+      throw new Error('Page is already closed. Are you accessing a page/tab that was injected into a beforeAll?');
+    }
+    return this._page;
+  }
+
+  readonly request: APIRequestContext;
+
   readonly header = new PageHeader(this.page);
   readonly noticeList = new NoticeElement(this.page);
 
@@ -19,8 +29,9 @@ export abstract class BasePage
   private readonly urlPattern = this.url.includes('#') ?
     new RegExp(`${this.url}`) : new RegExp(`${this.url}/?(#|$)`);
 
-  constructor(readonly page: Page, readonly url: string, locators: Locator[] | Locator) {
+  constructor(private readonly _page: Page, readonly url: string, locators: Locator[] | Locator) {
     this.locators = Array.isArray(locators) ? locators : [locators];
+    this.request = _page.request;
   }
 
   /**

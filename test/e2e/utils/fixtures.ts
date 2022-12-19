@@ -1,48 +1,42 @@
 import type { Browser, Page } from '@playwright/test';
-import { APIRequestContext, test as base } from '@playwright/test';
+import { test as base } from '@playwright/test';
 import { users } from '../constants';
 import { Project } from './project-utils';
 import { initTestProjectForTest } from './testSetup';
 import { UserDetails } from './types';
 import { getStorageStatePath, UserTestService } from './user-tools';
 
-export type UserTab = Page & UserDetails;
+export type Tab = Page;
 export type E2EUsername = keyof typeof users;
 
-const userTab = (user: UserDetails) => async ({ browser, browserName }: { browser: Browser, browserName: string }, use: (r: UserTab) => Promise<void>) => {
+const userTab = (user: UserDetails) => async ({ browser, browserName }: { browser: Browser, browserName: string }, use: (r: Tab) => Promise<void>) => {
   const storageState = getStorageStatePath(browserName, user);
   const context = await browser.newContext({ storageState })
-  const page = await context.newPage();
-  const tab = page as UserTab;
-  await use(tab);
+  const tab = await context.newPage();
+  await use(tab); // returns after the next test() completes
+  // We have to close all the pages we open or else they stay open forever and leak into the results (traces, screenshots) of proceding tests.
   await context.close();
 };
 
 // The userTab fixture represents a browser tab (a "page" in Playwright terms) that's already logged in as that user
-// The anonTab fixture represents a browser tab (a "page" in Playwright terms) where nobody is logged in; this tab can be used across different tests (like userTab)
+// The tab fixture represents a browser tab where nobody is logged in
 // Note: "Tab" was chosen instead of "Page" to avoid confusion with Page Object Model classes like SiteAdminPage
 export const test = base
   .extend<{
-    adminTab: UserTab,
-    managerTab: UserTab,
-    memberTab: UserTab,
-    observerTab: UserTab,
-    anonTab: Page,
+    adminTab: Tab,
+    managerTab: Tab,
+    memberTab: Tab,
+    observerTab: Tab,
+    tab: Page,
     userService: UserTestService,
   }>({
     adminTab: userTab(users.admin),
     managerTab: userTab(users.manager),
     memberTab: userTab(users.member),
     observerTab: userTab(users.observer),
-    anonTab: async ({ browser }: { browser: Browser }, use: (r: Page) => Promise<void>) => {
-      const context = await browser.newContext();
-      const page = await context.newPage();
-      const tab = page;
-      await use(tab);
-      await context.close();
-    },
-    userService: async ({ request }: { request: APIRequestContext }, use: (userService: UserTestService) => Promise<void>) => {
-      const userService = new UserTestService(request);
+    tab: async ({ page }: { page: Page }, use: (r: Tab) => Promise<void>) => await use(page),
+    userService: async ({ page }: { page: Page }, use: (userService: UserTestService) => Promise<void>) => {
+      const userService = new UserTestService(page.request);
       await use(userService);
     },
   });
@@ -60,11 +54,11 @@ export function projectPerTest(lazy?: boolean): () => Project | Promise<Project>
   let currentTestProjectGetter: () => Promise<Project>;
   let currentTestProject: Project;
 
-  test.beforeEach(async ({ request }, testInfo) => {
+  test.beforeEach(async ({ tab }, testInfo) => {
     currentTestProject = undefined;
-    currentTestProjectGetter = () => initTestProjectForTest(request, testInfo, users.manager);
+    currentTestProjectGetter = () => initTestProjectForTest(tab.request, testInfo, users.manager);
     if (!lazy) {
-      currentTestProject = await initTestProjectForTest(request, testInfo, users.manager);
+      currentTestProject = await initTestProjectForTest(tab.request, testInfo, users.manager);
     }
   });
 

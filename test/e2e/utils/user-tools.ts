@@ -1,4 +1,4 @@
-import { APIRequestContext, BrowserContext } from "@playwright/test";
+import { APIRequestContext, Page } from "@playwright/test";
 import * as fs from 'fs';
 import path from "path";
 import { testControl } from "./jsonrpc";
@@ -12,7 +12,8 @@ export async function createUser(request: APIRequestContext, user: UserDetails):
   return await testControl(request, 'create_user', [user.username, user.name, user.password, user.email]);
 }
 
-export async function initE2EUser(context: BrowserContext, user: UserDetails) {
+export async function initE2EUser(page: Page, user: UserDetails) {
+  const context = page.context();
   await createUser(context.request, user);
 
   // Now log in and ensure there's a storage state saved
@@ -23,7 +24,6 @@ export async function initE2EUser(context: BrowserContext, user: UserDetails) {
     // Storage state file is recent, no need to re-create it
     return;
   }
-  const page = await context.newPage();
   await login(page, user);
   await context.storageState({ path });
 }

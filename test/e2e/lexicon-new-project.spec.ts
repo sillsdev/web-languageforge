@@ -2,24 +2,11 @@ import { expect } from '@playwright/test';
 import { sendReceiveMockProjects, sendReceiveMockUser, users } from './constants';
 import { EditorPage } from './pages/editor.page';
 import { NewLexProjectPage } from './pages/new-lex-project.page';
-import { Project, testFilePath, toProject } from './utils';
+import { testFilePath, toProject } from './utils';
 import { test } from './utils/fixtures';
-import { initTestProject } from './utils/testSetup';
+import { initTestProjectForTest } from './utils/testSetup';
 
 test.describe('New Project wizard', () => {
-  let newLexProjectPageMember: NewLexProjectPage;
-  // project will exist before testing the creation of new projects through the UI
-  //  this existing project is needed as one test tests whether it is impossible to create a new project with the same name
-  const existingProject: Project = {
-    name: 'lexicon-new-project_spec_ts Existing Project',
-    code: 'p00_lexicon-new-project_spec_ts',
-    id: ''
-  };
-
-  test.beforeAll(async ({ memberTab, request }) => {
-    newLexProjectPageMember = new NewLexProjectPage(memberTab);
-    existingProject.id = (await initTestProject(request, existingProject.code, existingProject.name, users.manager, [users.member])).id;
-  });
 
   test('Admin can get to wizard', async ({ adminTab }) => {
     const newLexProjectPageAdmin: NewLexProjectPage = new NewLexProjectPage(adminTab);
@@ -33,16 +20,18 @@ test.describe('New Project wizard', () => {
     await expect(newLexProjectPageManager.chooserPage.createButton).toBeVisible();
   });
 
-  test('Setup: user login and page contains a form', async () => {
-    await newLexProjectPageMember.goto();
+  test('Setup: user login and page contains a form', async ({ memberTab }) => {
+    const newLexProjectPageMember = await NewLexProjectPage.goto(memberTab);
     await expect(newLexProjectPageMember.chooserPage.createButton).toBeVisible();
   });
 
   // step 0: chooser
   test.describe('Chooser page', () => {
 
-    test.beforeEach(async () => {
-      await newLexProjectPageMember.goto();
+    let newLexProjectPageMember: NewLexProjectPage;
+
+    test.beforeEach(async ({ memberTab }) => {
+      newLexProjectPageMember = await NewLexProjectPage.goto(memberTab);
     });
 
     test('Cannot see Back or Next buttons', async () => {
@@ -80,8 +69,10 @@ test.describe('New Project wizard', () => {
   // step 1: send receive credentials
   test.describe('Send Receive Credentials page', () => {
 
-    test.beforeEach(async () => {
-      await newLexProjectPageMember.goto();
+    let newLexProjectPageMember: NewLexProjectPage;
+
+    test.beforeEach(async ({ memberTab }) => {
+      newLexProjectPageMember = await NewLexProjectPage.goto(memberTab);
       await newLexProjectPageMember.chooserPage.sendReceiveButton.click();
     });
 
@@ -171,8 +162,11 @@ test.describe('New Project wizard', () => {
 
   // step 1, 2 & 3
   test.describe('New Project', () => {
-    test.beforeEach(async () => {
-      await newLexProjectPageMember.goto();
+
+    let newLexProjectPageMember: NewLexProjectPage;
+
+    test.beforeEach(async ({ memberTab }) => {
+      newLexProjectPageMember = await NewLexProjectPage.goto(memberTab);
       await newLexProjectPageMember.chooserPage.createButton.click();
     });
 
@@ -189,7 +183,9 @@ test.describe('New Project wizard', () => {
         await expect(newLexProjectPageMember.formStatus).toContainText('Project Name cannot be empty.');
       });
 
-      test('Finds the test project already exists', async () => {
+      test('Finds the test project already exists', async ({}, testInfo) => {
+        const existingProject = await initTestProjectForTest(newLexProjectPageMember.request, testInfo, users.manager, [users.member]);
+
         await newLexProjectPageMember.namePage.projectNameInput.fill(existingProject.code);
         await newLexProjectPageMember.namePage.projectNameInput.press('Tab');
         await expect(newLexProjectPageMember.namePage.projectCodeExists).toBeVisible();
