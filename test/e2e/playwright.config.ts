@@ -47,7 +47,7 @@ const config: PlaywrightTestConfig = {
     // baseURL: 'http://localhost:3000',
 
     /* See https://playwright.dev/docs/trace-viewer */
-    trace: process.env.CI ? 'retain-on-failure' : 'on',
+    trace: 'on',
     screenshot: 'on',
   },
 
