@@ -1,7 +1,7 @@
 import { browser } from '$app/environment'
 import { writable, type Writable } from 'svelte/store'
 
-interface LfError {
+type LfError = {
 	message: string,
 	code?: number,
 }
@@ -11,7 +11,7 @@ export function throw_error(message: string, code: number = 0) {
 	throw set({ message, code })
 }
 
-export const dismiss = set
+export const dismiss = () => set({ message: '' })
 
 if (browser) {
 	// https://developer.mozilla.org/en-US/docs/Web/API/GlobalEventHandlers/onerror#window.addEventListenererror
