@@ -70,7 +70,7 @@
 	</a>
 </PageHeader>
 
-<Stats class=max-w-full>
+<Stats>
 	{#each stats as { title, value, icon, url }}
 		<Stats.Stat { title } value={ Number(value).toLocaleString() } { icon } href={ value && url } />
 	{/each}

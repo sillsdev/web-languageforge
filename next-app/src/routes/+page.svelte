@@ -4,6 +4,7 @@
 	import { GET } from '$lib/fetch'
 	import { Button } from '$lib/forms'
 	import { start, stop } from '$lib/progress'
+	import Stats from '$lib/stats'
 	import { onMount } from 'svelte'
 
 	let dark_mode = false
@@ -59,4 +60,14 @@
 
 	<h3>Light/Dark mode</h3>
 	<input type=checkbox bind:checked={ dark_mode } class='toggle toggle-primary toggle-lg'>
+
+	<h3>Stats</h3>
+	<Stats>
+		<Stats.Stat title='Stat one hundred thousand' value=100,000 />
+		<Stats.Stat title='Stat two hundred thousand' value=200,000 />
+		<Stats.Stat title='Stat three hundred thousand' value=300,000 />
+		<Stats.Stat title='Stat four hundred thousand' value=400,000 />
+		<Stats.Stat title='Stat five hundred thousand' value=500,000 />
+		<Stats.Stat title='Stat six hundred thousand' value=600,000 />
+	</Stats>
 </section>
