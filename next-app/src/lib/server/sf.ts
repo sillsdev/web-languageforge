@@ -1,6 +1,6 @@
 import { error } from '@sveltejs/kit'
 
-interface Rpc {
+type Rpc = {
 	name: string,
 	args?: string[] | object[],
 	cookie?: string,
