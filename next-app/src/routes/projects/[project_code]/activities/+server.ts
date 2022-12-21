@@ -13,13 +13,8 @@ export async function GET({ params: { project_code }, request: { headers } }) {
 
 // src/Api/Model/Shared/Dto/ActivityListDto.php
 // src/Api/Model/Shared/Dto/ActivityListDto.php->ActivityListModel.__construct
-type ActivitiesInput = {
-	cookie: string,
-	start_date?: Date,
-	end_date?: Date,
-}
 export async function fetch_activities({ cookie, start_date, end_date }: ActivitiesInput) {
-	const args = {
+	const args: Rpc = {
 		name: 'activity_list_dto_for_current_project',
 		args: [
 			{
@@ -31,12 +26,12 @@ export async function fetch_activities({ cookie, start_date, end_date }: Activit
 		cookie,
 	}
 
-	const { activity } = await sf(args)
+	const { activity }: LegacyResult = await sf(args)
 
 	return activity.map(transform)
 }
 
-function transform({ id, action, date, content }) {
+function transform({ id, action, date, content }: LegacyActivity): Activity {
 	return {
 		id,
 		action,
