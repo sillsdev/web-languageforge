@@ -1,16 +1,16 @@
-import { throwError } from '$lib/error'
+import { throw_error } from '$lib/error'
 import { start, stop } from '$lib/progress'
 
-export async function CREATE(url, body) { return await customFetch('post'  , url, body) }
-export async function GET   (url      ) { return await customFetch('get'   , url      ) }
-export async function UPDATE(url, body) { return await customFetch('put'   , url, body) }
-export async function DELETE(url      ) { return await customFetch('delete', url      ) }
+export async function CREATE(url, body) { return await custom_fetch('post'  , url, body) }
+export async function GET   (url      ) { return await custom_fetch('get'   , url      ) }
+export async function UPDATE(url, body) { return await custom_fetch('put'   , url, body) }
+export async function DELETE(url      ) { return await custom_fetch('delete', url      ) }
 
 // https://developer.mozilla.org/en-US/docs/Web/API/FormData/FormData
 // export const upload = async formData => await CREATE('post', formData)
 
 // https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch#Supplying_request_options
-async function customFetch(method, url, body) {
+async function custom_fetch(method, url, body) {
 	const headers = {
 		'content-type': 'application/json',
 	}
@@ -29,7 +29,7 @@ async function customFetch(method, url, body) {
 		headers,
 		body,
 	})
-	.catch (throwError) // these only occur for network errors, like these:
+	.catch (throw_error) // these only occur for network errors, like these:
 						//	  * request made with a bad host, e.g., //httpbin
 						//	  * the host is refusing connections
 						//	  * client is offline, i.e., airplane mode or something
@@ -38,10 +38,11 @@ async function customFetch(method, url, body) {
 
 	// reminder: fetch does not throw exceptions for non-200 responses (https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch)
 	if (! response.ok) {
-		const code = response.status
-		const message = await response.text() || response.statusText
+		const results = await response.json().catch(() => {}) || {}
 
-		throwError(message, code)
+		const message = results.message || response.statusText
+
+		throw_error(message, response.status)
 	}
 
 	return await response.json()

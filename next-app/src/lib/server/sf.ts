@@ -1,4 +1,4 @@
-import { throwError } from '$lib/error'
+import { error } from '@sveltejs/kit'
 
 /**
  *
@@ -21,25 +21,26 @@ export async function sf(rpc) {
 		},
 	}
 
-	const results = await customFetch(`${process.env.API_HOST}/api/sf`, 'post', body, cookie)
+	const results = await custom_fetch(`${process.env.API_HOST}/api/sf`, 'post', body, cookie)
 
 	if (results.error) {
-		throwError(results.error.message, 500)
+		console.log('lib/server/sf.ts.sf results.error: ', {results})
+		throw error(500, results.error.message)
 	}
 
 	if (results.result === undefined) {
-		console.log('fetch/server.ts.sf missing results.result: ', {results})
-		throwError('Badly formed response, missing result', 500)
+		console.log('lib/server/sf.ts.sf missing results.result: ', {results})
+		throw error(500, 'Badly formed response, missing result')
 	}
 
 	return results.result
 }
 
-async function customFetch(url, method, body, cookie) {
+async function custom_fetch(url, method, body, cookie) {
 	const bodyAsJSON = JSON.stringify(body)
 
 	// https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch#Supplying_request_options
-	const response = await fetch(url, {
+	const response: Response = await fetch(url, {
 		method,
 		headers: {
 			'content-type': 'application/json',
@@ -50,13 +51,13 @@ async function customFetch(url, method, body, cookie) {
 		// these only occur for network errors, like these:
 		//	request made with a bad host, e.g., //httpbin
 		//	the host is refusing connections
-		console.log(`fetch/server.ts.customFetch caught error on ${url}=>${bodyAsJSON}: `, e)
-		throwError('NETWORK ERROR', 500)
+		console.log(`lib/server/sf.ts.custom_fetch caught error on ${url}=>${bodyAsJSON}: `, {e})
+		throw error(500, 'NETWORK ERROR with legacy app')
 	})
 
 	if (! response.ok) {
-		console.log('fetch/server.ts.customFetch response !ok: ', await response.text())
-		throwError(response.statusText, response.status)
+		console.log(`lib/server/sf.ts.custom_fetch response !ok ${url}=>${bodyAsJSON}: `, await response.text())
+		throw error(response.status, response.statusText)
 	}
 
 	return await response.json()

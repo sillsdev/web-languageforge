@@ -1,6 +1,6 @@
 import { can_view_comments } from '$lib/auth'
-import { fetch_current_user } from '$lib/data/user'
-import { sf } from '$lib/fetch/server'
+import { fetch_current_user } from '$lib/server/user'
+import { sf } from '$lib/server/sf'
 
 export async function fetch_project_details({ project_code, cookie }) {
 	const { id, projectName: name, users } = await sf({ name: 'set_project', args: [ project_code ], cookie })

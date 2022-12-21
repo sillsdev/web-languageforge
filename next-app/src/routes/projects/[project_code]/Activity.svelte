@@ -1,4 +1,4 @@
-<script>
+<script lang=ts>
 	export let activities
 
 	$: sorted_activities = transform(activities).sort(byDateThenUser)
@@ -40,8 +40,8 @@
 		                                 : des(a.date_iso, b.date_iso)
 	}
 
-	const asc = (a, b) => a > b ? 1 : -1
-	const des = (a, b) => a < b ? 1 : -1
+	const asc = (a: string | number, b: string | number) => a > b ? 1 : -1
+	const des = (a: string | number, b: string | number) => a < b ? 1 : -1
 
 	function toNames(fields = []) {
 		return fields.map(field => field.fieldName).join(', ')

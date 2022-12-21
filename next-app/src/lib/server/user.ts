@@ -1,5 +1,5 @@
-import { throwError } from '$lib/error'
-import { sf } from '$lib/fetch/server'
+import { error } from '@sveltejs/kit'
+import { sf } from '$lib/server/sf'
 
 export async function fetch_current_user(cookie) {
 	const { userId, userProjectRole } = await sf({
@@ -8,7 +8,7 @@ export async function fetch_current_user(cookie) {
 	})
 
 	if (! userId) {
-		throwError('User unknown', 404)
+		throw error(404, 'User unknown')
 	}
 
 	return {
