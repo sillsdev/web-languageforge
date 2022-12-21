@@ -175,7 +175,7 @@ If you encounter errors such as VSCode cannot find a file in the path "vendor", 
 
 ### Playwright E2E Test Debugging
 
-Head on over to [Hanna's tutorial on debugging Playwright E2E tests](test/e2e/playwright_guide/playwright_cheatsheet.md) for more information.
+Head on over to [Hanna's tutorial on debugging Playwright E2E tests](../test/e2e/playwright_guide/playwright_cheatsheet.md) for more information.
 
 ## Style Guides
 

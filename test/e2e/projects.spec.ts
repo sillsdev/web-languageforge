@@ -1,16 +1,12 @@
 import { expect } from '@playwright/test';
-import { test } from './utils/fixtures';
-
+import { users } from './constants';
+import { EditorPage } from './pages/editor.page';
 import { ProjectsPage } from './pages/projects.page';
-import { NoticeElement } from './components/notice.component';
+import { Project } from './utils';
+import { test } from './utils/fixtures';
+import { addUserToProject, initTestProject } from './utils/testSetup';
 
-import { Project } from './utils/types';
-
-import { initTestProject, addUserToProject } from './utils/testSetup';
-import { gotoProjectDirectly } from './utils/navigation';
-
-
-test.describe('E2E Projects List app', () => {
+test.describe('Projects List', () => {
   let projectsPageMember: ProjectsPage;
   let projectsPageAdmin: ProjectsPage;
 
@@ -42,17 +38,16 @@ test.describe('E2E Projects List app', () => {
     id: ''
   };
 
-  test.beforeAll(async ({ request, member, manager, memberTab, admin, adminTab }) => {
+  test.beforeAll(async ({ request, memberTab, adminTab }) => {
     projectsPageMember = new ProjectsPage(memberTab);
     projectsPageAdmin = new ProjectsPage(adminTab);
 
     for (const project of projects) {
-      const projectId = await initTestProject(request, project.code, project.name, manager.username, [member.username]);
+      const projectId = (await initTestProject(request, project.code, project.name, users.manager, [users.member])).id;
       project.id = projectId;
     }
-    project4.id = await initTestProject(request, project4.code, project4.name, manager.username, [admin.username]);
-    project5.id = await initTestProject(request, project5.code, project5.name, manager.username, []);
-
+    project4.id = (await initTestProject(request, project4.code, project4.name, users.manager, [users.admin])).id;
+    project5.id = (await initTestProject(request, project5.code, project5.name, users.manager, [])).id;
   });
 
   test.describe('for Normal User', () => {
@@ -71,12 +66,12 @@ test.describe('E2E Projects List app', () => {
       await expect(projectsPageMember.projectRow(project4.name)).not.toBeVisible();
     });
 
-    test('Project to which user is added shows up when page reloaded', async ({ request, member }) => {
-      expect(await projectsPageMember.hasProject(project4.name)).toBe(false);
-      await addUserToProject(request, project4.code, member.username);
+    test('Project to which user is added shows up when page reloaded', async ({ request }) => {
+      await expect(projectsPageMember.projectRow(project4.name)).not.toBeVisible();
+      await addUserToProject(request, project4, users.member);
       await projectsPageMember.page.reload();
       await projectsPageMember.goto();
-      expect(await projectsPageMember.hasProject(project4.name)).toBe(true);
+      await expect(projectsPageMember.projectRow(project4.name)).toBeVisible();
     });
   });
 
@@ -98,42 +93,40 @@ test.describe('E2E Projects List app', () => {
     });
 
     test('Should allow admin to add him- or herself to the project as tech support if not already a manager', async () => {
-      expect(await projectsPageAdmin.projectIsLinked(project5.name)).toBe(false);
-      expect(await projectsPageAdmin.projectHasAddTechSupportButton(project5.name)).toBe(true);
+      await expect(projectsPageAdmin.projectLink(project5.name)).not.toBeVisible();
+      await expect(projectsPageAdmin.projectAddTechSupportButtonLocator(project5.name)).toBeVisible();
 
       await projectsPageAdmin.projectAddTechSupportButtonLocator(project5.name).click();
-      await expect(await projectsPageAdmin.projectAddTechSupportButtonLocator(project5.name)).not.toBeVisible();
+      await expect(projectsPageAdmin.projectAddTechSupportButtonLocator(project5.name)).not.toBeVisible();
     });
 
 
-    test('Should allow admin (tech support) to remove him- or herself from a project' , async () => {
-      expect(await projectsPageAdmin.projectIsLinked(project4.name)).toBe(true);
-      expect(await projectsPageAdmin.projectHasLeaveProjectButton(project4.name)).toBe(true);
+    test('Should allow admin (tech support) to remove him- or herself from a project', async () => {
+      await expect(projectsPageAdmin.projectLink(project4.name)).toBeVisible();
+      await expect(projectsPageAdmin.projectAddTechSupportButtonLocator(project4.name)).toBeVisible();
 
       await projectsPageAdmin.projectLeaveProjectButtonLocator(project4.name).click();
 
-      const noticeElement = new NoticeElement(projectsPageAdmin.page);
-      await expect(noticeElement.notice).toBeVisible();
-      await expect(noticeElement.notice).toContainText(`${project4.name} is no longer in your projects.`);
-      await expect(await projectsPageAdmin.projectLeaveProjectButtonLocator(project4.name)).not.toBeVisible();
+      const noticeElement = projectsPageAdmin.noticeList;
+      await expect(noticeElement.notices).toBeVisible();
+      await expect(noticeElement.notices).toContainText(`${project4.name} is no longer in your projects.`);
+      await expect(projectsPageAdmin.projectLeaveProjectButtonLocator(project4.name)).not.toBeVisible();
       await expect(projectsPageAdmin.projectLink(project4.name)).not.toBeVisible();
 
       // admin is no longer a contributor
-      expect(await projectsPageAdmin.projectIsLinked(project4.name)).toBe(false);
-      expect(await projectsPageAdmin.projectHasAddTechSupportButton(project4.name)).toBe(true);
+      await expect(projectsPageAdmin.projectLink(project4.name)).not.toBeVisible();
+      await expect(projectsPageAdmin.projectAddTechSupportButtonLocator(project4.name)).toBeVisible();
 
     });
 
   });
 
-
-
-  test.describe('Lexicon E2E Project Access', () => {
+  test.describe('Project Access', () => {
 
     test('Admin added to project when accessing without membership', async () => {
       // this is already tested in a test above but makes the test more understandable
       await expect(projectsPageAdmin.projectLink(projects[2].name)).not.toBeVisible();
-      await gotoProjectDirectly(projectsPageAdmin.page, projects[2].id, projects[2].name);
+      await new EditorPage(projectsPageAdmin.page, projects[2]).goto();
       await projectsPageAdmin.goto();
       await expect(projectsPageAdmin.projectLink(projects[2].name)).toBeVisible();
     });

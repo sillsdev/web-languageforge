@@ -1,7 +1,7 @@
 <script>
 	import { page } from '$app/stores'
 	import Activity from './Activity.svelte'
-	import { GET } from '$lib/fetch/client'
+	import { GET } from '$lib/fetch'
 	import {
 		ImagesIcon,
 		MessageAlertIcon,

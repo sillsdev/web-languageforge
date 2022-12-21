@@ -1,7 +1,7 @@
 import { Page } from '@playwright/test';
 import { BasePage } from './base-page';
 
-export class SiteAdminPage extends BasePage {
+export class SiteAdminPage extends BasePage<SiteAdminPage> {
   readonly tabs = {
     reports: this.page.locator('#useres'),
     archivedProjects: this.page.locator('#archivedprojects')

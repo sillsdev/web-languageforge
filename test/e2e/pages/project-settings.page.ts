@@ -1,9 +1,8 @@
 import { expect, Page } from '@playwright/test';
+import { Project } from '../utils';
 import { BasePage } from './base-page';
-import { Project } from '../utils/types';
 
-export class ProjectSettingsPage extends BasePage {
-  readonly noticeList = this.page.locator('[ng-repeat="notice in $ctrl.notices()"]');
+export class ProjectSettingsPage extends BasePage<ProjectSettingsPage> {
 
   readonly projectTab = {
     tabTitle: this.page.locator('text=Project Properties'),
@@ -28,9 +27,10 @@ export class ProjectSettingsPage extends BasePage {
   }
 
   // navigate to project without UI
-  async goto() {
+  async goto(): Promise<ProjectSettingsPage> {
     await super.goto();
     await this.page.getByLabel('Project Name').waitFor();
+    return this;
   }
 
   async deleteProject() {
@@ -38,10 +38,6 @@ export class ProjectSettingsPage extends BasePage {
     await this.deleteTab.confirmDeleteInput.fill('delete');
     await this.deleteTab.deleteProjectButton.click();
     await this.deleteModal.confirm.click();
-  }
-
-  async countNotices(): Promise<number> {
-    return await this.noticeList.count();
   }
 
   async setDefaultInterfaceLanguage(language: string) {

@@ -1,18 +1,18 @@
 import { expect } from '@playwright/test';
-import { test } from './utils/fixtures';
-import { ForgotPasswordPage } from './pages/forgot-password.page';
-import { SignupPage } from './pages/signup.page';
-import { LoginPage } from './pages/login.page';
-import { ChangePasswordPage } from './pages/change-password.page';
 import { ActivityPage } from './pages/activity.page';
+import { ChangePasswordPage } from './pages/change-password.page';
+import { ForgotPasswordPage } from './pages/forgot-password.page';
+import { LoginPage } from './pages/login.page';
 import { ProjectsPage } from './pages/projects.page';
+import { SignupPage } from './pages/signup.page';
 import { SiteAdminPage } from './pages/site-admin.page';
 import { UserProfilePage } from './pages/user-profile.page';
+import { test } from './utils/fixtures';
 
 /**
  * page traversal without testing functionality
  */
-test.describe('E2E Page Traversal', () => {
+test.describe('Page Traversal', () => {
   let signupPage: SignupPage;
   let forgotPasswordPage: ForgotPasswordPage;
   let loginPage: LoginPage;
@@ -47,7 +47,7 @@ test.describe('E2E Page Traversal', () => {
   test('Explore forgot password page', async () => {
     await forgotPasswordPage.goto();
 
-    await forgotPasswordPage.usernameInput.fill('');
+    await forgotPasswordPage.usernameOrEmailInput.fill('');
     await forgotPasswordPage.submitButton.click();
   });
 
