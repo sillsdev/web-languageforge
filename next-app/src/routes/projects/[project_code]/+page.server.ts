@@ -9,7 +9,7 @@ export async function load({ params: { project_code }, request: { headers }}) {
 		cookie: headers.get('cookie'),
 	}
 
-	const result: DashboardResult = {
+	const result: DashboardData = {
 		project: await fetch_project_details(args),
 	}
 
