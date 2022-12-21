@@ -3,6 +3,7 @@
 	import { throw_error } from '$lib/error'
 	import { GET } from '$lib/fetch'
 	import { Button } from '$lib/forms'
+    import PageHeader from '$lib/PageHeader.svelte'
 	import { start, stop } from '$lib/progress'
 	import Stats from '$lib/stats'
 	import { onMount } from 'svelte'
@@ -70,4 +71,18 @@
 		<Stats.Stat title='Stat five hundred thousand' value=500,000 />
 		<Stats.Stat title='Stat six hundred thousand' value=600,000 />
 	</Stats>
+</section>
+
+<section>
+	<h2>Custom components</h2>
+
+	<h3>PageHeader</h3>
+	<PageHeader>Simple</PageHeader>
+	<PageHeader>
+		<span class='flex justify-between items-center'>
+			elements spread across header
+
+			<a href='/'>link to this page</a>
+		</span>
+	</PageHeader>
 </section>

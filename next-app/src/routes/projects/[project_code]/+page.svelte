@@ -62,12 +62,14 @@
 	<title>Project Home</title>
 </svelte:head>
 
-<PageHeader class='flex justify-between items-center'>
-	{ project.name }
+<PageHeader>
+	<span class='flex justify-between items-center'>
+		{ project.name }
 
-	<a rel=external href={ `/app/lexicon/${ project.id }` } class='btn btn-primary no-underline btn-xs sm:btn-md'>
-		work on this project
-	</a>
+		<a rel=external href={ `/app/lexicon/${ project.id }` } class='btn btn-primary no-underline btn-xs sm:btn-md'>
+			work on this project
+		</a>
+	</span>
 </PageHeader>
 
 <Stats>
