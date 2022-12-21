@@ -9,7 +9,7 @@ export async function load({ params: { project_code }, request: { headers }}) {
 		cookie: headers.get('cookie'),
 	}
 
-	const result = {
+	const result: DashboardResult = {
 		project: await fetch_project_details(args),
 	}
 
@@ -26,7 +26,7 @@ export async function load({ params: { project_code }, request: { headers }}) {
 	return result
 }
 
-function daysAgo(num_days) {
+function daysAgo(num_days: number): Date {
 	const today = new Date();
 	const daysAgo = new Date(today.setDate(today.getDate() - num_days))
 
