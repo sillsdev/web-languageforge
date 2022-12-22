@@ -65,33 +65,33 @@ export function PuiTypeahead($interval: angular.IIntervalService): angular.IDire
     }],
 
     link(scope: any, element, attrs, controller: any) {
-      const $input = element.find('#typeaheadInput');
-      const $list = element.find('.typeahead-results');
-      $input.bind('focus', () => {
+      const $input = document.querySelector<HTMLInputElement>('#typeaheadInput');
+      const $list = document.querySelector<HTMLElement>('.typeahead-results');
+      $input.addEventListener('focus', () => {
         scope.$apply(() => {
           scope.focused = true;
         });
       });
 
-      $input.bind('blur', () => {
+      $input.addEventListener('blur', () => {
         scope.$apply(() => {
           scope.focused = false;
         });
       });
 
-      $list.bind('mouseover', () => {
+      $list.addEventListener('mouseover', () => {
         scope.$apply(() => {
           scope.mousedOver = true;
         });
       });
 
-      $list.bind('mouseleave', () => {
+      $list.addEventListener('mouseleave', () => {
         scope.$apply(() => {
           scope.mousedOver = false;
         });
       });
 
-      $input.bind('keyup', (e: Event) => {
+      $input.addEventListener('keyup', (e: Event) => {
         if ((e as KeyboardEvent).keyCode === 9 || (e as KeyboardEvent).keyCode === 13) {
           scope.$apply(() => {
             controller.selectActive();
@@ -105,7 +105,7 @@ export function PuiTypeahead($interval: angular.IIntervalService): angular.IDire
         }
       });
 
-      $input.bind('keydown', e => {
+      $input.addEventListener('keydown', e => {
         if (e.keyCode === 9 || e.keyCode === 13 || e.keyCode === 27) {
           e.preventDefault();
         }
@@ -140,16 +140,12 @@ export function PuiTypeahead($interval: angular.IIntervalService): angular.IDire
 
       scope.$watch('isVisible()', (visible: boolean) => {
         if (visible) {
-          const pos = $input.position();
-          const height = $input[0].offsetHeight;
-          $list.css({
-            top: pos.top + height,
-            left: pos.left,
-            position: 'absolute',
-            display: 'block'
-          });
+          $list.style.setProperty('top', `${$input.offsetTop + $input.offsetHeight}px`);
+          $list.style.setProperty('left', `${$input.offsetLeft}px`);
+          $list.style.setProperty('position', `absolute`);
+          $list.style.setProperty('display', `block`);
         } else {
-          $list.css('display', 'none');
+          $list.style.setProperty('display', 'none');
         }
       });
     }
