@@ -1,4 +1,5 @@
 import { error } from '@sveltejs/kit'
+import type { Rpc, FetchArgs } from './types'
 
 export async function sf({ name, args = [], cookie }: Rpc) {
 	const body = {
@@ -9,7 +10,7 @@ export async function sf({ name, args = [], cookie }: Rpc) {
 		},
 	}
 
-	const results = await custom_fetch(`${process.env.API_HOST}/api/sf`, 'post', body, cookie)
+	const results = await custom_fetch({url: `${process.env.API_HOST}/api/sf`, method: 'POST', body, cookie})
 
 	if (results.error) {
 		console.log('lib/server/sf.ts.sf results.error: ', {results})
@@ -24,7 +25,7 @@ export async function sf({ name, args = [], cookie }: Rpc) {
 	return results.result
 }
 
-async function custom_fetch(url, method, body, cookie) {
+async function custom_fetch({url, method, body, cookie}: FetchArgs) {
 	// https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch#Supplying_request_options
 	const response: Response = await fetch(url, {
 		method,
