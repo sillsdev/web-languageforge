@@ -1,4 +1,4 @@
 type DashboardData = {
-	project: object,
+	project: ProjectDetails,
 	activities?: undefined | Activity[],
 }

@@ -6,7 +6,7 @@ export async function fetch_project_details({ project_code, cookie }) {
 	const { id, projectName: name, users } = await sf({ name: 'set_project', args: [ project_code ], cookie })
 	const { entries, comments } = await sf({ name: 'lex_stats', cookie })
 
-	const details = {
+	const details: ProjectDetails = {
 		id,
 		code: project_code,
 		name,

@@ -1,5 +1,5 @@
 <script lang=ts>
-	export let activities
+	export let activities: Activity[]
 
 	$: sorted_activities = transform(activities).sort(byDateThenUser)
 
@@ -20,7 +20,7 @@
 		'update_lex_reply': 'Updated reply'
 	}
 
-	function transform(_activities) {
+	function transform(_activities: Activity[]) {
 		return _activities.map(activity => {
 			const date = new Date(activity.date)
 

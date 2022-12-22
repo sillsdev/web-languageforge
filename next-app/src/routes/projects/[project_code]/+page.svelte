@@ -1,4 +1,4 @@
-<script>
+<script lang=ts>
 	import { page } from '$app/stores'
 	import Activity from './Activity.svelte'
 	import { GET } from '$lib/fetch'
@@ -13,7 +13,7 @@
 	import PageHeader from '$lib/PageHeader.svelte'
 	import Stats from '$lib/stats'
 
-	export let data;
+	export let data: DashboardData
 
 	let only_showing_subset = true
 
