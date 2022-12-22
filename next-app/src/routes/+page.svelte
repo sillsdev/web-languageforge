@@ -87,7 +87,6 @@
 	<Input label=default />
 	<Input label=password type=password />
 	<Input label=value bind:value /> <span>{value}</span>
-	<Input label=autofocus autofocus />
 
 	<h3>PageHeader</h3>
 	<PageHeader>Simple</PageHeader>
