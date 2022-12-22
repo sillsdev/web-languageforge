@@ -5,6 +5,7 @@ import { UserProfilePage } from './pages/user-profile.page';
 import { login, UserDetails } from './utils';
 import { test } from './utils/fixtures';
 
+// Potentially flaky in CI. We're investigating.
 test.describe.fixme('User Profile', () => {
 
   test('Generated user account and about me info', async ({ page, userService }) => {
