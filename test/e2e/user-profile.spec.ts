@@ -5,7 +5,7 @@ import { UserProfilePage } from './pages/user-profile.page';
 import { login, UserDetails } from './utils';
 import { test } from './utils/fixtures';
 
-test.describe('User Profile', () => {
+test.describe.fixme('User Profile', () => {
 
   test('Generated user account and about me info', async ({ page, userService }) => {
     const user = await userService.createRandomUser();
