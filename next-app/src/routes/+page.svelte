@@ -2,13 +2,14 @@
 	import { browser } from '$app/environment'
 	import { throw_error } from '$lib/error'
 	import { GET } from '$lib/fetch'
-	import { Button } from '$lib/forms'
+	import { Button, Input } from '$lib/forms'
     import PageHeader from '$lib/PageHeader.svelte'
 	import { start, stop } from '$lib/progress'
 	import Stats from '$lib/stats'
 	import { onMount } from 'svelte'
 
 	let dark_mode = false
+	let value = 'default_value'
 
 	onMount(() => dark_mode = window.matchMedia('(prefers-color-scheme: dark)').matches)
 
@@ -81,6 +82,12 @@
 	<Button danger>error</Button>
 	<Button class='btn-outline'>outline</Button>
 	<Button class='btn-xs sm:btn-sm'>extra small</Button>
+
+	<h3>Input</h3>
+	<Input label=default />
+	<Input label=password type=password />
+	<Input label=value bind:value /> <span>{value}</span>
+	<Input label=autofocus autofocus />
 
 	<h3>PageHeader</h3>
 	<PageHeader>Simple</PageHeader>
