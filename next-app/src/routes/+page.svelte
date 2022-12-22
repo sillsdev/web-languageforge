@@ -76,6 +76,12 @@
 <section>
 	<h2>Custom components</h2>
 
+	<h3>Button</h3>
+	<Button>primary</Button>
+	<Button danger>error</Button>
+	<Button class='btn-outline'>outline</Button>
+	<Button class='btn-xs sm:btn-sm'>extra small</Button>
+
 	<h3>PageHeader</h3>
 	<PageHeader>Simple</PageHeader>
 	<PageHeader>
