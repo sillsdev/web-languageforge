@@ -1,5 +1,5 @@
 import { expect, Locator, Page } from '@playwright/test';
-import { AudioPlayer, EditorComment } from '../components';
+import { AudioPlayer, EditorComment } from './components';
 import { Project } from '../utils';
 import { BasePage, GotoOptions } from './base-page';
 import { ConfigurationPageFieldsTab } from './configuration-fields.tab';

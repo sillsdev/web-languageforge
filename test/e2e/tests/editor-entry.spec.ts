@@ -1,30 +1,27 @@
 import { expect, Locator } from '@playwright/test';
-import { ConfirmModal } from './components';
-import { entries, users } from './constants';
-import { ConfigurationPageFieldsTab } from './pages/configuration-fields.tab';
-import { EditorPage } from './pages/editor.page';
-import { EntryListPage } from './pages/entry-list.page';
-import { Project, testFilePath } from './utils';
-import { projectPerTest, test } from './utils/fixtures';
-import { addAudioVisualFileToProject, addLexEntry, addPictureFileToProject, addUserToProject, addWritingSystemToProject, initTestProject } from './utils/testSetup';
+import { entries, users } from '../constants';
+import { projectPerTest, test } from '../fixtures';
+import { ConfigurationPageFieldsTab, EditorPage, EntryListPage } from '../pages';
+import { ConfirmModal } from '../pages/components';
+import { Project, testFilePath } from '../utils';
 
 test.describe('Entry Editor and Entries List', () => {
 
   let project: Project;
   let lexEntriesIds: string[] = [];
 
-  test.beforeAll(async ({ request }, testInfo) => {
-    project = await initTestProject(request, testInfo.titlePath[0], undefined, users.manager, [users.member]);
-    await addUserToProject(request, project, users.observer, "observer");
-    await addWritingSystemToProject(request, project, 'th-fonipa', 'tipa');
-    await addWritingSystemToProject(request, project, 'th-Zxxx-x-audio', 'taud');
+  test.beforeAll(async ({ projectService }, testInfo) => {
+    project = await projectService.initTestProject(testInfo.titlePath[0], undefined, users.manager, [users.member]);
+    await projectService.addUserToProject(project, users.observer, "observer");
+    await projectService.addWritingSystemToProject(project, 'th-fonipa', 'tipa');
+    await projectService.addWritingSystemToProject(project, 'th-Zxxx-x-audio', 'taud');
 
-    await addPictureFileToProject(request, project, entries.entry1.senses[0].pictures[0].fileName);
-    await addAudioVisualFileToProject(request, project, entries.entry1.lexeme['th-Zxxx-x-audio'].value);
+    await projectService.addPictureFileToProject(project, entries.entry1.senses[0].pictures[0].fileName);
+    await projectService.addAudioVisualFileToProject(project, entries.entry1.lexeme['th-Zxxx-x-audio'].value);
     // put in data
-    lexEntriesIds.push(await addLexEntry(request, project.code, entries.entry1));
-    lexEntriesIds.push(await addLexEntry(request, project.code, entries.entry2));
-    lexEntriesIds.push(await addLexEntry(request, project.code, entries.multipleMeaningEntry));
+    lexEntriesIds.push(await projectService.addLexEntry(project.code, entries.entry1));
+    lexEntriesIds.push(await projectService.addLexEntry(project.code, entries.entry2));
+    lexEntriesIds.push(await projectService.addLexEntry(project.code, entries.multipleMeaningEntry));
   });
 
   test.describe('Entries List', () => {
@@ -33,11 +30,6 @@ test.describe('Entry Editor and Entries List', () => {
 
     test.beforeEach(async ({ managerTab }) => {
       entryListPageManager = await new EntryListPage(managerTab, project).goto();
-    });
-
-    test.afterEach(async ({ }, testInfo) => {
-      if (testInfo.status !== testInfo.expectedStatus)
-        await entryListPageManager.page.reload();
     });
 
     test('Entries list has correct number of entries', async () => {
@@ -145,10 +137,10 @@ test.describe('Entry Editor and Entries List', () => {
         editorPageManager = new EditorPage(managerTab, project);
       });
 
-      test('First picture and caption is present', async () => {
+      test('First picture and caption is present', async ({ projectService }) => {
         const screenshotProject: Project = await newProject();
-        await addLexEntry(editorPageManager.request, screenshotProject.code, entries.entry1);
-        await addPictureFileToProject(editorPageManager.request, screenshotProject, entries.entry1.senses[0].pictures[0].fileName);
+        await projectService.addLexEntry(screenshotProject.code, entries.entry1);
+        await projectService.addPictureFileToProject(screenshotProject, entries.entry1.senses[0].pictures[0].fileName);
 
         const editorPagePicture = await new EditorPage(editorPageManager.page, screenshotProject).goto();
         const picture: Locator = await editorPagePicture.getPicture(editorPagePicture.senseCard, entries.entry1.senses[0].pictures[0].fileName);
@@ -209,10 +201,10 @@ test.describe('Entry Editor and Entries List', () => {
         await expect(caption).toBeVisible();
       });
 
-      test('Picture is removed when Delete is clicked & can change config to hide pictures and hide captions', async () => {
+      test('Picture is removed when Delete is clicked & can change config to hide pictures and hide captions', async ({ projectService }) => {
         const testProject: Project = await newProject();
-        await addLexEntry(editorPageManager.request, testProject, entries.entry1);
-        await addPictureFileToProject(editorPageManager.request, testProject, entries.entry1.senses[0].pictures[0].fileName);
+        await projectService.addLexEntry(testProject, entries.entry1);
+        await projectService.addPictureFileToProject(testProject, entries.entry1.senses[0].pictures[0].fileName);
         const editorPagePicture = await new EditorPage(editorPageManager.page, testProject).goto();
 
         // Picture is removed when Delete is clicked

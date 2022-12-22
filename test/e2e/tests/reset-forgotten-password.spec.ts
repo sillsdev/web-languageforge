@@ -1,10 +1,6 @@
 import { expect } from '@playwright/test';
-import { ForgotPasswordPage } from './pages/forgot-password.page';
-import { LoginPage } from './pages/login.page';
-import { ProjectsPage } from './pages/projects.page';
-import { ResetPasswordPage } from './pages/reset-password.page';
-import { SignupPage } from './pages/signup.page';
-import { test } from './utils/fixtures';
+import { test } from '../fixtures';
+import { ForgotPasswordPage, LoginPage, ProjectsPage, ResetPasswordPage, SignupPage } from '../pages';
 
 test.describe('Reset forgotten password', () => {
 

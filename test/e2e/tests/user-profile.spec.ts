@@ -1,9 +1,7 @@
 import { expect, Page } from '@playwright/test';
-import { LoginPage } from './pages/login.page';
-import { ProjectsPage } from './pages/projects.page';
-import { UserProfilePage } from './pages/user-profile.page';
-import { login, UserDetails } from './utils';
-import { test } from './utils/fixtures';
+import { test } from '../fixtures';
+import { LoginPage, ProjectsPage, UserProfilePage } from '../pages';
+import { login, UserDetails } from '../utils';
 
 // Potentially flaky in CI. We're investigating.
 test.describe.fixme('User Profile', () => {
@@ -36,7 +34,7 @@ test.describe.fixme('User Profile', () => {
     await userProfilePage.accountTab.colorField.selectOption({ label: 'Steel Blue' });
     await userProfilePage.accountTab.animalField.selectOption({ label: 'Otter' });
 
-    await userProfilePage.saveBtn.click();
+    await userProfilePage.save();
     await Promise.all([
       userProfilePage.page.reload(),
       userProfilePage.waitFor(),
@@ -65,13 +63,10 @@ test.describe.fixme('User Profile', () => {
 
     await expect(userProfilePage.accountTab.usernameField).toHaveValue(currDetails.username);
     await userProfilePage.accountTab.usernameField.fill(newUsername);
-    await userProfilePage.saveBtn.click();
 
-    const loginPage = new LoginPage(tab);
-
-    await Promise.all([
-      userProfilePage.modal.saveChangesBtn.click(),
-      loginPage.waitFor(),
+    const [loginPage] = await Promise.all([
+      LoginPage.waitFor(tab),
+      userProfilePage.save(),
     ]);
 
     await Promise.all([
@@ -97,7 +92,7 @@ test.describe.fixme('User Profile', () => {
     await userProfilePage.aboutMeTab.ageField.fill(newAge);
     await userProfilePage.aboutMeTab.genderField.selectOption({ label: 'Female' });
 
-    await userProfilePage.saveBtn.click();
+    await userProfilePage.save();
     await userProfilePage.reload();
 
     await expect(userProfilePage.aboutMeTab.nameField).toHaveValue(newName);

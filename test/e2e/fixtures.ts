@@ -1,17 +1,14 @@
 import type { Browser, Page } from '@playwright/test';
-import { test as base } from '@playwright/test';
-import { users } from '../constants';
-import { Project } from './project-utils';
-import { initTestProjectForTest } from './testSetup';
-import { UserDetails } from './types';
-import { getStorageStatePath, UserTestService } from './user-tools';
+import { test as base, APIRequestContext } from '@playwright/test';
+import { users } from './constants';
+import { getStorageStatePath, Project, ProjectTestService, UserDetails, UserTestService } from './utils';
 
 export type Tab = Page;
 export type E2EUsername = keyof typeof users;
 
-const userTab = (user: UserDetails) => async ({ browser, browserName }: { browser: Browser, browserName: string }, use: (r: Tab) => Promise<void>) => {
-  const storageState = getStorageStatePath(browserName, user);
-  const context = await browser.newContext({ storageState })
+const userTab = (user: UserDetails) => async ({ browser }: { browser: Browser }, use: (r: Tab) => Promise<void>) => {
+  const storageState = getStorageStatePath(user);
+  const context = await browser.newContext({ storageState });
   const tab = await context.newPage();
   await use(tab); // returns after the next test() completes
   // We have to close all the pages we open or else they stay open forever and leak into the results (traces, screenshots) of proceding tests.
@@ -29,15 +26,22 @@ export const test = base
     observerTab: Tab,
     tab: Page,
     userService: UserTestService,
+    projectService: ProjectTestService,
   }>({
     adminTab: userTab(users.admin),
     managerTab: userTab(users.manager),
     memberTab: userTab(users.member),
-    observerTab: userTab(users.observer),
-    tab: async ({ page }: { page: Page }, use: (r: Tab) => Promise<void>) => await use(page),
-    userService: async ({ page }: { page: Page }, use: (userService: UserTestService) => Promise<void>) => {
-      const userService = new UserTestService(page.request);
+    observerTab: userTab(users.observer), // override page & request to use baseUrl
+    tab: async ({ page }: { page: Page }, use: (r: Page) => Promise<void>) => {
+      await use(page);
+    },
+    userService: async ({ request }: { request: APIRequestContext }, use: (userService: UserTestService) => Promise<void>) => {
+      const userService = new UserTestService(request);
       await use(userService);
+    },
+    projectService: async ({ request }: { request: APIRequestContext }, use: (projectService: ProjectTestService) => Promise<void>) => {
+      const projectService = new ProjectTestService(request);
+      await use(projectService);
     },
   });
 
@@ -54,11 +58,11 @@ export function projectPerTest(lazy?: boolean): () => Project | Promise<Project>
   let currentTestProjectGetter: () => Promise<Project>;
   let currentTestProject: Project;
 
-  test.beforeEach(async ({ tab }, testInfo) => {
+  test.beforeEach(async ({ projectService }, testInfo) => {
     currentTestProject = undefined;
-    currentTestProjectGetter = () => initTestProjectForTest(tab.request, testInfo, users.manager);
+    currentTestProjectGetter = () => projectService.initTestProjectForTest(testInfo, users.manager);
     if (!lazy) {
-      currentTestProject = await initTestProjectForTest(tab.request, testInfo, users.manager);
+      currentTestProject = await projectService.initTestProjectForTest(testInfo, users.manager);
     }
   });
 

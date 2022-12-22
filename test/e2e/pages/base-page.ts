@@ -1,5 +1,5 @@
 import { Locator, Page, APIRequestContext } from '@playwright/test';
-import { NoticeElement, PageHeader } from "../components";
+import { NoticeElement, PageHeader } from "./components";
 
 export interface GotoOptions {
   waitFor?: Locator;
@@ -43,7 +43,10 @@ export abstract class BasePage
       this.page.goto(this.url),
       options?.expectRedirect || this.waitFor(), // this page won't load if a redirect happens
       options?.waitFor?.waitFor(),
-    ]);
+    ]).catch(error => {
+      console.error(error);
+      throw error;
+    });
     return this;
   }
 
@@ -67,7 +70,10 @@ export abstract class BasePage
     await Promise.all([
       this.page.reload(),
       this.waitFor(),
-    ]);
+    ]).catch(error => {
+      console.error(error);
+      throw error;
+    });
     return this;
   }
 

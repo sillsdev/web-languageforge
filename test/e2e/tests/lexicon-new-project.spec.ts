@@ -1,10 +1,8 @@
 import { expect } from '@playwright/test';
-import { sendReceiveMockProjects, sendReceiveMockUser, users } from './constants';
-import { EditorPage } from './pages/editor.page';
-import { NewLexProjectPage } from './pages/new-lex-project.page';
-import { testFilePath, toProject } from './utils';
-import { test } from './utils/fixtures';
-import { initTestProjectForTest } from './utils/testSetup';
+import { sendReceiveMockProjects, sendReceiveMockUser, users } from '../constants';
+import { test } from '../fixtures';
+import { EditorPage, NewLexProjectPage } from '../pages';
+import { testFilePath, toProject } from '../utils';
 
 test.describe('New Project wizard', () => {
 
@@ -183,8 +181,8 @@ test.describe('New Project wizard', () => {
         await expect(newLexProjectPageMember.formStatus).toContainText('Project Name cannot be empty.');
       });
 
-      test('Finds the test project already exists', async ({}, testInfo) => {
-        const existingProject = await initTestProjectForTest(newLexProjectPageMember.request, testInfo, users.manager, [users.member]);
+      test('Finds the test project already exists', async ({ projectService }, testInfo) => {
+        const existingProject = await projectService.initTestProjectForTest(testInfo, users.manager, [users.member]);
 
         await newLexProjectPageMember.namePage.projectNameInput.fill(existingProject.code);
         await newLexProjectPageMember.namePage.projectNameInput.press('Tab');

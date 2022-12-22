@@ -1,8 +1,7 @@
 import { expect } from '@playwright/test';
-import { users } from './constants';
-import { ProjectsPage } from './pages/projects.page';
-import { SignupPage } from './pages/signup.page';
-import { test } from './utils/fixtures';
+import { users } from '../constants';
+import { test } from '../fixtures';
+import { ProjectsPage, SignupPage } from '../pages';
 
 test.describe('Signup', () => {
   let signupPage: SignupPage;

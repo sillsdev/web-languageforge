@@ -1,8 +1,7 @@
 import { expect } from '@playwright/test';
-import { PageHeader } from './components';
-import { ForgotPasswordPage } from './pages/forgot-password.page';
-import { LoginPage } from './pages/login.page';
-import { test } from './utils/fixtures';
+import { test } from '../fixtures';
+import { ForgotPasswordPage, LoginPage } from '../pages';
+import { PageHeader } from '../pages/components';
 
 test.describe('Interface Language picker', () => {
   let loginPage: LoginPage;

@@ -1,11 +1,8 @@
 import { expect } from '@playwright/test';
-import { users } from './constants';
-import { EditorPage } from './pages/editor.page';
-import { ProjectSettingsPage } from './pages/project-settings.page';
-import { ProjectsPage } from './pages/projects.page';
-import { Project } from './utils';
-import { test } from './utils/fixtures';
-import { addUserToProject, initTestProject } from './utils/testSetup';
+import { users } from '../constants';
+import { test } from '../fixtures';
+import { EditorPage, ProjectSettingsPage, ProjectsPage } from '../pages';
+import { Project } from '../utils';
 
 test.describe('Project Settings', () => {
   const projects: Project[] = [
@@ -31,13 +28,13 @@ test.describe('Project Settings', () => {
     id: ''
   };
 
-  test.beforeAll(async ({ request }) => {
+  test.beforeAll(async ({ projectService }) => {
     for (const project of projects) {
-      const projectId = (await initTestProject(request, project.name, project.code, users.admin, [users.member])).id;
+      const projectId = (await projectService.initTestProject(project.name, project.code, users.admin, [users.member])).id;
       project.id = projectId;
     }
-    await addUserToProject(request, projects[0], users.manager, 'manager');
-    project4.id = (await initTestProject(request, project4.name, project4.code, users.manager, [])).id;
+    await projectService.addUserToProject(projects[0], users.manager, 'manager');
+    project4.id = (await projectService.initTestProject(project4.name, project4.code, users.manager, [])).id;
   });
 
   // test if can change project name

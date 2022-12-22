@@ -1,10 +1,8 @@
 import { expect } from '@playwright/test';
-import { users } from './constants';
-import { EditorPage } from './pages/editor.page';
-import { ProjectsPage } from './pages/projects.page';
-import { Project } from './utils';
-import { test } from './utils/fixtures';
-import { addUserToProject, initTestProject } from './utils/testSetup';
+import { users } from '../constants';
+import { test } from '../fixtures';
+import { EditorPage, ProjectsPage } from '../pages';
+import { Project } from '../utils';
 
 test.describe('Projects List', () => {
 
@@ -36,13 +34,13 @@ test.describe('Projects List', () => {
     id: ''
   };
 
-  test.beforeAll(async ({ request }) => {
+  test.beforeAll(async ({ projectService }) => {
     for (const project of projects) {
-      const projectId = (await initTestProject(request, project.name, project.code, users.manager, [users.member])).id;
+      const projectId = (await projectService.initTestProject(project.name, project.code, users.manager, [users.member])).id;
       project.id = projectId;
     }
-    project4.id = (await initTestProject(request, project4.name, project4.code, users.manager, [users.admin])).id;
-    project5.id = (await initTestProject(request, project5.name, project5.code, users.manager, [])).id;
+    project4.id = (await projectService.initTestProject(project4.name, project4.code, users.manager, [users.admin])).id;
+    project5.id = (await projectService.initTestProject(project5.name, project5.code, users.manager, [])).id;
   });
 
   test.describe('for Normal User', () => {
@@ -63,9 +61,9 @@ test.describe('Projects List', () => {
       await expect(projectsPageMember.projectRow(project4.name)).not.toBeVisible();
     });
 
-    test('Project to which user is added shows up when page reloaded', async () => {
+    test('Project to which user is added shows up when page reloaded', async ({ projectService }) => {
       await expect(projectsPageMember.projectRow(project4.name)).not.toBeVisible();
-      await addUserToProject(projectsPageMember.request, project4, users.member);
+      await projectService.addUserToProject(project4, users.member);
       await projectsPageMember.page.reload();
       await projectsPageMember.goto();
       await expect(projectsPageMember.projectRow(project4.name)).toBeVisible();

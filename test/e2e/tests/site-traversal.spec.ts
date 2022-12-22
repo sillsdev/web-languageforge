@@ -1,12 +1,6 @@
 import { expect } from '@playwright/test';
-import { ChangePasswordPage } from './pages/change-password.page';
-import { ForgotPasswordPage } from './pages/forgot-password.page';
-import { LoginPage } from './pages/login.page';
-import { ProjectsPage } from './pages/projects.page';
-import { SignupPage } from './pages/signup.page';
-import { SiteAdminPage } from './pages/site-admin.page';
-import { UserProfilePage } from './pages/user-profile.page';
-import { test } from './utils/fixtures';
+import { test } from '../fixtures';
+import { ChangePasswordPage, ForgotPasswordPage, LoginPage, ProjectsPage, SignupPage, SiteAdminPage, UserProfilePage } from '../pages';
 
 /**
  * page traversal without testing functionality
