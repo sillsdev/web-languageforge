@@ -1,8 +1,9 @@
 import { error, json } from '@sveltejs/kit'
 import { fetch_current_user } from '$lib/server/user'
 import { sf } from '$lib/server/sf'
+import type { RequestHandler } from './$types'
 
-export async function PUT({ request }) {
+export const PUT = (async ({ request }) => {
 	const { password, password_confirm } = await request.json()
 
 	if (! password) {
@@ -12,7 +13,7 @@ export async function PUT({ request }) {
 		throw error(400, 'Passwords do not match')
 	}
 
-	const cookie = request.headers.get('cookie')
+	const cookie = request.headers.get('cookie') || ''
 
 	const { id } = await fetch_current_user(cookie)
 
@@ -23,4 +24,4 @@ export async function PUT({ request }) {
 	})
 
 	return json({})
-}
+}) satisfies RequestHandler

@@ -1,7 +1,7 @@
 import { error } from '@sveltejs/kit'
 import type { Rpc, FetchArgs, SfResponse } from './types'
 
-export async function sf({name, args = [], cookie}: Rpc) {
+export async function sf({name, args = [], cookie = ''}: Rpc) {
 	const body = {
 		id: Date.now(),
 		method: name,
