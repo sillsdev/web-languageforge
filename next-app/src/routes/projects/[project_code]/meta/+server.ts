@@ -26,13 +26,13 @@ export async function fetch_project_details({ project_code, cookie }) {
 	return details
 }
 
-function has_picture(entry) {
+function has_picture(entry: Entry) {
 	return entry.senses?.some(sense => sense.pictures)
 }
 
 // audio can be found in lots of places other than lexeme, ref impl used: https://github.com/sillsdev/web-languageforge/blob/develop/src/angular-app/bellows/core/offline/editor-data.service.ts#L523
-function has_audio(entry) {
-	const contains_audio = writing_system => writing_system.endsWith('-audio') // naming convention imposed by src/angular-app/languageforge/lexicon/settings/configuration/input-system-view.model.ts L81
+function has_audio(entry: Entry) {
+	const contains_audio = (writing_system: string) => writing_system.endsWith('-audio') // naming convention imposed by src/angular-app/languageforge/lexicon/settings/configuration/input-system-view.model.ts L81
 
 	// examples of possible locations where audio may be found in the entry's data:
 	// 1.  Fields within an "entry"
@@ -44,7 +44,7 @@ function has_audio(entry) {
 	//			'...-audio': '...'
 	//		}
 	// }
-	const in_fields = fields => Object.keys(fields).some(name => Object.keys(fields[name]).some(contains_audio))
+	const in_fields = (fields: Field[]) => Object.keys(fields).some(name => Object.keys(fields[name]).some(contains_audio))
 
 	// 2.  Fields within a "meaning" (note: senses may not be present)
 	// {
@@ -56,24 +56,24 @@ function has_audio(entry) {
 	//			}
 	// 		}]
 	// }
-	const in_meaning = (senses = []) => senses.some(in_fields)
+	const in_meaning = (fields: Field[] = []) => fields.some(in_fields)
 
 	// 3.  Fields within a "meaning"'s example (note: senses may not be present)
 	// {
 	//		lexeme: '...',
 	//		pronunciation: '...',
 	//		senses: [{
-	//			examples: {
+	//			examples: [
 	//				sentence: {
 	//					'...-audio': '...'
 	//				},
 	//				'...': {
 	//					'...-audio': '...'
 	//				}
-	//			}
+	//			]
 	// 		}]
 	// }
-	const in_example = (senses = []) => senses.some(sense => in_meaning(sense.examples))
+	const in_example = (senses: Sense[] = []) => senses.some(sense => in_meaning(sense.examples))
 
 	const { senses, ...fields } = entry
 

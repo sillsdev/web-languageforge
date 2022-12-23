@@ -9,3 +9,14 @@ type ProjectDetails = {
 	num_unresolved_comments?: number,
 }
 
+type Entry = {
+	senses?: Sense[],
+	[key: string]: Field,
+}
+
+interface Sense extends Field {
+	examples?: Field[],
+	pictures?: Field[],
+}
+
+type Field = [string, string | Field | Field[]]
