@@ -28,11 +28,6 @@ export class EditorPage extends BasePage {
   };
   readonly renderedDivs = this.locator('.dc-rendered-entryContainer');
 
-  readonly search = {
-    searchInput: this.locator('#editor-entry-search-entries'),
-    matchCount: this.locator('#totalNumberOfEntries >> span')
-  };
-
   readonly noEntries = this.locator('.no-entries');
   readonly entryCard = this.locator('.entry-card');
   readonly senseCard = this.locator('.dc-sense.card');
@@ -178,20 +173,16 @@ export class EditorPage extends BasePage {
     return card.locator('[data-ng-switch-when="pictures"]');
   }
 
-  // returns the locator to the picture or undefined if 0 or more than one pictures with this filename are found
-  async getPicture(card: Locator, filename: string): Promise<Locator> {
-    const picture: Locator = card.locator(`img[src$="${filename}"]`);
-    return (await picture.count() == 1 ? picture : undefined);
+  picture(filename: string, parent = this.senseCard): Locator {
+    return parent.locator(`img[src$="${filename}"]`);
   }
 
-  async getPictureDeleteButton(card: Locator, pictureFilename: string): Promise<Locator> {
-    const button = card.locator(`[data-ng-repeat="picture in $ctrl.pictures"]:has(img[src$="${pictureFilename}"]) >> [title="Delete Picture"]`);
-    return (await button.count() == 1 ? button : undefined);
+  deletePictureButton(pictureFilename: string, parent = this.senseCard): Locator {
+    return parent.locator(`[data-ng-repeat="picture in $ctrl.pictures"]:has(img[src$="${pictureFilename}"]) >> [title="Delete Picture"]`);
   }
 
-  async getPictureCaption(picture: Locator, languageCode: string = "en"): Promise<Locator> {
-    const caption = picture.locator(`xpath=..//.. >> div.input-group:has-Text("${languageCode}") >> textarea`);
-    return (await caption.count() == 1 ? caption : undefined);
+  caption(picture: Locator, languageCode: string = "en"): Locator {
+    return picture.locator(`xpath=..//.. >> div.input-group:has-Text("${languageCode}") >> textarea`);
   }
 
   getCancelDropboxButton(card: Locator, uploadType: UploadType): Locator {

@@ -67,10 +67,8 @@ export abstract class BasePage
    * @returns the page for convenience/chaining
    */
   async reload(): Promise<this> {
-    await Promise.all([
-      this.page.reload(),
-      this.waitFor(),
-    ]).catch(error => {
+    await this.page.reload();
+    await this.waitFor().catch(error => {
       console.error(error);
       throw error;
     });
