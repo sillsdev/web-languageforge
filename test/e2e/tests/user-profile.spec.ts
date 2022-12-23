@@ -3,8 +3,7 @@ import { test } from '../fixtures';
 import { LoginPage, ProjectsPage, UserProfilePage } from '../pages';
 import { login, UserDetails } from '../utils';
 
-// Potentially flaky in CI. We're investigating.
-test.describe.fixme('User Profile', () => {
+test.describe('User Profile', () => {
 
   test('Generated user account and about me info', async ({ tab, userService }) => {
     const user = await userService.createRandomUser();
