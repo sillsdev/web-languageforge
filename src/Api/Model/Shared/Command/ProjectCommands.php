@@ -195,18 +195,6 @@ class ProjectCommands
     }
 
     /**
-     * Gets list of user requests
-     * @param string $projectId
-     * @return array of users join requests
-     */
-    public static function getJoinRequests($projectId)
-    {
-        $projectModel = ProjectModel::getById($projectId);
-        $list = $projectModel->listRequests();
-        return $list;
-    }
-
-    /**
      * Update the user project role in the project
      * @param string $projectId
      * @param string $userId
@@ -315,19 +303,6 @@ class ProjectCommands
         }
 
         return $aProjectId;
-    }
-
-    /**
-     * Removes users from the project (two-way unlink)
-     * @param string $projectId
-     * @param string $joinRequestId
-     * @return string $projectId
-     */
-    public static function removeJoinRequest($projectId, $joinRequestId)
-    {
-        $project = new ProjectModel($projectId);
-        $project->removeUserJoinRequest($joinRequestId);
-        return $project->write();
     }
 
     public static function grantAccessForUserRequest($projectId, $userId, $projectRole)

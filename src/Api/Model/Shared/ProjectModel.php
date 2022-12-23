@@ -29,10 +29,6 @@ class ProjectModel extends MapperModel
 
         $this->allowSharing = false;
 
-        $this->userJoinRequests = new MapOf(function () {
-            return new ProjectRoleModel();
-        });
-
         $this->isArchived = false;
         $this->allowInviteAFriend = true;
         $this->interfaceLanguageCode = "en";
@@ -47,11 +43,6 @@ class ProjectModel extends MapperModel
         $this->setReadOnlyProp("projectCode");
         $this->setReadOnlyProp("siteName");
         $this->setReadOnlyProp("appName");
-
-        // There's separate API calls to get/set $userJoinRequests
-        // TODO: Add API calls for $usersRequestingAccess DDW 2016-09
-        $this->setPrivateProp("userJoinRequests");
-        $this->setPrivateProp("usersRequestingAccess");
 
         parent::__construct(ProjectModelMongoMapper::instance(), $id);
     }
@@ -80,9 +71,6 @@ class ProjectModel extends MapperModel
 
     /** @var MapOf<ProjectRoleModel> */
     public $users;
-
-    /** @var MapOf<ProjectRoleModel> */
-    public $userJoinRequests;
 
     /** @var string A string representing exactly this project from external sources. Typically some part of the URL. */
     public $projectCode;
@@ -116,9 +104,6 @@ class ProjectModel extends MapperModel
      * @var string
      */
     public $appName;
-
-    /** @var ArrayOf */
-    public $usersRequestingAccess;
 
     /** @var LexRoles */
     protected $rolesClass;
@@ -188,20 +173,6 @@ class ProjectModel extends MapperModel
     }
 
     /**
-     * Creates a user join request by adding the $userID to the join request array on the project
-     * @param string $userId
-     * @param string $role the system role the user has
-     * @see roles
-     */
-    public function createUserJoinRequest($userId, $role)
-    {
-        ProjectModelMongoMapper::instance();
-        $model = new ProjectRoleModel();
-        $model->role = $role;
-        $this->userJoinRequests[$userId] = $model;
-    }
-
-    /**
      * Removes the $userId from this project.
      * @param string $userId
      */
@@ -209,17 +180,6 @@ class ProjectModel extends MapperModel
     {
         if (array_key_exists($userId, $this->users)) {
             unset($this->users[$userId]);
-        }
-    }
-
-    /**
-     * Removes the $userId from this project.
-     * @param string $userId
-     */
-    public function removeUserJoinRequest($userId)
-    {
-        if (array_key_exists($userId, $this->userJoinRequests)) {
-            unset($this->userJoinRequests[$userId]);
         }
     }
 
@@ -256,22 +216,6 @@ class ProjectModel extends MapperModel
             }
         }
         return $invitees;
-    }
-
-    public function listRequests()
-    {
-        $allUserList = UserCommands::listUsers();
-        $userList = [];
-        for ($i = 0, $l = count($allUserList->entries); $i < $l; $i++) {
-            $userId = $allUserList->entries[$i]["id"];
-            if (array_key_exists($userId, $this->userJoinRequests)) {
-                $userList[$i] = [
-                    "user" => $allUserList->entries[$i],
-                    "role" => $this->userJoinRequests[$userId],
-                ];
-            }
-        }
-        return $userList;
     }
 
     /**

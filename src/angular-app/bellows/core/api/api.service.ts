@@ -37,7 +37,7 @@ export class ApiService {
    */
   method(method: string): ApiMethod {
     // cannot be an arrow function as that doesn't support use of 'arguments'
-    return function(): angular.IPromise<JsonRpcResult> {
+    return function (): angular.IPromise<JsonRpcResult> {
       // convert to array
       const args = [].slice.call(arguments);
       let callback: JsonRpcCallback;
