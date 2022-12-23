@@ -4,3 +4,9 @@ export type UserDetails = {
   name: string,
   email: string,
 }
+
+export type Project = {
+  name: string,
+  code: string,
+  id: string
+}

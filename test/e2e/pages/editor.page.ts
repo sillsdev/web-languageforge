@@ -1,5 +1,5 @@
 import { expect, Locator, Page } from '@playwright/test';
-import { AudioPlayer, EditorComment } from '../components';
+import { AudioPlayer, EditorComment } from './components';
 import { Project } from '../utils';
 import { BasePage, GotoOptions } from './base-page';
 import { ConfigurationPageFieldsTab } from './configuration-fields.tab';
@@ -15,9 +15,9 @@ type UploadType =
   'Picture'
   ;
 
-export type EntryList = Omit<EntryListPage, keyof BasePage<EntryListPage>>;
+export type EntryList = Omit<EntryListPage, keyof BasePage>;
 
-export class EditorPage extends BasePage<EditorPage> {
+export class EditorPage extends BasePage {
 
   readonly entryList: EntryList = new EntryListPage(this.page, this.project);
 
@@ -103,14 +103,14 @@ export class EditorPage extends BasePage<EditorPage> {
     const projectIdPattern = new RegExp('app/lexicon/([^#]*)#');
     await page.waitForURL(projectIdPattern);
     const id = page.url().match(projectIdPattern)[1];
-    return new EditorPage(page, { ...project, id }).waitForPage();
+    return new EditorPage(page, { ...project, id }).waitFor();
   }
 
   constructor(page: Page, readonly project: Project) {
     super(page, `/app/lexicon/${project.id}`, page.locator('.words-container-title:visible, .no-entries:visible'));
   }
 
-  async goto(options?: EditorGotoOptions): Promise<EditorPage> {
+  async goto(options?: EditorGotoOptions): Promise<this> {
     const alreadyOnPage = this.page.url().endsWith(this.url) || this.page.url().includes('#!/editor');
     await super.goto(options);
     const entryId = options?.entryId;
@@ -119,15 +119,15 @@ export class EditorPage extends BasePage<EditorPage> {
       // clicking is a more realistic test anyway
       await Promise.all([
         this.locator(`[id^=entryId_${entryId ?? ''}]`).first().click(),
-        this.waitForPage(),
+        this.waitFor(),
       ]);
     }
     await expect(this.locator('.page-name >> text=' + this.project.name)).toBeVisible();
     return this;
   }
 
-  async waitForPage(): Promise<EditorPage> {
-    await super.waitForPage();
+  async waitFor(): Promise<this> {
+    await super.waitFor();
     if (await this.page.isVisible('[id^=entryId_]')) {
       await this.locator('.entry-card').waitFor();
     }
@@ -139,7 +139,7 @@ export class EditorPage extends BasePage<EditorPage> {
     const projectSettingsPage = new ProjectSettingsPage(this.page, this.project);
     await Promise.all([
       this.settingsMenu.projectSettingsLink.click(),
-      projectSettingsPage.waitForPage(),
+      projectSettingsPage.waitFor(),
     ]);
     return projectSettingsPage;
   }
@@ -149,7 +149,7 @@ export class EditorPage extends BasePage<EditorPage> {
     const configurationPage = new ConfigurationPageFieldsTab(this.page, this.project);
     await Promise.all([
       this.settingsMenu.configurationLink.click(),
-      configurationPage.waitForPage(),
+      configurationPage.waitFor(),
     ]);
     return configurationPage;
   }

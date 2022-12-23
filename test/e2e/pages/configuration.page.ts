@@ -1,19 +1,19 @@
 import { Locator, Page } from '@playwright/test';
 import { Project } from '../utils';
-import { TabbedBasePage as TabbedPage } from './tabbed-page';
+import { TabbedBasePage } from './tabbed-page';
 
 const tabSelector = (tab: string) => `.tab-links .tab-link:text("${tab}")`;
 
 const fieldsSelector = tabSelector('Fields');
 
-export abstract class ConfigurationPage<T extends ConfigurationPage<T>> extends TabbedPage<T> {
+export abstract class ConfigurationPage extends TabbedBasePage {
 
   readonly tabLinks = {
-    fields: this.page.locator(fieldsSelector),
-    inputSystems: this.page.locator(tabSelector('Input Systems')),
+    fields: this.locator(fieldsSelector),
+    inputSystems: this.locator(tabSelector('Input Systems')),
   };
 
-  readonly applyButton = this.page.locator('button >> text=Apply');
+  readonly applyButton = this.locator('button >> text=Apply');
 
   constructor(page: Page, readonly project: Project, locator?: Locator) {
     super(page, `/app/lexicon/${project.id}/#!/configuration`,
@@ -23,7 +23,7 @@ export abstract class ConfigurationPage<T extends ConfigurationPage<T>> extends 
   async applyChanges(): Promise<void> {
     await Promise.all([
       this.applyButton.click(),
-      this.waitForPage(),
+      this.waitFor(),
     ]);
   }
 }

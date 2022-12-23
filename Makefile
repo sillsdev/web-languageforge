@@ -15,22 +15,22 @@ ui-builder:
 .PHONY: e2e-tests-ci
 e2e-tests-ci:
 	npm ci
-	$(MAKE) playwright-app
-	npx playwright install chromium && npx playwright test -c ./test/e2e/playwright.config.ts
+	$(MAKE) e2e-app
+	npx playwright install chromium
+	npx playwright test -c ./test/e2e/playwright.config.ts
 
 .PHONY: e2e-tests
 e2e-tests: ui-builder
 	npm install
-	$(MAKE) playwright-app
-	npx playwright install chromium && npx playwright test -c ./test/e2e/playwright.config.ts $(params)
+	$(MAKE) e2e-app
+	npx playwright install chromium
+	npx playwright test -c ./test/e2e/playwright.config.ts $(params)
 
-.PHONY: playwright-app
-playwright-app:
+.PHONY: e2e-app
+e2e-app:
     # delete any cached session storage state files if the service isn't running
-	docker compose ps app-for-playwright > /dev/null 2>&1 || $(MAKE) clean-test
-	docker compose up -d app-for-playwright --build
-    # wait until the app-for-playwright service is serving up HTTP before continuing
-	until curl localhost:3238 > /dev/null 2>&1; do sleep 1; done
+	docker compose ps e2e-app > /dev/null 2>&1 || $(MAKE) clean-test
+	docker compose up -d e2e-app --build
 
 .PHONY: unit-tests
 unit-tests:
@@ -74,7 +74,7 @@ clean:
 
 .PHONY: clean-test
 clean-test:
-	cd test/e2e && npx rimraf test-storage-state test-results
+	cd test/e2e && npx rimraf test-storage-state
 
 .PHONY: clean-powerwash
 clean-powerwash: clean

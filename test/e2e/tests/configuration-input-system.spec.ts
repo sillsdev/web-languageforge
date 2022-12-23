@@ -1,7 +1,6 @@
 import { expect } from '@playwright/test';
-import { ConfigurationPageInputSystemsTab } from './pages/configuration-input-systems.tab';
-import { EditorPage } from './pages/editor.page';
-import { projectPerTest, test } from './utils/fixtures';
+import { projectPerTest, test } from '../fixtures';
+import { ConfigurationPageInputSystemsTab, EditorPage } from '../pages';
 
 test.describe('Configuration Input Systems', async () => {
 
@@ -15,7 +14,7 @@ test.describe('Configuration Input Systems', async () => {
         const configPage = await editorPage.navigateToProjectConfiguration();
         const [_, inputSystemsTab] = await Promise.all([
           configPage.tabLinks.inputSystems.click(),
-          new ConfigurationPageInputSystemsTab(managerTab, project()).waitForPage(),
+          new ConfigurationPageInputSystemsTab(managerTab, project()).waitFor(),
         ]);
         return inputSystemsTab;
       });
