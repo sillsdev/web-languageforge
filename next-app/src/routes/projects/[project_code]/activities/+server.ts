@@ -1,5 +1,6 @@
 import { json } from '@sveltejs/kit'
 import { sf } from '$lib/server/sf'
+import type { Rpc } from '$lib/server/types'
 
 export async function GET({ params: { project_code }, request: { headers } }) {
 	const cookie = headers.get('cookie')
