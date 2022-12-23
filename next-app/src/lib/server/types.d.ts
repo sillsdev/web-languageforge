@@ -19,3 +19,13 @@ type SfResponse = {
 	},
 	result?: any,
 }
+
+type LegacySession = {
+	userId: string,
+	userProjectRole: string,
+}
+
+type User = {
+	id: string,
+	role: string,
+}
