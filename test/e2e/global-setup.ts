@@ -1,4 +1,4 @@
-import { chromium, firefox, FullConfig, Page, webkit } from '@playwright/test';
+import { BrowserType, chromium, firefox, FullConfig, Page, webkit } from '@playwright/test';
 import * as fs from 'fs';
 import { appUrl, users } from './constants';
 import { getStorageStatePath, login, UserDetails, UserTestService } from './utils';
@@ -20,14 +20,29 @@ async function initE2EUser(page: Page, user: UserDetails) {
   await context.storageState({ path });
 }
 
+/**
+ * @returns The first project browser that is installed (different CI jobs use/install different browsers)
+ */
+function findInstalledBrowser(config: FullConfig): BrowserType {
+  const browserTypes = config.projects.map((project) => {
+    const browserType = { chromium, firefox, webkit }[project.use.defaultBrowserType];
+    return {
+      browserType,
+      installed: fs.existsSync(browserType.executablePath()),
+    }
+  });
+
+  return browserTypes.find((browser) => browser.installed).browserType;
+}
+
 export default async function globalSetup(config: FullConfig) {
   console.log('Starting global setup\n');
   console.time('Global setup took');
 
   try {
-    const use = config.projects[0].use;
-    const browserType = { chromium, firefox, webkit }[use.defaultBrowserType];
+    const browserType = findInstalledBrowser(config);
     const browser = await browserType.launch();
+
     for (const user of Object.values(users)) {
       const context = await browser.newContext({ baseURL: appUrl });
       const page = await context.newPage();
