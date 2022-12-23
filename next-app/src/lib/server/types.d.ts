@@ -17,5 +17,5 @@ type SfResponse = {
 	error?: {
 		message: string
 	},
-	result?: Object,
+	result?: any,
 }
