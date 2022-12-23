@@ -43,7 +43,7 @@
 	const asc = (a: string | number, b: string | number) => a > b ? 1 : -1
 	const des = (a: string | number, b: string | number) => a < b ? 1 : -1
 
-	function toNames(fields = []) {
+	function toNames(fields: Field[] = []) {
 		return fields.map(field => field.fieldName).join(', ')
 	}
 </script>

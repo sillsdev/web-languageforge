@@ -25,6 +25,9 @@ type Activity = {
 	date: string,
 	user: string,
 	entry: string,
-	fields: string[],
+	fields: Field[],
 }
 
+type Field = {
+	fieldName: string,
+}
