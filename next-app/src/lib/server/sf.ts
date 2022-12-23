@@ -1,5 +1,5 @@
 import { error } from '@sveltejs/kit'
-import type { Rpc, FetchArgs } from './types'
+import type { Rpc, FetchArgs, SfResponse } from './types'
 
 export async function sf({name, args = [], cookie}: Rpc) {
 	const body = {
@@ -25,7 +25,7 @@ export async function sf({name, args = [], cookie}: Rpc) {
 	return results.result
 }
 
-async function adapted_fetch({url, method, body, cookie}: FetchArgs) {
+async function adapted_fetch({url, method, body, cookie}: FetchArgs): Promise<SfResponse> {
 	// https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch#Supplying_request_options
 	const response: Response = await fetch(url, {
 		method,

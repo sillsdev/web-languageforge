@@ -12,3 +12,10 @@ type FetchArgs = {
 	body: object,
 	cookie?: string,
 }
+
+type SfResponse = {
+	error?: {
+		message: string
+	},
+	result?: Object,
+}
