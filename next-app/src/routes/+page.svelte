@@ -37,9 +37,9 @@
 
 	<h3>Client</h3>
 	<Button on:click={ () => globalThis.whatIsTheAirspeedVelocityOfAnUnladenSwallow() } danger>Cause run-time error</Button>
-	<Button on:click={ async () => await GET('//LFAPP') } danger>Cause network error</Button>
+	<Button on:click={ async () => await GET({url: '//LFAPP'}) } danger>Cause network error</Button>
 	<Button on:click={ () => throw_error("sorry, that's not a good password", 400) } danger>Cause biz logic error</Button>
-	<Button on:click={ async () => await GET('//httpbin.org/status/500') } danger>Cause backend error</Button>
+	<Button on:click={ async () => await GET({url: '//httpbin.org/status/500'}) } danger>Cause backend error</Button>
 
 	<h3>Server</h3>
 	The change password page has a few options:

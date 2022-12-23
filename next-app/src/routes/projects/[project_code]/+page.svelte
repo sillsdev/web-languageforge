@@ -52,7 +52,7 @@
 	].filter(({ value }) => value !== undefined)
 
 	async function load_all_activities() {
-		activities = await GET(`/projects/${$page.params.project_code}/activities`)
+		activities = await GET({url: `/projects/${$page.params.project_code}/activities`})
 
 		only_showing_subset = false
 	}

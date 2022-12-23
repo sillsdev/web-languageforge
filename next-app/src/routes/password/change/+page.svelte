@@ -12,10 +12,10 @@
 	let new_password_confirm = ''
 
 	async function change_password() {
-		await UPDATE('/password', {
+		await UPDATE({url: '/password', body: {
 			password: new_password,
 			password_confirm: new_password_confirm
-		})
+		}})
 
 		goto('/password/changed')
 	}
