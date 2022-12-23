@@ -671,6 +671,8 @@ test.describe('Entry Editor and Entries List', () => {
       });
 
       test('Make "taud" input system invisible for "Word" field and "tipa" invisible for manager role, then ensure it worked and change it back', async ({ managerTab, memberTab }) => {
+        test.slow();
+
         const configurationPage = await new ConfigurationPageFieldsTab(managerTab, project).goto();
         await configurationPage.toggleField('Entry Fields', 'Word');
         // Make "taud" input system invisible for "Word" field....
