@@ -2,19 +2,19 @@ import { expect, Locator, Page } from '@playwright/test';
 import { Project } from '../utils';
 import { BasePage } from './base-page';
 
-export class EntryListPage extends BasePage<EntryListPage> {
-  readonly totalNumberOfEntries = this.page.locator('#totalNumberOfEntries');
-  readonly filterInput = this.page.locator('[placeholder="Search"]');
-  readonly filterInputClearButton = this.page.locator('.clear-search-button');
-  readonly matchCount = this.page.locator('#totalNumberOfEntries >> span');
-  readonly createNewWordButton = this.page.locator('#newWord:visible, #noEntriesNewWord:visible');
+export class EntryListPage extends BasePage {
+  readonly totalNumberOfEntries = this.locator('#totalNumberOfEntries');
+  readonly filterInput = this.locator('[placeholder="Search"]');
+  readonly filterInputClearButton = this.locator('.clear-search-button');
+  readonly matchCount = this.locator('#totalNumberOfEntries >> span');
+  readonly createNewWordButton = this.locator('#newWord:visible, #noEntriesNewWord:visible');
 
   entry(lexeme: string): Locator {
     return this.locator(`.lexiconListItem:visible:has(span:has-text("${lexeme}"))`);
   }
 
   constructor(page: Page, readonly project: Project) {
-    super(page, `/app/lexicon/${project.id}#!/editor/list`);
+    super(page, `/app/lexicon/${project.id}#!/editor/list`, page.locator('#totalNumberOfEntries'));
   }
 
   async expectTotalNumberOfEntries(nEntries: number) {

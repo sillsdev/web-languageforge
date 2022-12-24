@@ -1,47 +1,47 @@
 import type { Browser, Page } from '@playwright/test';
-import { APIRequestContext, test as base } from '@playwright/test';
-import { users } from '../constants';
-import { Project } from './project-utils';
-import { initTestProjectForTest } from './testSetup';
-import { UserDetails } from './types';
-import { getStorageStatePath, UserTestService } from './user-tools';
+import { test as base, APIRequestContext } from '@playwright/test';
+import { users } from './constants';
+import { getStorageStatePath, Project, ProjectTestService, UserDetails, UserTestService } from './utils';
 
-export type UserTab = Page & UserDetails;
+export type Tab = Page;
 export type E2EUsername = keyof typeof users;
 
-const userTab = (user: UserDetails) => async ({ browser, browserName }: { browser: Browser, browserName: string }, use: (r: UserTab) => Promise<void>) => {
-  const storageState = getStorageStatePath(browserName, user);
-  const context = await browser.newContext({ storageState })
-  const page = await context.newPage();
-  const tab = page as UserTab;
-  await use(tab);
+const userTab = (user: UserDetails) => async ({ browser }: { browser: Browser }, use: (r: Tab) => Promise<void>) => {
+  const storageState = getStorageStatePath(user);
+  const context = await browser.newContext({ storageState });
+  const tab = await context.newPage();
+  await use(tab); // returns after the next test() completes
+  // We have to close all the pages we open or else they stay open forever and leak into the results (traces, screenshots) of proceding tests.
+  await context.close();
 };
 
 // The userTab fixture represents a browser tab (a "page" in Playwright terms) that's already logged in as that user
-// The anonTab fixture represents a browser tab (a "page" in Playwright terms) where nobody is logged in; this tab can be used across different tests (like userTab)
+// The tab fixture represents a browser tab where nobody is logged in
 // Note: "Tab" was chosen instead of "Page" to avoid confusion with Page Object Model classes like SiteAdminPage
 export const test = base
   .extend<{
-    adminTab: UserTab,
-    managerTab: UserTab,
-    memberTab: UserTab,
-    observerTab: UserTab,
-    anonTab: Page,
+    adminTab: Tab,
+    managerTab: Tab,
+    memberTab: Tab,
+    observerTab: Tab,
+    tab: Page,
     userService: UserTestService,
+    projectService: ProjectTestService,
   }>({
     adminTab: userTab(users.admin),
     managerTab: userTab(users.manager),
     memberTab: userTab(users.member),
-    observerTab: userTab(users.observer),
-    anonTab: async ({ browser }: { browser: Browser }, use: (r: Page) => Promise<void>) => {
-      const context = await browser.newContext();
-      const page = await context.newPage();
-      const tab = page;
-      await use(tab);
+    observerTab: userTab(users.observer), // override page & request to use baseUrl
+    tab: async ({ page }: { page: Page }, use: (r: Page) => Promise<void>) => {
+      await use(page);
     },
     userService: async ({ request }: { request: APIRequestContext }, use: (userService: UserTestService) => Promise<void>) => {
       const userService = new UserTestService(request);
       await use(userService);
+    },
+    projectService: async ({ request }: { request: APIRequestContext }, use: (projectService: ProjectTestService) => Promise<void>) => {
+      const projectService = new ProjectTestService(request);
+      await use(projectService);
     },
   });
 
@@ -58,11 +58,11 @@ export function projectPerTest(lazy?: boolean): () => Project | Promise<Project>
   let currentTestProjectGetter: () => Promise<Project>;
   let currentTestProject: Project;
 
-  test.beforeEach(async ({ request }, testInfo) => {
+  test.beforeEach(async ({ projectService }, testInfo) => {
     currentTestProject = undefined;
-    currentTestProjectGetter = () => initTestProjectForTest(request, testInfo, users.manager);
+    currentTestProjectGetter = () => projectService.initTestProjectForTest(testInfo, users.manager);
     if (!lazy) {
-      currentTestProject = await initTestProjectForTest(request, testInfo, users.manager);
+      currentTestProject = await projectService.initTestProjectForTest(testInfo, users.manager);
     }
   });
 

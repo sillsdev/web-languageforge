@@ -1,7 +1,7 @@
 import { Locator } from "@playwright/test";
 import { BaseComponent } from './base-component';
 
-export class EditorComment extends BaseComponent<EditorComment> {
+export class EditorComment extends BaseComponent {
 
   readonly content = this.locator('.commentContentContainer .commentContent');
   readonly replyTextArea = this.locator('.commentNewReplyForm textarea');
@@ -43,7 +43,7 @@ export class EditorComment extends BaseComponent<EditorComment> {
   }
 }
 
-export class EditorReply extends BaseComponent<EditorReply> {
+export class EditorReply extends BaseComponent {
 
   readonly content = this.locator('.reply-content');
   readonly replyDate = this.locator('.comment-date');

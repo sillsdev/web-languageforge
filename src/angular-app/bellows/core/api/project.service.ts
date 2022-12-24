@@ -1,8 +1,8 @@
 import * as angular from 'angular';
 
-import {OfflineCacheService} from '../offline/offline-cache.service';
-import {SessionService} from '../session.service';
-import {ApiService, JsonRpcCallback} from './api.service';
+import { OfflineCacheService } from '../offline/offline-cache.service';
+import { SessionService } from '../session.service';
+import { ApiService, JsonRpcCallback } from './api.service';
 
 export class ProjectService {
 
@@ -21,12 +21,8 @@ export class ProjectService {
     this.$q = $injector.get('$q');
   }
 
-  create(projectName: string, projectCode: string, appName: string, srProject: any = {}, callback?: JsonRpcCallback) {
-    return this.api.call('project_create', [projectName, projectCode, appName, srProject], callback);
-  }
-
   createSwitchSession(projectName: string, projectCode: string, appName: string, srProject: any = {},
-                      callback?: JsonRpcCallback) {
+    callback?: JsonRpcCallback) {
     return this.api.call('project_create_switchSession', [projectName, projectCode, appName, srProject], callback);
   }
 
@@ -69,14 +65,6 @@ export class ProjectService {
     return this.api.call('project_usersDto', [], callback);
   }
 
-  getJoinRequests(callback?: JsonRpcCallback) {
-    return this.api.call('project_getJoinRequests', [], callback);
-  }
-
-  sendJoinRequest(projectId: string, callback?: JsonRpcCallback) {
-    return this.api.call('project_sendJoinRequest', [projectId], callback);
-  }
-
   deleteProject(projectIds: string[], callback?: JsonRpcCallback) {
     return this.api.call('project_delete', [projectIds], callback);
   }
@@ -89,16 +77,8 @@ export class ProjectService {
     return this.api.call('project_updateUserRole', [userId, role], callback);
   }
 
-  transferOwnership(newOwnerId: string, callback?: JsonRpcCallback){
+  transferOwnership(newOwnerId: string, callback?: JsonRpcCallback) {
     return this.api.call('project_transferOwnership', [newOwnerId], callback);
-  }
-
-  acceptJoinRequest(userId: string, role: string, callback?: JsonRpcCallback) {
-    return this.api.call('project_acceptJoinRequest', [userId, role], callback);
-  }
-
-  denyJoinRequest(userId: string, callback?: JsonRpcCallback) {
-    return this.api.call('project_denyJoinRequest', [userId], callback);
   }
 
   removeUsers(userIds: string[], callback?: JsonRpcCallback) {
@@ -107,14 +87,6 @@ export class ProjectService {
 
   removeSelfFromProject(aProjectId: string, callback?: JsonRpcCallback) {
     return this.api.call('project_removeSelf', [aProjectId], callback);
-  }
-
-  getDto(callback?: JsonRpcCallback) {
-    return this.api.call('project_management_dto', [], callback);
-  }
-
-  runReport(reportName: string, params: any[] = [], callback?: JsonRpcCallback) {
-    return this.api.call('project_management_report_' + reportName, params, callback);
   }
 
   getInviteLink(callback?: JsonRpcCallback) {

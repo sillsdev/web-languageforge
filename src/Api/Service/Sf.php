@@ -22,7 +22,6 @@ use Api\Model\Shared\Communicate\EmailSettings;
 use Api\Model\Shared\Dto\ActivityListDto;
 use Api\Model\Shared\Dto\ProjectInsightsDto;
 use Api\Model\Shared\Dto\ProjectListDto;
-use Api\Model\Shared\Dto\ProjectManagementDto;
 use Api\Model\Shared\Dto\RightsHelper;
 use Api\Model\Shared\Dto\UserProfileDto;
 use Api\Model\Shared\Mapper\JsonEncoder;
@@ -250,11 +249,6 @@ class Sf
     // GENERAL PROJECT API
     // ---------------------------------------------------------------
 
-    public function project_sendJoinRequest($projectID)
-    {
-        return UserCommands::sendJoinRequest($projectID, $this->userId);
-    }
-
     /**
      * @param string $projectName
      * @param string $projectCode
@@ -262,7 +256,7 @@ class Sf
      * @param array $srProject send receive project data
      * @return string | boolean - $projectId on success, false if project code is not unique
      */
-    public function project_create($projectName, $projectCode, $appName, $srProject = null)
+    private function createProject($projectName, $projectCode, $appName, $srProject = null)
     {
         return ProjectCommands::createProject($projectName, $projectCode, $appName, $this->userId, $srProject);
     }
@@ -278,7 +272,7 @@ class Sf
      */
     public function project_create_switchSession($projectName, $projectCode, $appName, $srProject)
     {
-        $projectId = $this->project_create($projectName, $projectCode, $appName, $srProject);
+        $projectId = $this->createProject($projectName, $projectCode, $appName, $srProject);
         $this->app["session"]->set("projectId", $projectId);
         return $projectId;
     }
@@ -350,11 +344,6 @@ class Sf
     public function project_usersDto()
     {
         return ProjectCommands::usersDto($this->projectId);
-    }
-
-    public function project_getJoinRequests()
-    {
-        return ProjectCommands::getJoinRequests($this->projectId);
     }
 
     public function project_createInviteLink($defaultRole)
@@ -442,17 +431,6 @@ class Sf
     public function project_transferOwnership($newOwnerId)
     {
         return ProjectCommands::transferOwnership($this->projectId, $this->userId, $newOwnerId);
-    }
-
-    public function project_acceptJoinRequest($userId, $role)
-    {
-        UserCommands::acceptJoinRequest($this->projectId, $userId, $role);
-        ProjectCommands::removeJoinRequest($this->projectId, $userId);
-    }
-
-    public function project_denyJoinRequest($userId)
-    {
-        ProjectCommands::removeJoinRequest($this->projectId, $userId);
     }
 
     public function project_removeUsers($userIds)
@@ -690,12 +668,6 @@ class Sf
     public function sendReceive_notification_sendRequest($projectCode)
     {
         return SendReceiveCommands::notificationSendRequest($projectCode);
-    }
-
-    // -------------------------------- Project Management App Api ----------------------------------
-    public function project_management_dto()
-    {
-        return ProjectManagementDto::encode($this->projectId);
     }
 
     // ----------------------------------- Language Depot Api -------------------------------------

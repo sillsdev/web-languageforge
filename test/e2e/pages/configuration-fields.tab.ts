@@ -2,7 +2,7 @@ import { Locator, Page } from '@playwright/test';
 import { Project } from '../utils';
 import { ConfigurationPage } from './configuration.page';
 
-export class ConfigurationPageFieldsTab extends ConfigurationPage<ConfigurationPageFieldsTab> {
+export class ConfigurationPageFieldsTab extends ConfigurationPage {
 
   protected readonly tabLink = this.tabLinks.fields;
 
@@ -35,7 +35,7 @@ export class ConfigurationPageFieldsTab extends ConfigurationPage<ConfigurationP
 
   private getTable(tableTitle: string): Locator {
     // note that at the moment, all tables are in one huge <table>
-    return this.page.locator(`table:has(th:has-text("${tableTitle}"))`);
+    return this.locator(`table:has(th:has-text("${tableTitle}"))`);
   }
 
   private getRow(tableLocator: Locator, rowTitle: string): Locator {

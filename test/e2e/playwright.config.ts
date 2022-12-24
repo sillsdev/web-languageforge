@@ -1,5 +1,6 @@
 import type { PlaywrightTestConfig } from '@playwright/test';
 import { devices, expect } from '@playwright/test';
+import { appUrl } from './constants';
 import { matchers } from './utils/custom-matchers';
 
 /**
@@ -14,22 +15,26 @@ expect.extend({ ...matchers });
  * See https://playwright.dev/docs/test-configuration.
  */
 const config: PlaywrightTestConfig = {
-  /* Maximum time one test can run for. */
-  timeout: 60 * 1000,
+  testDir: './tests',
+  // Fonts are not rendered correctly in CI screenshots. So screenshots need to be clipped to exclude text.
+  snapshotPathTemplate: '{testDir}/__expected-screenshots__/{testFilePath}/{arg}-{projectName}{ext}',
+
+  /* Maximum time one test can run for. For individual slower tests use test.slow(). */
+  timeout: 30 * 1000,
   expect: {
     /**
      * Maximum time expect() should wait for the condition to be met.
      * For example in `await expect(locator).toHaveText();`
      */
-    timeout: 5000
+    timeout: 5000,
   },
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Global setup for things like logging in users and saving login cookies */
-  globalSetup: require.resolve('./utils/globalSetup'),
+  globalSetup: require.resolve('./global-setup'),
   /* Retry on CI only */
   retries: process.env.CI ? 1 : 0,
-  /* Opt out of parallel tests on CI. */
+  /* Opt out of parallel tests. Our current state management prevents a user from working on different projects simultaneously. */
   workers: process.env.CI ? 1 : 1,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   outputDir: 'test-results', // referenced in pull-request.yml
@@ -39,19 +44,24 @@ const config: PlaywrightTestConfig = {
     // stating that it will "lead to artifact loss" but the warning in this case is not accurate
     // npx playwright show-report test-results/_html-report
     : [['html', { outputFolder: 'test-results/_html-report', open: 'never' }]],
+
+  reportSlowTests: {
+    max: 10,
+    threshold: 30 * 1000,
+  },
+
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Maximum time each action such as `click()` can take. Defaults to 0 (no limit). */
     actionTimeout: 0,
     /* Base URL to use in actions like `await page.goto('/')`. */
-    // baseURL: 'http://localhost:3000',
+    baseURL: appUrl,
 
     /* See https://playwright.dev/docs/trace-viewer */
-    trace: process.env.CI ? 'retain-on-failure' : 'on',
+    trace: 'on',
     screenshot: 'on',
   },
 
-  /* Configure projects for major browsers */
   projects: [
     {
       name: 'chromium',
@@ -73,46 +83,38 @@ const config: PlaywrightTestConfig = {
     //     ...devices['Desktop Safari'],
     //   },
     // },
-
-    /* Test against mobile viewports. */
-    // {
-    //   name: 'Mobile Chrome',
-    //   use: {
-    //     ...devices['Pixel 5'],
-    //   },
-    // },
-    // {
-    //   name: 'Mobile Safari',
-    //   use: {
-    //     ...devices['iPhone 12'],
-    //   },
-    // },
-
-    /* Test against branded browsers. */
-    // {
-    //   name: 'Microsoft Edge',
-    //   use: {
-    //     channel: 'msedge',
-    //   },
-    // },
-    // {
-    //   name: 'Google Chrome',
-    //   use: {
-    //     channel: 'chrome',
-    //   },
-    // },
   ],
 
-  /* Folder for test artifacts such as screenshots, videos, traces, etc. */
-  // outputDir: 'test-results/',
-
-  /* Run your local dev server before starting the tests */
+  /**
+   * This config is intended for starting the application server and waiting for it to be ready.
+   * However, it seems preferable to start the application explicitly in the makefile (then we also get the complete build output).
+   * So:
+   * - In CI we only use this feature to wait until the application is ready.
+   * - In dev environments this is a handy fallback for starting the application automatically.
+   *
+   * `command` has to live until `url` is returning responses.
+   * 'docker attach e2e-app' is an os-independent way to make that happen.
+   *
+   * The environment variable DEBUG=pw:webserver can be used to get full output from `command`.
+   */
   webServer: {
-    command: 'cd ../.. && make playwright-app',
-    port: 3238,
-    timeout: 15 * 1000,
+    get command() {
+      if (process.env.CI) {
+        return 'docker attach e2e-app';
+      }
+      if (!process.env._loggedAppStartup) { // Provide some feedback
+        process.env._loggedAppStartup = '1';
+        const timeout = (this as any).timeout;
+        console.log(`Building and starting e2e-app if not already running (timeout: ${timeout / 60000}m)\n\n`);
+      }
+      return 'make e2e-app && docker attach e2e-app';
+    },
+    cwd: '../..', // navigate to makefile
+    url: appUrl,
     reuseExistingServer: true,
+    timeout: 3 * 60000, // 3m
   },
 };
+
 
 export default config;

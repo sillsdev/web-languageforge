@@ -1,17 +1,17 @@
 import { expect } from '@playwright/test';
-import { ChangePasswordPage } from './pages/change-password.page';
-import { login, logout } from './utils';
-import { test } from './utils/fixtures';
+import { test } from '../fixtures';
+import { ChangePasswordPage } from '../pages';
+import { login, logout } from '../utils';
 
 test.describe('Change Password', () => {
   const newPassword = '12345678';
 
-  test('Password rules', async ({ userService, page }) => {
+  test('Password rules', async ({ tab, userService }) => {
     const changePasswordPage = await test.step('Login as new user', async () => {
       const user = await userService.createRandomUser();
       expect(user.password).not.toBe(newPassword);
-      await login(page, user);
-      return new ChangePasswordPage(page).goto();
+      await login(tab, user);
+      return new ChangePasswordPage(tab).goto();
     });
 
     await test.step('Refuses to allow form submission if the confirm input does not match', async () => {
@@ -34,16 +34,16 @@ test.describe('Change Password', () => {
     });
   });
 
-  test('Can successfully change user\'s password after form submission', async ({ page, userService }) => {
+  test('Can successfully change user\'s password after form submission', async ({ tab, userService }) => {
     const user = await test.step('Login as new user', async () => {
       const user = await userService.createRandomUser();
       expect(user.password).not.toBe(newPassword);
-      await login(page, user);
+      await login(tab, user);
       return user;
     });
 
     await test.step('Change password and logout', async () => {
-      const changePasswordPage = await new ChangePasswordPage(page).goto();
+      const changePasswordPage = await new ChangePasswordPage(tab).goto();
       await changePasswordPage.passwordInput.fill(newPassword);
       await changePasswordPage.confirmInput.fill(newPassword);
       await expect(changePasswordPage.passwordMatchImage).toBeVisible();
@@ -54,8 +54,8 @@ test.describe('Change Password', () => {
     });
 
     await test.step('Logout and login with new password', async () => {
-      await logout(page);
-      await login(page, {
+      await logout(tab);
+      await login(tab, {
         ...user,
         password: newPassword,
       });

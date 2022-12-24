@@ -1,33 +1,27 @@
 export const users = {
   admin: {
-    username: "test_runner_admin",
-    name: "Test Admin",
-    password: "hammertime",
-    email: "test_runner_admin@example.com",
+    username: "admin",
+    name: "Admin",
+    password: "admin",
+    email: "admin@example.com",
   },
   manager: {
-    username: "test_runner_manager_user",
-    name: "Test Manager",
-    password: "manageruser1",
-    email: "test_runner_manager_user@example.com",
+    username: "manager",
+    name: "Manager",
+    password: "manager",
+    email: "manager@example.com",
   },
   member: {
-    username: "test_runner_normal_user",
-    name: "Test User",
-    password: "normaluser1",
-    email: "test_runner_normal_user@example.com",
+    username: "member",
+    name: "Member",
+    password: "member",
+    email: "member@example.com",
   },
   observer: {
-    username: "test_runner_observer_normal_user",
-    name: "Test ObserverUser",
-    password: "normaluser5",
-    email: "test_runner_observer_normal_user@example.com",
-  },
-  expired: {
-    username: "test_runner_observer_normal_user",
-    name: "Test ObserverUser",
-    password: "normaluser5",
-    email: "test_runner_observer_normal_user@example.com",
+    username: "observer",
+    name: "Observer",
+    password: "observer",
+    email: "observer@example.com",
   },
 } as const;
 
@@ -129,3 +123,5 @@ export const files = [
   'TestAudio.mp3',
   'dummy_large_file.zip',
 ] as const;
+
+export const appUrl = 'http://localhost:3238/';

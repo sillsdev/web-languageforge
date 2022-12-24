@@ -1,14 +1,10 @@
 import { expect } from '@playwright/test';
-import { users } from './constants';
-import { EditorPage } from './pages/editor.page';
-import { ProjectsPage } from './pages/projects.page';
-import { Project } from './utils';
-import { test } from './utils/fixtures';
-import { addUserToProject, initTestProject } from './utils/testSetup';
+import { users } from '../constants';
+import { test } from '../fixtures';
+import { EditorPage, ProjectsPage } from '../pages';
+import { Project } from '../utils';
 
 test.describe('Projects List', () => {
-  let projectsPageMember: ProjectsPage;
-  let projectsPageAdmin: ProjectsPage;
 
   const projects: Project[] = [
     {
@@ -38,22 +34,21 @@ test.describe('Projects List', () => {
     id: ''
   };
 
-  test.beforeAll(async ({ request, memberTab, adminTab }) => {
-    projectsPageMember = new ProjectsPage(memberTab);
-    projectsPageAdmin = new ProjectsPage(adminTab);
-
+  test.beforeAll(async ({ projectService }) => {
     for (const project of projects) {
-      const projectId = (await initTestProject(request, project.code, project.name, users.manager, [users.member])).id;
+      const projectId = (await projectService.initTestProject(project.name, project.code, users.manager, [users.member])).id;
       project.id = projectId;
     }
-    project4.id = (await initTestProject(request, project4.code, project4.name, users.manager, [users.admin])).id;
-    project5.id = (await initTestProject(request, project5.code, project5.name, users.manager, [])).id;
+    project4.id = (await projectService.initTestProject(project4.name, project4.code, users.manager, [users.admin])).id;
+    project5.id = (await projectService.initTestProject(project5.name, project5.code, users.manager, [])).id;
   });
 
   test.describe('for Normal User', () => {
 
-    test.beforeEach(async () => {
-      await projectsPageMember.goto();
+    let projectsPageMember: ProjectsPage;
+
+    test.beforeEach(async ({ memberTab }) => {
+      projectsPageMember = await ProjectsPage.goto(memberTab);
     });
 
     test('Should list projects of which the user is a member', async () => {
@@ -66,19 +61,21 @@ test.describe('Projects List', () => {
       await expect(projectsPageMember.projectRow(project4.name)).not.toBeVisible();
     });
 
-    test('Project to which user is added shows up when page reloaded', async ({ request }) => {
+    test('Project to which user is added shows up when page reloaded', async ({ projectService }) => {
       await expect(projectsPageMember.projectRow(project4.name)).not.toBeVisible();
-      await addUserToProject(request, project4, users.member);
+      await projectService.addUserToProject(project4, users.member);
       await projectsPageMember.page.reload();
       await projectsPageMember.goto();
       await expect(projectsPageMember.projectRow(project4.name)).toBeVisible();
     });
   });
 
-
   test.describe('for System Admin User', () => {
-    test.beforeEach(async () => {
-      await projectsPageAdmin.goto();
+
+    let projectsPageAdmin: ProjectsPage;
+
+    test.beforeEach(async ({ adminTab }) => {
+      projectsPageAdmin = await ProjectsPage.goto(adminTab);
     });
 
     test('Should list all projects', async () => {
@@ -123,7 +120,8 @@ test.describe('Projects List', () => {
 
   test.describe('Project Access', () => {
 
-    test('Admin added to project when accessing without membership', async () => {
+    test('Admin added to project when accessing without membership', async ({ adminTab }) => {
+      const projectsPageAdmin = await new ProjectsPage(adminTab).goto();
       // this is already tested in a test above but makes the test more understandable
       await expect(projectsPageAdmin.projectLink(projects[2].name)).not.toBeVisible();
       await new EditorPage(projectsPageAdmin.page, projects[2]).goto();
@@ -131,11 +129,11 @@ test.describe('Projects List', () => {
       await expect(projectsPageAdmin.projectLink(projects[2].name)).toBeVisible();
     });
 
-    test('User redirected to projects app when accessing without membership', async ({ baseURL }) => {
-      await projectsPageMember.page.goto('/app/lexicon/' + project5.id + '/#!/editor/list');
-      // redirect
-      await expect(projectsPageMember.createButton).toBeVisible();
-      expect(projectsPageMember.page.url().startsWith(baseURL + projectsPageMember.url)).toBe(true);
+    test('User redirected to projects app when accessing without membership', async ({ memberTab }) => {
+      await Promise.all([
+        memberTab.goto('/app/lexicon/' + project5.id + '/#!/editor/list'),
+        new ProjectsPage(memberTab).waitFor(),
+      ]);
     });
 
   });

@@ -9,5 +9,5 @@ export async function login(page: Page, user: UserDetails): Promise<void> {
 
 export async function logout(page: Page): Promise<LoginPage> {
   await page.goto('/auth/logout');
-  return new LoginPage(page).waitForPage();
+  return new LoginPage(page).waitFor();
 }

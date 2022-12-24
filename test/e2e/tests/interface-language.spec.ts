@@ -1,23 +1,19 @@
 import { expect } from '@playwright/test';
-import { PageHeader } from './components';
-import { ForgotPasswordPage } from './pages/forgot-password.page';
-import { LoginPage } from './pages/login.page';
-import { test } from './utils/fixtures';
+import { test } from '../fixtures';
+import { ForgotPasswordPage, LoginPage } from '../pages';
+import { PageHeader } from '../pages/components';
 
 test.describe('Interface Language picker', () => {
   let loginPage: LoginPage;
   let pageHeader: PageHeader;
   let forgotPasswordPage: ForgotPasswordPage;
 
-  test.beforeAll(async ({ anonTab }) => {
-    loginPage = new LoginPage(anonTab);
-    pageHeader = new PageHeader(anonTab);
-    forgotPasswordPage = new ForgotPasswordPage(anonTab);
-  });
-
-  test.beforeEach(async () => {
+  test.beforeEach(async ({ tab }) => {
+    loginPage = new LoginPage(tab);
+    pageHeader = new PageHeader(tab);
+    forgotPasswordPage = new ForgotPasswordPage(tab);
     await loginPage.goto();
-  })
+  });
 
   test('Should be using English interface for user at Login', async () => {
     await expect(pageHeader.languageDropdownButton).toHaveText('English');

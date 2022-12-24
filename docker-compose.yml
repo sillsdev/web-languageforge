@@ -236,13 +236,13 @@ services:
       - MYSQL_ROOT_PASSWORD=also-not-a-secret
       - JWT_SIGNING_KEY=bogus-development-token
 
-  app-for-playwright:
+  e2e-app:
     build:
       dockerfile: docker/app/Dockerfile
       args:
         - ENVIRONMENT=development
-    image: lf-app-for-playwright
-    container_name: app-for-playwright
+    image: lf-e2e-app
+    container_name: e2e-app
     platform: linux/amd64
     depends_on:
       - db

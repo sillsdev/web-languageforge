@@ -328,8 +328,6 @@ class AppModel
     {
         switch ($appName) {
             case "lexicon":
-            case "projectmanagement":
-            case "usermanagement":
                 return true;
             default:
                 return false;

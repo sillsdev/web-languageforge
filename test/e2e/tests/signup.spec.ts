@@ -1,8 +1,7 @@
 import { expect } from '@playwright/test';
-import { users } from './constants';
-import { ProjectsPage } from './pages/projects.page';
-import { SignupPage } from './pages/signup.page';
-import { test } from './utils/fixtures';
+import { users } from '../constants';
+import { test } from '../fixtures';
+import { ProjectsPage, SignupPage } from '../pages';
 
 test.describe('Signup', () => {
   let signupPage: SignupPage;
@@ -10,8 +9,8 @@ test.describe('Signup', () => {
   const unusedName = 'Super amazing unused name';
   const unusedEmail = 'unused-email@valuable-but-unnoticed.com';
 
-  test.beforeAll(async ({ anonTab }) => {
-    signupPage = new SignupPage(anonTab);
+  test.beforeEach(async ({ tab }) => {
+    signupPage = new SignupPage(tab);
   })
 
   test('Cannot submit if email is invalid', async () => {
@@ -122,13 +121,13 @@ test.describe('Signup', () => {
     await signupPage.signupButton.click();
 
     // Verify new user logged in and redirected to projects page
-    await new ProjectsPage(signupPage.page).waitForPage();
+    await new ProjectsPage(signupPage.page).waitFor();
   });
 
   test('Redirects to projects page if already logged in', async ({ memberTab }) => {
     const signupPageMember = new SignupPage(memberTab);
     await Promise.all([
-      new ProjectsPage(memberTab).waitForPage(),
+      new ProjectsPage(memberTab).waitFor(),
       signupPageMember.goto(),
     ]);
   });
