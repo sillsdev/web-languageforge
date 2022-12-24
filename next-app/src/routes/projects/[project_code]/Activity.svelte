@@ -20,7 +20,7 @@
 		'update_lex_reply': 'Updated reply'
 	}
 
-	function transform(_activities: Activity[]) {
+	function transform(_activities: Activity[]): AugmentedActivity[] {
 		return _activities.map(activity => {
 			const date = new Date(activity.date)
 
@@ -29,12 +29,12 @@
 				date_locale: date.toLocaleDateString(),
 				date_iso: date.toISOString().split('T')[0],
 				time: date.getTime(),
-				fields: toNames(activity.fields),
+				fields: to_names(activity.fields),
 		 	}
 		})
 	}
 
-	function byDateThenUser(a, b) {
+	function byDateThenUser(a: AugmentedActivity, b: AugmentedActivity) {
 		return a.date_iso === b.date_iso ? a.user === b.user ? des(a.time, b.time)
 															 : asc(a.user, b.user)
 		                                 : des(a.date_iso, b.date_iso)
@@ -43,8 +43,8 @@
 	const asc = (a: string | number, b: string | number) => a > b ? 1 : -1
 	const des = (a: string | number, b: string | number) => a < b ? 1 : -1
 
-	function toNames(fields: Field[] = []) {
-		return fields.map(field => field.fieldName).join(', ')
+	function to_names(fields: Field[] = []): string {
+		return fields.map(field => field.name).join(', ')
 	}
 </script>
 

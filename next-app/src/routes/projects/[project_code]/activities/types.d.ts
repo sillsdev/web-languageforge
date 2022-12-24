@@ -15,7 +15,7 @@ type LegacyActivity = {
 	content: {
 		user: string,
 		entry?: string,
-		changes?: string[],
+		changes?: Field[],
 	},
 }
 
@@ -29,5 +29,5 @@ type Activity = {
 }
 
 type Field = {
-	fieldName: string,
+	name: string,
 }
