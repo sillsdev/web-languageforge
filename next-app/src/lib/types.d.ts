@@ -1,4 +1,4 @@
-import type { HttpMethod } from '@sveltejs/kit/types/private';
+import type { HttpMethod } from '@sveltejs/kit/types/private'
 
 type AdaptedFetchArgs = {
 	url: string,
