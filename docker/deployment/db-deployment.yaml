@@ -49,7 +49,7 @@ spec:
     spec:
       containers:
       - name: db
-        image: mongo:5
+        image: mongo:6
         # https://kubernetes.io/docs/concepts/configuration/manage-resources-containers
         resources:
           requests:
