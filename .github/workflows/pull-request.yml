@@ -5,7 +5,7 @@ on:
   pull_request:
   push:
     branches:
-      - chore/eliminate-gha-deprecation-warnings
+      - chore/elliminate-gha-deprecation-warnings
 
 env:
   DOCKER_BUILDKIT: 1
