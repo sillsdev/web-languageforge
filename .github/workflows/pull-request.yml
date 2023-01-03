@@ -3,9 +3,6 @@ name: Build and Test
 # https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#on
 on:
   pull_request:
-  push:
-    branches:
-      - chore/elliminate-gha-deprecation-warnings
 
 env:
   DOCKER_BUILDKIT: 1
