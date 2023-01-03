@@ -18,8 +18,8 @@ class UserTypeaheadModel extends MapperListModel
     {
         $query = [
             '$or' => [
-                ["name" => ['$regex' => $term, '$options' => "-i"]],
-                ["username" => ['$regex' => $term, '$options' => "-i"]],
+                ["name" => ['$regex' => $term, '$options' => "i"]],
+                ["username" => ['$regex' => $term, '$options' => "i"]],
                 ["email" => strtolower($term)],
             ],
         ];
