@@ -1,9 +1,9 @@
 import { json } from '@sveltejs/kit'
 import { sf } from '$lib/server/sf'
 import type { Rpc } from '$lib/server/types'
-import type { RequestHandler } from './$types'
+import type { RequestEvent } from './$types'
 
-export const GET = (async ({ params: { project_code }, request: { headers } }) => {
+export async function GET({ params: { project_code }, request: { headers } }: RequestEvent) {
 	const cookie = headers.get('cookie') || ''
 
 	await sf({ name: 'set_project', args: [ project_code ], cookie })
@@ -11,7 +11,7 @@ export const GET = (async ({ params: { project_code }, request: { headers } }) =
 	const activities = await fetch_activities({ cookie })
 
 	return json(activities)
-}) satisfies RequestHandler
+}
 
 // src/Api/Model/Shared/Dto/ActivityListDto.php
 // src/Api/Model/Shared/Dto/ActivityListDto.php->ActivityListModel.__construct

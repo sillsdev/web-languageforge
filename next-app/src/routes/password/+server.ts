@@ -1,9 +1,9 @@
 import { error, json } from '@sveltejs/kit'
 import { fetch_current_user } from '$lib/server/user'
 import { sf } from '$lib/server/sf'
-import type { RequestHandler } from './$types'
+import type { RequestEvent } from './$types'
 
-export const PUT = (async ({ request }) => {
+export async function PUT({ request }: RequestEvent) {
 	const { password, password_confirm } = await request.json()
 
 	if (! password) {
@@ -24,4 +24,4 @@ export const PUT = (async ({ request }) => {
 	})
 
 	return json({})
-}) satisfies RequestHandler
+}
