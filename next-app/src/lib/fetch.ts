@@ -11,7 +11,6 @@ export async function DELETE({url      }: FetchArgs) { return await adapted_fetc
 async function adapted_fetch({method, url, body}: AdaptedFetchArgs) {
 	start(url)
 
-	// @ts-expect-error, not sure how to correct this one via typescript
 	const response: Response = await fetch(url, {
 		method,
 		headers: {

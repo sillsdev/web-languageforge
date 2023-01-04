@@ -7,7 +7,7 @@ type LfError = {
 }
 export const error: Writable<LfError> = writable({ message: '' })
 
-export function throw_error(message: string, code: number = 0) {
+export function throw_error(message: string, code: number = 0): never {
 	throw set({ message, code })
 }
 
