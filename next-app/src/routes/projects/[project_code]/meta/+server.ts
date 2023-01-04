@@ -3,8 +3,8 @@ import { fetch_current_user } from '$lib/server/user'
 import { sf } from '$lib/server/sf'
 
 export async function fetch_project_details({ project_code, cookie }) {
-	const { id, projectName: name, users } = await sf({ name: 'set_project', args: [ project_code ], cookie })
-	const { entries, comments } = await sf({ name: 'lex_stats', cookie })
+	const { id, projectName: name, users }: LegacyProjectDetails = await sf({ name: 'set_project', args: [ project_code ], cookie })
+	const { entries, comments }: LegacyStats = await sf({ name: 'lex_stats', cookie })
 
 	const details: ProjectDetails = {
 		id,

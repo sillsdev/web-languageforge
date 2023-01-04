@@ -1,3 +1,18 @@
+type LegacyProjectDetails = {
+	id: string,
+	projectName: string,
+	users: object[],
+}
+
+type LegacyStats = {
+	entries: Entry[],
+	comments: Comment[],
+}
+
+type Comment = {
+	status: string,
+}
+
 type ProjectDetails = {
 	id: string,
 	code: string,
