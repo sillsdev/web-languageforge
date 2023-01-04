@@ -38,12 +38,12 @@ async function adapted_fetch({url, method, body, cookie = ''}: FetchArgs): Promi
 		// these only occur for network errors, like these:
 		//	request made with a bad host, e.g., //httpbin
 		//	the host is refusing connections
-		console.log(`lib/server/sf.ts.adapted_fetch caught error on ${{url, body}}: `, {e})
+		console.log(`lib/server/sf.ts.adapted_fetch caught error on ${url}: `, {body}, {e})
 		throw error(500, 'NETWORK ERROR with legacy app')
 	})
 
 	if (! response.ok) {
-		console.log(`lib/server/sf.ts.adapted_fetch response !ok ${{url, body}}: `, await response.text())
+		console.log(`lib/server/sf.ts.adapted_fetch response !ok ${url}: `, {body}, await response.text())
 		throw error(response.status, response.statusText)
 	}
 
