@@ -1,3 +1,5 @@
+import type { ProjectDetails } from './meta/types'
+
 type DashboardData = {
 	project: ProjectDetails,
 	activities?: undefined | Activity[],

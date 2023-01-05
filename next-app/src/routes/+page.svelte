@@ -5,11 +5,33 @@
 	import { Button, Input } from '$lib/forms'
     import PageHeader from '$lib/PageHeader.svelte'
 	import { start, stop } from '$lib/progress'
-	import Stats from '$lib/stats'
+	import Stats from '$lib/Stats.svelte'
 	import { onMount } from 'svelte'
 
 	let dark_mode = false
 	let value = 'default_value'
+	const stats = [
+		{
+			title: 'Stat one hundred thousand',
+			value: 100_000,
+		},
+		{
+			title: 'Stat two hundred thousand',
+			value: 200_000,
+		},
+		{
+			title: 'Stat three hundred thousand',
+			value: 300_000,
+		},
+		{
+			title: 'Stat four hundred thousand',
+			value: 400_000,
+		},
+		{
+			title: 'Stat five hundred thousand',
+			value: 500_000,
+		},
+	]
 
 	onMount(() => dark_mode = window.matchMedia('(prefers-color-scheme: dark)').matches)
 
@@ -64,14 +86,7 @@
 	<input type=checkbox bind:checked={ dark_mode } class='toggle toggle-primary toggle-lg'>
 
 	<h3>Stats</h3>
-	<Stats>
-		<Stats.Stat title='Stat one hundred thousand' value=100,000 />
-		<Stats.Stat title='Stat two hundred thousand' value=200,000 />
-		<Stats.Stat title='Stat three hundred thousand' value=300,000 />
-		<Stats.Stat title='Stat four hundred thousand' value=400,000 />
-		<Stats.Stat title='Stat five hundred thousand' value=500,000 />
-		<Stats.Stat title='Stat six hundred thousand' value=600,000 />
-	</Stats>
+	<Stats {stats} />
 </section>
 
 <section>

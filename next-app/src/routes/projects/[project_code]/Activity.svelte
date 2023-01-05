@@ -1,4 +1,6 @@
 <script lang=ts>
+    import type { AugmentedActivity } from './types'
+
 	export let activities: Activity[]
 
 	$: sorted_activities = transform(activities).sort(byDateThenUser)

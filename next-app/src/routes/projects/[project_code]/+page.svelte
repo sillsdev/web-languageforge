@@ -11,7 +11,8 @@
 	} from '$lib/icons'
 	import { Button } from '$lib/forms'
 	import PageHeader from '$lib/PageHeader.svelte'
-	import Stats from '$lib/stats'
+	import Stats from '$lib/Stats.svelte'
+    import type { DashboardData } from './types'
 
 	export let data: DashboardData
 
@@ -72,11 +73,7 @@
 	</span>
 </PageHeader>
 
-<Stats>
-	{#each stats as { title, value, icon, url }}
-		<Stats.Stat { title } value={ Number(value).toLocaleString() } { icon } href={ value && url } />
-	{/each}
-</Stats>
+<Stats {stats} />
 
 {#if activities}
 	<h2>Activity</h2>
