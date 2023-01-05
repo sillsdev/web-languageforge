@@ -1,3 +1,7 @@
+export
+
+//TODO: rethink importing these definition files... you can accidentally import the wrong types.
+
 type LegacyProjectDetails = {
 	id: string,
 	projectName: string,
@@ -5,7 +9,7 @@ type LegacyProjectDetails = {
 }
 
 type LegacyStats = {
-	entries: Entry[],
+	entries: object[],
 	comments: Comment[],
 }
 
@@ -23,15 +27,3 @@ type ProjectDetails = {
 	num_entries_with_pictures: number,
 	num_unresolved_comments?: number,
 }
-
-type Entry = {
-	senses?: Sense[],
-	[key: string]: Field,
-}
-
-interface Sense extends Field {
-	examples?: Field[],
-	pictures?: Field[],
-}
-
-type Field = [string, string | Field | Field[]]

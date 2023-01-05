@@ -1,6 +1,7 @@
 import { can_view_comments } from '$lib/auth'
 import { fetch_current_user } from '$lib/server/user'
 import { sf } from '$lib/server/sf'
+import type { LegacyProjectDetails, LegacyStats, ProjectDetails } from './types'
 
 export async function fetch_project_details({ project_code, cookie }) {
 	const { id, projectName: name, users }: LegacyProjectDetails = await sf({ name: 'set_project', args: [ project_code ], cookie })
@@ -26,56 +27,11 @@ export async function fetch_project_details({ project_code, cookie }) {
 	return details
 }
 
-function has_picture(entry: Entry) {
-	return entry.senses?.some(sense => sense.pictures)
+function has_picture(entry: object) {
+	return JSON.stringify(entry).includes('"pictures":')
 }
 
 // audio can be found in lots of places other than lexeme, ref impl used: https://github.com/sillsdev/web-languageforge/blob/develop/src/angular-app/bellows/core/offline/editor-data.service.ts#L523
-function has_audio(entry: Entry) {
-	const contains_audio = (writing_system: string) => writing_system.endsWith('-audio') // naming convention imposed by src/angular-app/languageforge/lexicon/settings/configuration/input-system-view.model.ts L81
-
-	// examples of possible locations where audio may be found in the entry's data:
-	// 1.  Fields within an "entry"
-	// {
-	// 		lexeme: {
-	//			'...-audio': '...'
-	//		},
-	//		pronunciation: {
-	//			'...-audio': '...'
-	//		}
-	// }
-	const in_fields = (fields: Field[]) => Object.keys(fields).some(name => Object.keys(fields[name]).some(contains_audio))
-
-	// 2.  Fields within a "meaning" (note: senses may not be present)
-	// {
-	//		lexeme: '...',
-	//		pronunciation: '...',
-	//		senses: [{
-	//			'...': {
-	//				'...-audio': '...'
-	//			}
-	// 		}]
-	// }
-	const in_meaning = (fields: Field[] = []) => fields.some(in_fields)
-
-	// 3.  Fields within a "meaning"'s example (note: senses may not be present)
-	// {
-	//		lexeme: '...',
-	//		pronunciation: '...',
-	//		senses: [{
-	//			examples: [
-	//				sentence: {
-	//					'...-audio': '...'
-	//				},
-	//				'...': {
-	//					'...-audio': '...'
-	//				}
-	//			]
-	// 		}]
-	// }
-	const in_example = (senses: Sense[] = []) => senses.some(sense => in_meaning(sense.examples))
-
-	const { senses, ...fields } = entry
-
-	return in_fields(fields) || in_meaning(senses) || in_example(senses)
+function has_audio(entry: object) {
+	return JSON.stringify(entry).includes('-audio":') // naming convention imposed by src/angular-app/languageforge/lexicon/settings/configuration/input-system-view.model.ts L81
 }
