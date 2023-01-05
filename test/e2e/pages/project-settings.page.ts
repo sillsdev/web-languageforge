@@ -1,26 +1,25 @@
 import { expect, Page } from '@playwright/test';
+import { Project } from '../utils';
 import { BasePage } from './base-page';
-import { Project } from '../utils/types';
 
 export class ProjectSettingsPage extends BasePage {
-  readonly noticeList = this.page.locator('[ng-repeat="notice in $ctrl.notices()"]');
 
   readonly projectTab = {
-    tabTitle: this.page.locator('text=Project Properties'),
-    projectNameInput: this.page.locator('#projName'),
-    defaultInterfaceLanguageInput: this.page.locator('#language'),
-    projectOwner: this.page.locator('label:has-text("Project Owner") ~ div'),
-    saveButton: this.page.locator('#project-settings-save-btn')
+    tabTitle: this.locator('text=Project Properties'),
+    projectNameInput: this.locator('#projName'),
+    defaultInterfaceLanguageInput: this.locator('#language'),
+    projectOwner: this.locator('label:has-text("Project Owner") ~ div'),
+    saveButton: this.locator('#project-settings-save-btn')
   };
   readonly deleteTab = {
-    tabTitle: this.page.locator('li[heading="Delete"]'),
-    confirmDeleteInput: this.page.locator('#deletebox'),
-    deleteProjectButton: this.page.locator('text=Delete this project')
+    tabTitle: this.locator('li[heading="Delete"]'),
+    confirmDeleteInput: this.locator('#deletebox'),
+    deleteProjectButton: this.locator('text=Delete this project')
   };
 
   readonly deleteModal = {
-    cancel: this.page.locator('div.modal-content >> text="Cancel"'),
-    confirm: this.page.locator('div.modal-content >> text="Delete"')
+    cancel: this.locator('div.modal-content >> text="Cancel"'),
+    confirm: this.locator('div.modal-content >> text="Delete"')
   };
 
   constructor(page: Page, readonly project: Project) {
@@ -28,9 +27,10 @@ export class ProjectSettingsPage extends BasePage {
   }
 
   // navigate to project without UI
-  async goto() {
+  async goto(): Promise<this> {
     await super.goto();
     await this.page.getByLabel('Project Name').waitFor();
+    return this;
   }
 
   async deleteProject() {
@@ -38,10 +38,6 @@ export class ProjectSettingsPage extends BasePage {
     await this.deleteTab.confirmDeleteInput.fill('delete');
     await this.deleteTab.deleteProjectButton.click();
     await this.deleteModal.confirm.click();
-  }
-
-  async countNotices(): Promise<number> {
-    return await this.noticeList.count();
   }
 
   async setDefaultInterfaceLanguage(language: string) {

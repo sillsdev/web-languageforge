@@ -59,10 +59,10 @@ flowchart TB
     ld-api[ld-api port: 3000]
     ld-api --> ld-db
 
-    app-for-playwright
-    app-for-playwright -- port 27017 ---> db
-    app-for-playwright -- port 25 ---> mail
-    app-for-playwright -- port 3000 ---> ld-api
+    e2e-app
+    e2e-app -- port 27017 ---> db
+    e2e-app -- port 25 ---> mail
+    e2e-app -- port 3000 ---> ld-api
 
     test-php
     test-php -- port 27017 --> db

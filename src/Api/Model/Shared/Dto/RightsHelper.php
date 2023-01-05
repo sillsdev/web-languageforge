@@ -96,20 +96,12 @@ class RightsHelper
     public function userCanAccessMethod($methodName)
     {
         switch ($methodName) {
-            case "project_getJoinRequests":
-                return $this->userHasProjectRight(Domain::USERS + Operation::EDIT);
-            case "project_sendJoinRequest":
-                return true;
             case "project_getInviteLink":
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::VIEW);
 
             case "project_disableInviteToken":
             case "project_createInviteLink":
             case "project_updateInviteTokenRole":
-                return $this->userHasProjectRight(Domain::USERS + Operation::EDIT);
-            case "project_acceptJoinRequest":
-                return $this->userHasProjectRight(Domain::USERS + Operation::EDIT);
-            case "project_denyJoinRequest":
                 return $this->userHasProjectRight(Domain::USERS + Operation::EDIT);
             case "user_sendInvite":
             case "message_markRead":
@@ -175,7 +167,6 @@ class RightsHelper
             case "project_list":
                 return $this->userHasSiteRight(Domain::PROJECTS + Operation::VIEW);
 
-            case "project_create":
             case "project_create_switchSession":
                 return $this->userHasSiteRight(Domain::PROJECTS + Operation::CREATE);
 
@@ -263,10 +254,6 @@ class RightsHelper
 
             case "sendReceive_updateSRProject":
             case "sendReceive_receiveProject":
-                return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
-
-            // project management app
-            case "project_management_dto":
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
 
             // Language Depot API access

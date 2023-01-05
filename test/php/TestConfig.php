@@ -12,7 +12,7 @@ if (!defined("APPPATH")) {
 require_once APPPATH . "vendor/autoload.php";
 
 define("TestPath", $rootPath . "test/");
-define("TestCommonPath", $rootPath . "test/common/");
+define("TestCommonPath", $rootPath . "test/data/");
 define("TestPhpPath", $rootPath . "test/php/");
 define("TestLibPath", $rootPath . "test/lib/");
 define("SourcePath", $rootPath . "src/");

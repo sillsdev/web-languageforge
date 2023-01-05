@@ -1,43 +1,43 @@
-# Playwright Cheatsheet - run and debug tests
+# Debugging Playwright tests
 
-## Most simple
+## VS Code Extension (simplest)
 
-1. install VSCode Extension: [_Playwright Test for VSCode_](https://marketplace.visualstudio.com/items?itemName=ms-playwright.playwright)
-2. `make`
-3. run tests directly with the extension in the side bar
-4. ![Screenshot showing VSCode Playwright extension](playwright_extension_sidebar.png "Playwright Test for VSCode")
-5. or run tests directly from the spec files
+The [_Playwright Test for VSCode_](https://marketplace.visualstudio.com/items?itemName=ms-playwright.playwright) extension is the easiest way to run individual tests or test suites. It covers the vast majority of standard debugging use cases and supports debugging directly in VS Code.
+
+You can run or debug tests from the side bar:
+
+> Note: the application will start automatically if it's not already running.
+> This could take some time and doesn't provide a lot of output.
+
+![Screenshot showing VSCode Playwright extension](playwright_extension_sidebar.png "Playwright Test for VSCode")
+
+Or directly from the spec files (right-click for more options e.g. debug):
 
 ![Screenshot showing extension in the file](playwright_extension_in_test_file.png)
 
-### Debug tests
+Notice the useful options in the test side bar above:
 
-- debug tests by setting breakpoints in VSCode and select (right click on green triangle) _Debug Test_
+- `Show browser` for running tests in headed mode
+- `Reveal test output` for viewing test logs
 
-## Simple
+> Note: the extension can become unstable if there are compilation errors in the code.
 
-1. `make e2e-tests`
-   This commands executes the playwright tests. Execution is specified in the makefile.
+## Playwright CLI
 
-## More options
+Standard usage:
 
-### Setup
+- From root: `npx playwright test -c ./test/e2e/playwright.config.ts [other options]`
+- Or simply: `npm run test-e2e [-- other options]`
 
-1. `make`
-1. `cd ..`
-1. `npx playwright test`
+Tips:
 
-### Options
+- `test-e2e-report` opens the latest [HTML report](https://playwright.dev/docs/trace-viewer-intro#opening-the-html-report) with results, traces & screenshots (valuable for debugging after the fact)
+- [`await page.pause()`](https://playwright.dev/docs/api/class-page#page-pause) acts as a breakpoint in `--headed` and `--debug` mode
+- [Playwright's debugging inspector](https://playwright.dev/docs/debug#playwright-inspector) provides a toolkit for debugging Playwright locators. It is available in [`--debug`](https://playwright.dev/docs/debug#--debug) mode or by using `await page.pause()` in `--headed` mode
+- Test for flakiness by running tests multiple times `--repeat-each <N>` and only running specific tests with [`test.only(...)`](https://playwright.dev/docs/next/test-annotations#focus-a-test) or [`test.skip(...)`](https://playwright.dev/docs/next/test-annotations#skip-a-test)
 
-- run only a specific test file: `npx playwright test project.spec.ts`
-- run only a specific test: add `.only` to the test
-  ![Screenshot showing how to add .only to a test](debugging_dot_only.png) - only tests which have the `.only` will be executed (one can add `.only` to multiple tests)
-- view how the tests are run: `npx playwright test --headed`
-- step through the single lines, clicking _next_ : `npx playwright test --debug`
+For a full list of options see the [official docs](https://playwright.dev/docs/test-cli).
 
-## Essential to know
+## Gotchas
 
-1. delete all _storageState.json_ files before running the tests: `rm *storageState*`
-1. not all tests will be executed but Playwright will indicate how many were executed or skipped, e.g., _4 skipped_, _50 passed_. Tests are skipped when they are ought to be skipped (see screenshot below, `.skip`) or when something goes wrong, e.g. an error in the beforeAll leads to all tests of this block being skipped.
-
-![Screenshot showing how to add .skip to a test](debugging_dot_skip.png)
+- For performance reasons, we persist user sessions in `storageState.json` files, so that we can reuse them across tests and test executions. These are automatically removed when starting the server and automatically created if they do not exist. If the sessions become invalid they can lead to peculiar test failures. Remove them with `make clean-test`.

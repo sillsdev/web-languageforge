@@ -16,7 +16,8 @@ export class SoundController implements angular.IController {
 
   $onInit(): void {
 
-    this.slider = this.$element.find('.seek-slider').get(0) as HTMLInputElement;
+    this.slider = this.$element[0].querySelector('.seek-slider') as HTMLInputElement;
+    this.audioElement.currentTime = 0;
 
     //So that duration appears immediately once it is available
     this.audioElement.addEventListener('durationchange', () => {
@@ -92,7 +93,6 @@ export class SoundController implements angular.IController {
     this.playing = !this.playing;
 
     if (this.playing) {
-      this.audioElement.currentTime = 0;
       this.playAudio();
     } else {
       if(!this.audioElement.paused){

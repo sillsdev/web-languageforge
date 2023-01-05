@@ -102,7 +102,8 @@ ngrok will return two URLs, one http and one https, that contain what is being s
 
 ### Running Playwright E2E Tests
 
-Before running Playwright tests for the first time use `npx playwright install-deps chromium` to install chromium dependencies. It will ask for root access.
+Before running Playwright tests for the first time use `npx playwright install --with-deps chromium` to install chromium with its dependencies. It will ask for root access.
+After Playwright updates, you'll likely need to run `npx playwright install` to update the browsers, but Playwright should provide fairly explicit failure logs if that's the case.
 
 1. `make e2e-tests`
 1. Test results will appear in your terminal
@@ -175,7 +176,7 @@ If you encounter errors such as VSCode cannot find a file in the path "vendor", 
 
 ### Playwright E2E Test Debugging
 
-Head on over to [Hanna's tutorial on debugging Playwright E2E tests](test/e2e/playwright_guide/playwright_cheatsheet.md) for more information.
+Head on over to [Hanna's tutorial on debugging Playwright E2E tests](../test/e2e/playwright_guide/playwright_cheatsheet.md) for more information.
 
 ## Style Guides
 

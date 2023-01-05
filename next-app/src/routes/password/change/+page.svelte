@@ -1,6 +1,6 @@
 <script>
 	import { goto } from '$app/navigation'
-	import { UPDATE } from '$lib/fetch/client'
+	import { UPDATE } from '$lib/fetch'
 	import {
 		Button,
 		Form,

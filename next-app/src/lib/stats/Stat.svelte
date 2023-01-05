@@ -10,7 +10,7 @@
 </script>
 
 <!-- https://daisyui.com/components/stat/ -->
-<div class='stat place-items-center' class:href on:click={ clicked }>
+<div class='stat place-items-center' class:href on:click={ clicked } on:keydown={ clicked }>
 	<dt class=stat-title>{ title }</dt>
 	<dd class='stat-value text-primary'>{ value }</dd>
 

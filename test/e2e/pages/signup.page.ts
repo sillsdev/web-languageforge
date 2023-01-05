@@ -6,17 +6,17 @@ export interface SignupGotoOptions extends GotoOptions {
 }
 
 export class SignupPage extends BasePage {
-  readonly emailInput = this.page.locator('#email');
-  readonly emailInvalid = this.page.locator('#emailInvalid');
-  readonly emailTaken = this.page.locator('#emailTaken');
+  readonly emailInput = this.locator('#email');
+  readonly emailInvalid = this.locator('#emailInvalid');
+  readonly emailTaken = this.locator('#emailTaken');
 
-  readonly nameInput = this.page.locator('#name');
-  readonly passwordInput = this.page.locator('#password');
-  readonly passwordIsWeak = this.page.locator('#passwordIsWeak');
-  readonly showPassword = this.page.locator('[data-ng-model="$ctrl.showPassword"]');
-  readonly captchaDiv = this.page.locator('#pui-captcha');
-  readonly captchaInvalid = this.page.locator('#captchaInvalid');
-  readonly signupButton = this.page.locator('#submit');
+  readonly nameInput = this.locator('#name');
+  readonly passwordInput = this.locator('#password');
+  readonly passwordIsWeak = this.locator('#passwordIsWeak');
+  readonly showPassword = this.locator('[data-ng-model="$ctrl.showPassword"]');
+  readonly captchaDiv = this.locator('#pui-captcha');
+  readonly captchaInvalid = this.locator('#captchaInvalid');
+  readonly signupButton = this.locator('#submit');
 
   readonly captcha = {
     expectedItemName: this.captchaDiv.locator('#expectedItemName'),
@@ -54,16 +54,17 @@ export class SignupPage extends BasePage {
     super(page, '/public/signup', page.locator('#email'));
   }
 
-  async goto(options?: SignupGotoOptions) {
+  async goto(options?: SignupGotoOptions): Promise<this> {
     if (options?.email) {
       await this.page.goto(this.url + '#!/?e=' + encodeURIComponent(options?.email));
       await Promise.all([
         this.page.reload(),
-        this.waitForPage(),
+        this.waitFor(),
       ]);
     } else {
       await super.goto();
     }
+    return this;
   }
 
   async setInvalidCaptcha() {

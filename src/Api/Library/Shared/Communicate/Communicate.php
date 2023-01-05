@@ -178,69 +178,6 @@ class Communicate
         self::sendTemplateEmail($to, $subject, "ForgotPasswordVerification", $vars, $delivery);
     }
 
-    /**
-     * @param UserModel $user
-     * @param ProjectModel $projectModel
-     * @param DeliveryInterface $delivery
-     */
-    public static function sendJoinRequestConfirmation($user, $projectModel, DeliveryInterface $delivery = null)
-    {
-        $user->setValidation(7);
-        $user->write();
-
-        $to = [$user->email => $user->name];
-        $subject =
-            'You\'ve submitted a join request to the project ' . $projectModel->projectName . " on Language Forge";
-        $vars = [
-            "user" => $user,
-            "project" => $projectModel,
-        ];
-
-        self::sendTemplateEmail($to, $subject, "JoinRequestConfirmation", $vars, $delivery);
-    }
-
-    /**
-     * @param UserModel $user
-     * @param UserModel $admin
-     * @param ProjectModel $projectModel
-     * @param DeliveryInterface $delivery
-     */
-    public static function sendJoinRequest($user, $admin, $projectModel, DeliveryInterface $delivery = null)
-    {
-        $user->setValidation(7);
-        $user->write();
-
-        $to = [$admin->email => $admin->name];
-        $subject = $user->name . " join request";
-        $vars = [
-            "user" => $user,
-            "admin" => $admin,
-            "project" => $projectModel,
-            "link" => UrlHelper::baseUrl() . "/app/usermanagement/" . $projectModel->id->asString() . "#!/joinRequests",
-        ];
-
-        self::sendTemplateEmail($to, $subject, "JoinRequest", $vars, $delivery);
-    }
-
-    /**
-     * @param UserModel $user
-     * @param ProjectModel $projectModel
-     * @param DeliveryInterface $delivery
-     */
-    public static function sendJoinRequestAccepted($user, $projectModel, DeliveryInterface $delivery = null)
-    {
-        $to = [$user->email => $user->name];
-        $subject =
-            'You\'ve submitted a join request to the project ' . $projectModel->projectName . " on Language Forge";
-        $vars = [
-            "user" => $user,
-            "project" => $projectModel,
-            "link" => UrlHelper::baseUrl() . "/app/{$projectModel->appName}/" . $projectModel->id->asString(),
-        ];
-
-        self::sendTemplateEmail($to, $subject, "JoinRequestAccepted", $vars, $delivery);
-    }
-
     private static function sendTemplateEmail($to, $subject, $templateName, $vars, DeliveryInterface $delivery = null)
     {
         $from = ["no-reply@" . UrlHelper::getHostname() => "Language Forge"];

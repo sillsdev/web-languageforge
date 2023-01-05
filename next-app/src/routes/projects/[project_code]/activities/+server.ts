@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit'
-import { sf } from '$lib/fetch/server'
+import { sf } from '$lib/server/sf'
 
 export async function GET({ params: { project_code }, request: { headers } }) {
 	const cookie = headers.get('cookie')

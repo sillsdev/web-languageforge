@@ -3,13 +3,13 @@ import { BasePage } from './base-page';
 
 export class SiteAdminPage extends BasePage {
   readonly tabs = {
-    reports: this.page.locator('#useres'),
-    archivedProjects: this.page.locator('#archivedprojects')
+    reports: this.locator('#useres'),
+    archivedProjects: this.locator('#archivedprojects')
   };
   readonly archivedProjectsTab = {
-    deleteButton: this.page.locator('#site-admin-delete-btn'),
-    republishButton: this.page.locator('#site-admin-republish-btn'),
-    projectsList: this.page.locator('[data-ng-repeat="project in visibleProjects"]')
+    deleteButton: this.locator('#site-admin-delete-btn'),
+    republishButton: this.locator('#site-admin-republish-btn'),
+    projectsList: this.locator('[data-ng-repeat="project in visibleProjects"]')
   };
 
   constructor(page: Page) {

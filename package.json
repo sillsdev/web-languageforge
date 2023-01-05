@@ -16,6 +16,7 @@
     "webpack:prd": "webpack --config webpack-prd.config.js",
     "compile-test-e2e": "tsc -p test/app",
     "test-e2e": "npx playwright test -c ./test/e2e/playwright.config.ts",
+    "test-e2e-report": "npx playwright show-report ./test/e2e/test-results/_html-report",
     "prepare": "husky install"
   },
   "license": "MIT",
@@ -45,7 +46,7 @@
     "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
-    "@playwright/test": "^1.25.2",
+    "@playwright/test": "^1.29",
     "@prettier/plugin-php": "^0.19.1",
     "@types/angular": "1.8.1",
     "@types/angular-mocks": "^1.7.0",

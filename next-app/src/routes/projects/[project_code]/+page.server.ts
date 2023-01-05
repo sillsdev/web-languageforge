@@ -1,7 +1,7 @@
 import { fetch_activities } from './activities/+server'
 import { fetch_project_details } from './meta/+server'
 import { can_view_activity } from '$lib/auth'
-import { fetch_current_user } from '$lib/data/user'
+import { fetch_current_user } from '$lib/server/user'
 
 export async function load({ params: { project_code }, request: { headers }}) {
 	const args = {
