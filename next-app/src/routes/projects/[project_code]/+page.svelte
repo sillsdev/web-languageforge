@@ -12,7 +12,7 @@
 	import { Button } from '$lib/forms'
 	import PageHeader from '$lib/PageHeader.svelte'
 	import Stats from '$lib/Stats.svelte'
-    import type { DashboardData } from './types'
+    import type { DashboardData } from './+page.server'
 
 	export let data: DashboardData
 

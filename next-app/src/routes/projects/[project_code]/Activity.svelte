@@ -1,7 +1,14 @@
 <script lang=ts>
-    import type { AugmentedActivity } from './types'
+    import type { Activity, Field } from './activities/+server'
 
 	export let activities: Activity[]
+
+	interface AugmentedActivity extends Activity {
+		date_locale: string,
+		date_iso: string,
+		time: number,
+		field_names: string,
+	}
 
 	$: sorted_activities = transform(activities).sort(byDateThenUser)
 
@@ -31,7 +38,7 @@
 				date_locale: date.toLocaleDateString(),
 				date_iso: date.toISOString().split('T')[0],
 				time: date.getTime(),
-				fields: to_names(activity.fields),
+				field_names: to_names(activity.fields),
 		 	}
 		})
 	}
@@ -69,7 +76,7 @@
 					<td>{ activity.date_locale }</td>
 					<td>{ action_display[activity.action] || activity.action }</td>
 					<td>{ activity.entry || '—' }</td>
-					<td>{ activity.fields || '—' }</td>
+					<td>{ activity.field_names || '—' }</td>
 				</tr>
 			{:else}
 				<tr><td>No activity</td></tr>

@@ -1,7 +1,32 @@
 import { can_view_comments } from '$lib/auth'
 import { fetch_current_user } from '$lib/server/user'
 import { sf } from '$lib/server/sf'
-import type { LegacyProjectDetails, LegacyStats, ProjectDetails } from './types'
+
+type LegacyProjectDetails = {
+	id: string,
+	projectName: string,
+	users: object[],
+}
+
+type LegacyStats = {
+	entries: object[],
+	comments: Comment[],
+}
+
+type Comment = {
+	status: string,
+}
+
+export type ProjectDetails = {
+	id: string,
+	code: string,
+	name: string,
+	num_users: number,
+	num_entries: number,
+	num_entries_with_audio: number,
+	num_entries_with_pictures: number,
+	num_unresolved_comments?: number,
+}
 
 export async function fetch_project_details({ project_code, cookie }) {
 	const { id, projectName: name, users }: LegacyProjectDetails = await sf({ name: 'set_project', args: [ project_code ], cookie })

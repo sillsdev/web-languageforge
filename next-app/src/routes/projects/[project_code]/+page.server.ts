@@ -1,8 +1,13 @@
-import { fetch_activities } from './activities/+server'
-import { fetch_project_details } from './meta/+server'
+import { fetch_activities, type Activity } from './activities/+server'
+import { fetch_project_details, type ProjectDetails } from './meta/+server'
 import { can_view_activity } from '$lib/auth'
 import { fetch_current_user } from '$lib/server/user'
 import type { RequestEvent } from './$types'
+
+export type DashboardData = {
+	project: ProjectDetails,
+	activities?: undefined | Activity[],
+}
 
 export async function load({ params: { project_code }, request: { headers }}: RequestEvent): Promise<DashboardData> {
 	const args = {

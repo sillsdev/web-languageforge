@@ -3,7 +3,7 @@
 
 	type Stat = {
 		title: string,
-		value: number,
+		value: number | undefined,
 		icon?: any,
 		url?: string | URL,
 	}

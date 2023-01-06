@@ -1,7 +1,40 @@
 import { json } from '@sveltejs/kit'
-import { sf } from '$lib/server/sf'
-import type { Rpc } from '$lib/server/types'
+import { sf, type Rpc } from '$lib/server/sf'
 import type { RequestEvent } from './$types'
+
+type ActivitiesInput = {
+	cookie: string,
+	start_date?: Date,
+	end_date?: Date,
+}
+
+type LegacyResult = {
+	activity: LegacyActivity[],
+}
+
+export type Field = {
+	name: string,
+}
+
+type LegacyActivity = {
+	id: string,
+	action: string,
+	date: string,
+	content: {
+		user: string,
+		entry?: string,
+		changes?: Field[],
+	},
+}
+
+export type Activity = {
+	id: string,
+	action: string,
+	date: string,
+	user: string,
+	entry: string,
+	fields: Field[],
+}
 
 export async function GET({ params: { project_code }, request: { headers } }: RequestEvent) {
 	const cookie = headers.get('cookie') || ''

@@ -1,5 +1,25 @@
 import { error } from '@sveltejs/kit'
-import type { Rpc, FetchArgs, SfResponse } from './types'
+import type { HttpMethod } from '@sveltejs/kit/types/private'
+
+export type Rpc = {
+	name: string,
+	args?: string[] | object[],
+	cookie?: string,
+}
+
+type FetchArgs = {
+	url: string,
+	method: HttpMethod,
+	body: object,
+	cookie?: string,
+}
+
+type SfResponse = {
+	error?: {
+		message: string
+	},
+	result?: any,
+}
 
 export async function sf<T>({name, args = [], cookie = ''}: Rpc): Promise<T> {
 	const body = {
