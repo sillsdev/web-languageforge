@@ -30,7 +30,6 @@ services:
         - ENVIRONMENT=development
     image: lf-app
     container_name: lf-app
-    platform: linux/amd64
     depends_on:
       - db
       - mail
@@ -243,7 +242,6 @@ services:
         - ENVIRONMENT=development
     image: lf-e2e-app
     container_name: e2e-app
-    platform: linux/amd64
     depends_on:
       - db
       - mail
