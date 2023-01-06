@@ -303,7 +303,7 @@ class LiftImport
         $optionList->items->exchangeArray([]);
 
         foreach ($liftRange->rangeElements as $id => $elem) {
-            if ($elem->label && array_key_exists($interfaceLang, $elem->label)) {
+            if ($elem->label && $elem->label->offsetExists($interfaceLang)) {
                 $label = $elem->label[$interfaceLang]->value;
                 if (isset($elem->abbrev) && isset($elem->abbrev[$interfaceLang])) {
                     $abbrev = $elem->abbrev[$interfaceLang]->value;
