@@ -38,7 +38,6 @@ next-app/**/.env.*
 
 ## Extras
 # Libraries and generated code
-src/js/lib/
 src/Site/views/languageforge/theme/default/page/home/assets/
 *.generated-data.*
 
