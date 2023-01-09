@@ -93,7 +93,7 @@ class LexConfig extends ObjectForEncoding
      *
      * @var array
      */
-    private static $flexOptionlistCodes = [
+    private static array $flexOptionlistCodes = [
         self::POS => "grammatical-info",
         self::SEMDOM => "semantic-domain-ddp4",
         self::ENVIRONMENTS => self::ENVIRONMENTS,
