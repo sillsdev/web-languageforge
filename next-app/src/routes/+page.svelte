@@ -1,6 +1,5 @@
 <script>
 	import { browser } from '$app/environment'
-	import { throw_error } from '$lib/error'
 	import { GET } from '$lib/fetch'
 	import { Button, Input, Form } from '$lib/forms'
     import PageHeader from '$lib/PageHeader.svelte'
@@ -60,7 +59,7 @@
 	<h3>Client</h3>
 	<Button on:click={ () => globalThis.whatIsTheAirspeedVelocityOfAnUnladenSwallow() } danger>Cause run-time error</Button>
 	<Button on:click={ async () => await GET({url: '//LFAPP'}) } danger>Cause network error</Button>
-	<Button on:click={ () => throw_error("sorry, that's not a good password", 400) } danger>Cause biz logic error</Button>
+	<Button on:click={ () => {throw Error("sorry, that's not a good password")} } danger>Cause biz logic error</Button>
 	<Button on:click={ async () => await GET({url: '//httpbin.org/status/500'}) } danger>Cause backend error</Button>
 
 	<h3>Server</h3>

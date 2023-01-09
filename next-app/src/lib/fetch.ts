@@ -1,4 +1,3 @@
-import { throw_error } from '$lib/error'
 import { start, stop } from '$lib/progress'
 import type { HttpMethod } from '@sveltejs/kit/types/private'
 
@@ -25,20 +24,14 @@ async function adapted_fetch({method, url, body}: AdaptedFetchArgs) {
 			'content-type': 'application/json',
 		},
 		body: JSON.stringify(body),
-	}).catch(throw_error) // these only occur for network errors, like these:
-						  //	  * request made with a bad host, e.g., //httpbin
-						  //	  * the host is refusing connections
-						  //	  * client is offline, i.e., airplane mode or something
-						  //	  * CORS preflight failures
-	  .finally(() => stop(url))
+	})
+	.finally(() => stop(url))
 
 	// reminder: fetch does not throw exceptions for non-200 responses (https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch)
 	if (! response.ok) {
 		const results = await response.json().catch(() => {}) || {}
 
-		const message = results.message || response.statusText
-
-		throw_error(message, response.status)
+		throw Error(results.message || response.statusText)
 	}
 
 	return await response.json()
