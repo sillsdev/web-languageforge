@@ -2,7 +2,7 @@
 	<slot />
 </form>
 
-<style>
+<style lang=postcss>
 	:global(form > input) { @apply
 		mb-6;
 	}

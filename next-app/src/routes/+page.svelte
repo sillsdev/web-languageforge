@@ -2,7 +2,7 @@
 	import { browser } from '$app/environment'
 	import { throw_error } from '$lib/error'
 	import { GET } from '$lib/fetch'
-	import { Button, Input } from '$lib/forms'
+	import { Button, Input, Form } from '$lib/forms'
     import PageHeader from '$lib/PageHeader.svelte'
 	import { start, stop } from '$lib/progress'
 	import Stats from '$lib/Stats.svelte'
@@ -102,6 +102,15 @@
 	<Input label=default />
 	<Input label=password type=password />
 	<Input label=value bind:value /> <span>{value}</span>
+
+	<h3>Form</h3>
+	<p>Intended to remove some biolerplate and provide some consistent layout</p>
+	<Form>
+		<Input label=default />
+
+		<Button>primary</Button>
+	</Form>
+
 
 	<h3>PageHeader</h3>
 	<PageHeader>Simple</PageHeader>
