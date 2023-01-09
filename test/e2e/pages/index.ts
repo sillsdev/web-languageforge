@@ -13,4 +13,4 @@ export * from './reset-password.page';
 export * from './signup.page';
 export * from './site-admin.page';
 export * from './user-profile.page';
-
+export * from './home.page';
