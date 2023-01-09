@@ -71,7 +71,7 @@ class LexProjectModel extends LfProjectModel
     public function addInputSystem($tag, $abbr = "", $name = "")
     {
         static $languages = null;
-        if (!array_key_exists($tag, $this->inputSystems)) {
+        if (!$this->inputSystems->offsetExists($tag)) {
             if (!$abbr) {
                 $abbr = $tag;
             }
@@ -81,7 +81,7 @@ class LexProjectModel extends LfProjectModel
                     $languages = new LanguageData();
                 }
                 $languageCode = LanguageData::getCode($tag);
-                if (array_key_exists($languageCode, $languages)) {
+                if ($languages->offsetExists($languageCode)) {
                     $name = $languages[$languageCode]->name;
                 }
             }

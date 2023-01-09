@@ -18,7 +18,7 @@ class LexMultiText extends MapOf
 
     public function form($inputSystem, $value)
     {
-        if (array_key_exists($inputSystem, $this)) {
+        if ($this->offsetExists($inputSystem)) {
             $this[$inputSystem]->value($value);
         } else {
             $this[$inputSystem] = new LexValue($value);
@@ -27,7 +27,7 @@ class LexMultiText extends MapOf
 
     public function appendForm($inputSystem, $value, $separator = "; ")
     {
-        if (array_key_exists($inputSystem, $this)) {
+        if ($this->offsetExists($inputSystem)) {
             $oldValue = $this[$inputSystem]->value;
             $newValue = $oldValue . $separator . $value;
             $this[$inputSystem]->value($newValue);
@@ -42,7 +42,7 @@ class LexMultiText extends MapOf
      */
     public function hasForm($inputSystem)
     {
-        return array_key_exists($inputSystem, $this);
+        return $this->offsetExists($inputSystem);
     }
 
     public function differences(LexMultiText $otherMultiText)

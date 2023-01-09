@@ -55,7 +55,7 @@ class LanguageData extends MapOf
         $unlisted = new Language("Unlisted Language", "qaa");
         $unlisted->country[] = "?";
         $unlistedCode = $unlisted->code->three;
-        if (!array_key_exists($unlistedCode, $this)) {
+        if (!$this->offsetExists($unlistedCode)) {
             $this[$unlistedCode] = $unlisted;
         }
     }

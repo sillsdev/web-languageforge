@@ -690,7 +690,7 @@ class LiftDecoder
             $item->customFields[$customFieldName] = new LexValue();
             $item->customFields[$customFieldName]->value((string) $sxeNode["value"]);
         } elseif ($customFieldSpecs["Type"] == "ReferenceCollection") {
-            if (!array_key_exists($customFieldName, $item->customFields)) {
+            if (!$item->customFields->offsetExists($customFieldName)) {
                 $item->customFields[$customFieldName] = new LexMultiValue();
             }
             $item->customFields[$customFieldName]->value((string) $sxeNode["value"]);
@@ -717,7 +717,7 @@ class LiftDecoder
     {
         $customFieldName = $customFieldNamePrefix . str_replace(" ", "_", $fieldType);
         $levelConfig->fieldOrder->ensureValueExists($customFieldName);
-        if (!array_key_exists($customFieldName, $levelConfig->fields)) {
+        if (!$levelConfig->fields->offsetExists($customFieldName)) {
             if ($customFieldSpecs["Type"] == "ReferenceAtom") {
                 $levelConfig->fields[$customFieldName] = new LexConfigOptionList();
                 $levelConfig->fields[$customFieldName]->listCode = $customFieldSpecs["range"];
