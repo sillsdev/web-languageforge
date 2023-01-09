@@ -6,7 +6,7 @@ type FetchArgs = {
 	url: string,
 	body?: object,
 }
-type AdaptedFetchArgs = FetchArgs & {
+interface AdaptedFetchArgs extends FetchArgs {
 	method: HttpMethod,
 }
 
