@@ -67,6 +67,11 @@ build-next:
 build-base-php:
 	docker build -t sillsdev/web-languageforge:base-php -f docker/base-php/Dockerfile .
 
+.PHONY: composer-dev
+composer-dev:
+	docker compose build composer-dev
+	docker compose run composer-dev
+
 .PHONY: clean
 clean:
 	docker compose down
