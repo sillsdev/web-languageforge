@@ -138,18 +138,48 @@ class UserCommands
      * @param array $userIds
      * @return int Total number of users removed.
      */
-    public static function deleteUsers($userIds)
+    public static function deleteAccounts($userIds)
     {
         CodeGuard::checkTypeAndThrow($userIds, "array");
         $count = 0;
         foreach ($userIds as $userId) {
             CodeGuard::checkTypeAndThrow($userId, "string");
-            $userModel = new UserModel($userId);
-            $userModel->remove();
+            self::deleteAccount($userId);
             $count++;
         }
 
         return $count;
+    }
+
+    /**
+     * @param $userId
+     * @return int 0 or 1 successful removal
+     */
+    public static function deleteAccount($userId)
+    {
+        $user = new UserModelWithPassword($userId);
+        // Removes this user from all projects they were on
+        foreach ($user->projects->refs as $id) {
+            /* @var Id $id */
+            $project = new ProjectModel($id->asString());
+            $project->removeUser($user->id->asString());
+            $project->write();
+        }
+
+        // Deactivates account and removes personal information from the user model.
+        // Now uses the user's id instead of name and username when displaying historical activity.
+        $user->active = false;
+        $user->password = null;
+        $user->username = $user->id->asString();
+        $user->name = $user->id->asString();
+        $user->languageDepotUsername = null;
+        $user->email = null;
+        $user->mobile_phone = null;
+        $user->age = null;
+        $user->gender = null;
+        $default_avatar = "anonymoose.png";
+        $user->avatar_ref = $default_avatar;
+        $user->write();
     }
 
     /**
