@@ -2,6 +2,7 @@ import { writable, type Writable } from 'svelte/store'
 
 export const loading: Writable<boolean> = writable(false)
 
+type Id = string | number
 const pending: Id[] = []
 
 export function start(id: Id) {
