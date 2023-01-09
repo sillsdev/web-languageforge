@@ -192,7 +192,7 @@ class SendReceiveCommandsTest extends TestCase
         $filename = SendReceiveCommands::queueProjectForEdit($projectId, $mockEditQueuePath);
 
         $queueFileNames = scandir($mockEditQueuePath);
-        $this->assertRegExp("/" . $project->projectCode . "/", $filename);
+        $this->assertMatchesRegularExpression("/" . $project->projectCode . "/", $filename);
         $this->assertCount(3, $queueFileNames);
         FileUtilities::removeFolderAndAllContents($mockEditQueuePath);
     }
