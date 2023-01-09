@@ -2,14 +2,12 @@ import { throw_error } from '$lib/error'
 import { start, stop } from '$lib/progress'
 import type { HttpMethod } from '@sveltejs/kit/types/private'
 
-type AdaptedFetchArgs = {
-	url: string,
-	method: HttpMethod,
-	body?: object,
-}
 type FetchArgs = {
 	url: string,
 	body?: object,
+}
+type AdaptedFetchArgs = FetchArgs & {
+	method: HttpMethod,
 }
 
 export async function CREATE({url, body}: FetchArgs) { return await adapted_fetch({method: 'POST'  , url, body}) }
