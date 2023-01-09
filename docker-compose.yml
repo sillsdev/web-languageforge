@@ -299,6 +299,15 @@ services:
       - ./src/Api:/var/www/src/Api
       - ./src/Site:/var/www/src/Site
 
+  composer-dev:
+    build:
+      dockerfile: docker/composer-dev/Dockerfile
+    image: composer-dev
+    container_name: composer-dev
+    volumes:
+      - ./src/composer.json:/work/composer.json
+      - ./src/composer.lock:/work/composer.lock
+
 volumes:
   lf-caddy-config:
   lf-caddy-data:

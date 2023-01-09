@@ -28,7 +28,7 @@ async function jsonRpc(request: APIRequestContext, url: string, method: string, 
       throw json.error;
     }
   } catch (error) {
-    console.log(await result.text());
+    console.error(await result.text());
     throw error;
   }
 }

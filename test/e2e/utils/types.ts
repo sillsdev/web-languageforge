@@ -10,3 +10,8 @@ export type Project = {
   code: string,
   id: string
 }
+
+export type TestProject = {
+  project(): Project,
+  entryIds(): string[],
+}

@@ -5,6 +5,8 @@ import { ForgotPasswordPage, LoginPage, ProjectsPage, ResetPasswordPage, SignupP
 test.describe('Reset forgotten password', () => {
 
   test('User can reset password', async ({ tab, userService }) => {
+    test.slow();
+
     const time = Date.now();
     const user = {
       name: `Reset password user - ${time}`,
