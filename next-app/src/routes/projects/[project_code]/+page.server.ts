@@ -6,7 +6,7 @@ import type { RequestEvent } from './$types'
 
 export type DashboardData = {
 	project: ProjectDetails,
-	activities?: undefined | Activity[],
+	activities?: Activity[],
 }
 
 export async function load({ params: { project_code }, request: { headers }}: RequestEvent): Promise<DashboardData> {
