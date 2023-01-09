@@ -17,7 +17,7 @@ export class ConfigurationPageFieldsTab extends ConfigurationPage {
     return row.locator('css=td,th').nth(columnIndex).locator('input');
   }
 
-  async toggleField(tableTitle: string, field: string): Promise<void> {
+  async toggleFieldExpanded(tableTitle: string, field: string): Promise<void> {
     const row: Locator = this.getRow(this.getTable(tableTitle), field);
     await row.locator('.field-specific-btn').click();
   }

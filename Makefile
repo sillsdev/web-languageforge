@@ -16,14 +16,14 @@ ui-builder:
 e2e-tests-ci:
 	npm ci
 	$(MAKE) e2e-app
-	npx playwright install chromium
-	npx playwright test -c ./test/e2e/playwright.config.ts
+	npx playwright install ${browser} --with-deps
+	npx playwright test -c ./test/e2e/playwright.config.ts --project=${browser} --shard=${shard}
 
 .PHONY: e2e-tests
 e2e-tests: ui-builder
 	npm install
 	$(MAKE) e2e-app
-	npx playwright install chromium
+	npx playwright install chromium firefox
 	npx playwright test -c ./test/e2e/playwright.config.ts $(params)
 
 .PHONY: e2e-app

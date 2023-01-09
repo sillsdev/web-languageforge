@@ -2,6 +2,7 @@ import type { Browser, Page } from '@playwright/test';
 import { test as base, APIRequestContext } from '@playwright/test';
 import { users } from './constants';
 import { getStorageStatePath, Project, ProjectTestService, UserDetails, UserTestService } from './utils';
+import { TestProject } from './utils/types';
 
 export type Tab = Page;
 export type E2EUsername = keyof typeof users;
@@ -74,4 +75,21 @@ export function projectPerTest(lazy?: boolean): () => Project | Promise<Project>
   } else {
     return () => currentTestProject;
   }
+}
+
+export function defaultProject(): TestProject {
+
+  let project: Project;
+  let entryIds: string[];
+
+  test.beforeAll(async ({ projectService }, testInfo) => {
+    const defaultProject = await projectService.createDefaultProject(testInfo);
+    project = defaultProject.project();
+    entryIds = defaultProject.entryIds();
+  });
+
+  return {
+    project: () => project,
+    entryIds: () => entryIds,
+  };
 }

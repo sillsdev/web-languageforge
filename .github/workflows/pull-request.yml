@@ -54,45 +54,8 @@ jobs:
           github_token: ${{ github.token }}
           junit_files: PhpUnitTests.xml
 
-  build-app-run-e2e-tests:
-    runs-on: ubuntu-latest
-
-    steps:
-      -
-        uses: actions/checkout@v3
-      -
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16.14.0'
-          cache: 'npm'
-      -
-        name: Get installed Playwright version
-        id: playwright-version
-        run: echo -n "version=$(npm ls @playwright/test --json | jq --raw-output '.version')" >> $GITHUB_OUTPUT
-      -
-        name: Cache playwright browsers
-        uses: actions/cache@v3
-        id: playwright-cache
-        with:
-          path: '~/.cache/ms-playwright'
-          # Make each playwright version use its own cache in case it uses different browser versions
-          # Cache entries are deleted if not accessed for 7 days
-          # https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows#usage-limits-and-eviction-policy
-          key: 'playwright-${{ steps.playwright-version.outputs.version }}'
-
-      -
-        name: Playwright E2E Tests
-        # see https://playwright.dev/docs/ci#github-actions
-        run: make e2e-tests-ci
-
-      -
-        name: Upload Playwright test results
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: test-results
-          path: test/e2e/test-results
-          if-no-files-found: error
+  e2e-tests:
+    uses: ./.github/workflows/e2e-tests.yml
 
   check-code-formatting:
     runs-on: ubuntu-latest

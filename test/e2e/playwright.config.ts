@@ -34,8 +34,9 @@ const config: PlaywrightTestConfig = {
   globalSetup: require.resolve('./global-setup'),
   /* Retry on CI only */
   retries: process.env.CI ? 1 : 0,
-  /* Opt out of parallel tests. Our current state management prevents a user from working on different projects simultaneously. */
-  workers: process.env.CI ? 1 : 1,
+  /* Our current state management prevents an LF-user from working on different projects simultaneously.
+  Instead, we use Playwright's sharding feature to parallelize tests accross multiple environments. */
+  workers: 1,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   outputDir: 'test-results', // referenced in pull-request.yml
   reporter: process.env.CI
@@ -70,12 +71,12 @@ const config: PlaywrightTestConfig = {
       },
     },
 
-    // {
-    //   name: 'firefox',
-    //   use: {
-    //     ...devices['Desktop Firefox'],
-    //   },
-    // },
+    {
+      name: 'firefox',
+      use: {
+        ...devices['Desktop Firefox'],
+      },
+    },
 
     // {
     //   name: 'webkit',
