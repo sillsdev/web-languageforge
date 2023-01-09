@@ -50,7 +50,7 @@ export default async function globalSetup(config: FullConfig) {
       await context.close();
     }
   } catch (error) {
-    console.warn(`Error in Playwright global setup: ${error}.`);
+    console.error(`Error in Playwright global setup: ${error}.`);
     throw error;
   }
 
