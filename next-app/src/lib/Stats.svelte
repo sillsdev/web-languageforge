@@ -3,7 +3,7 @@
 
 	type Stat = {
 		title: string,
-		value: number | undefined,
+		value?: number,
 		icon?: ConstructorOfATypedSvelteComponent,
 		url?: string | URL,
 	}
