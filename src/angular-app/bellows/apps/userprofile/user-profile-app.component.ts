@@ -1,6 +1,7 @@
 import * as angular from 'angular';
 
 import {UserService} from '../../core/api/user.service';
+import { ProjectService } from '../../core/api/project.service';
 import {ApplicationHeaderService} from '../../core/application-header.service';
 import {BreadcrumbService} from '../../core/breadcrumbs/breadcrumb.service';
 import {SiteWideNoticeService} from '../../core/site-wide-notice-service';
@@ -8,6 +9,7 @@ import {ModalService} from '../../core/modal/modal.service';
 import {NoticeService} from '../../core/notice/notice.service';
 import {UtilityService} from '../../core/utility.service';
 import {UserProfile} from '../../shared/model/user-profile.model';
+import { Project } from '../../shared/model/project.model';
 
 interface UserProfileAppControllerScope extends angular.IScope {
   userprofileForm: angular.IFormController;
@@ -29,21 +31,28 @@ export class UserProfileAppController implements angular.IController {
   emailExists: boolean;
   usernameExists: boolean;
 
+  ownsAProject: boolean = false;
+
+  projects: Project[] = [];
+  finishedLoadingOwnedProjects: boolean = false;
+  ownedProjects: Project[] = [];
+
   private initColor = '';
   private initShape = '';
 
   static $inject = ['$scope', '$window',
-    'userService', 'modalService', 'silNoticeService',
+    'userService', 'projectService', 'modalService', 'silNoticeService',
     'breadcrumbService',
     'siteWideNoticeService',
     'applicationHeaderService'];
   constructor(private $scope: UserProfileAppControllerScope, private $window: angular.IWindowService,
-              private userService: UserService, private modalService: ModalService, private notice: NoticeService,
+              private userService: UserService, private projectService: ProjectService, private modalService: ModalService, private notice: NoticeService,
               private breadcrumbService: BreadcrumbService,
               private siteWideNoticeService: SiteWideNoticeService,
               private applicationHeaderService: ApplicationHeaderService) {}
 
   $onInit(): void {
+    this.finishedLoadingOwnedProjects = false;
     this.user.avatar_ref = UserProfileAppController.getAvatarRef('', '');
 
     this.$scope.$watch(() => this.user.avatar_color, () => {
@@ -101,6 +110,9 @@ export class UserProfileAppController implements angular.IController {
       { value: 'sheep', label: 'Sheep' },
       { value: 'tortoise', label: 'Tortoise' }
     ];
+
+    this.queryProjectsForUser();
+
   }
 
   validateForm(): void {
@@ -142,6 +154,40 @@ export class UserProfileAppController implements angular.IController {
     });
   }
 
+  checkIfUserOwnsAProject(){
+    this.ownsAProject = false;
+    if(this.projects.length > 0){
+      this.projects.forEach(project => {
+        if(project.ownerId === this.user.id){
+          this.ownsAProject = true;
+        }
+      });
+    }
+  }
+
+  queryProjectsForUser() {
+    this.finishedLoadingOwnedProjects = false;
+    this.projects = [];
+    this.ownedProjects = [];
+    this.projectService.list().then((projects: Project[]) => {
+      this.projects = projects || [];
+      this.checkIfUserOwnsAProject();
+      if(this.ownsAProject){
+        this.findOwnedProjects();
+      }
+      this.finishedLoadingOwnedProjects = true;
+      console.log('finished loading projects', {ownsAProject: this.ownsAProject, finishedLoading: this.finishedLoadingOwnedProjects});
+    }).catch(console.error);
+  }
+
+  findOwnedProjects() {
+    this.projects.forEach(project => {
+      if(project.ownerId === this.user.id){
+        this.ownedProjects.push(project);
+      }
+    });
+  }
+
   submit(): void {
     if (this.user.username !== this.originalUsername) {
       // Confirmation for username change
@@ -160,6 +206,8 @@ export class UserProfileAppController implements angular.IController {
         // catch is necessary to properly implement promise API, which angular 1.6 complains if we
         // don't have a catch
       }).catch(() => {});
+    } else if (this.user.active == false){
+
     } else {
       this.updateUser();
     }
@@ -201,6 +249,23 @@ export class UserProfileAppController implements angular.IController {
         }
       }
     });
+  }
+
+  deleteOwnAccount() {
+    const modalOptions = {
+      closeButtonText: 'Cancel',
+      actionButtonText: 'Delete',
+      headerText: 'Permanently delete your account?',
+      bodyText: 'Are you sure you want to delete your account?\n' +
+      'This is a permanent action and cannot be restored.'
+    };
+    this.modalService.showModal({}, modalOptions).then(() => {
+      this.userService.deleteAccounts([this.user.id]).then(() => {
+        this.notice.push(this.notice.SUCCESS, 'Your account was permanently deleted');
+        this.$window.location.href = '/auth/logout'; // goes to the log in screen
+      });
+    }, () => {});
+
   }
 
   static getAvatarUrl(avatarRef: string): string {

@@ -138,13 +138,13 @@ class UserCommands
      * @param array $userIds
      * @return int Total number of users removed.
      */
-    public static function deleteAccounts($userIds)
+    public static function deleteAccounts($userIds, $currentId)
     {
         CodeGuard::checkTypeAndThrow($userIds, "array");
         $count = 0;
         foreach ($userIds as $userId) {
             CodeGuard::checkTypeAndThrow($userId, "string");
-            self::deleteAccount($userId);
+            self::deleteAccount($userId, $currentId);
             $count++;
         }
 
@@ -154,13 +154,29 @@ class UserCommands
     /**
      * @param $userId
      * @return int 0 or 1 successful removal
+     * @throws \Exception
      */
-    public static function deleteAccount($userId)
+    public static function deleteAccount($userId, $currentUserId)
     {
         $user = new UserModelWithPassword($userId);
+
+        // Makes sure this user is not an owner on any projects
+        foreach ($user->projects->refs as $id) {
+            $project = new ProjectModel($id->asString());
+            if ($project->ownerRef->asString() == $userId) {
+                throw new \Exception(
+                    "The user owns a project or projects. Before account deletion, this user's projects must either be transfered to new owners or deleted."
+                );
+            }
+        }
+
+        // Makes sure the user doing the action has the right privileges
+        if ($user->role != SystemRoles::SYSTEM_ADMIN && $userId != $currentUserId) {
+            throw new \Exception("The current user does not have sufficient priveleges to delete the target account.");
+        }
+
         // Removes this user from all projects they were on
         foreach ($user->projects->refs as $id) {
-            /* @var Id $id */
             $project = new ProjectModel($id->asString());
             $project->removeUser($user->id->asString());
             $project->write();

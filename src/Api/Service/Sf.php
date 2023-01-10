@@ -144,7 +144,7 @@ class Sf
      */
     public function user_delete($userIds)
     {
-        return UserCommands::deleteAccounts($userIds);
+        return UserCommands::deleteAccounts($userIds, $this->userId);
     }
 
     /**

@@ -51,8 +51,9 @@ class UserCommandsTest extends TestCase
 
     public function testDeleteUsers_1User_1Deleted()
     {
+        //User deletes own account
         $userId = self::$environ->createUser("somename", "Some Name", "somename@example.com");
-        $count = UserCommands::deleteAccounts([$userId]);
+        $count = UserCommands::deleteAccounts([$userId], $userId);
 
         $this->assertEquals(1, $count);
     }
