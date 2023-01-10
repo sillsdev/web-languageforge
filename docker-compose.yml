@@ -302,8 +302,8 @@ services:
   composer-dev:
     build:
       dockerfile: docker/composer-dev/Dockerfile
-    image: composer-dev
-    container_name: composer-dev
+    image: lf-composer-dev
+    container_name: lf-composer-dev
     volumes:
       - ./src/composer.json:/work/composer.json
       - ./src/composer.lock:/work/composer.lock

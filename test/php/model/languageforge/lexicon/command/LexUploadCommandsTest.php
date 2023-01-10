@@ -41,12 +41,12 @@ class LexUploadCommandsTest extends TestCase
         $projectSlug = $project->databaseName();
 
         $this->assertTrue($response->result, "Upload should succeed");
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             "/lexicon\/$projectSlug\/audio/",
             $response->data->path,
             "Uploaded audio file path should be in the right location"
         );
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             "/$fileName/",
             $response->data->fileName,
             "Uploaded audio fileName should contain the original fileName"
@@ -67,12 +67,12 @@ class LexUploadCommandsTest extends TestCase
         $filePath = $folderPath . DIRECTORY_SEPARATOR . $response->data->fileName;
 
         $this->assertTrue($response->result, "Upload should succeed");
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             "/$fileName/",
             $response->data->fileName,
             "Uploaded audio fileName should contain the original fileName"
         );
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             "/(?<!\d)\d{14}(?!\d)/",
             $response->data->fileName,
             "Uploaded audio fileName should have a timestamp fileName prefix"
@@ -94,12 +94,12 @@ class LexUploadCommandsTest extends TestCase
         $projectSlug = $project->databaseName();
 
         $this->assertTrue($response->result, "Upload should succeed");
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             "/lexicon\/$projectSlug\/audio/",
             $response->data->path,
             "Uploaded audio file path should be in the right location"
         );
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             "/$fileName/",
             $response->data->fileName,
             "Uploaded audio fileName should contain the original fileName"
@@ -117,7 +117,7 @@ class LexUploadCommandsTest extends TestCase
 
         $this->assertFalse($response->result, "Upload should fail");
         $this->assertEquals("UserMessage", $response->data->errorType, "Error response should be a user message");
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             "/not an allowed audio file/",
             $response->data->errorMessage,
             "Error message should match the error"
@@ -129,7 +129,7 @@ class LexUploadCommandsTest extends TestCase
 
         $this->assertFalse($response->result, "Upload should fail");
         $this->assertEquals("UserMessage", $response->data->errorType, "Error response should be a user message");
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             "/not an allowed audio file/",
             $response->data->errorMessage,
             "Error message should match the error"
@@ -158,12 +158,12 @@ class LexUploadCommandsTest extends TestCase
         $previousFilePath = $folderPath . DIRECTORY_SEPARATOR . $_POST["previousFilename"];
 
         $this->assertTrue($response->result, "Upload should succeed");
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             "/lexicon\/$projectSlug\/audio/",
             $response->data->path,
             "Uploaded audio file path should be in the right location"
         );
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             "/$fileName/",
             $response->data->fileName,
             "Uploaded audio fileName should contain the original fileName"
@@ -186,12 +186,12 @@ class LexUploadCommandsTest extends TestCase
         $projectSlug = $project->databaseName();
 
         $this->assertTrue($response->result, "Upload should succeed");
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             "/lexicon\/$projectSlug\/pictures/",
             $response->data->path,
             "Uploaded image file path should be in the right location"
         );
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             "/$fileName/",
             $response->data->fileName,
             "Uploaded image fileName should contain the original fileName"
@@ -212,12 +212,12 @@ class LexUploadCommandsTest extends TestCase
         $filePath = $folderPath . DIRECTORY_SEPARATOR . $response->data->fileName;
 
         $this->assertTrue($response->result, "Upload should succeed");
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             "/$fileName/",
             $response->data->fileName,
             "Uploaded image fileName should contain the original fileName"
         );
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             "/(?<!\d)\d{14}(?!\d)/",
             $response->data->fileName,
             "Uploaded image fileName should have a timestamp fileName prefix"
@@ -235,7 +235,7 @@ class LexUploadCommandsTest extends TestCase
 
         $this->assertFalse($response->result, "Upload should fail");
         $this->assertEquals("UserMessage", $response->data->errorType, "Error response should be a user message");
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             "/not an allowed image file/",
             $response->data->errorMessage,
             "Error message should match the error"
@@ -247,7 +247,7 @@ class LexUploadCommandsTest extends TestCase
 
         $this->assertFalse($response->result, "Upload should fail");
         $this->assertEquals("UserMessage", $response->data->errorType, "Error response should be a user message");
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             "/not an allowed image file/",
             $response->data->errorMessage,
             "Error message should match the error"
@@ -330,7 +330,7 @@ class LexUploadCommandsTest extends TestCase
         $projectSlug = $project->databaseName();
 
         $this->assertTrue($response->result, "Import should succeed");
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             "/lexicon\/$projectSlug/",
             $response->data->path,
             "Uploaded zip file path should be in the right location"
@@ -405,7 +405,7 @@ class LexUploadCommandsTest extends TestCase
 
         // stats OK?
         $this->assertTrue($response->result, "Import should succeed");
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             "/lexicon\/$projectSlug/",
             $response->data->path,
             "Uploaded zip file path should be in the right location"
@@ -518,7 +518,7 @@ class LexUploadCommandsTest extends TestCase
 
         $this->assertFalse($response->result, "Import should fail");
         $this->assertEquals("UserMessage", $response->data->errorType, "Error response should be a user message");
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             "/not an allowed compressed file/",
             $response->data->errorMessage,
             "Error message should match the error"
@@ -530,7 +530,7 @@ class LexUploadCommandsTest extends TestCase
 
         $this->assertFalse($response->result, "Import should fail");
         $this->assertEquals("UserMessage", $response->data->errorType, "Error response should be a user message");
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             "/not an allowed compressed file/",
             $response->data->errorMessage,
             "Error message should match the error"
@@ -575,12 +575,12 @@ EOD;
         $projectSlug = $project->databaseName();
 
         $this->assertTrue($response->result, "Import should succeed");
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             "/lexicon\/$projectSlug/",
             $response->data->path,
             "Uploaded zip file path should be in the right location"
         );
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             "/$fileName/",
             $response->data->fileName,
             "Imported LIFT fileName should contain the original fileName"
@@ -604,8 +604,8 @@ EOD;
         $tmpFilePath = self::$environ->uploadLiftFile(self::liftOneEntryV0_13, $fileName, LiftMergeRule::IMPORT_LOSES);
         $response = LexUploadCommands::importLiftFile($projectId, $tmpFilePath);
         $this->assertTrue($response->result, "Import should succeed");
-        $this->assertRegExp("/lexicon\/$projectSlug/", $response->data->path);
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression("/lexicon\/$projectSlug/", $response->data->path);
+        $this->assertMatchesRegularExpression(
             "/$fileName/",
             $response->data->fileName,
             "Imported LIFT fileName should contain the original fileName"
@@ -686,7 +686,7 @@ EOD;
 
         $this->assertFalse($response->result, "Import should fail");
         $this->assertEquals("UserMessage", $response->data->errorType, "Error response should be a user message");
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             "/not an allowed LIFT file/",
             $response->data->errorMessage,
             "Error message should match the error"
@@ -698,7 +698,7 @@ EOD;
 
         $this->assertFalse($response->result, "Import should fail");
         $this->assertEquals("UserMessage", $response->data->errorType, "Error response should be a user message");
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             "/not an allowed LIFT file/",
             $response->data->errorMessage,
             "Error message should match the error"

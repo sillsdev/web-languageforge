@@ -135,8 +135,8 @@ class LexProjectModelTest extends TestCase
 
         // Verify
         $this->assertNoException();
-        $this->assertFileNotExists($projectStatePath);
-        $this->assertDirectoryNotExists($projectWorkPath);
+        $this->assertFileDoesNotExist($projectStatePath);
+        $this->assertDirectoryDoesNotExist($projectWorkPath);
         FileUtilities::removeFolderAndAllContents($baseDirForSendReceive);
     }
 
@@ -160,9 +160,9 @@ class LexProjectModelTest extends TestCase
 
         // Verify
         $this->assertNoException();
-        $this->assertFileNotExists($projectStatePath);
-        $this->assertDirectoryNotExists($projectWorkPath);
-        $this->assertFileNotExists($projectWorkPath);
+        $this->assertFileDoesNotExist($projectStatePath);
+        $this->assertDirectoryDoesNotExist($projectWorkPath);
+        $this->assertFileDoesNotExist($projectWorkPath);
         FileUtilities::removeFolderAndAllContents($baseDirForSendReceive);
     }
 }
