@@ -1,4 +1,4 @@
-<script>
+<script lang=ts>
 	import { page } from '$app/stores'
 	import '$lib/app.css'
 	import Header from '$lib/Header.svelte'
@@ -15,8 +15,8 @@
 		menu_toggle = false
 	}
 
-	function closeOnEscape(e) {
-		e.key === 'Escape' && close()
+	function closeOnEscape(event: KeyboardEvent) {
+		event.key === 'Escape' && close()
 	}
 </script>
 

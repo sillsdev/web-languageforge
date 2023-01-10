@@ -1,8 +1,43 @@
 import { json } from '@sveltejs/kit'
-import { sf } from '$lib/server/sf'
+import { sf, type Rpc } from '$lib/server/sf'
+import type { RequestEvent } from './$types'
 
-export async function GET({ params: { project_code }, request: { headers } }) {
-	const cookie = headers.get('cookie')
+type ActivitiesInput = {
+	cookie: string,
+	start_date?: Date,
+	end_date?: Date,
+}
+
+type LegacyResult = {
+	activity: LegacyActivity[],
+}
+
+export type Field = {
+	name: string,
+}
+
+type LegacyActivity = {
+	id: string,
+	action: string,
+	date: string,
+	content: {
+		user: string,
+		entry?: string,
+		changes?: Field[],
+	},
+}
+
+export type Activity = {
+	id: string,
+	action: string,
+	date: string,
+	user: string,
+	entry: string,
+	fields: Field[],
+}
+
+export async function GET({ params: { project_code }, request: { headers } }: RequestEvent) {
+	const cookie = headers.get('cookie') || ''
 
 	await sf({ name: 'set_project', args: [ project_code ], cookie })
 
@@ -13,8 +48,8 @@ export async function GET({ params: { project_code }, request: { headers } }) {
 
 // src/Api/Model/Shared/Dto/ActivityListDto.php
 // src/Api/Model/Shared/Dto/ActivityListDto.php->ActivityListModel.__construct
-export async function fetch_activities({ cookie, start_date, end_date }) {
-	const args = {
+export async function fetch_activities({ cookie, start_date, end_date }: ActivitiesInput) {
+	const args: Rpc = {
 		name: 'activity_list_dto_for_current_project',
 		args: [
 			{
@@ -26,12 +61,12 @@ export async function fetch_activities({ cookie, start_date, end_date }) {
 		cookie,
 	}
 
-	const { activity } = await sf(args)
+	const { activity }: LegacyResult = await sf(args)
 
 	return activity.map(transform)
 }
 
-function transform({ id, action, date, content }) {
+function transform({ id, action, date, content }: LegacyActivity): Activity {
 	return {
 		id,
 		action,

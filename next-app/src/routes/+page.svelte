@@ -1,12 +1,36 @@
 <script>
 	import { browser } from '$app/environment'
-	import { throw_error } from '$lib/error'
 	import { GET } from '$lib/fetch'
-	import { Button } from '$lib/forms'
+	import { Button, Input, Form } from '$lib/forms'
+    import PageHeader from '$lib/PageHeader.svelte'
 	import { start, stop } from '$lib/progress'
+	import Stats from '$lib/Stats.svelte'
 	import { onMount } from 'svelte'
 
 	let dark_mode = false
+	let value = 'default_value'
+	const stats = [
+		{
+			title: 'Stat one hundred thousand',
+			value: 100_000,
+		},
+		{
+			title: 'Stat two hundred thousand',
+			value: 200_000,
+		},
+		{
+			title: 'Stat three hundred thousand',
+			value: 300_000,
+		},
+		{
+			title: 'Stat four hundred thousand',
+			value: 400_000,
+		},
+		{
+			title: 'Stat five hundred thousand',
+			value: 500_000,
+		},
+	]
 
 	onMount(() => dark_mode = window.matchMedia('(prefers-color-scheme: dark)').matches)
 
@@ -34,9 +58,9 @@
 
 	<h3>Client</h3>
 	<Button on:click={ () => globalThis.whatIsTheAirspeedVelocityOfAnUnladenSwallow() } danger>Cause run-time error</Button>
-	<Button on:click={ async () => await GET('//LFAPP') } danger>Cause network error</Button>
-	<Button on:click={ () => throw_error("sorry, that's not a good password", 400) } danger>Cause biz logic error</Button>
-	<Button on:click={ async () => await GET('//httpbin.org/status/500') } danger>Cause backend error</Button>
+	<Button on:click={ async () => await GET({url: '//LFAPP'}) } danger>Cause network error</Button>
+	<Button on:click={ () => {throw Error("sorry, that's not a good password")} } danger>Cause biz logic error</Button>
+	<Button on:click={ async () => await GET({url: '//httpbin.org/status/500'}) } danger>Cause backend error</Button>
 
 	<h3>Server</h3>
 	The change password page has a few options:
@@ -59,4 +83,41 @@
 
 	<h3>Light/Dark mode</h3>
 	<input type=checkbox bind:checked={ dark_mode } class='toggle toggle-primary toggle-lg'>
+
+	<h3>Stats</h3>
+	<Stats {stats} />
+</section>
+
+<section>
+	<h2>Custom components</h2>
+
+	<h3>Button</h3>
+	<Button>primary</Button>
+	<Button danger>error</Button>
+	<Button class='btn-outline'>outline</Button>
+	<Button class='btn-xs sm:btn-sm'>extra small</Button>
+
+	<h3>Input</h3>
+	<Input label=default />
+	<Input label=password type=password />
+	<Input label=value bind:value /> <span>{value}</span>
+
+	<h3>Form</h3>
+	<p>Intended to remove some biolerplate and provide some consistent layout</p>
+	<Form>
+		<Input label=default />
+
+		<Button>primary</Button>
+	</Form>
+
+
+	<h3>PageHeader</h3>
+	<PageHeader>Simple</PageHeader>
+	<PageHeader>
+		<span class='flex justify-between items-center'>
+			elements spread across header
+
+			<a href='/'>link to this page</a>
+		</span>
+	</PageHeader>
 </section>

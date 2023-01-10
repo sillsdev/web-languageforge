@@ -1,8 +1,18 @@
 import { error } from '@sveltejs/kit'
 import { sf } from '$lib/server/sf'
 
-export async function fetch_current_user(cookie) {
-	const { userId, userProjectRole } = await sf({
+type LegacySession = {
+	userId: string,
+	userProjectRole: string,
+}
+
+type User = {
+	id: string,
+	role: string,
+}
+
+export async function fetch_current_user(cookie: string): Promise<User> {
+	const { userId, userProjectRole }: LegacySession = await sf({
 		name: 'session_getSessionData',
 		cookie,
 	})

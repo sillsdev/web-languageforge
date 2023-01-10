@@ -1,4 +1,4 @@
-<script>
+<script lang=ts>
 	import { page } from '$app/stores'
 	import Activity from './Activity.svelte'
 	import { GET } from '$lib/fetch'
@@ -11,9 +11,10 @@
 	} from '$lib/icons'
 	import { Button } from '$lib/forms'
 	import PageHeader from '$lib/PageHeader.svelte'
-	import Stats from '$lib/stats'
+	import Stats from '$lib/Stats.svelte'
+    import type { DashboardData } from './+page.server'
 
-	export let data;
+	export let data: DashboardData
 
 	let only_showing_subset = true
 
@@ -52,7 +53,7 @@
 	].filter(({ value }) => value !== undefined)
 
 	async function load_all_activities() {
-		activities = await GET(`/projects/${$page.params.project_code}/activities`)
+		activities = await GET({url: `/projects/${$page.params.project_code}/activities`})
 
 		only_showing_subset = false
 	}
@@ -62,19 +63,17 @@
 	<title>Project Home</title>
 </svelte:head>
 
-<PageHeader class='flex justify-between items-center'>
-	{ project.name }
+<PageHeader>
+	<span class='flex justify-between items-center'>
+		{ project.name }
 
-	<a rel=external href={ `/app/lexicon/${ project.id }` } class='btn btn-primary no-underline btn-xs sm:btn-md'>
-		work on this project
-	</a>
+		<a rel=external href={ `/app/lexicon/${ project.id }` } class='btn btn-primary no-underline btn-xs sm:btn-md'>
+			work on this project
+		</a>
+	</span>
 </PageHeader>
 
-<Stats class=max-w-full>
-	{#each stats as { title, value, icon, url }}
-		<Stats.Stat { title } value={ Number(value).toLocaleString() } { icon } href={ value && url } />
-	{/each}
-</Stats>
+<Stats {stats} />
 
 {#if activities}
 	<h2>Activity</h2>
