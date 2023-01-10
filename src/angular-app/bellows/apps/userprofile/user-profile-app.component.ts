@@ -154,6 +154,40 @@ export class UserProfileAppController implements angular.IController {
     });
   }
 
+  checkIfUserOwnsAProject(){
+    this.ownsAProject = false;
+    if(this.projects.length > 0){
+      this.projects.forEach(project => {
+        if(project.ownerId === this.user.id){
+          this.ownsAProject = true;
+        }
+      });
+    }
+  }
+
+  queryProjectsForUser() {
+    this.finishedLoadingOwnedProjects = false;
+    this.projects = [];
+    this.ownedProjects = [];
+    this.projectService.list().then((projects: Project[]) => {
+      this.projects = projects || [];
+      this.checkIfUserOwnsAProject();
+      if(this.ownsAProject){
+        this.findOwnedProjects();
+      }
+      this.finishedLoadingOwnedProjects = true;
+      console.log('finished loading projects', {ownsAProject: this.ownsAProject, finishedLoading: this.finishedLoadingOwnedProjects});
+    }).catch(console.error);
+  }
+
+  findOwnedProjects() {
+    this.projects.forEach(project => {
+      if(project.ownerId === this.user.id){
+        this.ownedProjects.push(project);
+      }
+    });
+  }
+
   submit(): void {
     if (this.user.username !== this.originalUsername) {
       // Confirmation for username change
