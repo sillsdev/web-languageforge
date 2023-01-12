@@ -1,23 +1,12 @@
-Fixes # (issue)
+### Fixes #_issue_
 
 ## Description
 
-Please include a summary of the change and which issue is fixed. Please also include relevant motivation and context. List any dependencies that are required for this change.
-
-### Type of Change
-
-Only keep lines below that describe this change, then delete the rest.
-
-- Bug fix (non-breaking change which fixes an issue)
-- New feature (non-breaking change which adds functionality)
-- Breaking change (fix or feature that would cause existing functionality to not work as expected)
-- This change requires a documentation update
-- migration required (a model change requiring a mongodb script or migration script)
-- UI change
+_A summary of the change including motivation and context._
 
 ## Screenshots
 
-Please provide screenshots / animations for any change that involves the UI. Please provide animations to demonstrate user interaction / behavior changes
+_Demonstrate any UI / behavioral changes with screenshots or animations._
 
 ## Checklist
 
@@ -28,13 +17,10 @@ Please provide screenshots / animations for any change that involves the UI. Ple
 - [ ] I have added tests that prove my fix is effective or that my feature works
 - [ ] I have enabled auto-merge (optional)
 
-## How to test
+## QA testing
 
-Please describe how to test and/or verify your changes. Provide instructions so we can reproduce. Please also provide relevant test data as necessary. These instructions will be used for QA testing below.
+Testers, use the following instructions on [qa.languageforge.org](https://qa.languageforge.org). Post your findings as a comment and include any meaningful screenshots, etc.
+
+_Describe how to verify your changes and provide any necessary test data._
 
 - Test A
-- Test B
-
-## qa.languageforge.org testing
-
-Testers should add his/her findings to end of the PR in a comment and include screenshots, files, etc that are beneficial.
