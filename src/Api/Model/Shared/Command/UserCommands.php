@@ -175,7 +175,7 @@ class UserCommands
 
         // Makes sure the user doing the action has the right privileges
         if ($user->role != SystemRoles::SYSTEM_ADMIN && $userId != $currentUserId) {
-            throw new \Exception("The current user does not have sufficient priveleges to delete the target account.");
+            throw new \Exception("The current user does not have sufficient privileges to delete the target account.");
         }
 
         // Deactivates account and removes personal information from the user model.
