@@ -4,6 +4,7 @@ import { BasePage } from './base-page';
 export class HomePage extends BasePage {
   readonly signupButton = this.locator('a:text("Sign Up"):visible');
   readonly loginButton = this.locator('a:text("Login"):visible');
+  readonly termsAndConditionsLink = this.locator('a:text("terms and conditions"):visible');
   readonly additionalResourceLinkContainer = this.locator('section:has-text("Additional Resources") .actions li');
   readonly videoIFrame = this.locator('div.videoWrapper iframe');
 

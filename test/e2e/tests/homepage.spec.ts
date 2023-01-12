@@ -1,6 +1,6 @@
 import { expect } from '@playwright/test';
 import { test } from '../fixtures';
-import { HomePage, LoginPage, SignupPage } from '../pages';
+import { HomePage, LoginPage, SignupPage, TermsAndConditionsPage } from '../pages';
 
 test.describe('Homepage', () => {
 
@@ -8,6 +8,11 @@ test.describe('Homepage', () => {
     const homePage = await HomePage.goto(tab);
     await expect(homePage.additionalResourceLinkContainer.first()).not.toBeEmpty();
     await expect(homePage.videoIFrame).toBeVisible();
+
+    await Promise.all([
+      homePage.termsAndConditionsLink.click(),
+      TermsAndConditionsPage.waitFor(tab),
+    ]);
   });
 
   test('Signup and login buttons', async ({ tab }) => {
