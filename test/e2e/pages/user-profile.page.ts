@@ -27,6 +27,8 @@ export class UserProfilePage extends BasePage {
     saveChangesBtn: this.locator('.modal-dialog button:has-text("Save changes")'),
   };
 
+  private readonly successNotice = this.noticeList.success('Profile updated successfully');
+
   constructor(page: Page) {
     super(page, '/app/userprofile', page.locator('.page-name >> text=\'s User Profile'));
   }
@@ -34,11 +36,11 @@ export class UserProfilePage extends BasePage {
   async save(): Promise<void> {
     await this.saveBtn.click();
 
-    if (await this.modal.saveChangesBtn.isVisible()) {
-      // Some changes require confirmation and log the user out
-      await this.modal.saveChangesBtn.click();
-    } else {
-      await this.noticeList.success('Profile updated successfully').waitFor();
-    }
+    await Promise.race([
+      // Some changes require confirmation and then log the user out (e.g. username)
+      this.modal.saveChangesBtn.click(),
+      // others just show a success message
+      this.successNotice.waitFor(),
+    ]);
   }
 }

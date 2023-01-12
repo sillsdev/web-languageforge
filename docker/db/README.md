@@ -16,7 +16,7 @@
 
 > https://www.mongodb.com/docs/v4.4/mongo
 
-`mongo` within `db` container
+`mongosh` within `db` container
 
 > https://www.mongodb.com/docs/manual/reference/mongo-shell/#command-helpers
 

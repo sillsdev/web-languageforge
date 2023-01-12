@@ -49,10 +49,10 @@ class CommunicateTest extends TestCase
         // What's in the delivery?
         $expectedTo = [$user->email => $user->name];
         $this->assertEquals($expectedTo, $delivery->to);
-        $this->assertNotRegExp("/" . SF_TESTPROJECT . "/", $delivery->subject);
-        $this->assertRegExp("/Name/", $delivery->content);
-        $this->assertRegExp("/" . $user->validationKey . "/", $delivery->content);
-        $this->assertNotRegExp("/" . SF_TESTPROJECT . "/", $delivery->content);
+        $this->assertDoesNotMatchRegularExpression("/" . SF_TESTPROJECT . "/", $delivery->subject);
+        $this->assertMatchesRegularExpression("/Name/", $delivery->content);
+        $this->assertMatchesRegularExpression("/" . $user->validationKey . "/", $delivery->content);
+        $this->assertDoesNotMatchRegularExpression("/" . SF_TESTPROJECT . "/", $delivery->content);
     }
 
     public function testSendSignup_WithProject_PropertiesToFromBodyOk()
@@ -70,9 +70,9 @@ class CommunicateTest extends TestCase
         // What's in the delivery?
         $expectedTo = [$user->email => $user->name];
         $this->assertEquals($expectedTo, $delivery->to);
-        $this->assertRegExp("/Language Forge/", $delivery->subject);
-        $this->assertRegExp("/Name/", $delivery->content);
-        $this->assertRegExp("/" . $user->validationKey . "/", $delivery->content);
+        $this->assertMatchesRegularExpression("/Language Forge/", $delivery->subject);
+        $this->assertMatchesRegularExpression("/Name/", $delivery->content);
+        $this->assertMatchesRegularExpression("/" . $user->validationKey . "/", $delivery->content);
     }
 
     public function testSendInvite_PropertiesFromToBodyOk()
@@ -92,9 +92,12 @@ class CommunicateTest extends TestCase
         // What's in the delivery?
         $expectedTo = [$toUser->email => $toUser->name];
         $this->assertEquals($expectedTo, $delivery->to);
-        $this->assertRegExp("/Inviter User/", $delivery->content);
-        $this->assertRegExp("/\/public\/signup#!\/\?e=" . urlencode($toUser->email) . "/", $delivery->content);
-        $this->assertRegExp("/The Language Forge Team/", $delivery->content);
+        $this->assertMatchesRegularExpression("/Inviter User/", $delivery->content);
+        $this->assertMatchesRegularExpression(
+            "/\/public\/signup#!\/\?e=" . urlencode($toUser->email) . "/",
+            $delivery->content
+        );
+        $this->assertMatchesRegularExpression("/The Language Forge Team/", $delivery->content);
     }
 
     public function testSendNewUserInProject_PropertiesFromToBodyOk()
@@ -112,9 +115,9 @@ class CommunicateTest extends TestCase
         // What's in the delivery?
         $expectedTo = [$toUser->email => $toUser->name];
         $this->assertEquals($expectedTo, $delivery->to);
-        $this->assertRegExp("/To Name/", $delivery->content);
-        $this->assertRegExp("/" . $newUserName . "/", $delivery->content);
-        $this->assertRegExp("/" . $newUserPassword . "/", $delivery->content);
+        $this->assertMatchesRegularExpression("/To Name/", $delivery->content);
+        $this->assertMatchesRegularExpression("/" . $newUserName . "/", $delivery->content);
+        $this->assertMatchesRegularExpression("/" . $newUserPassword . "/", $delivery->content);
     }
 
     public function testSendAddedToProject_PropertiesFromToBodyOk()
@@ -136,7 +139,7 @@ class CommunicateTest extends TestCase
         // What's in the delivery?
         $expectedTo = [$toUser->email => $toUser->name];
         $this->assertEquals($expectedTo, $delivery->to);
-        $this->assertRegExp('/To Name.*\n*Inviter User/', $delivery->content);
+        $this->assertMatchesRegularExpression('/To Name.*\n*Inviter User/', $delivery->content);
     }
 
     public function testSendForgotPasswordVerification_PropertiesFromToBodyOk()
@@ -151,11 +154,11 @@ class CommunicateTest extends TestCase
         // What's in the delivery?
         $expectedTo = [$user->email => $user->name];
         $this->assertEquals($expectedTo, $delivery->to);
-        $this->assertNotRegExp("/<p>/", $delivery->content);
-        $this->assertRegExp("/Name/", $delivery->content);
-        $this->assertRegExp("/" . $user->resetPasswordKey . "/", $delivery->content);
-        $this->assertRegExp("/<p>/", $delivery->htmlContent);
-        $this->assertRegExp("/Name/", $delivery->htmlContent);
-        $this->assertRegExp("/" . $user->resetPasswordKey . "/", $delivery->htmlContent);
+        $this->assertDoesNotMatchRegularExpression("/<p>/", $delivery->content);
+        $this->assertMatchesRegularExpression("/Name/", $delivery->content);
+        $this->assertMatchesRegularExpression("/" . $user->resetPasswordKey . "/", $delivery->content);
+        $this->assertMatchesRegularExpression("/<p>/", $delivery->htmlContent);
+        $this->assertMatchesRegularExpression("/Name/", $delivery->htmlContent);
+        $this->assertMatchesRegularExpression("/" . $user->resetPasswordKey . "/", $delivery->htmlContent);
     }
 }

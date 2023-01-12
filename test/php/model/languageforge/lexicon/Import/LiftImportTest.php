@@ -918,7 +918,7 @@ EOD;
         $this->assertEquals("khâaw kài thɔ̂ɔt", $entry1["lexeme"]["th-fonipa"]["value"]); // NFC
         $this->assertEquals("ข้าวไก่ทอด", $entry1["lexeme"]["th"]["value"]);
         $this->assertEquals(true, $report->hasError());
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             "/processing multitext 'definition', unhandled element 'i', unhandled element 'b', unhandled element 'i', unhandled element 'b'/",
             $reportStr
         );
@@ -1102,7 +1102,10 @@ EOD;
         $this->assertEquals("black bear", $entry1["lexeme"]["qaa-x-qaa"]["value"]);
         $this->assertEquals("This is not a brown bear.", $entry1["note"]["en"]["value"]);
         $this->assertEquals(true, $report->hasError());
-        $this->assertRegExp("/processing multitext 'note', unhandled element 'b', unhandled element 'b'/", $reportStr);
+        $this->assertMatchesRegularExpression(
+            "/processing multitext 'note', unhandled element 'b', unhandled element 'b'/",
+            $reportStr
+        );
     }
 
     // has correct th-fonipa form in each entry
@@ -1242,9 +1245,12 @@ EOD;
             $report->nodeErrors[0]->getSubnodeError(0)->hasError(),
             "should have phony and bogus tag entry errors"
         );
-        $this->assertRegExp("/unhandled element 'bogus'/", $reportStr);
-        $this->assertRegExp("/processing multitext 'lexical-unit', unhandled element 'phony'/", $reportStr);
-        $this->assertNotRegExp("/unhandled element 'translation'/", $reportStr);
+        $this->assertMatchesRegularExpression("/unhandled element 'bogus'/", $reportStr);
+        $this->assertMatchesRegularExpression(
+            "/processing multitext 'lexical-unit', unhandled element 'phony'/",
+            $reportStr
+        );
+        $this->assertDoesNotMatchRegularExpression("/unhandled element 'translation'/", $reportStr);
         $this->assertTrue(
             $report->nodeErrors[0]
                 ->getSubnodeError(0)
@@ -1253,7 +1259,7 @@ EOD;
                 ->hasError(),
             "should have rubbish tag example error"
         );
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             "/unhandled element 'rubbish'/",
             $report->nodeErrors[0]
                 ->getSubnodeError(0)
@@ -1261,7 +1267,7 @@ EOD;
                 ->currentSubnodeError()
                 ->toString()
         );
-        $this->assertRegExp("/unhandled element 'rubbish'/", $reportStr);
+        $this->assertMatchesRegularExpression("/unhandled element 'rubbish'/", $reportStr);
         $this->assertTrue(
             $report->nodeErrors[0]
                 ->getSubnodeError(1)
@@ -1270,7 +1276,7 @@ EOD;
                 ->hasError(),
             "should have fake tag example error"
         );
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             "/unhandled element 'fake'/",
             $report->nodeErrors[0]
                 ->getSubnodeError(1)
@@ -1278,7 +1284,7 @@ EOD;
                 ->currentSubnodeError()
                 ->toString()
         );
-        $this->assertRegExp("/unhandled element 'fake'/", $reportStr);
+        $this->assertMatchesRegularExpression("/unhandled element 'fake'/", $reportStr);
     }
 
     // lift with ranges referencing lift-ranges file
@@ -1454,7 +1460,10 @@ EOD;
         $report = $importer->getReport();
         $reportStr = $report->toString();
         $this->assertEquals(true, $report->hasError());
-        $this->assertRegExp("/the lift range 'anthro-code' was not found in the current file/", $reportStr);
+        $this->assertMatchesRegularExpression(
+            "/the lift range 'anthro-code' was not found in the current file/",
+            $reportStr
+        );
         $this->assertEquals(1, $importer->stats->newEntries);
 
         $optionList = new LexOptionListModel($project);
@@ -1605,7 +1614,10 @@ EOD;
         $report = $importer->getReport();
         $reportStr = $report->toString();
         $this->assertEquals(true, $report->hasError());
-        $this->assertRegExp("/the lift range 'dialect' was not found in the current file/", $reportStr);
+        $this->assertMatchesRegularExpression(
+            "/the lift range 'dialect' was not found in the current file/",
+            $reportStr
+        );
     }
 
     public function testLiftImportMerge_NoLiftRanges_Error()
@@ -1620,11 +1632,14 @@ EOD;
         $report = $importer->getReport();
         $reportStr = $report->toString();
         $this->assertEquals(true, $report->hasError());
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             "/range file 'TestLangProj.lift-ranges' was not found alongside the 'LiftWithRangesV0_13.lift' file/",
             $reportStr
         );
-        $this->assertNotRegExp("/the lift range 'anthro-code' was not found in the current file/", $reportStr);
+        $this->assertDoesNotMatchRegularExpression(
+            "/the lift range 'anthro-code' was not found in the current file/",
+            $reportStr
+        );
     }
 
     public function testLiftImportMerge_NoExistingDataFrenchInputSystem_OnlyImportedInputSystems()

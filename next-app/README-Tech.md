@@ -71,12 +71,10 @@ Of course choosing tailwindcss comes with a number of criticisms but we believe 
 
 1. The codebase can be kept free of class clutter by simply utlizing `@apply` in the `<style>` section of our `.svelte` files but when doing this a couple of things need to be taken into consideration:
 
-> modifiers are not supported in `@apply` without additional `preprocess` and `postcss` configuration and increased specificity can sometimes cause problems when class overrides are needed on an element directly.
+> modifiers are not supported in `@apply` without additional `preprocess` and `postcss` configuration and increased specificity can sometimes cause problems when class overrides are needed on an element directly. See [Warn: Unused CSS selector](https://github.com/saadeghi/daisyui/discussions/1490) for some elaboration. We do still use the `@apply` in a component but not scoped, simply for an organizational benefit, see `/next-app/src/lib/forms/Form.svelte`
 
 2. We will inevitably have situations where parent components or views will want to pass styles down to children. This is very common and requires writing global classes anyway. Using something like tailwindcss or bootstrap takes all of that work off of our plate. Unused CSS will still get purged by the compiler so the app doesn't take on unnecessary bloat.
 3. daisyUI is built upon tailwindcss anyway so we benefit from using it in both situations.
-
-[ ] Confirm no additional configuration is required to purge unused CSS.
 
 #### daisyUI
 

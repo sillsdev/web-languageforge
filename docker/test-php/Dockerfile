@@ -9,9 +9,8 @@ RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/* \
 COPY src/composer.json src/composer.lock /var/www/html/
 RUN composer install
 
-# uncomment if you want xdebug in your local image
-#RUN install-php-extensions xdebug
-#COPY docker/app/docker-php-ext-xdebug.ini /usr/local/etc/php/conf.d
+RUN install-php-extensions xdebug
+COPY docker/app/docker-php-ext-xdebug.ini /usr/local/etc/php/conf.d
 
 RUN mv $PHP_INI_DIR/php.ini-development $PHP_INI_DIR/php.ini
 COPY --from=sillsdev/web-languageforge:wait-latest /wait /wait

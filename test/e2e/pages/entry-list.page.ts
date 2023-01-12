@@ -3,11 +3,13 @@ import { Project } from '../utils';
 import { BasePage } from './base-page';
 
 export class EntryListPage extends BasePage {
-  readonly totalNumberOfEntries = this.locator('#totalNumberOfEntries');
+  readonly entries = this.locator('.lexiconItemListContainer').locator('.lexiconListItem, .lexiconListItemCompact');
   readonly filterInput = this.locator('[placeholder="Search"]');
   readonly filterInputClearButton = this.locator('.clear-search-button');
   readonly matchCount = this.locator('#totalNumberOfEntries >> span');
-  readonly createNewWordButton = this.locator('#newWord:visible, #noEntriesNewWord:visible');
+  readonly createNewWordButton = this.locator('#newWord:visible, #noEntriesNewWord:visible, #editorNewWordBtn:visible');
+
+  private readonly totalNumberOfEntries = this.locator('#totalNumberOfEntries');
 
   entry(lexeme: string): Locator {
     return this.locator(`.lexiconListItem:visible:has(span:has-text("${lexeme}"))`);

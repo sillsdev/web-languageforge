@@ -30,7 +30,6 @@ services:
         - ENVIRONMENT=development
     image: lf-app
     container_name: lf-app
-    platform: linux/amd64
     depends_on:
       - db
       - mail
@@ -243,7 +242,6 @@ services:
         - ENVIRONMENT=development
     image: lf-e2e-app
     container_name: e2e-app
-    platform: linux/amd64
     depends_on:
       - db
       - mail
@@ -288,18 +286,25 @@ services:
       - MONGODB_CONN=mongodb://db:27017
       - MAIL_HOST=mail
       - LANGUAGE_DEPOT_API_TOKEN=bogus-development-token
-      # Note: Uncomment to enable XDebug in Unit Tests.  The default mode is "off".
-      # These lines are commented out as this XDebug setup causes CI failures.
-      # XDebug is intended for local development only.  Uncomment the following 3 lines:
-      # - XDEBUG_MODE=develop,debug
-    # extra_hosts:
-      # - "host.docker.internal:host-gateway"
+      - XDEBUG_MODE=develop,debug
+    # used by XDebug
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     command: sh -c "/wait && /run.sh"
     volumes:
       # for developer convenience
       - ./test:/var/www/test
       - ./src/Api:/var/www/src/Api
       - ./src/Site:/var/www/src/Site
+
+  composer-dev:
+    build:
+      dockerfile: docker/composer-dev/Dockerfile
+    image: lf-composer-dev
+    container_name: lf-composer-dev
+    volumes:
+      - ./src/composer.json:/work/composer.json
+      - ./src/composer.lock:/work/composer.lock
 
 volumes:
   lf-caddy-config:

@@ -65,7 +65,7 @@ class LiftImportZipTest extends TestCase
         $this->assertEquals("ข้าวไก่ทอด", $entry1["lexeme"]["th"]["value"]);
         $this->assertArrayHasKey("th-fonipa", $project->inputSystems);
         $this->assertEquals(1, $importer->getReport()->hasError());
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             "/range file 'TestProj.lift-ranges' was not found/",
             $importer->getReport()->toFormattedString()
         );
@@ -150,8 +150,8 @@ class LiftImportZipTest extends TestCase
         $reportStr = $report->toString();
 
         $this->assertEquals(true, $report->hasError(), "should have NodeError");
-        $this->assertRegExp("/unhandled LIFT file/", $reportStr);
-        $this->assertRegExp("/unhandled subfolder 'OddFolder'/", $reportStr);
+        $this->assertMatchesRegularExpression("/unhandled LIFT file/", $reportStr);
+        $this->assertMatchesRegularExpression("/unhandled subfolder 'OddFolder'/", $reportStr);
     }
 
     // the following EOD must retain the embedded tabs. IJH 2015-02
@@ -203,6 +203,6 @@ EOD;
         //         echo $report->toFormattedString();
         //         echo "</pre>";
 
-        $this->assertRegExp("/" . self::zipImportReport . "/", $report->toFormattedString());
+        $this->assertMatchesRegularExpression("/" . self::zipImportReport . "/", $report->toFormattedString());
     }
 }

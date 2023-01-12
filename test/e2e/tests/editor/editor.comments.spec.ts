@@ -1,25 +1,17 @@
 import { expect } from '@playwright/test';
-import { entries } from '../constants';
-import { projectPerTest, test } from '../fixtures';
-import { ConfigurationPageFieldsTab, EditorPage } from '../pages';
+import { test, defaultProject } from '../../fixtures';
+import { ConfigurationPageFieldsTab, EditorPage } from '../../pages';
 
 test.describe('Lexicon Editor Comments', () => {
 
-  const project = projectPerTest();
+  const { project } = defaultProject();
 
-  test('Creating and viewing comments', async ({ managerTab, projectService }) => {
+  test('Creating and viewing comments', async ({ managerTab }) => {
     test.slow();
 
     await test.step('And input systems and entries', async () => {
-      await projectService.addWritingSystemToProject(project(), 'th-fonipa', 'tipa');
-      await projectService.addWritingSystemToProject(project(), 'th-Zxxx-x-audio', 'taud');
-
-      await projectService.addLexEntry(project(), entries.entry2);
-      await projectService.addLexEntry(project(), entries.entry1);
-      await projectService.addLexEntry(project(), entries.multipleMeaningEntry);
-
       const configurationPage = await new ConfigurationPageFieldsTab(managerTab, project()).goto();
-      await configurationPage.toggleField('Entry Fields', 'Word');
+      await configurationPage.toggleFieldExpanded('Entry Fields', 'Word');
       await (await configurationPage.getFieldCheckbox('Entry Fields', 'Word', 'English')).check();
       await (await configurationPage.getFieldCheckbox('Entry Fields', 'Word', 'ภาษาไทย (Voice)')).check();
       await configurationPage.applyButton.click();

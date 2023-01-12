@@ -151,14 +151,6 @@ A [tutorial on YouTube is available showing how to use XDebug and VSCode](https:
 
 To debug the PHP tests, follow these steps:
 
-- uncomment the 3 lines in the docker-compose.yml file related to XDebug under the service section `test-php`:
-
-```
-       - XDEBUG_MODE=develop,debug
-     extra_hosts:
-       - "host.docker.internal:host-gateway
-```
-
 - In VS Code, set a breakpoint on a line of code in one of the PHP tests (in the `test/php` folder)
 - Click on the `Run and Debug` area of VS Code, then click the green play icon next to `XDebug` in the configuration dropdown.
 

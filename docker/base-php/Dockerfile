@@ -10,7 +10,7 @@ RUN apt-get update && apt-get -y install p7zip-full unzip curl tini ffmpeg && rm
 # see https://github.com/mlocati/docker-php-extension-installer
 # PHP extensions required by the LF application
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
-RUN install-php-extensions gd mongodb intl
+RUN install-php-extensions mongodb intl
 
 # php customizations
 COPY docker/base-php/customizations.php.ini $PHP_INI_DIR/conf.d/

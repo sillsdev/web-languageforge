@@ -1,4 +1,4 @@
-<script>
+<script lang=ts>
 	import { onMount } from 'svelte'
 
 	export let label = ''
@@ -8,7 +8,7 @@
 	export let autofocus = false
 
 	let id = randomId()
-	let input = {}
+	let input: HTMLInputElement
 
 	onMount(autofocusIfRequested)
 
@@ -17,11 +17,11 @@
 	}
 
 	function autofocusIfRequested() {
-		autofocus && input.focus()
+		autofocus && input?.focus()
 	}
 
 	// works around "svelte(invalid-type)" warning, i.e., can't have a dynamic type AND bind:value...keep an eye on https://github.com/sveltejs/svelte/issues/3921
-	function typeWorkaround(node) {
+	function typeWorkaround(node: HTMLInputElement) {
 		node.type = type
 	}
 </script>

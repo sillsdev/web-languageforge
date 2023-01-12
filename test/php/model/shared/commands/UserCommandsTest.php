@@ -602,8 +602,8 @@ class UserCommandsTest extends TestCase
         $senderEmail = "no-reply@" . UrlHelper::getHostname();
         $expectedTo = [$toUser->emailPending => $toUser->name];
         $this->assertEquals($expectedTo, $delivery->to);
-        $this->assertRegExp("/Inviting Name/", $delivery->content);
-        $this->assertRegExp("/Test Project/", $delivery->content);
+        $this->assertMatchesRegularExpression("/Inviting Name/", $delivery->content);
+        $this->assertMatchesRegularExpression("/Test Project/", $delivery->content);
     }
 
     /** @throws Exception */
@@ -625,8 +625,8 @@ class UserCommandsTest extends TestCase
         $expectedTo = [$toUser->email => $toUser->name];
         $this->assertEquals($someoneUserId, $toUserId);
         $this->assertEquals($expectedTo, $delivery->to);
-        $this->assertRegExp("/Inviting Name/", $delivery->content);
-        $this->assertRegExp("/Test Project/", $delivery->content);
+        $this->assertMatchesRegularExpression("/Inviting Name/", $delivery->content);
+        $this->assertMatchesRegularExpression("/Test Project/", $delivery->content);
     }
 
     /** @throws Exception */
@@ -650,9 +650,12 @@ class UserCommandsTest extends TestCase
         $expectedTo = [$toUser->emailPending => $toUser->name];
         $this->assertEquals($toUser1Id, $toUser2Id);
         $this->assertEquals($expectedTo, $delivery->to);
-        $this->assertRegExp("/Inviting Name/", $delivery->content);
-        $this->assertRegExp("/Test Project/", $delivery->content);
-        $this->assertRegExp("/public\/signup#!\/\?e=" . urlencode($toUser->emailPending) . "/", $delivery->content);
+        $this->assertMatchesRegularExpression("/Inviting Name/", $delivery->content);
+        $this->assertMatchesRegularExpression("/Test Project/", $delivery->content);
+        $this->assertMatchesRegularExpression(
+            "/public\/signup#!\/\?e=" . urlencode($toUser->emailPending) . "/",
+            $delivery->content
+        );
     }
 
     /** @throws Exception */
