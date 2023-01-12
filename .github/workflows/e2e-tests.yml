@@ -9,7 +9,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        browser: [chromium, firefox]
+        browser: [chromium, firefox, webkit]
         shard: [1, 2, 3, 4, 5, 6]
         shards: [6]
 

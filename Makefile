@@ -23,7 +23,7 @@ e2e-tests-ci:
 e2e-tests: ui-builder
 	npm install
 	$(MAKE) e2e-app
-	npx playwright install chromium firefox
+	npx playwright install chromium firefox webkit
 	npx playwright test -c ./test/e2e/playwright.config.ts $(params)
 
 .PHONY: e2e-app
