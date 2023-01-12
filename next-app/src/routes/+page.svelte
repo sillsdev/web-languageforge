@@ -1,5 +1,6 @@
 <script>
 	import { browser } from '$app/environment'
+    import Details from '$lib/Details.svelte'
 	import { GET } from '$lib/fetch'
 	import { Button, Input, Form } from '$lib/forms'
     import PageHeader from '$lib/PageHeader.svelte'
@@ -97,10 +98,15 @@
 	<Button class='btn-outline'>outline</Button>
 	<Button class='btn-xs sm:btn-sm'>extra small</Button>
 
-	<h3>Input</h3>
-	<Input label=default />
-	<Input label=password type=password />
-	<Input label=value bind:value /> <span>{value}</span>
+	<h3>Details</h3>
+	<Details>
+		<div slot=summary>
+			<span class=pr-4>Favorite book of the Bible?</span>
+			<Button on:click={() => alert('Saved')} danger>Save changes</Button>
+		</div>
+
+		Job
+	</Details>
 
 	<h3>Form</h3>
 	<p>Intended to remove some biolerplate and provide some consistent layout</p>
@@ -110,6 +116,10 @@
 		<Button>primary</Button>
 	</Form>
 
+	<h3>Input</h3>
+	<Input label=default />
+	<Input label=password type=password />
+	<Input label=value bind:value /> <span>{value}</span>
 
 	<h3>PageHeader</h3>
 	<PageHeader>Simple</PageHeader>
