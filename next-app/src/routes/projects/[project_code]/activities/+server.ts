@@ -20,6 +20,10 @@ type LegacyActivity = {
 	id: string,
 	action: string,
 	date: string,
+  userRef: {
+    username: string,
+    avatar_ref: string
+  },
 	content: {
 		user: string,
 		entry?: string,
@@ -32,6 +36,7 @@ export type Activity = {
 	action: string,
 	date: string,
 	user: string,
+  avatar: string,
 	entry: string,
 	fields: Field[],
 }
@@ -66,12 +71,13 @@ export async function fetch_activities({ cookie, start_date, end_date }: Activit
 	return activity.map(transform)
 }
 
-function transform({ id, action, date, content }: LegacyActivity): Activity {
+function transform({ id, action, date, content, userRef }: LegacyActivity): Activity {
 	return {
 		id,
 		action,
 		date,
-		user: content.user,
+		user: userRef.username,
+		avatar: userRef.avatar_ref,
 		entry: content.entry || '',
 		fields: content.changes || [],
 	}

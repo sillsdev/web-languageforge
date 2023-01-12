@@ -24,6 +24,9 @@ use Api\Model\Shared\UserTypeaheadModel;
 use Palaso\Utilities\CodeGuard;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Api\Library\Shared\UrlHelper;
+use Api\Model\Shared\ActivityModel;
+use Api\Model\Shared\Dto\ActivityListDto;
+use Api\Model\Shared\Command\ProjectCommands;
 
 class UserCommands
 {
@@ -165,7 +168,7 @@ class UserCommands
             $project = new ProjectModel($id->asString());
             if ($project->ownerRef->asString() == $userId) {
                 throw new \Exception(
-                    "The user owns a project or projects. Before account deletion, this user's projects must either be transfered to new owners or deleted."
+                    "The user owns one or more projects. Before account deletion, this user's projects must either be transfered to new owners or deleted."
                 );
             }
         }
@@ -175,15 +178,8 @@ class UserCommands
             throw new \Exception("The current user does not have sufficient priveleges to delete the target account.");
         }
 
-        // Removes this user from all projects they were on
-        foreach ($user->projects->refs as $id) {
-            $project = new ProjectModel($id->asString());
-            $project->removeUser($user->id->asString());
-            $project->write();
-        }
-
         // Deactivates account and removes personal information from the user model.
-        // Now uses the user's id instead of name and username when displaying historical activity.
+        // Will now use the user's id instead of name and username when displaying historical activity.
         $user->active = false;
         $user->password = null;
         $user->username = $user->id->asString();
@@ -196,6 +192,12 @@ class UserCommands
         $default_avatar = "anonymoose.png";
         $user->avatar_ref = $default_avatar;
         $user->write();
+
+        // Removes the user from each project the user used to be in
+        foreach ($user->projects->refs as $projectIdObject) {
+            $projectId = $projectIdObject->asString();
+            ProjectCommands::removeUsers($projectId, [$userId]);
+        }
     }
 
     /**

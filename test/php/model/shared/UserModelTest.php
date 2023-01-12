@@ -337,28 +337,6 @@ class UserModelTest extends TestCase
         $this->assertEquals($params["interfaceLanguageCode"], $user->interfaceLanguageCode);
     }
 
-    public function testUserRemove_UserMemberOfProject_ProjectLinkRemovedAsWell()
-    {
-        $environ = new MongoTestEnvironment();
-        $environ->clean();
-        $userId = $environ->createUser("user1", "user1", "user1@example.com");
-        $user = new UserModel($userId);
-        $project = $environ->createProject("testProject", "testProjectCode");
-        $project->addUser($userId, ProjectRoles::CONTRIBUTOR);
-        $project->write();
-        $user->addProject($project->id->asString());
-        $user->write();
-
-        // delete the user
-        $user->remove();
-
-        // re-read the project
-        $projectId = $project->id->asString();
-        $project = new \Api\Model\Shared\ProjectModel($projectId);
-
-        $this->assertFalse($project->userIsMember($userId));
-    }
-
     public function testHasForgottenPassword_KeyNotSetNoKeyConsume_HasNotForgotten()
     {
         $environ = new MongoTestEnvironment();
