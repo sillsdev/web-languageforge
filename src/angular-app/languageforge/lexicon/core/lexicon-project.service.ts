@@ -54,7 +54,7 @@ export class LexiconProjectService {
         settings.push(new HeaderSetting(
           'userManagementLink',
           'Share With Others',
-          '#',
+          '',
           false
         ));
         settings.push(new HeaderSetting(
