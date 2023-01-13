@@ -21,7 +21,9 @@ export class UserProfilePage extends BasePage {
     genderField: this.page.getByLabel('Gender'),
   };
 
-  private readonly saveBtn = this.locator('#saveBtn');
+  private readonly saveMyAccountBtn = this.locator('#saveMyAccountBtn');
+  private readonly saveAboutMeBtn = this.locator('#saveAboutMeBtn');
+
 
   readonly modal = {
     saveChangesBtn: this.locator('.modal-dialog button:has-text("Save changes")'),
@@ -33,8 +35,19 @@ export class UserProfilePage extends BasePage {
     super(page, '/app/userprofile', page.locator('.page-name >> text=\'s User Profile'));
   }
 
-  async save(): Promise<void> {
-    await this.saveBtn.click();
+  async saveMyAccount(): Promise<void> {
+    await this.saveMyAccountBtn.click();
+
+    await Promise.race([
+      // Some changes require confirmation and then log the user out (e.g. username)
+      this.modal.saveChangesBtn.click(),
+      // others just show a success message
+      this.successNotice.waitFor(),
+    ]);
+  }
+
+  async saveAboutMe(): Promise<void> {
+    await this.saveAboutMeBtn.click();
 
     await Promise.race([
       // Some changes require confirmation and then log the user out (e.g. username)

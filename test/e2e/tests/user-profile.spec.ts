@@ -33,7 +33,7 @@ test.describe('User Profile', () => {
     await userProfilePage.accountTab.colorField.selectOption({ label: 'Steel Blue' });
     await userProfilePage.accountTab.animalField.selectOption({ label: 'Otter' });
 
-    await userProfilePage.save();
+    await userProfilePage.saveMyAccount();
     await Promise.all([
       userProfilePage.page.reload(),
       userProfilePage.waitFor(),
@@ -65,7 +65,7 @@ test.describe('User Profile', () => {
 
     const [loginPage] = await Promise.all([
       LoginPage.waitFor(tab),
-      userProfilePage.save(),
+      userProfilePage.saveMyAccount(),
     ]);
 
     await Promise.all([
@@ -91,7 +91,7 @@ test.describe('User Profile', () => {
     await userProfilePage.aboutMeTab.ageField.fill(newAge);
     await userProfilePage.aboutMeTab.genderField.selectOption({ label: 'Female' });
 
-    await userProfilePage.save();
+    await userProfilePage.saveAboutMe();
     await userProfilePage.reload();
 
     await expect(userProfilePage.aboutMeTab.nameField).toHaveValue(newName);

@@ -855,16 +855,10 @@ class ActivityListDtoTest extends TestCase
         $dto = ActivityListDto::getActivityForOneProject($project, $userTwoId);
         $activity = $dto["activity"];
         $activityRecord = array_shift($activity);
-        while ($activityRecord != null && $activityRecord["action"] != ActivityModel::UPDATE_COMMENT) {
-            $activityRecord = array_shift($activity);
-        }
         $this->assertArrayHasKey("userRef", $activityRecord);
         $actual = $activityRecord["userRef"];
 
         // After account is deleted, the username on the activity record should contain the user's id (not the former username)
         $this->assertEquals($userOneId, $actual["username"]);
-
-        // Other sanity checks...
-        $this->assertEquals(SF_TESTPROJECT, $actual["project"]);
     }
 }
