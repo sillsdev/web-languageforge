@@ -69,6 +69,11 @@
                             </div>
                         </div>
                         <label><a href="/app/changepassword">Change Password</a></label>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <button type="submit" data-ng-disabled="userprofileForm.$invalid||$ctrl.emailExists||$ctrl.usernameExists" class="btn btn-primary " id="saveMyAccountBtn"><i class="fa fa-check" aria-hidden="true"></i> Save</button>
+                            </div>
+                        </div>
                     </uib-tab>
                     <uib-tab heading="About Me" id="AboutMeTab">
                         <div class="form-group row">
@@ -102,6 +107,62 @@
                                             </select>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <button type="submit" data-ng-disabled="userprofileForm.$invalid||$ctrl.emailExists||$ctrl.usernameExists" class="btn btn-primary " id="saveAboutMeBtn"><i class="fa fa-check" aria-hidden="true"></i> Save</button>
+                            </div>
+                        </div>
+                    </uib-tab>
+                    <uib-tab heading="Delete My Account" id="DeleteTab">
+                        <div class="card bg-light col-md-9 col-lg-7">
+                            <div ng-show="!$ctrl.finishedLoadingOwnedProjects">
+                                <div class="card-body">
+                                    Investigating the feasibility of account deletion...
+                                </div>
+                            </div>
+                            <div ng-show="$ctrl.finishedLoadingOwnedProjects">
+                                <div class="card-body" ng-if="!$ctrl.ownsAProject">
+                                    <div class="form-group row">
+                                        <label class="col-12" for="deletebox">Confirm deletion by typing DELETE into the box below</label>
+                                        <div class="col-md-4">
+                                            <input data-ng-model="deleteBoxText" class="form-control" type="text" id="deletebox">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-12">
+                                            <button id="deleteAccountBtn" class="btn btn-danger"
+                                                    data-ng-click="$ctrl.deleteOwnAccount()">
+                                                <i class="fa fa-trash"></i> Delete my account</button>
+                                        </div>
+                                    </div>
+                                    <div class="text-error">Deleting your account is a permanent action and cannot be undone. Your account will be deleted, and you will be removed from all projects you are a member of. You will no longer be able to log in.</div>
+                                </div>
+                                <div class="card-body" ng-if="$ctrl.ownsAProject">
+                                    <h5>You are a project owner.</h5>
+                                    <div class="form-group">
+                                        First, transfer your projects to a new owner or delete them:
+                                    </div>
+                                    <listview items="$ctrl.ownedProjects">
+                                        <div data-ng-repeat="project in $ctrl.ownedProjects">
+                                            <div class="row text-center">
+                                                <div class="col-5">
+                                                    <a data-ng-href="/app/lexicon/{{project.id}}">
+                                                        <span>{{project.projectName}}</span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </listview>
+                                    <br>
+                                    <div class="form-group" style="text-align:right">
+                                        <a data-ng-href="https://community.software.sil.org/t/how-to-transfer-ownership-of-a-project-to-another-project-member/7099">
+                                            <small>Help: How to transfer project ownership</small>
+                                        </a>
+                                    </div>
+
                                 </div>
                             </div>
                         </div>
@@ -143,13 +204,13 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <button type="submit" data-ng-disabled="userprofileForm.$invalid||$ctrl.emailExists||$ctrl.usernameExists" class="btn btn-primary " id="saveProjectBtn"><i class="fa fa-check" aria-hidden="true"></i> Save</button>
+                            </div>
+                        </div>
                     </uib-tab>
                 </uib-tabset>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <button type="submit" data-ng-disabled="userprofileForm.$invalid||$ctrl.emailExists||$ctrl.usernameExists" class="btn btn-primary " id="saveBtn"><i class="fa fa-check" aria-hidden="true"></i> Save</button>
-                    </div>
-                </div>
             </form>
         </div>
     </div>

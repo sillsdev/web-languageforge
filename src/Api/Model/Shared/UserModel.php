@@ -201,21 +201,6 @@ class UserModel extends MapperModel
     }
 
     /**
-     * Removes a user from the collection
-     * Project references to this user are also removed
-     */
-    public function remove()
-    {
-        foreach ($this->projects->refs as $id) {
-            /* @var Id $id */
-            $project = new ProjectModel($id->asString());
-            $project->removeUser($this->id->asString());
-            $project->write();
-        }
-        UserModelMongoMapper::instance()->remove($this->id->asString());
-    }
-
-    /**
      * @param string $projectId
      * @return bool
      */

@@ -1,6 +1,7 @@
 import * as angular from 'angular';
 
 import {UserService} from '../../core/api/user.service';
+import { ProjectService } from '../../core/api/project.service';
 import {ApplicationHeaderService} from '../../core/application-header.service';
 import {BreadcrumbService} from '../../core/breadcrumbs/breadcrumb.service';
 import {SiteWideNoticeService} from '../../core/site-wide-notice-service';
@@ -8,6 +9,7 @@ import {ModalService} from '../../core/modal/modal.service';
 import {NoticeService} from '../../core/notice/notice.service';
 import {UtilityService} from '../../core/utility.service';
 import {UserProfile} from '../../shared/model/user-profile.model';
+import { Project } from '../../shared/model/project.model';
 
 interface UserProfileAppControllerScope extends angular.IScope {
   userprofileForm: angular.IFormController;
@@ -29,21 +31,28 @@ export class UserProfileAppController implements angular.IController {
   emailExists: boolean;
   usernameExists: boolean;
 
+  ownsAProject: boolean = false;
+
+  projects: Project[] = [];
+  finishedLoadingOwnedProjects: boolean = false;
+  ownedProjects: Project[] = [];
+
   private initColor = '';
   private initShape = '';
 
   static $inject = ['$scope', '$window',
-    'userService', 'modalService', 'silNoticeService',
+    'userService', 'projectService', 'modalService', 'silNoticeService',
     'breadcrumbService',
     'siteWideNoticeService',
     'applicationHeaderService'];
   constructor(private $scope: UserProfileAppControllerScope, private $window: angular.IWindowService,
-              private userService: UserService, private modalService: ModalService, private notice: NoticeService,
+              private userService: UserService, private projectService: ProjectService, private modalService: ModalService, private notice: NoticeService,
               private breadcrumbService: BreadcrumbService,
               private siteWideNoticeService: SiteWideNoticeService,
               private applicationHeaderService: ApplicationHeaderService) {}
 
   $onInit(): void {
+    this.finishedLoadingOwnedProjects = false;
     this.user.avatar_ref = UserProfileAppController.getAvatarRef('', '');
 
     this.$scope.$watch(() => this.user.avatar_color, () => {
@@ -62,7 +71,8 @@ export class UserProfileAppController implements angular.IController {
 
     this.siteWideNoticeService.displayNotices();
 
-    this.loadUser(); // load the user data right away
+    this.loadUser() // load the user data right away
+    .then(() => this.queryProjectsForUser());
 
     this.dropdown.avatarColors = [
       { value: 'purple4', label: 'Purple' },
@@ -101,6 +111,7 @@ export class UserProfileAppController implements angular.IController {
       { value: 'sheep', label: 'Sheep' },
       { value: 'tortoise', label: 'Tortoise' }
     ];
+
   }
 
   validateForm(): void {
@@ -160,13 +171,15 @@ export class UserProfileAppController implements angular.IController {
         // catch is necessary to properly implement promise API, which angular 1.6 complains if we
         // don't have a catch
       }).catch(() => {});
+    } else if (this.user.active == false){
+
     } else {
       this.updateUser();
     }
   }
 
-  private loadUser(): void {
-    this.userService.readProfile(result => {
+  private loadUser(): angular.IPromise<unknown> {
+    return this.userService.readProfile(result => {
       if (result.ok) {
         this.user = result.data.userProfile;
         this.originalUsername = this.user.username;
@@ -202,6 +215,36 @@ export class UserProfileAppController implements angular.IController {
       }
     });
   }
+
+  queryProjectsForUser() {
+    this.finishedLoadingOwnedProjects = false;
+    this.projects = [];
+    this.ownedProjects = [];
+    this.projectService.list().then((projects: Project[]) => {
+      this.projects = projects || [];
+      this.ownedProjects = projects.filter(proj => proj.ownerId === this.user.id);
+      this.ownsAProject = this.ownedProjects.length > 0;
+      this.finishedLoadingOwnedProjects = true;
+    }).catch(console.error);
+  }
+
+  deleteOwnAccount() {
+    const modalOptions = {
+      closeButtonText: 'Cancel',
+      actionButtonText: 'Delete',
+      headerText: 'Permanently delete your account?',
+      bodyText: 'Are you sure you want to delete your account?\n' +
+      'This is a permanent action and cannot be restored.'
+    };
+    this.modalService.showModal({}, modalOptions).then(() => {
+      this.userService.deleteAccounts([this.user.id]).then(() => {
+        this.notice.push(this.notice.SUCCESS, 'Your account was permanently deleted');
+        this.$window.location.href = '/auth/logout'; // goes to the log in screen
+      });
+    }, () => {});
+
+  }
+
 
   static getAvatarUrl(avatarRef: string): string {
     if (avatarRef) {

@@ -207,7 +207,7 @@ export class SiteAdminUsersController implements angular.IController {
       return;
     }
 
-    this.userService.remove(userIds, result => {
+    this.userService.deleteAccounts(userIds, result => {
       if (result.ok) {
         if (result.data === 1) {
           this.notice.push(this.notice.SUCCESS, '1 user was deleted');
