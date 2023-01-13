@@ -12,13 +12,10 @@ export abstract class TabbedBasePage extends BasePage {
   protected abstract get tabLink(): Locator;
 
   async goto(options?: GotoOptions): Promise<this> {
-    await Promise.all([
-      this.page.goto(this.url),
-      options?.waitFor?.waitFor(),
-    ]);
+    await this.page.goto(this.url);
     await Promise.all([
       this.tabLink.click(),
-      this.waitFor(),
+      options?.expectRedirect || this.waitFor(),
     ]);
     return this;
   }

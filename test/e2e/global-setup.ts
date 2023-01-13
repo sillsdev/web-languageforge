@@ -1,16 +1,14 @@
 import { BrowserType, chromium, firefox, FullConfig, Page, webkit } from '@playwright/test';
 import * as fs from 'fs';
-import { appUrl, users } from './constants';
+import { appUrl, users, YEAR } from './constants';
 import { getStorageStatePath, login, UserDetails, UserTestService } from './utils';
-
-const SESSION_LIFETIME = 365 * 24 * 60 * 60 * 1000; // 1 year, in milliseconds
 
 async function initE2EUser(page: Page, user: UserDetails) {
   const context = page.context();
   await new UserTestService(context.request).createUser(user);
 
   // Now log in and ensure there's a storage state saved
-  const sessionCutoff = Date.now() - SESSION_LIFETIME;
+  const sessionCutoff = Date.now() - YEAR;
   const path = getStorageStatePath(user);
   if (fs.existsSync(path) && fs.statSync(path)?.ctimeMs >= sessionCutoff) {
     // Storage state file is recent, no need to re-create it
