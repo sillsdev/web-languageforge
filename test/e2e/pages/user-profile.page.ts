@@ -5,7 +5,8 @@ export class UserProfilePage extends BasePage {
   readonly activitiesList = this.locator('[data-ng-repeat="item in filteredActivities"]');
   readonly tabs = {
     aboutMe: this.locator('#AboutMeTab'),
-    myAccount: this.locator('#myAccountTab')
+    myAccount: this.locator('#myAccountTab'),
+    deleteAccount: this.locator('#DeleteTab')
   };
 
   readonly accountTab = {
@@ -21,15 +22,27 @@ export class UserProfilePage extends BasePage {
     genderField: this.page.getByLabel('Gender'),
   };
 
+  readonly deleteTab = {
+    confirmField: this.page.getByLabel('Confirm deletion by typing DELETE into the box below'),
+  }
+
   private readonly saveMyAccountBtn = this.locator('#saveMyAccountBtn');
   private readonly saveAboutMeBtn = this.locator('#saveAboutMeBtn');
+  private readonly deleteAccountButton = this.locator('#deleteAccountBtn')
 
 
-  readonly modal = {
+  readonly changesModal = {
     saveChangesBtn: this.locator('.modal-dialog button:has-text("Save changes")'),
   };
 
-  private readonly successNotice = this.noticeList.success('Profile updated successfully');
+  readonly deleteModal = {
+    confirmDeletionBtn: this.locator('.modal-dialog button:has-text("Delete")'),
+  };
+
+
+
+  private readonly successfulUpdateNotice = this.noticeList.success('Profile updated successfully');
+  private readonly successfulDeleteNotice = this.noticeList.success('Your account was permanently deleted');
 
   constructor(page: Page) {
     super(page, '/app/userprofile', page.locator('.page-name >> text=\'s User Profile'));
@@ -40,9 +53,9 @@ export class UserProfilePage extends BasePage {
 
     await Promise.race([
       // Some changes require confirmation and then log the user out (e.g. username)
-      this.modal.saveChangesBtn.click(),
+      this.changesModal.saveChangesBtn.click(),
       // others just show a success message
-      this.successNotice.waitFor(),
+      this.successfulUpdateNotice.waitFor(),
     ]);
   }
 
@@ -51,9 +64,21 @@ export class UserProfilePage extends BasePage {
 
     await Promise.race([
       // Some changes require confirmation and then log the user out (e.g. username)
-      this.modal.saveChangesBtn.click(),
+      this.changesModal.saveChangesBtn.click(),
       // others just show a success message
-      this.successNotice.waitFor(),
+      this.successfulUpdateNotice.waitFor(),
     ]);
   }
+
+  async deleteMyAccount(): Promise<void> {
+    await this.deleteAccountButton.click();
+
+    await Promise.race([
+      // deletion confirmation
+      this.deleteModal.confirmDeletionBtn.click(),
+      // success message
+      this.successfulDeleteNotice.waitFor(),
+    ]);
+  }
+
 }
