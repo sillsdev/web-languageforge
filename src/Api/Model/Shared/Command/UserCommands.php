@@ -24,8 +24,6 @@ use Api\Model\Shared\UserTypeaheadModel;
 use Palaso\Utilities\CodeGuard;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Api\Library\Shared\UrlHelper;
-use Api\Model\Shared\ActivityModel;
-use Api\Model\Shared\Dto\ActivityListDto;
 use Api\Model\Shared\Command\ProjectCommands;
 
 class UserCommands

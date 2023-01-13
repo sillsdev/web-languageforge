@@ -1,5 +1,5 @@
 <script lang=ts>
-import type { Activity, Field } from './activities/+server'
+    import type { Activity, Field } from './activities/+server'
 
 	export let activities: Activity[]
 
