@@ -62,7 +62,7 @@ export class SignupPage extends BasePage {
         this.waitFor(),
       ]);
     } else {
-      await super.goto();
+      await super.goto(options);
     }
     return this;
   }

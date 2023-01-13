@@ -20,18 +20,6 @@ export class ConfigurationPageInputSystemsTab extends ConfigurationPage {
     super(page, project, page.locator(inputSystemListSelector));
   }
 
-  async goto(options?: GotoOptions): Promise<this> {
-    await Promise.all([
-      this.page.goto(this.url),
-      options?.waitFor?.waitFor(),
-    ]);
-    await Promise.all([
-      this.tabLinks.inputSystems.click(),
-      this.waitFor(),
-    ]);
-    return this;
-  }
-
   inputSystemOption(inputSystem: string): Locator {
     return this.inputSystemList.locator(`div:has-text("${inputSystem}")`);
   }
