@@ -113,8 +113,9 @@ export class FieldPictureController implements angular.IController {
           if (isUploadSuccess) {
             this.upload.progress = 100.0;
             this.addPicture(response.data.data.fileName);
-            if(response.data.data.fileSize > 1000000){ //1 MB file size limit 2022-10
-              this.notice.push(this.notice.WARN, 'WARNING: Because the image file - ' + response.data.data.fileName + ' - is larger than 1 MB, it will not be synced with FLEx.');
+            if (response.data.data.fileSize > 10000000) {
+              // `MaximumFileSize` in https://github.com/sillsdev/chorus/blob/master/src/LibChorus/FileTypeHandlers/image/ImageFileTypeHandler.cs
+              this.notice.push(this.notice.WARN, 'WARNING: Because the image file - ' + response.data.data.fileName + ' - is larger than 10 MB, it will not be synced with FLEx.');
             }
             this.upload.showAddPicture = false;
           } else {
