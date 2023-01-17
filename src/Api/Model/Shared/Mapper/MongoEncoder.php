@@ -26,37 +26,43 @@ class MongoEncoder
      * @return array
      * @throws \Exception
      */
-    protected function _encode($model, $encodeId = false)
+    protected function _encode(object $model, $encodeId = false)
     {
         $data = [];
-        $properties = get_object_vars($model);
-        foreach ($properties as $key => $value) {
-            if (is_a($value, "Api\Model\Shared\Mapper\ArrayOf")) {
-                $data[$key] = $this->encodeArrayOf($model->{$key});
-            } elseif (is_a($value, "Api\Model\Shared\Mapper\MapOf")) {
-                $data[$key] = $this->encodeMapOf($model->{$key});
-            } elseif (is_a($value, "Api\Model\Shared\Mapper\IdReference")) {
-                $data[$key] = $this->encodeIdReference($model->{$key});
-            } elseif (is_a($value, "Api\Model\Shared\Mapper\Id")) {
-                if ($encodeId) {
-                    $data[$key] = $this->encodeId($model->{$key});
-                }
-            } elseif (is_a($value, "DateTime")) {
-                $data[$key] = $this->encodeDateTime($model->{$key});
-            } elseif (is_a($value, "Litipk\Jiffy\UniversalTimestamp")) {
-                $data[$key] = $this->encodeUniversalTimestamp($model->{$key});
-            } elseif (is_a($value, "Api\Model\Shared\Mapper\ReferenceList")) {
-                $data[$key] = $this->encodeReferenceList($model->{$key});
-            } else {
-                // Data type protection
-                if (is_array($value)) {
-                    throw new \Exception("Must not encode array in '" . get_class($model) . "->" . $key . "'");
-                }
-                if (is_object($value)) {
-                    $data[$key] = $this->_encode($value, true);
+        if (is_a($model, "Api\Model\Shared\Mapper\ArrayOf")) {
+            $data = $this->encodeArrayOf($model);
+        } elseif (is_a($model, "Api\Model\Shared\Mapper\MapOf")) {
+            $data = $this->encodeMapOf($model);
+        } else {
+            $properties = get_object_vars($model);
+            foreach ($properties as $key => $value) {
+                if (is_a($value, "Api\Model\Shared\Mapper\ArrayOf")) {
+                    $data[$key] = $this->encodeArrayOf($model->{$key});
+                } elseif (is_a($value, "Api\Model\Shared\Mapper\MapOf")) {
+                    $data[$key] = $this->encodeMapOf($model->{$key});
+                } elseif (is_a($value, "Api\Model\Shared\Mapper\IdReference")) {
+                    $data[$key] = $this->encodeIdReference($model->{$key});
+                } elseif (is_a($value, "Api\Model\Shared\Mapper\Id")) {
+                    if ($encodeId) {
+                        $data[$key] = $this->encodeId($model->{$key});
+                    }
+                } elseif (is_a($value, "DateTime")) {
+                    $data[$key] = $this->encodeDateTime($model->{$key});
+                } elseif (is_a($value, "Litipk\Jiffy\UniversalTimestamp")) {
+                    $data[$key] = $this->encodeUniversalTimestamp($model->{$key});
+                } elseif (is_a($value, "Api\Model\Shared\Mapper\ReferenceList")) {
+                    $data[$key] = $this->encodeReferenceList($model->{$key});
                 } else {
-                    // Default encode
-                    $data[$key] = $value;
+                    // Data type protection
+                    if (is_array($value)) {
+                        throw new \Exception("Must not encode array in '" . get_class($model) . "->" . $key . "'");
+                    }
+                    if (is_object($value)) {
+                        $data[$key] = $this->_encode($value, true);
+                    } else {
+                        // Default encode
+                        $data[$key] = $value;
+                    }
                 }
             }
         }
