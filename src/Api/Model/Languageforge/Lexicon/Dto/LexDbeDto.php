@@ -72,9 +72,10 @@ class LexDbeDto
             }, $deletedCommentsModel->entries);
         }
 
+        // @type ArrayOf
         $lexemeInputSystems = $project->config->entry->fields[LexConfig::LEXEME]->inputSystems;
 
-        usort($entries, function ($a, $b) use ($lexemeInputSystems) {
+        usort($entries, function (array $a, array $b) use ($lexemeInputSystems) {
             $lexeme1Value = "";
             if (array_key_exists(LexConfig::LEXEME, $a)) {
                 $lexeme1 = $a[LexConfig::LEXEME];

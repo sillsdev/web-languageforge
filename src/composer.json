@@ -20,7 +20,7 @@
     "ramsey/uuid": "^4.2",
     "silex/silex": "~1.3.2",
     "sillsdev/web-php-utilities": "dev-master",
-    "swiftmailer/swiftmailer": "^5",
+    "swiftmailer/swiftmailer": "^6",
     "symfony/security": "^2.7",
     "symfony/twig-bridge": "^2.7",
     "twig/twig": "^2",

@@ -230,7 +230,7 @@ class LexSense extends ObjectForEncoding
         foreach ($this->examples as $index => $example) {
             if (
                 isset($example->{$propertyName}) &&
-                array_key_exists($tag, $example->{$propertyName}) &&
+                $example->{$propertyName}->offsetExists($tag) &&
                 trim($example->{$propertyName}[$tag]) !== "" &&
                 $example->{$propertyName}[$tag] == $text
             ) {

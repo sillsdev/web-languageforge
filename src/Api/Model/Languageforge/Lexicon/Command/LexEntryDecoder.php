@@ -13,13 +13,13 @@ class LexEntryDecoder extends JsonDecoder
      * @param array $values A mixed array of JSON (like) data.
      * @param string $id
      */
-    public static function decode($model, $values, $id = "")
+    public static function decode($model, array $values, $id = "")
     {
         $decoder = new LexEntryDecoder();
         $decoder->_decode($model, $values, $id);
     }
 
-    protected function _decode($model, $values, $id)
+    protected function _decode($model, array $values, string $id)
     {
         switch (get_class($model)) {
             case "Api\Model\Languageforge\Lexicon\LexMultiParagraph":

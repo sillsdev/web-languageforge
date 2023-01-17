@@ -178,7 +178,7 @@ class ProjectModel extends MapperModel
      */
     public function removeUser($userId)
     {
-        if (array_key_exists($userId, $this->users)) {
+        if ($this->users->offsetExists($userId)) {
             unset($this->users[$userId]);
         }
     }
@@ -198,7 +198,7 @@ class ProjectModel extends MapperModel
         $userList->read();
         for ($i = 0, $l = count($userList->entries); $i < $l; $i++) {
             $userId = $userList->entries[$i]["id"];
-            if (!array_key_exists($userId, $this->users)) {
+            if (!$this->users->offsetExists($userId)) {
                 continue;
             }
             $userList->entries[$i]["role"] = $this->users[$userId]->role;
@@ -211,7 +211,7 @@ class ProjectModel extends MapperModel
         $invitees = new InviteeListProjectModel($this->id->asString());
         $invitees->read();
         foreach ($invitees->entries as $i => $invitee) {
-            if (array_key_exists($invitee["id"], $this->users)) {
+            if ($this->users->offsetExists($invitee["id"])) {
                 $invitees->entries[$i]["role"] = $this->users[$invitee["id"]]->role;
             }
         }

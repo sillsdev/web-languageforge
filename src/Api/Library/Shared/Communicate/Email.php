@@ -16,13 +16,13 @@ class Email
     public static function send($from, $to, $subject, $content, $htmlContent = "")
     {
         // Create the Transport
-        $transport = \Swift_SmtpTransport::newInstance(Env::requireEnv("MAIL_HOST"));
+        $transport = new \Swift_SmtpTransport(Env::requireEnv("MAIL_HOST"));
 
         // Create the Mailer using your created Transport
-        $mailer = \Swift_Mailer::newInstance($transport);
+        $mailer = new \Swift_Mailer($transport);
 
         // Create a message
-        $message = \Swift_Message::newInstance($subject);
+        $message = new \Swift_Message($subject);
         $message->setFrom($from);
         $message->setTo($to);
         $message->setBody($content);

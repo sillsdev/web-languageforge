@@ -10,7 +10,7 @@ class LexRoleViewConfig
     public function __construct()
     {
         $this->inputSystems = new ArrayOf();
-        $this->fields = new MapOf(function ($data) {
+        $this->fields = new MapOf(function (array $data) {
             if (array_key_exists("overrideInputSystems", $data)) {
                 return new LexViewMultiTextFieldConfig();
             } else {

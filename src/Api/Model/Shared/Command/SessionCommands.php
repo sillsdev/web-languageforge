@@ -47,7 +47,7 @@ class SessionCommands
 
         if ($projectId) {
             $project = ProjectModel::getById($projectId);
-            if (array_key_exists($userId, $project->users)) {
+            if ($project->users->offsetExists($userId)) {
                 $sessionData["project"] = [];
                 $sessionData["project"]["id"] = (string) $projectId;
                 $sessionData["project"]["projectName"] = $project->projectName;

@@ -35,7 +35,6 @@ class MapOf extends \ArrayObject
     public function offsetGet($index)
     {
         CodeGuard::checkTypeAndThrow($index, "string");
-
         return parent::offsetGet($index);
     }
 
@@ -43,5 +42,11 @@ class MapOf extends \ArrayObject
     {
         CodeGuard::checkTypeAndThrow($index, "string");
         parent::offsetSet($index, $newval);
+    }
+
+    public function offsetExists($index)
+    {
+        CodeGuard::checkTypeAndThrow($index, "string");
+        return parent::offsetExists($index);
     }
 }

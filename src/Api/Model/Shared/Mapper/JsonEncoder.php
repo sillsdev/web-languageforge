@@ -28,47 +28,54 @@ class JsonEncoder
     protected function _encode($model)
     {
         $data = [];
-        $properties = get_object_vars($model);
-        $privateProperties = [];
-        if (method_exists($model, "getPrivateProperties")) {
-            $privateProperties = (array) $model->getPrivateProperties();
-        }
 
-        foreach ($properties as $key => $value) {
-            if (in_array($key, $privateProperties)) {
-                continue;
+        if (is_a($model, "Api\Model\Shared\Mapper\ArrayOf")) {
+            $data = $this->encodeArrayOf("", $model);
+        } elseif (is_a($model, "Api\Model\Shared\Mapper\MapOf")) {
+            $data = $this->encodeMapOf("", $model);
+        } else {
+            $properties = get_object_vars($model);
+            $privateProperties = [];
+            if (method_exists($model, "getPrivateProperties")) {
+                $privateProperties = (array) $model->getPrivateProperties();
             }
-            if (is_a($value, "Api\Model\Shared\Mapper\IdReference")) {
-                $data[$key] = $this->encodeIdReference($key, $model->{$key});
-            } elseif (is_a($value, "Api\Model\Shared\Mapper\Id")) {
-                $data[$key] = $this->encodeId($key, $model->{$key});
-            } elseif (is_a($value, "Api\Model\Shared\Mapper\ArrayOf")) {
-                $data[$key] = $this->encodeArrayOf($key, $model->{$key});
-            } elseif (is_a($value, "Api\Model\Shared\Mapper\MapOf")) {
-                $data[$key] = $this->encodeMapOf($key, $model->{$key});
-            } elseif (is_a($value, "DateTime")) {
-                $data[$key] = $this->encodeDateTime($model->{$key});
-            } elseif (is_a($value, "Litipk\Jiffy\UniversalTimestamp")) {
-                $data[$key] = $this->encodeUniversalTimestamp($model->{$key});
-            } elseif (is_a($value, "Api\Model\Shared\Mapper\ReferenceList")) {
-                $data[$key] = $this->encodeReferenceList($key, $model->{$key});
-            } else {
-                // Data type protection
-                if (is_array($value)) {
-                    throw new \Exception("Must not encode array in '" . get_class($model) . "->" . $key . "'");
+
+            foreach ($properties as $key => $value) {
+                if (in_array($key, $privateProperties)) {
+                    continue;
                 }
-                // Special hack to help debugging our app
-                if ($key == "projects" || $key == "users") {
-                    throw new \Exception("Possible bad write of '$key'\n" . var_export($model, true));
-                }
-                if (is_object($value)) {
-                    $data[$key] = $this->_encode($value);
+                if (is_a($value, "Api\Model\Shared\Mapper\IdReference")) {
+                    $data[$key] = $this->encodeIdReference($key, $model->{$key});
+                } elseif (is_a($value, "Api\Model\Shared\Mapper\Id")) {
+                    $data[$key] = $this->encodeId($key, $model->{$key});
+                } elseif (is_a($value, "Api\Model\Shared\Mapper\ArrayOf")) {
+                    $data[$key] = $this->encodeArrayOf($key, $model->{$key});
+                } elseif (is_a($value, "Api\Model\Shared\Mapper\MapOf")) {
+                    $data[$key] = $this->encodeMapOf($key, $model->{$key});
+                } elseif (is_a($value, "DateTime")) {
+                    $data[$key] = $this->encodeDateTime($model->{$key});
+                } elseif (is_a($value, "Litipk\Jiffy\UniversalTimestamp")) {
+                    $data[$key] = $this->encodeUniversalTimestamp($model->{$key});
+                } elseif (is_a($value, "Api\Model\Shared\Mapper\ReferenceList")) {
+                    $data[$key] = $this->encodeReferenceList($key, $model->{$key});
                 } else {
-                    // Default encode
-                    if (is_null($value)) {
-                        $value = "";
+                    // Data type protection
+                    if (is_array($value)) {
+                        throw new \Exception("Must not encode array in '" . get_class($model) . "->" . $key . "'");
                     }
-                    $data[$key] = $value;
+                    // Special hack to help debugging our app
+                    if ($key == "projects" || $key == "users") {
+                        throw new \Exception("Possible bad write of '$key'\n" . var_export($model, true));
+                    }
+                    if (is_object($value)) {
+                        $data[$key] = $this->_encode($value);
+                    } else {
+                        // Default encode
+                        if (is_null($value)) {
+                            $value = "";
+                        }
+                        $data[$key] = $value;
+                    }
                 }
             }
         }
