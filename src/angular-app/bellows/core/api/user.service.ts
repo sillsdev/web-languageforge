@@ -25,7 +25,7 @@ export class UserService {
     return this.api.call('user_updateProfile', [params], callback);
   }
 
-  remove(userIds: string[], callback?: JsonRpcCallback) {
+  deleteAccounts(userIds: string[], callback?: JsonRpcCallback) {
     return this.api.call('user_delete', [userIds], callback);
   }
 

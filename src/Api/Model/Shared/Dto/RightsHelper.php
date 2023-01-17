@@ -153,9 +153,6 @@ class RightsHelper
             case "user_create":
                 return $this->userHasSiteRight(Domain::USERS + Operation::EDIT);
 
-            case "user_delete":
-                return $this->userHasSiteRight(Domain::USERS + Operation::DELETE);
-
             case "project_archive":
                 return $this->userHasSiteRight(Domain::PROJECTS + Operation::ARCHIVE) ||
                     $this->userHasSiteRight(Domain::PROJECTS + Operation::CREATE);
@@ -189,6 +186,7 @@ class RightsHelper
                 return $this->userHasSiteRight(Domain::USERS + Operation::VIEW_OWN);
 
             case "user_updateProfile":
+            case "user_delete":
             case "check_unique_identity":
             case "change_password": // change_password requires additional protection in the method itself
                 return $this->userHasSiteRight(Domain::USERS + Operation::EDIT_OWN);

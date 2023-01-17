@@ -14,6 +14,7 @@ use Api\Model\Shared\CommentModel;
 use Api\Model\Shared\Dto\ActivityListDto;
 use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\UserModel;
+use Api\Model\Shared\Command\UserCommands;
 use PHPUnit\Framework\TestCase;
 
 class ActivityListDtoTest extends TestCase
@@ -796,5 +797,68 @@ class ActivityListDtoTest extends TestCase
         $this->assertEquals($expected["contextGuid"], $actual[ActivityModel::LEX_COMMENT_CONTEXT]);
         $this->assertEquals($expected["regarding"]["fieldValue"], $actual[ActivityModel::LEX_COMMENT_FIELD_VALUE]);
         $this->assertEquals(["label" => "Sentence", "sense" => 2, "example" => 1], $actual["fieldLabel"]);
+    }
+
+    /** @throws Exception */
+    public function testGetActivityForProject_DeleteAccount_DtoAsExpected()
+    {
+        $environ = new LexiconMongoTestEnvironment();
+        $environ->clean();
+
+        $project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $projectId = $project->id->asString();
+
+        $this->assertEquals($project->appName, LfProjectModel::LEXICON_APP);
+
+        $userOneId = $environ->createUser("user1", "User One", "user1@email.com");
+        $project->addUser($userOneId, ProjectRoles::CONTRIBUTOR);
+        $userTwoId = $environ->createUser("user2", "User Two", "user2@email.com");
+        $project->addUser($userOneId, ProjectRoles::CONTRIBUTOR);
+        $project->write();
+
+        $entry = new LexEntryModel($project);
+        $entry->lexeme->form("en", "bank");
+        $sense1 = new LexSense();
+        $sense1->definition->form("en", "the sides of a river");
+        $entry->senses[] = $sense1;
+        $sense2 = new LexSense();
+        $sense2->definition->form("en", "a place to store money");
+        $entry->senses[] = $sense2;
+        $example1 = new LexExample();
+        $example1->sentence->form("en", "money in the bank");
+        $sense2->examples[] = $example1;
+        $example2 = new LexExample();
+        $example2->sentence->form("en", "a run on the bank");
+        $sense2->examples[] = $example2;
+        $entryId = $entry->write();
+
+        $regarding = [
+            "field" => "sentence",
+            "fieldNameForDisplay" => "Sentence",
+            "fieldValue" => "a run on the bank",
+            "inputSystem" => "en",
+            "word" => "bank",
+            "meaning" => "a place to store money",
+        ];
+        $data = [
+            "id" => "",
+            "entryRef" => $entryId,
+            "content" => "Comment on the sentence",
+            "regarding" => $regarding,
+            "contextGuid" => " sense#" . $sense2->guid . " example#" . $example1->guid . " sentence.en",
+            "isRegardingPicture" => false,
+        ];
+        $commentId = LexCommentCommands::updateComment($projectId, $userOneId, $data);
+
+        UserCommands::deleteAccounts([$userOneId], $userOneId);
+
+        $dto = ActivityListDto::getActivityForOneProject($project, $userTwoId);
+        $activity = $dto["activity"];
+        $activityRecord = array_shift($activity);
+        $this->assertArrayHasKey("userRef", $activityRecord);
+        $actual = $activityRecord["userRef"];
+
+        // After account is deleted, the username on the activity record should contain the user's id (not the former username)
+        $this->assertEquals($userOneId, $actual["username"]);
     }
 }

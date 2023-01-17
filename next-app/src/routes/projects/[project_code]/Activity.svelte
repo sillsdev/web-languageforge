@@ -45,7 +45,7 @@
 
 	function byDateThenUser(a: AugmentedActivity, b: AugmentedActivity) {
 		return a.date_iso === b.date_iso ? a.user === b.user ? des(a.time, b.time)
-															 : asc(a.user, b.user)
+															 : asc(a.user.username, b.user.username)
 		                                 : des(a.date_iso, b.date_iso)
 	}
 
@@ -72,7 +72,7 @@
 		<tbody>
 			{#each sorted_activities as activity}
 				<tr>
-					<td>{ activity.user }</td>
+					<td>{ activity.user.username }</td>
 					<td>{ activity.date_locale }</td>
 					<td>{ action_display[activity.action] || activity.action }</td>
 					<td>{ activity.entry || '—' }</td>
