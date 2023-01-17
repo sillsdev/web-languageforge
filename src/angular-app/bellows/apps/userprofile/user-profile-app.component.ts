@@ -171,9 +171,7 @@ export class UserProfileAppController implements angular.IController {
         // catch is necessary to properly implement promise API, which angular 1.6 complains if we
         // don't have a catch
       }).catch(() => {});
-    } else if (this.user.active == false){
-
-    } else {
+    } else if (this.user.active) {
       this.updateUser();
     }
   }
