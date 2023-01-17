@@ -187,7 +187,7 @@ services:
       - SMTP_USERNAME=username
       - SMTP_PASSWORD=password
       - SERVER_HOSTNAME=nobody.localhost
-    command: sh -c "postconf -e 'default_transport = retry:no outbound email allowed' && /run.sh"
+    command: sh -c "postconf -e 'default_transport = discard' && /run.sh"
 
   db:
     image: mongo:6
