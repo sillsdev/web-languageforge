@@ -572,7 +572,7 @@ class LiftDecoder
      * @param string $nodeId
      * @return boolean
      */
-    public function isExampleCustomField($nodeId)
+    public function isExampleCustomField(string $nodeId)
     {
         return $this->isCustomField($nodeId, "LexExampleSentence");
     }
@@ -584,7 +584,7 @@ class LiftDecoder
      * @param string $levelClass
      * @return boolean
      */
-    private function isCustomField($nodeId, $levelClass)
+    private function isCustomField(string $nodeId, string $levelClass)
     {
         $fieldType = FileUtilities::replaceSpecialCharacters($nodeId);
         $customFieldSpecs = $this->getCustomFieldSpecs($fieldType);
