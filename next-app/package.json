@@ -17,7 +17,7 @@
     "@tailwindcss/typography": "^0.5.2",
     "autoprefixer": "^10",
     "daisyui": "^2",
-    "rimraf": "^3",
+    "rimraf": "^4",
     "svelte": "^3",
     "svelte-check": "^3",
     "tailwindcss": "^3",
