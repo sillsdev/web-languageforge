@@ -137,7 +137,8 @@ export const NewProjectSendReceiveCredentialsState = {
       }
 
       if (!controller.project.sendReceive.project.isLinked &&
-        controller.project.sendReceive.project.role !== 'manager') {
+        controller.project.sendReceive.project.role !== 'manager' &&
+        controller.project.sendReceive.project.role !== 'languagedepotprogrammer') {
         return controller.error('Please select a Project that you are the Manager of on LanguageDepot.org.');
       }
 
