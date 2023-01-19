@@ -32,6 +32,33 @@
 			value: 500_000,
 		},
 	]
+	const left_drawer_items = [
+		{
+			name: 'item 1',
+			prop: 'prop 1',
+			number: 1,
+		},
+		{
+			name: 'it 2',
+			prop: 'property 2',
+			number: 22,
+		},
+		{
+			name: 'itm 3',
+			prop: 'prp 3',
+			number: 333,
+		},
+		{
+			name: 'item 4',
+			prop: 'propty 4',
+			number: 4444,
+		},
+		{
+			name: 'item 5',
+			prop: 'proprty 5',
+			number: 55555,
+		},
+	]
 
 	onMount(() => dark_mode = window.matchMedia('(prefers-color-scheme: dark)').matches)
 
@@ -141,13 +168,26 @@
 	</div>
 
 	<div class='drawer-side not-prose'>
-		<label for=left_drawer class=drawer-overlay></label>
-		<ul class='menu p-4 w-80 bg-base-100 text-base-content'>
-		  <li><a href='/'>item 1</a></li>
-		  <li><a href='/'>item 2</a></li>
-		  <li><a href='/'>item 3</a></li>
-		  <li><a href='/'>item 4</a></li>
-		  <li><a href='/'>item 5</a></li>
+		<label for=left_drawer class=drawer-overlay />
+
+		<ul class='menu p-4 w-1/3 bg-base-100 text-base-content'>
+			<li class=menu-title>
+				<header class='grid grid-cols-3'>
+					<span>Name</span>
+					<span>Prop</span>
+					<span>Number</span>
+				</header>
+			</li>
+
+			{#each left_drawer_items as { name, prop, number }}
+				<li>
+					<a class='grid grid-cols-3' href='/'>
+						<span>{ name }</span>
+						<span>{ prop }</span>
+						<span>{ number }</span>
+					</a>
+				</li>
+			{/each}
 		</ul>
 	</div>
 </div>
