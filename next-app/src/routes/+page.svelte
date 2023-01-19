@@ -32,7 +32,7 @@
 			value: 500_000,
 		},
 	]
-	const left_drawer_items = [
+	let items = [
 		{
 			name: 'item 1',
 			prop: 'prop 1',
@@ -58,11 +58,25 @@
 			prop: 'proprty 5',
 			number: 55555,
 		},
+		{
+			name: 'item item item item 6',
+			prop: 'proprty proprty proprty 6',
+			number: 6,
+		},
+		{
+			name: 'item 7',
+			prop: 'property 7',
+			number: 77777777777,
+		},
 	]
 
 	onMount(() => dark_mode = window.matchMedia('(prefers-color-scheme: dark)').matches)
 
 	$: browser && document.documentElement.setAttribute('data-theme', dark_mode ? 'dark' : 'light')
+
+	function sort_items_by(field) {
+		items = items.sort((a, b) => a[field] < b[field] ? 1 : -1)
+	}
 </script>
 
 <div class='drawer'>
@@ -170,18 +184,16 @@
 	<div class='drawer-side not-prose'>
 		<label for=left_drawer class=drawer-overlay />
 
-		<ul class='menu p-4 w-1/3 bg-base-100 text-base-content'>
-			<li class=menu-title>
-				<header class='grid grid-cols-3'>
-					<span>Name</span>
-					<span>Prop</span>
-					<span>Number</span>
-				</header>
+		<ul class='menu p-4 w-fit bg-base-100 text-base-content'>
+			<li class='menu-title grid grid-cols-3'>
+				<span on:click={ () => sort_items_by('name') } on:keydown={ () => sort_items_by('name') } class='cursor-pointer w-fit'>Name</span>
+				<span on:click={ () => sort_items_by('prop') } on:keydown={ () => sort_items_by('name') } class='cursor-pointer w-fit'>Prop</span>
+				<span on:click={ () => sort_items_by('number') } on:keydown={ () => sort_items_by('name') } class='cursor-pointer w-fit'>Number</span>
 			</li>
 
-			<hr>
+			<hr class='mt-2 mb-4'>
 
-			{#each left_drawer_items as { name, prop, number }}
+			{#each items as { name, prop, number }, i (i)}
 				<li>
 					<a class='grid grid-cols-3' href='/'>
 						<span>{ name }</span>
