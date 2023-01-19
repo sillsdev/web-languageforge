@@ -179,6 +179,8 @@
 				</header>
 			</li>
 
+			<hr>
+
 			{#each left_drawer_items as { name, prop, number }}
 				<li>
 					<a class='grid grid-cols-3' href='/'>
