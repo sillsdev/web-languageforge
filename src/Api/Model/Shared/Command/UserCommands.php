@@ -160,19 +160,20 @@ class UserCommands
     public static function deleteAccount($userId, $currentUserId)
     {
         $user = new UserModelWithPassword($userId);
+        $currentUser = new UserModel($currentUserId);
 
         // Makes sure this user is not an owner on any projects
         foreach ($user->projects->refs as $id) {
             $project = new ProjectModel($id->asString());
             if ($project->ownerRef->asString() == $userId) {
                 throw new \Exception(
-                    "The user owns one or more projects. Before account deletion, this user's projects must either be transfered to new owners or deleted."
+                    "The user '$user->username' owns one or more projects. Before account deletion, this user's projects must either be transfered to new owners or deleted."
                 );
             }
         }
 
         // Makes sure the user doing the action has the right privileges
-        if ($user->role != SystemRoles::SYSTEM_ADMIN && $userId != $currentUserId) {
+        if ($currentUser->role != SystemRoles::SYSTEM_ADMIN && $userId != $currentUserId) {
             throw new \Exception("The current user does not have sufficient privileges to delete the target account.");
         }
 
