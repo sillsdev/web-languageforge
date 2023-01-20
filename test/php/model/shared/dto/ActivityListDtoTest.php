@@ -858,7 +858,7 @@ class ActivityListDtoTest extends TestCase
         $this->assertArrayHasKey("userRef", $activityRecord);
         $actual = $activityRecord["userRef"];
 
-        // After account is deleted, the username on the activity record should contain the user's id (not the former username)
-        $this->assertEquals($userOneId, $actual["username"]);
+        // After account is deleted, the username on the activity record should say "[Deleted User]"
+        $this->assertEquals("[Deleted User]", $actual["username"]);
     }
 }
