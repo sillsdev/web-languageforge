@@ -32,6 +32,19 @@
 
 `db.users.find()`
 
+```
+db.users.update(
+	{
+		email: 'admin@example.org'
+	},
+	{
+		$set: {
+			role: 'admin'
+		}
+	}
+)
+```
+
 # Test data
 
 ## Activity
