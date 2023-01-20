@@ -57,8 +57,6 @@ class UserModel extends MapperModel
         $this->siteRole = new MapOf();
         $this->googleOAuthIds = new ArrayOf();
         $this->facebookOAuthIds = new ArrayOf();
-        $this->paratextOAuthIds = new ArrayOf();
-        $this->paratextAccessToken = new AccessTokenModel();
         $this->validationExpirationDate = new \DateTime();
         $this->resetPasswordExpirationDate = new \DateTime();
         $this->projectsProperties = new MapOf(function () {
@@ -116,9 +114,6 @@ class UserModel extends MapperModel
     public $googleOAuthIds;
 
     /** @var ArrayOf<string> */
-    public $paratextOAuthIds;
-
-    /** @var ArrayOf<string> */
     public $facebookOAuthIds;
 
     /** @var string */
@@ -130,13 +125,8 @@ class UserModel extends MapperModel
     /** @var boolean */
     public $isInvited;
 
-    //public $groups;
-
     /** @var ReferenceList */
     public $projects;
-
-    /** @var AccessTokenModel */
-    public $paratextAccessToken;
 
     /*
      * User Profile accessible
