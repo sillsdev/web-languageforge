@@ -62,6 +62,7 @@ class UserModel extends MapperModel
         $this->projectsProperties = new MapOf(function () {
             return new ProjectProperties();
         });
+        $this->isDeleted = false;
 
         /*
          * We don't need to set 'role' to ReadOnly because we control where it's modified
@@ -151,6 +152,9 @@ class UserModel extends MapperModel
 
     /** @var string */
     public $gender;
+
+    /** @var boolean */
+    public $isDeleted;
 
     /**
      * @var int timestamp, see time()

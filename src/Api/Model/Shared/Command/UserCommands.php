@@ -179,14 +179,18 @@ class UserCommands
         // Deactivates account and removes personal information from the user model.
         // Will now use the user's id instead of name and username when displaying historical activity.
         $user->active = false;
+        $user->isDeleted = true;
         $user->password = null;
-        $user->username = $user->id->asString();
-        $user->name = $user->id->asString();
+        $user->username = "[Deleted User]";
+        $user->name = "[Deleted User]";
         $user->languageDepotUsername = null;
         $user->email = null;
         $user->mobile_phone = null;
         $user->age = null;
         $user->gender = null;
+        $user->googleOAuthIds = null;
+        $user->facebookOAuthIds = null;
+
         $default_avatar = "anonymoose.png";
         $user->avatar_ref = $default_avatar;
         $user->write();
