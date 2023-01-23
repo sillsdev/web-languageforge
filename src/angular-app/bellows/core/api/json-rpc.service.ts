@@ -100,11 +100,7 @@ export class JsonRpcService {
             type = 'You don\'t have sufficient privileges.';
             break;
           default:
-            // silently swallow unknown exceptions and don't bug (heh) the user about things they can't fix
-            // this.error.notify('Exception',
-            //   'An exception occurred in the application, but\nthe developers have already been notified.',
-            //   response.data.error.message);
-            return;
+            type = 'Exception';
         }
         this.error.error(type, response.data.error.message);
 

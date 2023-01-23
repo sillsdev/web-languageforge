@@ -57,13 +57,12 @@ class UserModel extends MapperModel
         $this->siteRole = new MapOf();
         $this->googleOAuthIds = new ArrayOf();
         $this->facebookOAuthIds = new ArrayOf();
-        $this->paratextOAuthIds = new ArrayOf();
-        $this->paratextAccessToken = new AccessTokenModel();
         $this->validationExpirationDate = new \DateTime();
         $this->resetPasswordExpirationDate = new \DateTime();
         $this->projectsProperties = new MapOf(function () {
             return new ProjectProperties();
         });
+        $this->isDeleted = false;
 
         /*
          * We don't need to set 'role' to ReadOnly because we control where it's modified
@@ -116,9 +115,6 @@ class UserModel extends MapperModel
     public $googleOAuthIds;
 
     /** @var ArrayOf<string> */
-    public $paratextOAuthIds;
-
-    /** @var ArrayOf<string> */
     public $facebookOAuthIds;
 
     /** @var string */
@@ -130,13 +126,8 @@ class UserModel extends MapperModel
     /** @var boolean */
     public $isInvited;
 
-    //public $groups;
-
     /** @var ReferenceList */
     public $projects;
-
-    /** @var AccessTokenModel */
-    public $paratextAccessToken;
 
     /*
      * User Profile accessible
@@ -161,6 +152,9 @@ class UserModel extends MapperModel
 
     /** @var string */
     public $gender;
+
+    /** @var boolean */
+    public $isDeleted;
 
     /**
      * @var int timestamp, see time()
