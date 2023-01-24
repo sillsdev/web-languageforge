@@ -7,7 +7,7 @@ namespace Site\OAuth;
  */
 trait SelectAccountAuthorizationParametersTrait
 {
-    protected function getAuthorizationParameters(array $options)
+    protected function getAuthorizationParameters(array $options): array
     {
         // Default provider adds "approval_prompt=auto", but using both "prompt" and "approval_prompt" together is not allowed
         $params = parent::getAuthorizationParameters($options);

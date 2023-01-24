@@ -1,4 +1,4 @@
-FROM sillsdev/web-languageforge:base-php
+FROM sillsdev/web-languageforge:base-php-7.4
 
 
 # ----- LINES BELOW COPIED FROM APP DOCKERFILE ----------

@@ -18,7 +18,6 @@ use Api\Model\Shared\Command\ProjectCommands;
 use Api\Model\Shared\Command\SessionCommands;
 use Api\Model\Shared\Command\UserCommands;
 use Api\Model\Shared\Command\LdapiCommands;
-use Api\Model\Shared\Communicate\EmailSettings;
 use Api\Model\Shared\Dto\ActivityListDto;
 use Api\Model\Shared\Dto\ProjectInsightsDto;
 use Api\Model\Shared\Dto\ProjectListDto;
@@ -144,7 +143,11 @@ class Sf
      */
     public function user_delete($userIds)
     {
-        return UserCommands::deleteUsers($userIds);
+        $result = UserCommands::deleteAccounts($userIds, $this->userId);
+        if (in_array($this->userId, $userIds)) {
+            $this->app["session"]->getFlashBag()->add("infoMessage", "Your account was permanently deleted");
+        }
+        return $result;
     }
 
     /**

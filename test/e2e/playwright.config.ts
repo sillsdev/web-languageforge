@@ -1,6 +1,6 @@
 import type { PlaywrightTestConfig } from '@playwright/test';
 import { devices, expect } from '@playwright/test';
-import { appUrl } from './constants';
+import { appUrl, MIN, SEC } from './constants';
 import { matchers } from './utils/custom-matchers';
 
 /**
@@ -20,13 +20,13 @@ const config: PlaywrightTestConfig = {
   snapshotPathTemplate: '{testDir}/__expected-screenshots__/{testFilePath}/{arg}-{projectName}{ext}',
 
   /* Maximum time one test can run for. For individual slower tests use test.slow(). */
-  timeout: 30 * 1000,
+  timeout: 40 * SEC,
   expect: {
     /**
      * Maximum time expect() should wait for the condition to be met.
      * For example in `await expect(locator).toHaveText();`
      */
-    timeout: 5000,
+    timeout: 5 * SEC,
   },
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
@@ -48,7 +48,7 @@ const config: PlaywrightTestConfig = {
 
   reportSlowTests: {
     max: 10,
-    threshold: 30 * 1000,
+    threshold: 1 * MIN,
   },
 
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
@@ -106,14 +106,14 @@ const config: PlaywrightTestConfig = {
       if (!process.env._loggedAppStartup) { // Provide some feedback
         process.env._loggedAppStartup = '1';
         const timeout = (this as any).timeout;
-        console.log(`Building and starting e2e-app if not already running (timeout: ${timeout / 60000}m)\n\n`);
+        console.log(`Building and starting e2e-app if not already running (timeout: ${timeout / MIN}m)\n\n`);
       }
       return 'make e2e-app && docker attach e2e-app';
     },
     cwd: '../..', // navigate to makefile
     url: appUrl,
     reuseExistingServer: true,
-    timeout: 3 * 60000, // 3m
+    timeout: 3 * MIN,
   },
 };
 

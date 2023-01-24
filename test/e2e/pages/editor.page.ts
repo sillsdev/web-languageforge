@@ -84,6 +84,10 @@ export class EditorPage extends BasePage {
   readonly comments = this.commentContainer.locator(`> div:visible`);
   readonly comment = (n: number) => this.locator(`.commentListContainer > div:nth-child(${n}) .commentContainer`);
 
+  protected override get isCurrentPage(): boolean {
+    return this.page.url().endsWith(this.url) || this.page.url().includes('#!/editor');
+  }
+
   private readonly lexAppToolbar = {
     backToListButton: this.locator('#toListLink'),
     toggleCommentsButton: this.locator('#toCommentsLink'),
@@ -106,18 +110,13 @@ export class EditorPage extends BasePage {
   }
 
   async goto(options?: EditorGotoOptions): Promise<this> {
-    const alreadyOnPage = this.page.url().endsWith(this.url) || this.page.url().includes('#!/editor');
     await super.goto(options);
-    const entryId = options?.entryId;
-    if (entryId || alreadyOnPage) {
-      // If we're navigating from one entry to another, then goto doesn't cause angular to load the new entry
+    if (options?.entryId) {
+      // Navigating from one entry to another via URL/goto doesn't cause angular to load the new entry
       // clicking is a more realistic test anyway
-      await Promise.all([
-        this.locator(`[id^=entryId_${entryId ?? ''}]`).first().click(),
-        this.waitFor(),
-      ]);
+      await this.locator(`[id^=entryId_${options.entryId}]`).click();
+      await this.waitFor();
     }
-    await expect(this.locator('.page-name >> text=' + this.project.name)).toBeVisible();
     return this;
   }
 

@@ -1,8 +1,8 @@
 import { Locator, Page, APIRequestContext } from '@playwright/test';
+import { appUrl } from '../constants';
 import { NoticeElement, PageHeader } from "./components";
 
 export interface GotoOptions {
-  waitFor?: Locator;
   expectRedirect?: boolean;
 }
 
@@ -21,9 +21,12 @@ export abstract class BasePage
   }
 
   readonly request: APIRequestContext;
-
   readonly header = new PageHeader(this.page);
   readonly noticeList = new NoticeElement(this.page);
+
+  protected get isCurrentPage(): boolean {
+    return this.page.url().startsWith(appUrl) && !!this.page.url().match(this.urlPattern);
+  }
 
   private readonly locators: Locator[];
   private readonly urlPattern = this.url.includes('#') ?
@@ -39,14 +42,16 @@ export abstract class BasePage
    * @returns the page for convenience/chaining
    */
   async goto(options?: GotoOptions): Promise<this> {
-    await Promise.all([
-      this.page.goto(this.url),
-      options?.expectRedirect || this.waitFor(), // this page won't load if a redirect happens
-      options?.waitFor?.waitFor(),
-    ]).catch(error => {
-      console.error(error);
-      throw error;
-    });
+    if (this.isCurrentPage) {
+      return this;
+    }
+
+    await this.page.goto(this.url)
+      .then(_ => options?.expectRedirect ? undefined : this.waitFor()) // this page won't load if a redirect happens)
+      .catch(error => {
+        console.error(error);
+        throw error;
+      });
     return this;
   }
 
@@ -56,7 +61,7 @@ export abstract class BasePage
    */
   async waitFor(): Promise<this> {
     await Promise.all([
-      this.page.url().match(this.urlPattern) ?? this.page.waitForURL(this.urlPattern),
+      this.isCurrentPage || this.page.waitForURL(this.urlPattern),
       ...this.locators.map(wait => wait.waitFor()),
     ]);
     return this;

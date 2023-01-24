@@ -90,13 +90,14 @@ export class NavbarController implements angular.IController {
     }
   }
 
-  openShareWithOthersModal(): void {
+  openShareWithOthersModal(event: UIEvent): void {
     const modalInstance = this.$modal.open({
       component: 'shareWithOthersModal'
     });
     modalInstance.result.then(data => {
       // TODO: save the data if not already
     }, () => {});
+    event.preventDefault();
   }
 
   private isNotInProject(): boolean {

@@ -99,4 +99,24 @@ test.describe('User Profile', () => {
     await expect(userProfilePage.aboutMeTab.genderField).toHaveSelectedOption({ label: 'Female' });
   });
 
+  test('Delete user account', async ({ tab, userService }) => {
+    const user = await userService.createRandomUser();
+    await login(tab, user);
+
+    const userProfilePage = new UserProfilePage(tab);
+    await userProfilePage.goto();
+    await userProfilePage.tabs.deleteAccount.click();
+
+    const confirmation = 'DELETE';
+    await userProfilePage.deleteTab.confirmField.fill(confirmation);
+
+    // User clicks 'Delete My Account' and is redirected to the login page
+    const [loginPage] = await Promise.all([
+      LoginPage.waitFor(tab),
+      userProfilePage.deleteMyAccount(),
+    ]);
+
+  });
+
+
 });

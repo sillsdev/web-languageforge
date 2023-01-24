@@ -23,7 +23,7 @@ class JsonDecoder
      * @param string $id
      * @throws \Exception
      */
-    public static function decode($model, $values, $id = "")
+    public static function decode($model, array $values, $id = "")
     {
         $decoder = new JsonDecoder();
         $decoder->_decode($model, $values, $id);
@@ -36,7 +36,7 @@ class JsonDecoder
      * @param string $id
      * @throws \Exception
      */
-    protected function _decode($model, $values, $id)
+    protected function _decode($model, array $values, string $id)
     {
         CodeGuard::checkTypeAndThrow($values, "array");
         $propertiesToIgnore = $this->getPrivateAndReadOnlyProperties($model);

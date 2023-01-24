@@ -49,7 +49,7 @@ class LexEntryCommands
         foreach ($parts as $part) {
             // Strip away anything after a @ character
             $fieldName = explode("@", $part, 2)[0];
-            if (array_key_exists($fieldName, $currentList->fields)) {
+            if ($currentList->fields->offsetExists($fieldName)) {
                 /** @var LexConfig $fieldConfig */
                 $fieldConfig = $currentList->fields[$fieldName];
                 $result = $fieldConfig->label;
@@ -198,7 +198,7 @@ class LexEntryCommands
         $entry = new LexEntryModel($project, $entryId);
         $inputSystems = $project->config->entry->fields[LexConfig::LEXEME]->inputSystems;
         foreach ($inputSystems as $inputSystem) {
-            if (array_key_exists($inputSystem, $entry->lexeme) && !empty($entry->lexeme[$inputSystem])) {
+            if ($entry->lexeme->offsetExists($inputSystem) && !empty($entry->lexeme[$inputSystem])) {
                 return $entry->lexeme[$inputSystem]->value;
             }
         }

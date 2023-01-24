@@ -120,7 +120,7 @@ class LexProjectCommands
     public static function createNewCustomFieldViews($customFieldName, $customFieldType, &$config)
     {
         foreach ($config->roleViews as $role => $roleView) {
-            if (!array_key_exists($customFieldName, $roleView->fields)) {
+            if (!$roleView->fields->offsetExists($customFieldName)) {
                 if ($customFieldType == "MultiUnicode" || $customFieldType == "MultiString") {
                     $roleView->fields[$customFieldName] = new LexViewMultiTextFieldConfig();
                 } else {
@@ -133,7 +133,7 @@ class LexProjectCommands
         }
 
         foreach ($config->userViews as $userId => $userView) {
-            if (!array_key_exists($customFieldName, $userView->fields)) {
+            if (!$userView->fields->offsetExists($customFieldName)) {
                 if ($customFieldType == "MultiUnicode" || $customFieldType == "MultiString") {
                     $userView->fields[$customFieldName] = new LexViewMultiTextFieldConfig();
                 } else {
@@ -181,7 +181,7 @@ class LexProjectCommands
         }
 
         foreach ($customFieldNamesToRemove as $customFieldName) {
-            if (array_key_exists($customFieldName, $view->fields)) {
+            if ($view->fields->offsetExists($customFieldName)) {
                 unset($view->fields[$customFieldName]);
             }
         }

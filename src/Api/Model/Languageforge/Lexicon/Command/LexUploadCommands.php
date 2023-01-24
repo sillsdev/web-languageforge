@@ -101,8 +101,9 @@ class LexUploadCommands
 
                 if (
                     strcmp($project->whenToConvertAudio, "always") == 0 ||
-                    (strcmp($project->whenToConvertAudio, "sr") == 0 && // restrictions on send/receive files 12-2022
-                        (filesize($filePath) > 1000000 ||
+                    (strcmp($project->whenToConvertAudio, "sr") == 0 &&
+                        // `MaximumFileSize` in https://github.com/sillsdev/chorus/blob/master/src/LibChorus/FileTypeHandlers/audio/AudioFileTypeHandler.cs
+                        (filesize($filePath) > 10000000 ||
                             (strcmp(strtolower($fileExt), ".mp3") !== 0 &&
                                 strcmp(strtolower($fileExt), ".wav") !== 0 &&
                                 strcmp(strtolower($fileExt), ".webm") !== 0)))

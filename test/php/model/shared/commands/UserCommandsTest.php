@@ -49,19 +49,20 @@ class UserCommandsTest extends TestCase
         self::$environ->clean();
     }
 
-    public function testDeleteUsers_1User_1Deleted()
+    public function testDeleteOwnAccount()
     {
+        //User deletes own account
         $userId = self::$environ->createUser("somename", "Some Name", "somename@example.com");
-        $count = UserCommands::deleteUsers([$userId]);
+        $count = UserCommands::deleteAccounts([$userId], $userId);
 
         $this->assertEquals(1, $count);
     }
 
-    public function testDeleteUsers_NoId_Exception()
+    public function testDeleteUsers_NoIds_Exception()
     {
         $this->expectException(Exception::class);
         ini_set("display_errors", "0"); // do not show xdebug stack traces in PHPUnit output
-        UserCommands::deleteUsers(null);
+        UserCommands::deleteAccounts(null, null);
         ini_set("display_errors", "1"); // do not show xdebug stack traces in PHPUnit output
     }
 

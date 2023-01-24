@@ -19,7 +19,7 @@ function generateSense()
     return new LexSense();
 }
 
-function generateCustomField($data)
+function generateCustomField(array $data)
 {
     CodeGuard::checkTypeAndThrow($data, "array");
     if (array_key_exists("type", $data)) {

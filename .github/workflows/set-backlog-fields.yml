@@ -2,7 +2,7 @@ name: Add Issue to Project
 
 on:
   issues:
-    types: [ opened ]
+    types: [ opened, reopened ]
 
 jobs:
   add_issue_to_project:
@@ -30,7 +30,7 @@ jobs:
               repository(name:"web-languageforge", owner:$org) {
                 issue(number: $issue_number) {
                   id
-                  projectNextItems(first:100) {
+                  projectItems(first:100) {
                     nodes {
                       id
                     }
@@ -39,7 +39,7 @@ jobs:
               }
             }' -F issue_number=$ISSUE_NUMBER -f org=$ORGANIZATION > project_data.json
 
-          echo 'IN_PROJECT='$(jq '.data.repository.issue.projectNextItems[] | length' project_data.json) >> $GITHUB_ENV
+          echo 'IN_PROJECT='$(jq '.data.repository.issue.projectItems[] | length' project_data.json) >> $GITHUB_ENV
 
       - name: get required info for set operations
         env:
@@ -47,24 +47,27 @@ jobs:
           ORGANIZATION: sillsdev
         run: |
           gh api graphql -f query='
-            query($org: String!) {
-              organization(login: $org){
-                projectNext(number: 1) {
+            query ($org: String!) {
+              organization(login: $org) {
+                projectV2(number: 1) {
                   id
-                  fields(first:100) {
-                    nodes {
+                  field(name: "ProductOwner") {
+                    ... on ProjectV2SingleSelectField {
                       id
                       name
-                      settings
+                      options {
+                        id
+                        name
+                      }
                     }
                   }
                 }
               }
             }' -f org=$ORGANIZATION > project_data.json
 
-          echo 'PROJECT_ID='$(jq '.data.organization.projectNext.id' project_data.json) >> $GITHUB_ENV
-          echo 'FIELD_ID='$(jq '.data.organization.projectNext.fields.nodes[] | select(.name== "ProductOwner") | .id' project_data.json) >> $GITHUB_ENV
-          echo 'INCOMING_ID='$(jq '.data.organization.projectNext.fields.nodes[] | select(.name== "ProductOwner") | .settings | fromjson.options[] | select(.name=="Incoming") | .id' project_data.json) >> $GITHUB_ENV
+          echo 'PROJECT_ID='$(jq '.data.organization.projectV2.id' project_data.json) >> $GITHUB_ENV
+          echo 'FIELD_ID='$(jq '.data.organization.projectV2.field.id' project_data.json) >> $GITHUB_ENV
+          echo 'INCOMING_ID='$(jq '.data.organization.projectV2.field.options[] | select(.name=="Incoming") | .id' project_data.json) >> $GITHUB_ENV
 
       - name: Add issue to project
         if: env.IN_PROJECT == 0
@@ -74,12 +77,12 @@ jobs:
         run: |
           item_id="$( gh api graphql -f query='
             mutation($project:ID!, $item:ID!) {
-              addProjectNextItem(input: {projectId: $project, contentId: $item}) {
-                projectNextItem {
+              addProjectV2ItemById(input: {projectId: $project, contentId: $item}) {
+                item {
                   id
                 }
               }
-            }' -f project=$PROJECT_ID -f item=$ISSUE_ID --jq '.data.addProjectNextItem.projectNextItem.id')"
+            }' -f project=$PROJECT_ID -f item=$ISSUE_ID --jq '.data.addProjectV2ItemById.item.id')"
 
           echo 'ITEM_ID='$item_id >> $GITHUB_ENV
 
@@ -95,13 +98,17 @@ jobs:
               $field: ID!
               $field_value: String!)
             {
-              updateProjectNextItemField(input: {
+              updateProjectV2ItemFieldValue(input: {
                 projectId: $project
                 itemId: $item
                 fieldId: $field
-                value: $field_value})
+                value: {
+                  singleSelectOptionId: $field_value
+                  }
+                }
+              )
               {
-                projectNextItem {
+                projectV2Item {
                   id
                 }
               }

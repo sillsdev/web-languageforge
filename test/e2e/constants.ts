@@ -125,3 +125,7 @@ export const files = [
 ] as const;
 
 export const appUrl = 'http://localhost:3238/';
+
+export const SEC = 1000;
+export const MIN = SEC * 60;
+export const YEAR = 365 * 24 * 60 * MIN;

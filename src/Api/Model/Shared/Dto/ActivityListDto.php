@@ -367,7 +367,7 @@ class ActivityListDto
                 list($name, $position) = self::splitFieldIdPart($part);
                 $position = $position + 1; // Mongo stores 0-based indices, but DTO wants 1-based
                 // $guid not used in this DTO
-                if (array_key_exists($name, $currentConfig->fields)) {
+                if ($currentConfig->fields->offsetExists($name)) {
                     $mostRecentName = $name;
                     $mostRecentPosition = $position;
                     //                    $fieldNameHierarchy[] = $name;

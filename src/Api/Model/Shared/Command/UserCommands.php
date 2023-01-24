@@ -24,6 +24,7 @@ use Api\Model\Shared\UserTypeaheadModel;
 use Palaso\Utilities\CodeGuard;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Api\Library\Shared\UrlHelper;
+use Api\Model\Shared\Command\ProjectCommands;
 
 class UserCommands
 {
@@ -138,18 +139,68 @@ class UserCommands
      * @param array $userIds
      * @return int Total number of users removed.
      */
-    public static function deleteUsers($userIds)
+    public static function deleteAccounts($userIds, $currentId)
     {
         CodeGuard::checkTypeAndThrow($userIds, "array");
         $count = 0;
         foreach ($userIds as $userId) {
             CodeGuard::checkTypeAndThrow($userId, "string");
-            $userModel = new UserModel($userId);
-            $userModel->remove();
+            self::deleteAccount($userId, $currentId);
             $count++;
         }
 
         return $count;
+    }
+
+    /**
+     * @param $userId
+     * @return int 0 or 1 successful removal
+     * @throws \Exception
+     */
+    public static function deleteAccount($userId, $currentUserId)
+    {
+        $user = new UserModelWithPassword($userId);
+        $currentUser = new UserModel($currentUserId);
+
+        // Makes sure this user is not an owner on any projects
+        foreach ($user->projects->refs as $id) {
+            $project = new ProjectModel($id->asString());
+            if ($project->ownerRef->asString() == $userId) {
+                throw new \Exception(
+                    "The user '$user->username' owns one or more projects. Before account deletion, this user's projects must either be transfered to new owners or deleted."
+                );
+            }
+        }
+
+        // Makes sure the user doing the action has the right privileges
+        if ($currentUser->role != SystemRoles::SYSTEM_ADMIN && $userId != $currentUserId) {
+            throw new \Exception("The current user does not have sufficient privileges to delete the target account.");
+        }
+
+        // Deactivates account and removes personal information from the user model.
+        // Will now use the user's id instead of name and username when displaying historical activity.
+        $user->active = false;
+        $user->isDeleted = true;
+        $user->password = null;
+        $user->username = "[Deleted User]";
+        $user->name = "[Deleted User]";
+        $user->languageDepotUsername = null;
+        $user->email = null;
+        $user->mobile_phone = null;
+        $user->age = null;
+        $user->gender = null;
+        $user->googleOAuthIds = null;
+        $user->facebookOAuthIds = null;
+
+        $default_avatar = "anonymoose.png";
+        $user->avatar_ref = $default_avatar;
+        $user->write();
+
+        // Removes the user from each project the user used to be in
+        foreach ($user->projects->refs as $projectIdObject) {
+            $projectId = $projectIdObject->asString();
+            ProjectCommands::removeUsers($projectId, [$userId]);
+        }
     }
 
     /**
