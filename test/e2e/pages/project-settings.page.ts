@@ -27,7 +27,7 @@ export class ProjectSettingsPage extends BasePage {
   }
 
   // navigate to project without UI
-  async goto(): Promise<this> {
+  override async goto(): Promise<this> {
     await super.goto();
     await this.page.getByLabel('Project Name').waitFor();
     return this;
