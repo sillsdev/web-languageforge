@@ -54,7 +54,7 @@ export class SignupPage extends BasePage {
     super(page, '/public/signup', page.locator('#email'));
   }
 
-  async goto(options?: SignupGotoOptions): Promise<this> {
+  override async goto(options?: SignupGotoOptions): Promise<this> {
     if (options?.email) {
       await this.page.goto(this.url + '#!/?e=' + encodeURIComponent(options?.email));
       await Promise.all([

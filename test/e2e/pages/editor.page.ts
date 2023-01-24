@@ -109,7 +109,7 @@ export class EditorPage extends BasePage {
     super(page, `/app/lexicon/${project.id}`, page.locator('.words-container-title:visible, .no-entries:visible'));
   }
 
-  async goto(options?: EditorGotoOptions): Promise<this> {
+  override async goto(options?: EditorGotoOptions): Promise<this> {
     await super.goto(options);
     if (options?.entryId) {
       // Navigating from one entry to another via URL/goto doesn't cause angular to load the new entry
@@ -120,7 +120,7 @@ export class EditorPage extends BasePage {
     return this;
   }
 
-  async waitFor(): Promise<this> {
+  override async waitFor(): Promise<this> {
     await super.waitFor();
     if (await this.page.isVisible('[id^=entryId_]')) {
       await this.locator('.entry-card').waitFor();

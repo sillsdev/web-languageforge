@@ -35,7 +35,7 @@ export class ProjectsPage extends BasePage {
     super(page, '/app/projects', page.locator('button:has-text("Start or Join a New Project")'));
   }
 
-  async goto(): Promise<this> {
+  override async goto(): Promise<this> {
     await super.goto();
     if (await this.projectsPerPageDropdown.isVisible()) {
       await this.projectsPerPageDropdown.selectOption('100');

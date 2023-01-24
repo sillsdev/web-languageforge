@@ -15,3 +15,5 @@ export * from './site-admin.page';
 export * from './user-profile.page';
 export * from './home.page';
 export * from './terms-and-conditions.page';
+export * from './oauth-google.page';
+export * from './oauth-facebook.page';
