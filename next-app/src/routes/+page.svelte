@@ -187,8 +187,8 @@
 		<ul class='menu p-4 w-fit bg-base-100 text-base-content'>
 			<li class='menu-title grid grid-cols-3'>
 				<span on:click={ () => sort_items_by('name') } on:keydown={ () => sort_items_by('name') } class='cursor-pointer w-fit'>Name</span>
-				<span on:click={ () => sort_items_by('prop') } on:keydown={ () => sort_items_by('name') } class='cursor-pointer w-fit'>Prop</span>
-				<span on:click={ () => sort_items_by('number') } on:keydown={ () => sort_items_by('name') } class='cursor-pointer w-fit'>Number</span>
+				<span on:click={ () => sort_items_by('prop') } on:keydown={ () => sort_items_by('prop') } class='cursor-pointer w-fit'>Prop</span>
+				<span on:click={ () => sort_items_by('number') } on:keydown={ () => sort_items_by('number') } class='cursor-pointer w-fit'>Number</span>
 			</li>
 
 			<hr class='mt-2 mb-4'>
