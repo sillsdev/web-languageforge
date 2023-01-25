@@ -1,6 +1,7 @@
 <script lang=ts>
 	import { onMount } from 'svelte'
 
+	export let name
 	export let label = ''
 	export let type = 'text'
 	export let value = ''
@@ -28,9 +29,9 @@
 
 <!-- https://daisyui.com/components/input -->
 <label for={ id } class=label>
-	<span class='label-text'>
+	<span class=label-text>
 		{ label }
 	</span>
 </label>
 
-<input { id } use:typeWorkaround bind:value { required } bind:this={ input } class='input input-bordered' />
+<input { id } use:typeWorkaround { name } bind:value { required } bind:this={ input } class='input input-bordered' />

@@ -159,15 +159,15 @@
 			<h3>Form</h3>
 			<p>Intended to remove some biolerplate and provide some consistent layout</p>
 			<Form>
-				<Input label=default />
+				<Input name=default label=default />
 
 				<Button>primary</Button>
 			</Form>
 
 			<h3>Input</h3>
-			<Input label=default />
-			<Input label=password type=password />
-			<Input label=value bind:value /> <span>{value}</span>
+			<Input name=default label=default />
+			<Input name=password label=password type=password />
+			<Input name=value label=value bind:value /> <span>{value}</span>
 
 			<h3>PageHeader</h3>
 			<PageHeader>Simple</PageHeader>

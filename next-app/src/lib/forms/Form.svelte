@@ -1,4 +1,4 @@
-<form on:submit|preventDefault novalidate class='form-control'>
+<form method=post novalidate class=form-control>
 	<slot />
 </form>
 
