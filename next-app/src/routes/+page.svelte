@@ -186,9 +186,9 @@
 
 		<ul class='menu p-4 w-fit bg-base-100 text-base-content'>
 			<li class='menu-title grid grid-cols-3'>
-				<span on:click={ () => sort_items_by('name') } on:keydown={ () => sort_items_by('name') } class='cursor-pointer w-fit'>Name</span>
-				<span on:click={ () => sort_items_by('prop') } on:keydown={ () => sort_items_by('name') } class='cursor-pointer w-fit'>Prop</span>
-				<span on:click={ () => sort_items_by('number') } on:keydown={ () => sort_items_by('name') } class='cursor-pointer w-fit'>Number</span>
+				<button on:click={ () => sort_items_by('name') } class=w-fit>Name</button>
+				<button on:click={ () => sort_items_by('prop') } class=w-fit>Prop</button>
+				<button on:click={ () => sort_items_by('number') } class=w-fit>Number</button>
 			</li>
 
 			<hr class='mt-2 mb-4'>

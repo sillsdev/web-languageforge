@@ -11,7 +11,7 @@ export abstract class TabbedBasePage extends BasePage {
    */
   protected abstract get tabLink(): Locator;
 
-  async goto(options?: GotoOptions): Promise<this> {
+  override async goto(options?: GotoOptions): Promise<this> {
     await this.page.goto(this.url);
     await Promise.all([
       this.tabLink.click(),

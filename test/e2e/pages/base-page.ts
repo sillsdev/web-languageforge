@@ -28,7 +28,7 @@ export abstract class BasePage
     return this.page.url().startsWith(appUrl) && !!this.page.url().match(this.urlPattern);
   }
 
-  private readonly locators: Locator[];
+  protected readonly locators: Locator[];
   private readonly urlPattern = this.url.includes('#') ?
     new RegExp(`${this.url}`) : new RegExp(`${this.url}/?(#|$)`);
 
