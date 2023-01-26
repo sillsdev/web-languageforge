@@ -1,4 +1,4 @@
-import { sf, type Rpc } from '$lib/server/sf'
+import { sf } from '$lib/server/sf'
 import { fetch_current_user } from '$lib/server/user'
 import { fail, redirect } from '@sveltejs/kit'
 import type { RequestEvent } from '../$types'
