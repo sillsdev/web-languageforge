@@ -6,7 +6,7 @@
 	} from '$lib/forms'
 	import PageHeader from '$lib/PageHeader.svelte'
 	import { error } from '$lib/error'
-    import type { ActionData } from './$types'
+	import type { ActionData } from './$types'
 
 	export let form: ActionData
 
