@@ -7,7 +7,7 @@ export const actions = {
 	default: async ({ request }: RequestEvent) => {
 		const submissions = await request.formData()
 
-		const new_password = submissions.get('new_password')
+		const new_password = submissions.get('new_password') as string
 		const new_password_confirm = submissions.get('new_password_confirm')
 
 		if (! new_password) {
