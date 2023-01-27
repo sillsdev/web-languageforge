@@ -76,7 +76,15 @@ composer-dev:
 	docker compose build composer-dev
 	docker compose run composer-dev
 
+.PHONY: csv-insights
+csv-insights:
+	cp -r scripts src/Site/
+	docker compose exec app php /var/www/html/Site/scripts/csvInsights.php
+	mv src/Site/scripts/csv .
+	rm -r src/Site/scripts
+
 .PHONY: clean
+
 clean:
 	docker compose down
 	docker system prune -f

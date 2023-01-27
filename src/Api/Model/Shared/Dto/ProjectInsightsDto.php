@@ -26,8 +26,8 @@ class ProjectInsightsDto
         $projectData->projectCode = $project->projectCode;
         $projectData->interfaceLanguageCode = $project->interfaceLanguageCode;
         $projectData->isArchived = $project->isArchived;
-        $projectData->dateModified = $project->dateModified->asDateTimeInterface()->format(\DateTime::RFC2822);
-        $projectData->dateCreated = $project->dateCreated->asDateTimeInterface()->format(\DateTime::RFC2822);
+        $projectData->dateModified = $project->dateModified->asDateTimeInterface()->format(\DateTime::ISO8601);
+        $projectData->dateCreated = $project->dateCreated->asDateTimeInterface()->format(\DateTime::ISO8601);
         $projectData->url = "/app/{$project->appName}/$project->id/";
 
         // owner data
@@ -102,11 +102,11 @@ class ProjectInsightsDto
             }
         }
         $projectData->recentUsers = count($recentUsers);
-        $projectData->lastActivityDate = $lastActivityDate ? $lastActivityDate->format(\DateTime::RFC2822) : null;
+        $projectData->lastActivityDate = $lastActivityDate ? $lastActivityDate->format(\DateTime::ISO8601) : null;
 
         $projectData->lastEntryModifiedDate = $project->lastEntryModifiedDate
             ->asDateTimeInterface()
-            ->format(\DateTime::RFC2822);
+            ->format(\DateTime::ISO8601);
         $projectData->commenters = $commenters;
         $projectData->observers = $observers;
         $projectData->languageCode = $project->languageCode;
@@ -126,7 +126,7 @@ class ProjectInsightsDto
         $projectData->comments = $commentList->count;
 
         $projectData->lastSyncedDate = $project->lastSyncedDate
-            ? $project->lastSyncedDate->asDateTimeInterface()->format(\DateTime::RFC2822)
+            ? $project->lastSyncedDate->asDateTimeInterface()->format(\DateTime::ISO8601)
             : null;
         $projectData->inputSystems = count($project->inputSystems);
 
@@ -135,19 +135,13 @@ class ProjectInsightsDto
 
     public static function allProjectInsights()
     {
-        $appName = LfProjectModel::LEXICON_APP;
-
         $projectList = new ProjectListModel();
         $projectList->read();
 
         $insights = new stdClass();
-        $insights->appName = $appName;
         $insights->projectList = [];
 
         foreach ($projectList->entries as $project) {
-            if ($project["appName"] !== $appName) {
-                continue;
-            }
             $insights->projectList[] = ProjectInsightsDto::singleProjectInsights($project["id"]);
         }
         return $insights;
@@ -169,6 +163,12 @@ class ProjectInsightsDto
         $count = self::writeInsightsToCsvFilePointer($filePointer);
         fclose($filePointer);
         print "Wrote $count insights to CSV file $filename\n";
+    }
+
+    public static function csvInsightsToFolder($folderName)
+    {
+        \mkdir($folderName);
+        self::csvInsightsToFile("$folderName/insights.csv");
     }
 
     private static function writeInsightsToCsvFilePointer($filePointer)

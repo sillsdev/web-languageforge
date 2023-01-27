@@ -7,5 +7,5 @@ use Api\Model\Shared\Dto\ProjectInsightsDto;
 
 php_sapi_name() == "cli" or die("this script must be run on the command-line");
 
-ProjectInsightsDto::csvInsightsToFile("languageforge.csv");
+ProjectInsightsDto::csvInsightsToFolder("csv");
 

@@ -13,7 +13,7 @@ export class SiteAdminProjectInsightsController implements angular.IController {
 
     const link = document.createElement('a');
     link.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(dto.data);
-    link.download = `${site}_project_insights_${new Date().toISOString()}.csv`;
+    link.download = `languageforge_project_insights_${new Date().toISOString()}.csv`;
     // Gecko doesn't download when using link.click()
     link.dispatchEvent(new MouseEvent('click'));
   }
