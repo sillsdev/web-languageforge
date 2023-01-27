@@ -79,6 +79,7 @@ class LexEntryModel extends MapperModel
                 "cvPattern",
                 "tone",
                 "summaryDefinition",
+                "entryImportResidue",
             ],
             false
         );
@@ -175,6 +176,9 @@ class LexEntryModel extends MapperModel
     /** @var LexMultiText */
     public $summaryDefinition;
 
+    /** @var LexMultiText */
+    public $entryImportResidue;
+
     public static function mapper($databaseName)
     {
         /** @var LexEntryMongoMapper $instance */
@@ -210,6 +214,7 @@ class LexEntryModel extends MapperModel
             case "literalMeaning":
             case "note": // TODO Notes need to be an array, and more capable than a multi-text. Notes have types. CP 2014-10
             case "summaryDefinition":
+            case "entryImportResidue":
                 return "LexMultiText";
             case "environments":
                 return "LexMultiValue";
@@ -461,6 +466,7 @@ class LexEntryModel extends MapperModel
             "cvPattern",
             "tone",
             "summaryDefinition",
+            "entryImportResidue",
         ];
         $result = [];
         foreach ($properties as $property) {
