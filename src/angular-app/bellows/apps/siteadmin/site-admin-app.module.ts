@@ -10,7 +10,6 @@ import {PuiUtilityModule} from '../../shared/utils/pui-utils.module';
 import {LdapiProjectsComponent} from './ldapi-projects-view';
 import {LdapiUsersComponent} from './ldapi-users-view';
 import {SiteAdminArchivedProjectsComponent} from './site-admin-archived-projects.component';
-import { SiteAdminProjectInsightsComponent } from './site-admin-project-insights.component';
 import {SiteAdminUsersComponent} from './site-admin-users.component';
 import {SiteAdminComponent} from './site-admin.component';
 import {LdProjectMembersComponent} from '../../../languageforge/ldproject/ldproject-members.component';
@@ -33,6 +32,5 @@ export const SiteAdminAppModule = angular
   .component('siteAdminLdprojects', LdapiProjectsComponent)
   .component('ldprojectmembers', LdProjectMembersComponent)
   .component('siteAdminLdusers', LdapiUsersComponent)
-  .component('siteAdminProjectInsights', SiteAdminProjectInsightsComponent)
   .component('siteAdminArchivedProjects', SiteAdminArchivedProjectsComponent)
   .name;
