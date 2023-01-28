@@ -166,34 +166,6 @@ class ActivityListDto
         return $items;
     }
 
-    // Helper function for getActivityForUser()
-    private static function filterActivityByUserId($projectModel, $userId, $itemId)
-    {
-        $activity = new ActivityModel($projectModel, $itemId);
-        switch ($activity->action) {
-            case ActivityModel::ADD_ANSWER:
-            case ActivityModel::UPDATE_ANSWER:
-                $authorId = $activity->userRef->id;
-                return $authorId == $userId;
-                break;
-            case ActivityModel::ADD_COMMENT:
-            case ActivityModel::UPDATE_COMMENT:
-                $commentAuthorId = $activity->userRef->id;
-                $answerAuthorId = $activity->userRefRelated->id;
-                return $answerAuthorId == $userId && $commentAuthorId == $userId;
-                break;
-            case ActivityModel::INCREASE_SCORE:
-            case ActivityModel::DECREASE_SCORE:
-                // These activities actually do not preserve enough information for us to tell whose answer was voted on!
-                // So we can only filter by "You yourself voted an answer up or down", and can't tell whose answer it was.
-                $voterId = $activity->userRef->id;
-                return $voterId == $userId;
-                break;
-            default:
-                return true;
-        }
-    }
-
     /**
      * @param string $fieldIdPart
      * @return array

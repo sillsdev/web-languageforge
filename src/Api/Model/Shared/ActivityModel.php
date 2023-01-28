@@ -11,15 +11,6 @@ use Palaso\Utilities\CodeGuard;
 class ActivityModel extends MapperModel
 {
     // constants describing Actions
-    const ADD_COMMENT = "add_comment";
-    const UPDATE_COMMENT = "update_comment";
-    const ADD_ANSWER = "add_answer";
-    const UPDATE_ANSWER = "update_answer";
-    const ADD_TEXT = "add_text";
-    const ADD_QUESTION = "add_question";
-    const CHANGE_STATE_OF_QUESTION = "change_state_of_question";
-    const INCREASE_SCORE = "increase_score";
-    const DECREASE_SCORE = "decrease_score";
     const ADD_USER_TO_PROJECT = "add_user_to_project";
     const UNKNOWN = "unknown";
     const ADD_ENTRY = "add_entry";
@@ -37,10 +28,6 @@ class ActivityModel extends MapperModel
 
     // content types for use with the addContent method
     const PROJECT = "project";
-    const TEXT = "text";
-    const QUESTION = "question";
-    const ANSWER = "answer";
-    const COMMENT = "comment";
     const LEX_COMMENT = "lexComment";
     const LEX_COMMENT_CONTEXT = "lexCommentContext";
     const LEX_COMMENT_LABEL = "lexCommentLabel";
