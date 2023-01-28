@@ -76,10 +76,11 @@ composer-dev:
 	docker compose build composer-dev
 	docker compose run composer-dev
 
-.PHONY: csv-insights
-csv-insights:
+.PHONY: csv-analytics
+csv-analytics:
 	cp -r scripts src/Site/
-	docker compose exec app php /var/www/html/Site/scripts/csvInsights.php
+	docker compose exec app php /var/www/html/Site/scripts/csvAnalytics.php
+	- rm -r csv
 	mv src/Site/scripts/csv .
 	rm -r src/Site/scripts
 

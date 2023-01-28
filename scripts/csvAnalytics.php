@@ -2,10 +2,9 @@
 
 <?php
 require_once "scriptsConfig.php";
-
-use Api\Model\Shared\Dto\ProjectInsightsDto;
+require_once "Analytics.php";
 
 php_sapi_name() == "cli" or die("this script must be run on the command-line");
 
-ProjectInsightsDto::csvInsightsToFolder("csv");
+Analytics::csvDataToFolder("csv");
 
