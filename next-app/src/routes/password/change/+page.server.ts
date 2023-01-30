@@ -8,14 +8,9 @@ export const actions = {
 		const submissions = await request.formData()
 
 		const new_password = submissions.get('new_password') as string
-		const new_password_confirm = submissions.get('new_password_confirm')
 
 		if (! new_password) {
 			return fail(400, { failed: 'Password is required' })
-		}
-
-		if (new_password !== new_password_confirm) {
-			return fail(400, { failed: 'Passwords do not match' })
 		}
 
 		const cookie = request.headers.get('cookie') || ''

@@ -5,7 +5,7 @@
 		Input,
 	} from '$lib/forms'
 	import PageHeader from '$lib/PageHeader.svelte'
-	import { error } from '$lib/error'
+	import { dismiss, error } from '$lib/error'
 	import type { ActionData } from './$types'
 
 	export let form: ActionData
@@ -15,6 +15,23 @@
 
 	$: if (form?.failed) {
 		$error = Error(form.failed)
+	}
+
+	$: new_password_confirm && debounce(() => verify(new_password_confirm, new_password), 400)
+
+	$: submittable = new_password && new_password_confirm && new_password_confirm === new_password
+	$: disabled = ! submittable
+
+	function verify(password_confirm: string, password: string) {
+		password_confirm !== password ? $error = Error('Passwords are not the same') : dismiss()
+	}
+
+	function debounce(fn: () => void, delay: number) {
+		const id = setTimeout(() => {
+			fn()
+
+			clearTimeout(id)
+		}, delay)
 	}
 </script>
 
@@ -29,8 +46,8 @@
 
 	<Form>
 		<Input label='New password:' name=new_password type=password bind:value={ new_password } required autofocus />
-		<Input label='Confirm new password:' name=new_password_confirm type=password bind:value={ new_password_confirm } required />
+		<Input label='Confirm new password:' type=password bind:value={ new_password_confirm } required />
 
-		<Button>Change my password</Button>
+		<Button {disabled}>Change my password</Button>
 	</Form>
 </section>
