@@ -40,6 +40,6 @@ class LexSenseModelTest extends TestCase
         $this->assertInstanceOf(LexValue::class, $sense->senseType);
         $this->assertInstanceOf(LexMultiValue::class, $sense->academicDomains);
         $this->assertInstanceOf(LexMultiValue::class, $sense->anthropologyCategories);
-        $this->assertInstanceOf(LexMultiValue::class, $sense->status);
+        $this->assertInstanceOf(LexValue::class, $sense->status);
     }
 }
