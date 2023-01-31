@@ -6,6 +6,7 @@
 	} from '$lib/forms'
 	import PageHeader from '$lib/PageHeader.svelte'
 	import { dismiss, error } from '$lib/error'
+    import { debounce } from '$lib/debounce'
 	import type { ActionData } from './$types'
 
 	export let form: ActionData
@@ -24,14 +25,6 @@
 
 	function verify(password_confirm: string, password: string) {
 		password_confirm !== password ? $error = Error('Passwords are not the same') : dismiss()
-	}
-
-	function debounce(fn: () => void, delay: number) {
-		const id = setTimeout(() => {
-			fn()
-
-			clearTimeout(id)
-		}, delay)
 	}
 </script>
 
