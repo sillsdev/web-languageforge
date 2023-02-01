@@ -1,7 +1,7 @@
 <script lang=ts>
 	import { onMount } from 'svelte'
 
-	export let name
+	export let name = ''
 	export let label = ''
 	export let type = 'text'
 	export let value = ''
