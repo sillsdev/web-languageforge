@@ -43,14 +43,14 @@ create-new-deployment-mail:
 
 deploy-staging: deploy-db deploy-mail-staging deploy-app-staging deploy-lfmerge-staging deploy-next-proxy-staging deploy-next-app-staging
 deploy-mail-staging:
-	sed -e s/{{SERVER_HOSTNAME}}/qa.languageforge.org/ mail-deployment.yaml | kubectl apply -f -
+	sed -e s/{{SERVER_HOSTNAME}}/staging.languageforge.org/ mail-deployment.yaml | kubectl apply -f -
 deploy-app-staging:
-	sed -e s/{{WEBSITE}}/qa.languageforge.org/ app-deployment.yaml \
+	sed -e s/{{WEBSITE}}/staging.languageforge.org/ app-deployment.yaml \
   | sed -e s/{{VERSION}}/$(VERSION_APP)/ | kubectl apply -f -
 deploy-lfmerge-staging:
 	sed -e s/{{VERSION_LFMERGE}}/$(VERSION_LFMERGE)/ lfmerge-deployment.yaml | kubectl apply -f -
 deploy-next-proxy-staging:
-	sed -e s/{{WEBSITE}}/qa.languageforge.org/ next-proxy-deployment.yaml \
+	sed -e s/{{WEBSITE}}/staging.languageforge.org/ next-proxy-deployment.yaml \
   | sed -e s/{{VERSION}}/$(VERSION_PROXY)/ | kubectl apply -f -
 deploy-next-app-staging:
 	sed -e s/{{VERSION}}/$(VERSION_NEXT_APP)/ next-app-deployment.yaml | kubectl apply -f -
