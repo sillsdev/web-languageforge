@@ -4,9 +4,6 @@
 	auto_https off
 }
 
-staging.languageforge.org {
-		header X-Robots-Tag noindex
-}
 
 :80 {
 	@next_app_paths {
@@ -24,4 +21,11 @@ staging.languageforge.org {
 	}
 
 	reverse_proxy {$LEGACY_APP}
+
+	@staging {
+		host staging.languageforge.org
+	}
+	header @staging {
+		X-Robots-Tag noindex
+	}
 }
