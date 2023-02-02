@@ -4,6 +4,10 @@
 	auto_https off
 }
 
+staging.languageforge.org {
+		header X-Robots-Tag noindex
+}
+
 :80 {
 	@next_app_paths {
 		path /_app/*

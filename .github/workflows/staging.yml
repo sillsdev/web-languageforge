@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - develop
+      - bugfix/qa-to-staging
 
 jobs:
   staging:
