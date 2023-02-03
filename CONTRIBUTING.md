@@ -10,7 +10,7 @@
 
 1.  Create a branch off of `develop`
 1.  Create a PR back into `develop`
-1.  Once approved and merged, test those changes on [qa.languageforge.org](https://qa.languageforge.org)
+1.  Once approved and merged, test those changes on staging
 1.  Once you are satisfied with the changes, coordinate with the team to deliver those changes to the production environment
 1.  Team leads will determine when the right time to cut a release, i.e., tag and deploy, typically this should be within a day or two
 

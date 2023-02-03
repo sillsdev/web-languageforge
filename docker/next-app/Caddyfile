@@ -4,6 +4,7 @@
 	auto_https off
 }
 
+
 :80 {
 	@next_app_paths {
 		path /_app/*
@@ -20,4 +21,12 @@
 	}
 
 	reverse_proxy {$LEGACY_APP}
+
+	# https://developers.google.com/search/docs/crawling-indexing/block-indexing#http-response-header
+	@staging {
+		host staging.languageforge.org
+	}
+	header @staging {
+		X-Robots-Tag noindex
+	}
 }
