@@ -22,6 +22,7 @@
 
 	reverse_proxy {$LEGACY_APP}
 
+	# https://developers.google.com/search/docs/crawling-indexing/block-indexing#http-response-header
 	@staging {
 		host staging.languageforge.org
 	}
