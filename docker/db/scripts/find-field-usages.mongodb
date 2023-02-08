@@ -1,0 +1,116 @@
+
+
+function verifyDbExists(dbName) {
+    var database = db.getSiblingDB("admin")
+    .runCommand({ "listDatabases": 1 })
+    .databases.find(database => database.name === dbName);
+    if (!exists) {
+        throw new Error(`The database "${dbName}" does not exist.`)
+    }
+}
+
+function findEntriesThatUseFieldInDb(fieldPath, dbName, skipVerify) {
+    skipVerify || verifyDbExists(dbName);
+
+    var lexicon = db.getSiblingDB(dbName).getCollection('lexicon');
+    let matches = [];
+    if (lexicon) {
+        var cursor = lexicon.find({[fieldPath]: {"$exists" : true}});
+        while (cursor.hasNext()) {
+            var entry = cursor.next();
+            if (entryHasNonEmptyValueForField(entry, fieldPath)) {
+                matches.push({db: dbName, entry});
+            }
+        }
+    }
+    return matches;
+}
+
+function findEntriesThatUseFieldInAllDbs(fieldPath, threshold) {
+    threshold = threshold || 300;
+    db = db.getSiblingDB("admin");
+    dbs = db.runCommand({ "listDatabases": 1 }).databases;
+    var results = [];
+
+    for (var i in dbs) {
+        var database = dbs[i];
+        var entries = findEntriesThatUseFieldInDb(fieldPath, database.name, true);
+        results.push(...entries);
+        if (results.length >= threshold) {
+            print(`Maxed out at threshold (${threshold}).`)
+            break;
+        }
+    }
+    return results;
+}
+
+function entryHasNonEmptyValueForField(entry, fieldPath) {
+  if (!entry) {
+    return false;
+  }
+
+  return navigatePath(entry, fieldPath)
+    .filter(fieldHasNonEmptyValue).length > 0;
+}
+
+function fieldHasNonEmptyValue(field) {
+    if (!field) {
+      return false;
+    }
+
+    if (field.value && field.value.trim()) {
+      return true;
+    }
+
+    for (var inputSystem in field) {
+      if (field[inputSystem].value && field[inputSystem].value.trim()) {
+        return true;
+      }
+    }
+
+    return false;
+}
+
+function navigatePath(entry, path) {
+  if (!entry) {
+    return [];
+  }
+
+  var step = path.split('.')[0];
+  var result = entry[step];
+  if (!result) {
+    return [];
+  }
+
+  var restPath = path.substring(path.indexOf(".") + 1);
+  var isLastStep = path === restPath;
+  if (isLastStep) {
+    return Array.isArray(result) ? result : [result];
+  } else {
+    return Array.isArray(result)
+        ? result.flatMap(value => navigatePath(value, restPath))
+        : navigatePath(result, restPath);
+  }
+}
+
+function getProjectId(dbName, projects) {
+  const projectCode = dbName.replace('sf_', '');
+  var project = projects.findOne({'projectCode': {$eq: projectCode}});
+  return `${projectCode}::${project._id.toString()}`;
+}
+
+function findNonEmptyValuesForField(fieldPath, dbName) {
+  var results = dbName
+    ? findEntriesThatUseFieldInDb(fieldPath, dbName)
+    : findEntriesThatUseFieldInAllDbs(fieldPath);
+  var projects = db.getSiblingDB('scriptureforge').getCollection('projects');
+  return results.flatMap(result => navigatePath(result.entry, fieldPath)
+    .filter(fieldHasNonEmptyValue)
+    .map(field => ({
+    project: getProjectId(result.db, projects),
+    entryId: result.entry._id.toString(),
+    value: field.value || field.values || field,
+  })));
+}
+
+findNonEmptyValuesForField("senses.senseImportResidue");
