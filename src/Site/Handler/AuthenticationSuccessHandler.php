@@ -56,9 +56,17 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
         if ($referer and strpos($referer, "/app/") !== false) {
             $url = $referer;
         } elseif ($projectId) {
-            $project = ProjectModel::getById($projectId);
-            if ($project->userIsMember($user->id->asString())) {
-                $url = "/app/" . $project->appName . "/" . $projectId;
+            try {
+                $project = ProjectModel::getById($projectId);
+                if ($project->userIsMember($user->id->asString())) {
+                    $url = "/app/" . $project->appName . "/" . $projectId;
+                }
+            } catch (\Exception $e) {
+                // Project ID no longer valid, probably because it was deleted. Let user pick a different one
+                $user->lastUsedProjectId = "";
+                $user->write();
+                $session->set("projectId", "");
+                $url = "/app/projects";
             }
         }
         return $this->httpUtils->createRedirectResponse($request, $url);

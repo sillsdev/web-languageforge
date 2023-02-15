@@ -29,7 +29,7 @@ class Redirect extends App
         } catch (\Exception $e) {
             // Don't know what went wrong, so go to logout route to clear the session
             // This will then redirect to the login page
-            return $app->redirect("/auth/logout");
+            return $this->redirectToProjects($app);
         }
         try {
             // Get most recent project ID, either from PHP session or from user's lastUsedProjectID in MongoDB
@@ -38,13 +38,13 @@ class Redirect extends App
             if (SilexSessionHelper::getUserId($app)) {
                 // User tried to access project they're not a member of, so show them projects view so they can pick a different one
                 // This can happen if the user was removed from the project by a manager between their last login and now
-                return $app->redirect("/app/projects");
+                return $this->redirectToProjects($app);
             }
             // Session somehow persisted despite user being logged out, so go to logout route to clear the session
             return $app->redirect("/auth/logout");
         } catch (\Exception $e) {
-            // Don't know what went wrong, so go to logout route to clear the session
-            return $app->redirect("/auth/logout");
+            // Don't know what went wrong, so we'll assume it's project specific and go to the list
+            return $this->redirectToProjects($app);
         }
         if ($projectId) {
             try {
@@ -55,7 +55,7 @@ class Redirect extends App
                 }
             } catch (\Exception $e) {
                 // Project ID no longer valid, probably because it was deleted. Let user pick a different one
-                return $app->redirect("/app/projects");
+                return $this->redirectToProjects($app);
             }
         }
         // No recently-used project on record, so check if the user has only one project, or none
@@ -75,7 +75,7 @@ class Redirect extends App
                     }
                 } catch (\Exception $e) {
                     // Don't know what went wrong, so default to /app/projects as the most flexible choice
-                    return $app->redirect("/app/projects");
+                    return $this->redirectToProjects($app);
                 }
             } elseif (count($this->_user->projects->refs) == 0) {
                 // User is not a member of any projects, so let them join one or start a new one
@@ -83,6 +83,6 @@ class Redirect extends App
             }
         }
         // If we get here, user had 2 or more projects and didn't have a most recent one, so let them choose their next project
-        return $app->redirect("/app/projects");
+        return $this->redirectToProjects($app);
     }
 }

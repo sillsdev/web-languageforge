@@ -246,9 +246,10 @@ class UserModel extends MapperModel
      */
     public function removeProject($projectId)
     {
-        //$projectModel = new ProjectModel($projectId);
         $this->projects->_removeRef($projectId);
-        //$projectModel->users->_removeRef($this->id);
+        if ($projectId == $this->lastUsedProjectId) {
+            $this->lastUsedProjectId = "";
+        }
     }
 
     public function listProjects()
