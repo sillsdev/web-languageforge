@@ -24,39 +24,39 @@ class Redirect extends App
         $appName = "project",
         $projectId = ""
     ) {
-        try {
-            $this->setupBaseVariables($app);
-        } catch (\Exception $e) {
-            // Don't know what went wrong, so go to logout route to clear the session
-            // This will then redirect to the login page
-            return $app->redirect("/auth/logout");
-        }
+        //try {
+        $this->setupBaseVariables($app);
+        //} catch (\Exception $e) {
+        // Don't know what went wrong, so go to logout route to clear the session
+        // This will then redirect to the login page
+        //  return $app->redirect("/auth/logout");
+        //}
         try {
             // Get most recent project ID, either from PHP session or from user's lastUsedProjectID in MongoDB
             $projectId = SilexSessionHelper::requireValidProjectIdAndValidateUserMembership($app, "");
         } catch (UserUnauthorizedException $e) {
-            if (SilexSessionHelper::getUserId($app)) {
-                // User tried to access project they're not a member of, so show them projects view so they can pick a different one
-                // This can happen if the user was removed from the project by a manager between their last login and now
-                return $app->redirect("/app/projects");
-            }
+            //    if (SilexSessionHelper::getUserId($app)) {
+            // User tried to access project they're not a member of, so show them projects view so they can pick a different one
+            // This can happen if the user was removed from the project by a manager between their last login and now
+            return $app->redirect("/app/projects");
+            //  }
             // Session somehow persisted despite user being logged out, so go to logout route to clear the session
-            return $app->redirect("/auth/logout");
-        } catch (\Exception $e) {
-            // Don't know what went wrong, so go to logout route to clear the session
-            return $app->redirect("/auth/logout");
-        }
+            //return $app->redirect("/auth/logout");
+        } //catch (\Exception $e) {
+        // Don't know what went wrong, so go to logout route to clear the session
+        //return $app->redirect("/auth/logout");
+        //}
         if ($projectId) {
-            try {
-                $project = new ProjectModel($projectId);
-                if ($project && $project->appName) {
-                    // Most recent project is still valid, so go straight there
-                    return $app->redirect("/app/$project->appName/$projectId");
-                }
-            } catch (\Exception $e) {
-                // Project ID no longer valid, probably because it was deleted. Let user pick a different one
-                return $app->redirect("/app/projects");
+            //try {
+            $project = new ProjectModel($projectId);
+            if ($project && $project->appName) {
+                // Most recent project is still valid, so go straight there
+                return $app->redirect("/app/$project->appName/$projectId");
             }
+            //} catch (\Exception $e) {
+            // Project ID no longer valid, probably because it was deleted. Let user pick a different one
+            return $app->redirect("/app/projects");
+            //}
         }
         // No recently-used project on record, so check if the user has only one project, or none
         if ($this->_user && $this->_user->projects) {
