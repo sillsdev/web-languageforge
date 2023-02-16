@@ -51,13 +51,14 @@ class App extends Base
             $this->setupAngularAppVariables($model);
         } catch (UserUnauthorizedException $e) {
             if (SilexSessionHelper::getUserId($app)) {
-                return $app->redirect("/app/projects");
+                return $this->redirectToProjects($app);
             }
             return $app->redirect("/auth/logout");
         } catch (\Exception $e) {
             // setupBaseVariables() had a catch block for exceptions of unspecified type and it has been refactored here
             // Investigations into exception type were unsuccessful
-            return $app->redirect("/auth/logout");
+            // We'll assume it's project specific and go to the list
+            return $this->redirectToProjects($app);
         }
         return $this->renderPage($app, "angular-app");
     }
@@ -120,6 +121,14 @@ class App extends Base
         $this->addCssFiles($model->appFolder, ["node_modules"]);
 
         $this->addSemanticDomainFile($model);
+    }
+
+    protected function redirectToProjects(Application $app)
+    {
+        $this->_user->lastUsedProjectId = "";
+        $this->_user->write();
+        $app["session"]->set("projectId", "");
+        return $app->redirect("/app/projects");
     }
 
     /**
