@@ -10,9 +10,9 @@ test.describe('Editor audio', () => {
 
   test.beforeAll(async ({ managerTab }) => {
     const configurationPage = await new ConfigurationPageFieldsTab(managerTab, project()).goto();
-    await configurationPage.toggleFieldExpanded('Entry Fields', 'Word');
-    await (await configurationPage.getFieldCheckbox('Entry Fields', 'Word', 'ภาษาไทย (IPA)')).check();
-    await (await configurationPage.getFieldCheckbox('Entry Fields', 'Word', 'ภาษาไทย (Voice)')).check();
+    await configurationPage.toggleFieldExpanded('Entry Fields', 'Lexeme');
+    await (await configurationPage.getFieldCheckbox('Entry Fields', 'Lexeme', 'ภาษาไทย (IPA)')).check();
+    await (await configurationPage.getFieldCheckbox('Entry Fields', 'Lexeme', 'ภาษาไทย (Voice)')).check();
     await configurationPage.applyButton.click();
   });
 
@@ -25,7 +25,7 @@ test.describe('Editor audio', () => {
 
     test('Audio input system is present, playable and has "more" control (member)', async () => {
       await editorPageMember.goto();
-      const audio = editorPageMember.getAudioPlayer('Word', 'taud');
+      const audio = editorPageMember.getAudioPlayer('Lexeme', 'taud');
       await expect(audio.playIcon).toBeVisible();
       await expect(audio.togglePlaybackAnchor).toBeEnabled();
 
@@ -36,9 +36,9 @@ test.describe('Editor audio', () => {
       await expect(audio.downloadButton).not.toBeVisible();
     });
 
-    test('Word 2 (without audio): audio input system is not playable but has "upload" button (member)', async () => {
+    test('Lexeme 2 (without audio): audio input system is not playable but has "upload" button (member)', async () => {
       await editorPageMember.goto({ entryId: entryIds()[1] });
-      const audio = editorPageMember.getAudioPlayer('Word', 'taud');
+      const audio = editorPageMember.getAudioPlayer('Lexeme', 'taud');
       await expect(audio.togglePlaybackAnchor).not.toBeVisible();
       await expect(audio.dropdownToggle).toBeEnabled();
       await expect(audio.uploadButton).toBeVisible();
@@ -56,7 +56,7 @@ test.describe('Editor audio', () => {
 
     test('Audio Input System is playable but does not have "more" control (observer)', async () => {
       await editorPageObserver.goto();
-      const audio = editorPageObserver.getAudioPlayer('Word', 'taud');
+      const audio = editorPageObserver.getAudioPlayer('Lexeme', 'taud');
       await expect(audio.playIcon).toBeVisible();
       await expect(audio.togglePlaybackAnchor).toBeVisible();
       await expect(audio.togglePlaybackAnchor).toBeEnabled();
@@ -65,9 +65,9 @@ test.describe('Editor audio', () => {
       await expect(audio.downloadButton).toBeVisible();
     });
 
-    test('Word 2 (without audio): audio input system is not playable and does not have "upload" button (observer)', async () => {
+    test('Lexeme 2 (without audio): audio input system is not playable and does not have "upload" button (observer)', async () => {
       await editorPageObserver.goto({ entryId: entryIds()[1] });
-      const audio = editorPageObserver.getAudioPlayer('Word', 'taud');
+      const audio = editorPageObserver.getAudioPlayer('Lexeme', 'taud');
       await expect(audio.togglePlaybackAnchor).not.toBeVisible();
       await expect(audio.dropdownToggle).not.toBeVisible();
       await expect(audio.uploadButton).not.toBeVisible();
@@ -85,7 +85,7 @@ test.describe('Editor audio', () => {
 
     test('Audio input system is present, playable and has "more" control (manager)', async () => {
       await editorPageManager.goto();
-      const audio = editorPageManager.getAudioPlayer('Word', 'taud');
+      const audio = editorPageManager.getAudioPlayer('Lexeme', 'taud');
       await expect(audio.playIcon).toBeVisible();
       await expect(audio.togglePlaybackAnchor).toBeEnabled();
       await expect(audio.dropdownToggle).toBeVisible();
@@ -97,7 +97,7 @@ test.describe('Editor audio', () => {
 
     test('Slider is present and updates with seeking', async () => {
       await editorPageManager.goto();
-      const audio = editorPageManager.getAudioPlayer('Word', 'taud');
+      const audio = editorPageManager.getAudioPlayer('Lexeme', 'taud');
       await expect(audio.slider).toBeVisible();
       const bounds = await audio.slider.boundingBox();
       const yMiddle = bounds.y + bounds.height / 2;
@@ -113,7 +113,7 @@ test.describe('Editor audio', () => {
       const cancelAddingAudio = editorPageManager.getCancelDropboxButton(editorPageManager.entryCard, 'Audio');
       await expect(cancelAddingAudio).not.toBeVisible();
 
-      const audio = editorPageManager.getAudioPlayer('Word', 'taud');
+      const audio = editorPageManager.getAudioPlayer('Lexeme', 'taud');
       await audio.dropdownToggle.click();
       await audio.dropdownMenu.uploadReplacementButton.click();
       await expect(audio.dropdownToggle).not.toBeVisible();
@@ -126,9 +126,9 @@ test.describe('Editor audio', () => {
       await expect(cancelAddingAudio).not.toBeVisible();
     });
 
-    test('Word 2 (without audio): audio input system is not playable but has "upload" button (manager)', async () => {
+    test('Lexeme 2 (without audio): audio input system is not playable but has "upload" button (manager)', async () => {
       await editorPageManager.goto({ entryId: entryIds()[1] });
-      const audio = editorPageManager.getAudioPlayer('Word', 'taud');
+      const audio = editorPageManager.getAudioPlayer('Lexeme', 'taud');
       await expect(audio.playIcon).not.toBeVisible();
 
       await expect(audio.dropdownToggle).not.toBeVisible();
@@ -139,7 +139,7 @@ test.describe('Editor audio', () => {
 
     test('Can delete audio input system (manager)', async () => {
       await editorPageManager.goto();
-      const audio = editorPageManager.getAudioPlayer('Word', 'taud');
+      const audio = editorPageManager.getAudioPlayer('Lexeme', 'taud');
       await audio.dropdownToggle.click();
       await audio.dropdownMenu.deleteAudioButton.click();
       const confirmModal = new ConfirmModal(editorPageManager.page);
@@ -154,7 +154,7 @@ test.describe('Editor audio', () => {
       await expect(noticeElement.notices).toHaveCount(0);
 
       // Can't upload a non-audio file
-      const audio = editorPageManager.getAudioPlayer('Word', 'taud');
+      const audio = editorPageManager.getAudioPlayer('Lexeme', 'taud');
       await audio.uploadButton.click();
 
       // Note that Promise.all prevents a race condition between clicking and waiting for the file chooser.
