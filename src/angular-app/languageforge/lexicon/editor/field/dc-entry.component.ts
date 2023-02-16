@@ -52,10 +52,10 @@ export class FieldEntryController implements angular.IController {
   }
 
   deleteSense = (index: number): void => {
-    const deletemsg = 'Are you sure you want to delete the meaning <b>\'' +
+    const deletemsg = 'Are you sure you want to delete the sense <b>\'' +
       LexiconUtilityService.getMeaning(this.control.config, this.config.fields.senses as LexConfigFieldList,
         this.model.senses[index]) + '\'</b>?';
-    this.modal.showModalSimple('Delete Meaning', deletemsg, 'Cancel', 'Delete Meaning')
+    this.modal.showModalSimple('Delete Sense', deletemsg, 'Cancel', 'Delete Sense')
       .then(() => {
         // Adding or removing senses makes for a non-delta update, so save a possible delta update first
         this.control.saveCurrentEntry(false, () => {
