@@ -134,7 +134,7 @@ class LexConfig extends ObjectForEncoding
         "location" => "Location",
         "usage-type" => "Usages",
         "reversal-type" => "Reversal Entries",
-        "sense-type" => "Type",
+        "sense-type" => "Sense Type",
         "anthro-code" => "Anthropology Categories",
         "do-not-publish-in" => "Publish In",
         "status" => "Status",
