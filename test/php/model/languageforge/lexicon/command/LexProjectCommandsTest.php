@@ -53,7 +53,7 @@ class LexProjectCommandsTest extends TestCase
         // test for a few default values
         $this->assertEquals("en", $project2->inputSystems["en"]->tag);
         $this->assertTrue($project2->config->tasks["dbe"]->visible);
-        $this->assertEquals("Lexeme", $project2->config->entry->fields["lexeme"]->label);
+        $this->assertEquals("Lexeme Form", $project2->config->entry->fields["lexeme"]->label);
         $this->assertCount(0, $project2->config->roleViews["observer"]->fields["lexeme"]->inputSystems);
         $this->assertCount(0, $project2->config->roleViews["observer_with_comment"]->fields["lexeme"]->inputSystems);
 

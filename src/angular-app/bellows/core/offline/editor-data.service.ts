@@ -56,7 +56,7 @@ class EntryListModifiers {
   filterText = () => this.filterBy && this.filterBy.text || '';
   filterByLabel = () => this.filterBy && this.filterBy.option && this.filterBy.option.label || '';
   filterActive = () => !!(this.filterText() || this.filterBy && this.filterBy.option);
-  sortOptionLabel = (s: string) => s === 'Default' ? `Default (${this.filterText() ? 'Relevance' : 'Lexeme'})` : s;
+  sortOptionLabel = (s: string) => s === 'Default' ? `Default (${this.filterText() ? 'Relevance' : 'Lexeme Form'})` : s;
 }
 
 const entriesIncrement = 50;

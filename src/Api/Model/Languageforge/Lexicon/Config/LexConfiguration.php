@@ -89,7 +89,7 @@ class LexConfiguration
         $this->entry->fieldOrder[] = LexConfig::SENSES_LIST;
 
         $this->entry->fields[LexConfig::LEXEME] = new LexConfigMultiText();
-        $this->entry->fields[LexConfig::LEXEME]->label = "Lexeme";
+        $this->entry->fields[LexConfig::LEXEME]->label = "Lexeme Form";
         $this->entry->fields[LexConfig::LEXEME]->inputSystems[] = "th";
 
         $this->entry->fields[LexConfig::SENSES_LIST] = new LexConfigFieldList();

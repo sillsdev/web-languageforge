@@ -61,8 +61,8 @@ test.describe('Editor entries', () => {
 
   test('Citation form field overrides lexeme form in dictionary citation view', async ({ managerTab }) => {
     const configurationPage = await new ConfigurationPageFieldsTab(managerTab, project()).goto();
-    await configurationPage.toggleFieldExpanded('Entry Fields', 'Lexeme');
-    await (await configurationPage.getFieldCheckbox('Entry Fields', 'Lexeme', 'ภาษาไทย (IPA)')).check();
+    await configurationPage.toggleFieldExpanded('Entry Fields', 'Lexeme Form');
+    await (await configurationPage.getFieldCheckbox('Entry Fields', 'Lexeme Form', 'ภาษาไทย (IPA)')).check();
     await configurationPage.applyButton.click();
 
     await editorPageManager.goto();
@@ -215,7 +215,7 @@ test.describe('Editor entries', () => {
     await expect(editorPageManager.compactEntryListItem).toHaveCount(newEntryCount);
 
     // go back to editor
-    await (editorPageManager.getTextarea(editorPageManager.entryCard, 'Lexeme', 'th'))
+    await (editorPageManager.getTextarea(editorPageManager.entryCard, 'Lexeme Form', 'th'))
       .fill(entries.entry3.lexeme.th.value);
     await (editorPageManager.getTextarea(editorPageManager.senseCard, 'Definition', 'en'))
       .fill(entries.entry3.senses[0].definition.en.value);
@@ -229,14 +229,14 @@ test.describe('Editor entries', () => {
 
     await expect(partOfSpeedDropdown).toHaveSelectedOption({ label: 'Noun (n)' });
 
-    const alreadyThere: string = await editorPageManager.getTextarea(editorPageManager.entryCard, 'Lexeme', 'th').inputValue();
-    await (editorPageManager.getTextarea(editorPageManager.entryCard, 'Lexeme', 'th'))
+    const alreadyThere: string = await editorPageManager.getTextarea(editorPageManager.entryCard, 'Lexeme Form', 'th').inputValue();
+    await (editorPageManager.getTextarea(editorPageManager.entryCard, 'Lexeme Form', 'th'))
       .fill(alreadyThere + 'a');
     await editorPageManager.page.reload();
     await expect((editorPageManager.getTextarea(
-      editorPageManager.entryCard, 'Lexeme', 'th')))
+      editorPageManager.entryCard, 'Lexeme Form', 'th')))
       .toHaveValue(entries.entry3.lexeme.th.value + 'a');
-    await (editorPageManager.getTextarea(editorPageManager.entryCard, 'Lexeme', 'th'))
+    await (editorPageManager.getTextarea(editorPageManager.entryCard, 'Lexeme Form', 'th'))
       .fill(entries.entry3.lexeme.th.value);
 
     // New word is visible in list
@@ -253,7 +253,7 @@ test.describe('Editor entries', () => {
 
     // previous entry is selected after delete
     await expect(editorPageManager.getTextarea(
-      editorPageManager.entryCard, 'Lexeme', 'th'))
+      editorPageManager.entryCard, 'Lexeme Form', 'th'))
       .toHaveValue(entries.entry1.lexeme.th.value);
   });
 });

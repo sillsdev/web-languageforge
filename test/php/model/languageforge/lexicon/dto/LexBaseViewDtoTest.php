@@ -32,8 +32,8 @@ class LexBaseViewDtoTest extends TestCase
         $this->assertEquals("en", $dto["config"]["inputSystems"]["en"]["tag"]);
         $this->assertTrue($dto["config"]["tasks"]["dbe"]["visible"]);
         $this->assertEquals("fields", $dto["config"]["entry"]["type"], "dto config is not valid");
-        $this->assertEquals("Lexeme", $dto["config"]["entry"]["fields"]["lexeme"]["label"]);
-        $this->assertEquals("Lexeme", $dto["config"]["entry"]["fields"]["lexeme"]["label"]);
+        $this->assertEquals("Lexeme Form", $dto["config"]["entry"]["fields"]["lexeme"]["label"]);
+        $this->assertEquals("Lexeme Form", $dto["config"]["entry"]["fields"]["lexeme"]["label"]);
         $this->assertEquals(
             "Part of Speech",
             $dto["config"]["entry"]["fields"]["senses"]["fields"]["partOfSpeech"]["label"]

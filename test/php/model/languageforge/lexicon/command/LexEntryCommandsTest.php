@@ -207,7 +207,11 @@ class LexEntryCommandsTest extends TestCase
         $this->assertEquals(["oldValue.lexeme.th" => "apple", "newValue.lexeme.th" => "first edit"], $differences);
         $withLabels = LexEntryCommands::addFieldLabelsToDifferences($project->config, $differences);
         $this->assertEquals(
-            ["oldValue.lexeme.th" => "apple", "newValue.lexeme.th" => "first edit", "fieldLabel.lexeme.th" => "Lexeme"],
+            [
+                "oldValue.lexeme.th" => "apple",
+                "newValue.lexeme.th" => "first edit",
+                "fieldLabel.lexeme.th" => "Lexeme Form",
+            ],
             $withLabels
         );
 
@@ -225,7 +229,7 @@ class LexEntryCommandsTest extends TestCase
             [
                 "oldValue.lexeme.th" => "first edit",
                 "newValue.lexeme.th" => "second edit",
-                "fieldLabel.lexeme.th" => "Lexeme",
+                "fieldLabel.lexeme.th" => "Lexeme Form",
             ],
             $withLabels
         );
@@ -252,7 +256,7 @@ class LexEntryCommandsTest extends TestCase
         $this->assertEquals(["oldValue.lexeme.th" => "apple", "newValue.lexeme.th" => ""], $differences);
         $withLabels = LexEntryCommands::addFieldLabelsToDifferences($project->config, $differences);
         $this->assertEquals(
-            ["oldValue.lexeme.th" => "apple", "newValue.lexeme.th" => "", "fieldLabel.lexeme.th" => "Lexeme"],
+            ["oldValue.lexeme.th" => "apple", "newValue.lexeme.th" => "", "fieldLabel.lexeme.th" => "Lexeme Form"],
             $withLabels
         );
     }
