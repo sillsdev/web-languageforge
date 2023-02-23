@@ -38,8 +38,7 @@ test.describe('Lexicon Editor Comments', () => {
       await comment3.toggleReplies();
       await comment3.postReply('Test reply 3.1');
 
-      // Create comments on "Part of Speech"
-      await editorPage.commentBubble('Part of Speech').click();
+      await editorPage.commentBubble('Grammatical Category').click();
 
       const comment4 = await editorPage.postComment('Test comment 4');
       await comment4.toggleReplies();
@@ -70,8 +69,8 @@ test.describe('Lexicon Editor Comments', () => {
 
       await expect(editorPage.commentCount('Lexeme Form', 'en')).toHaveText('1');
 
-      await expect(editorPage.commentCount('Part of Speech')).toHaveText('1');
-      await editorPage.commentBubble('Part of Speech').click();
+      await expect(editorPage.commentCount('Grammatical Category')).toHaveText('1');
+      await editorPage.commentBubble('Grammatical Category').click();
       await expect(editorPage.comments).toHaveCount(1);
       const comment4 = editorPage.getComment(1);
       await expect(comment4.content).toContainText('Test comment 4');

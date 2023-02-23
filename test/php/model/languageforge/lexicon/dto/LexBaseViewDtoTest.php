@@ -35,7 +35,7 @@ class LexBaseViewDtoTest extends TestCase
         $this->assertEquals("Lexeme Form", $dto["config"]["entry"]["fields"]["lexeme"]["label"]);
         $this->assertEquals("Lexeme Form", $dto["config"]["entry"]["fields"]["lexeme"]["label"]);
         $this->assertEquals(
-            "Part of Speech",
+            "Grammatical Category",
             $dto["config"]["entry"]["fields"]["senses"]["fields"]["partOfSpeech"]["label"]
         );
         $this->assertTrue($dto["config"]["roleViews"]["contributor"]["fields"]["lexeme"]["show"]);

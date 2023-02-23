@@ -41,12 +41,12 @@ test.describe('Editor entries', () => {
     expect(editorPageManager.page.url()).not.toContain(entryIds()[0]);
   });
 
-  test('Entry 1: edit page has correct definition, part of speech', async () => {
+  test('Entry 1: edit page has correct definition, grammatical category', async () => {
     await editorPageManager.goto();
     await expect(editorPageManager.getTextarea(
       editorPageManager.senseCard, 'Definition', 'en'))
       .toHaveValue(entries.entry1.senses[0].definition.en.value);
-    expect(await editorPageManager.getSelectedValueFromSelectDropdown(editorPageManager.senseCard, 'Part of Speech'))
+    expect(await editorPageManager.getSelectedValueFromSelectDropdown(editorPageManager.senseCard, 'Grammatical Category'))
       .toEqual(entries.entry1.senses[0].partOfSpeech.displayName);
   });
 
@@ -96,13 +96,13 @@ test.describe('Editor entries', () => {
       editorPageManager.senseCard.first(), 'Definition', 'en')).toHaveValue(entries.multipleMeaningEntry.senses[0].definition.en.value);
   });
 
-  test('Lexeme 2: edit page has correct definition, part of speech', async () => {
+  test('Lexeme 2: edit page has correct definition, grammatical category', async () => {
     await editorPageManager.goto({ entryId: entryIds()[1] });
     await expect(editorPageManager.getTextarea(
       editorPageManager.senseCard, 'Definition', 'en'))
       .toHaveValue(entries.entry2.senses[0].definition.en.value);
 
-    expect(await editorPageManager.getSelectedValueFromSelectDropdown(editorPageManager.senseCard, 'Part of Speech'))
+    expect(await editorPageManager.getSelectedValueFromSelectDropdown(editorPageManager.senseCard, 'Grammatical Category'))
       .toEqual(entries.entry2.senses[0].partOfSpeech.displayName);
   });
 
@@ -128,9 +128,9 @@ test.describe('Editor entries', () => {
       editorPageManager.senseCard.nth(1), 'Definition', 'en'))
       .toHaveValue(entries.multipleMeaningEntry.senses[1].definition.en.value);
 
-    expect(await editorPageManager.getSelectedValueFromSelectDropdown(editorPageManager.senseCard.nth(0), 'Part of Speech'))
+    expect(await editorPageManager.getSelectedValueFromSelectDropdown(editorPageManager.senseCard.nth(0), 'Grammatical Category'))
       .toEqual(entries.multipleMeaningEntry.senses[0].partOfSpeech.displayName);
-    expect(await editorPageManager.getSelectedValueFromSelectDropdown(editorPageManager.senseCard.nth(1), 'Part of Speech'))
+    expect(await editorPageManager.getSelectedValueFromSelectDropdown(editorPageManager.senseCard.nth(1), 'Grammatical Category'))
       .toEqual(entries.multipleMeaningEntry.senses[1].partOfSpeech.displayName);
   });
 
@@ -220,7 +220,7 @@ test.describe('Editor entries', () => {
     await (editorPageManager.getTextarea(editorPageManager.senseCard, 'Definition', 'en'))
       .fill(entries.entry3.senses[0].definition.en.value);
 
-    const partOfSpeedDropdown = editorPageManager.getDropdown(editorPageManager.senseCard, 'Part of Speech');
+    const partOfSpeedDropdown = editorPageManager.getDropdown(editorPageManager.senseCard, 'Grammatical Category');
     partOfSpeedDropdown.selectOption({ label: 'Noun (n)' });
 
     // Autosaves changes
