@@ -30,10 +30,10 @@ export class FieldSenseController implements angular.IController {
         const field = this.config.fields[fieldName];
         if (field.senseLabel == null) {
           field.senseLabel = [];
-          field.senseLabel[-1] = 'Meaning';
+          field.senseLabel[-1] = 'Sense';
         }
 
-        field.senseLabel[this.index] = 'Meaning ' + (this.index + 1);
+        field.senseLabel[this.index] = 'Sense ' + (this.index + 1);
       }
     }
   }

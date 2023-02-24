@@ -11,17 +11,16 @@ test.describe('Lexicon Editor Comments', () => {
 
     await test.step('And input systems and entries', async () => {
       const configurationPage = await new ConfigurationPageFieldsTab(managerTab, project()).goto();
-      await configurationPage.toggleFieldExpanded('Entry Fields', 'Word');
-      await (await configurationPage.getFieldCheckbox('Entry Fields', 'Word', 'English')).check();
-      await (await configurationPage.getFieldCheckbox('Entry Fields', 'Word', 'ภาษาไทย (Voice)')).check();
+      await configurationPage.toggleFieldExpanded('Entry Fields', 'Lexeme Form');
+      await (await configurationPage.getFieldCheckbox('Entry Fields', 'Lexeme Form', 'English')).check();
+      await (await configurationPage.getFieldCheckbox('Entry Fields', 'Lexeme Form', 'ภาษาไทย (Voice)')).check();
       await configurationPage.applyButton.click();
     });
 
     const editorPage = await test.step('Create comments and replies', async () => {
       const editorPage = await new EditorPage(managerTab, project()).goto();
 
-      // Create comments on "Word" "th"
-      await editorPage.commentBubble('Word', 'th').click();
+      await editorPage.commentBubble('Lexeme Form', 'th').click();
 
       const comment1 = await editorPage.postComment('Test comment 1');
       await comment1.toggleReplies();
@@ -33,15 +32,13 @@ test.describe('Lexicon Editor Comments', () => {
       await comment2.postReply('Test reply 2.1');
       await comment2.postReply('Test reply 2.2');
 
-      // Create comments on "Word" "en"
-      await editorPage.commentBubble('Word', 'en').click();
+      await editorPage.commentBubble('Lexeme Form', 'en').click();
 
       const comment3 = await editorPage.postComment('Test comment 3');
       await comment3.toggleReplies();
       await comment3.postReply('Test reply 3.1');
 
-      // Create comments on "Part of Speech"
-      await editorPage.commentBubble('Part of Speech').click();
+      await editorPage.commentBubble('Grammatical Category').click();
 
       const comment4 = await editorPage.postComment('Test comment 4');
       await comment4.toggleReplies();
@@ -53,8 +50,8 @@ test.describe('Lexicon Editor Comments', () => {
     await test.step('Verify comments and replies', async () => {
       await editorPage.reload();
 
-      await expect(editorPage.commentCount('Word', 'th')).toHaveText('2');
-      await editorPage.commentBubble('Word', 'th').click();
+      await expect(editorPage.commentCount('Lexeme Form', 'th')).toHaveText('2');
+      await editorPage.commentBubble('Lexeme Form', 'th').click();
       await expect(editorPage.comments).toHaveCount(2);
       const comment1 = editorPage.getComment(1);
       await expect(comment1.content).toContainText('Test comment 1');
@@ -70,10 +67,10 @@ test.describe('Lexicon Editor Comments', () => {
       await expect(comment2.getReply(1).content).toContainText('Test reply 2.1');
       await expect(comment2.getReply(2).content).toContainText('Test reply 2.2');
 
-      await expect(editorPage.commentCount('Word', 'en')).toHaveText('1');
+      await expect(editorPage.commentCount('Lexeme Form', 'en')).toHaveText('1');
 
-      await expect(editorPage.commentCount('Part of Speech')).toHaveText('1');
-      await editorPage.commentBubble('Part of Speech').click();
+      await expect(editorPage.commentCount('Grammatical Category')).toHaveText('1');
+      await editorPage.commentBubble('Grammatical Category').click();
       await expect(editorPage.comments).toHaveCount(1);
       const comment4 = editorPage.getComment(1);
       await expect(comment4.content).toContainText('Test comment 4');
@@ -83,7 +80,7 @@ test.describe('Lexicon Editor Comments', () => {
     });
 
     await test.step('Like and change state', async () => {
-      await editorPage.commentBubble('Word', 'th').click();
+      await editorPage.commentBubble('Lexeme Form', 'th').click();
       let comment2 = editorPage.getComment(2);
 
       // Likes
@@ -106,7 +103,7 @@ test.describe('Lexicon Editor Comments', () => {
 
       // Verify it stuck
       await editorPage.reload();
-      await editorPage.commentBubble('Word', 'th').click();
+      await editorPage.commentBubble('Lexeme Form', 'th').click();
       comment2 = editorPage.getComment(2);
       await expect(comment2.likes).toContainText('1 Like');
       await expect(comment2.stateButton.markToDo).not.toBeVisible();
@@ -128,7 +125,7 @@ test.describe('Lexicon Editor Comments', () => {
       await expect(editorPage.comments).toHaveCount(4);
 
       // open for field
-      await editorPage.toggleComments('Word', 'th');
+      await editorPage.toggleComments('Lexeme Form', 'th');
       await expect(editorPage.comments).toHaveCount(2);
 
       // open all
@@ -136,19 +133,19 @@ test.describe('Lexicon Editor Comments', () => {
       await expect(editorPage.comments).toHaveCount(4);
 
       // open for field
-      await editorPage.toggleComments('Word', 'th');
+      await editorPage.toggleComments('Lexeme Form', 'th');
       await expect(editorPage.comments).toHaveCount(2);
 
       // close field
-      await editorPage.toggleComments('Word', 'th');
+      await editorPage.toggleComments('Lexeme Form', 'th');
       await expect(editorPage.comments).toHaveCount(0);
 
       // open for field
-      await editorPage.toggleComments('Word', 'en');
+      await editorPage.toggleComments('Lexeme Form', 'en');
       await expect(editorPage.comments).toHaveCount(1);
 
       // open for different field
-      await editorPage.toggleComments('Word', 'th');
+      await editorPage.toggleComments('Lexeme Form', 'th');
       await expect(editorPage.comments).toHaveCount(2);
     });
   });

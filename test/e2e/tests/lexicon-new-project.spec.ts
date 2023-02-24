@@ -502,7 +502,7 @@ test.describe('New Project wizard', () => {
       await expect(editorPage.noEntries).toBeVisible();
       await editorPage.entryList.createNewWordButton.click();
       await editorPage.entryList.expectTotalNumberOfEntries(1);
-      await expect(editorPage.field('Word', 'es')).toBeVisible();
+      await expect(editorPage.field('Lexeme Form', 'es')).toBeVisible();
     });
   });
 });

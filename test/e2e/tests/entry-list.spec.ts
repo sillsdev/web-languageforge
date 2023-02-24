@@ -35,7 +35,7 @@ test.describe('Entries List', () => {
         entryListPageManager.entry(entries.entry1.lexeme.th.value).click(),
         new EditorPage(entryListPageManager.page, project()).waitFor(),
       ])
-      await expect(editorPageManager.getTextarea(editorPageManager.entryCard, 'Word', 'th')).toHaveValue(entries.entry1.lexeme.th.value);
+      await expect(editorPageManager.getTextarea(editorPageManager.entryCard, 'Lexeme Form', 'th')).toHaveValue(entries.entry1.lexeme.th.value);
     });
 
     test('Add word buttons works and redirects to editor', async () => {
