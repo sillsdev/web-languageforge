@@ -8,11 +8,12 @@
 
 ### Typical Workflow
 
-1.  Create a branch off of `develop`
-1.  Create a PR back into `develop`
-1.  Once approved and merged, test those changes on staging
-1.  Once you are satisfied with the changes, coordinate with the team to deliver those changes to the production environment
-1.  Team leads will determine when the right time to cut a release, i.e., tag and deploy, typically this should be within a day or two
+1. Create a branch off of `develop`
+2. Create a PR back into `develop`
+3. A reviewer will evaluate the code changes and (more often than not, if deemed necessary) test the changes locally
+4. Once approved and merged, test your changes on staging
+5. If everything's dandy the card can be moved on to PO sign-off
+6. Team leads will determine when the right time to cut a release, i.e., tag and deploy, typically this should be within a day or two
 
 ### Production Bugfix Workflow
 
