@@ -6,10 +6,10 @@ use Api\Model\Shared\Mapper\ObjectForEncoding;
 
 class LexCommentFieldReference extends ObjectForEncoding
 {
-    /** @var string - the field name e.g. "lexeme" */
+    /** @var string */
     public $field;
 
-    /** @var string - the field name for display e.g. "Word" */
+    /** @var string */
     public $fieldNameForDisplay;
 
     /** @var string */
@@ -21,11 +21,9 @@ class LexCommentFieldReference extends ObjectForEncoding
     /** @var string */
     public $inputSystemAbbreviation;
 
-    // The EntryContext and SenseContext are strings storing the value of the effective "word" (the entry context) and "meaning" (the sense context) at the time the comment was made
-
-    /** @var string - the "Word" value of the entry at comment time */
+    /** @var string */
     public $word;
 
-    /** @var string - the "Meaning" value of the entry at comment time */
+    /** @var string */
     public $meaning;
 }

@@ -1,23 +1,30 @@
-<script>
-	import { goto } from '$app/navigation'
-	import { UPDATE } from '$lib/fetch'
+<script lang=ts>
 	import {
 		Button,
 		Form,
 		Input,
 	} from '$lib/forms'
 	import PageHeader from '$lib/PageHeader.svelte'
+	import { dismiss, error } from '$lib/error'
+	import { debounce } from '$lib/debounce'
+	import type { ActionData } from './$types'
+
+	export let form: ActionData
 
 	let new_password = ''
 	let new_password_confirm = ''
 
-	async function change_password() {
-		await UPDATE({url: '/password', body: {
-			password: new_password,
-			password_confirm: new_password_confirm
-		}})
+	$: if (form?.failed) {
+		$error = Error(form.failed)
+	}
 
-		goto('/password/changed')
+	$: new_password_confirm && debounce(() => verify(new_password_confirm, new_password), 400)
+
+	$: submittable = new_password && new_password_confirm && new_password_confirm === new_password
+	$: disabled = ! submittable
+
+	function verify(password_confirm: string, password: string) {
+		password_confirm !== password ? $error = Error('Passwords are not the same') : dismiss()
 	}
 </script>
 
@@ -25,15 +32,15 @@
 	<title>Change your password</title>
 </svelte:head>
 
-<div class='mx-auto max-w-lg'>
+<section class='mx-auto max-w-lg'>
 	<PageHeader>
 		Change your password
 	</PageHeader>
 
-	<Form on:submit={ change_password }>
-		<Input label='New password:' type=password bind:value={ new_password } required autofocus />
+	<Form>
+		<Input label='New password:' name=new_password type=password bind:value={ new_password } required autofocus />
 		<Input label='Confirm new password:' type=password bind:value={ new_password_confirm } required />
 
-		<Button>Change my password</Button>
+		<Button {disabled}>Change my password</Button>
 	</Form>
-</div>
+</section>

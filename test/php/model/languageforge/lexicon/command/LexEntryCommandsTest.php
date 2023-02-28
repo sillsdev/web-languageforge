@@ -207,7 +207,11 @@ class LexEntryCommandsTest extends TestCase
         $this->assertEquals(["oldValue.lexeme.th" => "apple", "newValue.lexeme.th" => "first edit"], $differences);
         $withLabels = LexEntryCommands::addFieldLabelsToDifferences($project->config, $differences);
         $this->assertEquals(
-            ["oldValue.lexeme.th" => "apple", "newValue.lexeme.th" => "first edit", "fieldLabel.lexeme.th" => "Word"],
+            [
+                "oldValue.lexeme.th" => "apple",
+                "newValue.lexeme.th" => "first edit",
+                "fieldLabel.lexeme.th" => "Lexeme Form",
+            ],
             $withLabels
         );
 
@@ -225,7 +229,7 @@ class LexEntryCommandsTest extends TestCase
             [
                 "oldValue.lexeme.th" => "first edit",
                 "newValue.lexeme.th" => "second edit",
-                "fieldLabel.lexeme.th" => "Word",
+                "fieldLabel.lexeme.th" => "Lexeme Form",
             ],
             $withLabels
         );
@@ -252,7 +256,7 @@ class LexEntryCommandsTest extends TestCase
         $this->assertEquals(["oldValue.lexeme.th" => "apple", "newValue.lexeme.th" => ""], $differences);
         $withLabels = LexEntryCommands::addFieldLabelsToDifferences($project->config, $differences);
         $this->assertEquals(
-            ["oldValue.lexeme.th" => "apple", "newValue.lexeme.th" => "", "fieldLabel.lexeme.th" => "Word"],
+            ["oldValue.lexeme.th" => "apple", "newValue.lexeme.th" => "", "fieldLabel.lexeme.th" => "Lexeme Form"],
             $withLabels
         );
     }
@@ -292,7 +296,7 @@ class LexEntryCommandsTest extends TestCase
                 "deleted.senses@0#" . $sense->guid => "apple",
                 "oldValue.senses@0#" . $sense->guid . ".definition.en" => "apple",
                 "newValue.senses@0#" . $sense->guid . ".definition.en" => "",
-                "fieldLabel.senses@0#" . $sense->guid => "Meaning",
+                "fieldLabel.senses@0#" . $sense->guid => "Sense",
                 "fieldLabel.senses@0#" . $sense->guid . ".definition.en" => "Definition",
             ],
             $withLabels
@@ -340,12 +344,12 @@ class LexEntryCommandsTest extends TestCase
                 "deleted.senses@0#" . $sense1->guid => "apple",
                 "oldValue.senses@0#" . $sense1->guid . ".definition.en" => "apple",
                 "newValue.senses@0#" . $sense1->guid . ".definition.en" => "",
-                "fieldLabel.senses@0#" . $sense1->guid => "Meaning",
+                "fieldLabel.senses@0#" . $sense1->guid => "Sense",
                 "fieldLabel.senses@0#" . $sense1->guid . ".definition.en" => "Definition",
                 "deleted.senses@1#" . $sense2->guid => "also an apple",
                 "oldValue.senses@1#" . $sense2->guid . ".definition.en" => "also an apple",
                 "newValue.senses@1#" . $sense2->guid . ".definition.en" => "",
-                "fieldLabel.senses@1#" . $sense2->guid => "Meaning",
+                "fieldLabel.senses@1#" . $sense2->guid => "Sense",
                 "fieldLabel.senses@1#" . $sense2->guid . ".definition.en" => "Definition",
             ],
             $withLabels
@@ -389,8 +393,8 @@ class LexEntryCommandsTest extends TestCase
             [
                 "moved.senses@0#" . $sense1->guid => "1",
                 "moved.senses@1#" . $sense2->guid => "0",
-                "fieldLabel.senses@0#" . $sense1->guid => "Meaning",
-                "fieldLabel.senses@1#" . $sense2->guid => "Meaning",
+                "fieldLabel.senses@0#" . $sense1->guid => "Sense",
+                "fieldLabel.senses@1#" . $sense2->guid => "Sense",
             ],
             $withLabels
         );
@@ -435,10 +439,10 @@ class LexEntryCommandsTest extends TestCase
                 "deleted.senses@0#" . $sense1->guid => "apple",
                 "oldValue.senses@0#" . $sense1->guid . ".definition.en" => "apple",
                 "newValue.senses@0#" . $sense1->guid . ".definition.en" => "",
-                "fieldLabel.senses@0#" . $sense1->guid => "Meaning",
+                "fieldLabel.senses@0#" . $sense1->guid => "Sense",
                 "fieldLabel.senses@0#" . $sense1->guid . ".definition.en" => "Definition",
                 "moved.senses@1#" . $sense2->guid => 0,
-                "fieldLabel.senses@1#" . $sense2->guid => "Meaning",
+                "fieldLabel.senses@1#" . $sense2->guid => "Sense",
             ],
             $withLabels
         );
@@ -482,7 +486,7 @@ class LexEntryCommandsTest extends TestCase
                 "deleted.senses@1#" . $sense2->guid => "also an apple",
                 "oldValue.senses@1#" . $sense2->guid . ".definition.en" => "also an apple",
                 "newValue.senses@1#" . $sense2->guid . ".definition.en" => "",
-                "fieldLabel.senses@1#" . $sense2->guid => "Meaning",
+                "fieldLabel.senses@1#" . $sense2->guid => "Sense",
                 "fieldLabel.senses@1#" . $sense2->guid . ".definition.en" => "Definition",
             ],
             $withLabels
@@ -541,7 +545,7 @@ class LexEntryCommandsTest extends TestCase
                 "newValue.senses@1#" . $sense2Guid . ".definition.fr" => "une pomme",
                 "oldValue.senses@1#" . $sense2Guid . ".generalNote.en" => "",
                 "newValue.senses@1#" . $sense2Guid . ".generalNote.en" => "note about the apple",
-                "fieldLabel.senses@1#" . $sense2Guid => "Meaning",
+                "fieldLabel.senses@1#" . $sense2Guid => "Sense",
                 "fieldLabel.senses@1#" . $sense2Guid . ".definition.en" => "Definition",
                 "fieldLabel.senses@1#" . $sense2Guid . ".definition.fr" => "Definition",
                 "fieldLabel.senses@1#" . $sense2Guid . ".generalNote.en" => "General Note",
@@ -598,7 +602,7 @@ class LexEntryCommandsTest extends TestCase
         $this->assertEquals(
             [
                 "moved.senses@0#" . $sense2->guid => 1,
-                "fieldLabel.senses@0#" . $sense2->guid => "Meaning",
+                "fieldLabel.senses@0#" . $sense2->guid => "Sense",
                 "added.senses@0#" . $newSenseGuid => "also an apple",
                 "oldValue.senses@0#" . $newSenseGuid . ".definition.en" => "",
                 "newValue.senses@0#" . $newSenseGuid . ".definition.en" => "also an apple",
@@ -606,7 +610,7 @@ class LexEntryCommandsTest extends TestCase
                 "newValue.senses@0#" . $newSenseGuid . ".definition.fr" => "une pomme",
                 "oldValue.senses@0#" . $newSenseGuid . ".generalNote.en" => "",
                 "newValue.senses@0#" . $newSenseGuid . ".generalNote.en" => "note about the apple",
-                "fieldLabel.senses@0#" . $newSenseGuid => "Meaning",
+                "fieldLabel.senses@0#" . $newSenseGuid => "Sense",
                 "fieldLabel.senses@0#" . $newSenseGuid . ".definition.en" => "Definition",
                 "fieldLabel.senses@0#" . $newSenseGuid . ".definition.fr" => "Definition",
                 "fieldLabel.senses@0#" . $newSenseGuid . ".generalNote.en" => "General Note",
@@ -691,12 +695,12 @@ class LexEntryCommandsTest extends TestCase
                 "newValue.senses@1#" . $senseB->guid . ".definition.en" => "",
                 "oldValue.senses@2#" . $senseC->guid . ".definition.en" => "C",
                 "newValue.senses@2#" . $senseC->guid . ".definition.en" => "C2",
-                "fieldLabel.senses@0#" . $senseA->guid => "Meaning",
-                "fieldLabel.senses@1#" . $senseB->guid => "Meaning",
+                "fieldLabel.senses@0#" . $senseA->guid => "Sense",
+                "fieldLabel.senses@1#" . $senseB->guid => "Sense",
                 "fieldLabel.senses@1#" . $senseB->guid . ".definition.en" => "Definition",
-                "fieldLabel.senses@2#" . $senseC->guid => "Meaning",
+                "fieldLabel.senses@2#" . $senseC->guid => "Sense",
                 "fieldLabel.senses@2#" . $senseC->guid . ".definition.en" => "Definition",
-                "fieldLabel.senses@0#" . $newSenseGuid => "Meaning",
+                "fieldLabel.senses@0#" . $newSenseGuid => "Sense",
                 "fieldLabel.senses@0#" . $newSenseGuid . ".definition.en" => "Definition",
             ],
             $withLabels
@@ -1026,10 +1030,10 @@ class LexEntryCommandsTest extends TestCase
                 "newValue.senses@1#" . $senseD->guid . ".examples@0#" . $exampleD1->guid . ".sentence.en" => "D1",
 
                 // All added, deleted, moved, oldValue and newValue entries also have corresponding fieldLabel entries
-                "fieldLabel.senses@0#" . $senseA->guid => "Meaning",
-                "fieldLabel.senses@1#" . $senseB->guid => "Meaning",
-                "fieldLabel.senses@2#" . $senseC->guid => "Meaning",
-                "fieldLabel.senses@1#" . $senseD->guid => "Meaning",
+                "fieldLabel.senses@0#" . $senseA->guid => "Sense",
+                "fieldLabel.senses@1#" . $senseB->guid => "Sense",
+                "fieldLabel.senses@2#" . $senseC->guid => "Sense",
+                "fieldLabel.senses@1#" . $senseD->guid => "Sense",
 
                 "fieldLabel.senses@1#" . $senseB->guid . ".definition.en" => "Definition",
                 "fieldLabel.senses@2#" . $senseC->guid . ".definition.en" => "Definition",

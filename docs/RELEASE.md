@@ -12,14 +12,12 @@ Releases are tagged in Git using the naming convention `vYYYY-MM-DD` and Docker 
 
 Language Forge is built to run in a containerized environment. Kubernetes is our chosen runtime platform for production. Deployments are automated under the right circumstances using GitHub Actions.
 
-### Staging (QA)
-
-[qa.languageforge.org](https://qa.languageforge.org)
+### Staging
 
 Current workflow:
 
 1. merge PR into or make commits on `develop` branch
-1. this will kick off the GHA (`.github/workflows/staging.yml`) to build, test and publish the necessary images to Docker Hub (https://hub.docker.com/r/sillsdev/web-languageforge/tags) and deploy this code to the staging environment at https://qa.languageforge.org
+1. this will kick off the GHA (`.github/workflows/staging.yml`) to build, test and publish the necessary images to Docker Hub (https://hub.docker.com/r/sillsdev/web-languageforge/tags) and deploy this code to the staging environment.
 
 Staging deployments can be manually run with `VERSION_APP=<some-docker-tag-or-semver> VERSION_PROXY=<some-docker-tag-or-semver> VERSION_NEXT_APP=<some-docker-tag-or-semver> VERSION_LFMERGE=<some-docker-tag-or-semver> make deploy-staging`.
 
@@ -61,7 +59,7 @@ Since database upgrades are so infrequent, require extra care and a brief outage
 1. `make scale-down` and ensure all containers are stopped. It's also a good idea to watch the logs for the `db` container ensuring the shutdown was "clean".
 1. `make deploy-db` and ensure configs are applied to the deployment
 1. `make scale-up` and ensure all containers start back up. It's also a good idea to watch the logs for the `db` container ensuring the startup was "clean" and the new version is actually running.
-1. Verify that the running MongoDB version is in fact the version you expect. Connecting to QA or PROD mongo instance using the `mongosh` client should confirm this (the server version is printed when you connect). You can also check the image name of the deployment you are inspecting.
+1. Verify that the running MongoDB version is in fact the version you expect. Connecting to staging or production mongo instance using the `mongosh` client should confirm this (the server version is printed when you connect). You can also check the image name of the deployment you are inspecting.
 1. Run the `db.adminCommand( { getParameter: 1, featureCompatibilityVersion: 1 } )` command to verify that feature version is set to the previous db version
 1. Ensure a recent backup of the mongo databases was successful and is available in case a restore/revert is necessary.
 1. To perform the actual upgrade run `db.adminCommand( { setFeatureCompatibilityVersion: "5.0" } )` Change the version to the desired new version number. This operation may take some time to complete as it may trigger an internal data migration on existing collections.

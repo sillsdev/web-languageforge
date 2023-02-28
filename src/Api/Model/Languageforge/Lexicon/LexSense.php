@@ -112,7 +112,7 @@ class LexSense extends ObjectForEncoding
             case "anthropologyCategories":
                 return "LexMultiValue";
             case "status":
-                return "LexMultiValue";
+                return "LexValue";
             default:
                 return "string";
         }
@@ -544,6 +544,6 @@ class LexSense extends ObjectForEncoding
     /** @var LexMultiText */
     public $senseImportResidue;
 
-    /** @var LexMultiValue */
+    /** @var LexValue */
     public $status;
 }

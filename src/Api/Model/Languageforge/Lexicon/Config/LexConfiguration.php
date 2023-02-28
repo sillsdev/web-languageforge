@@ -89,11 +89,11 @@ class LexConfiguration
         $this->entry->fieldOrder[] = LexConfig::SENSES_LIST;
 
         $this->entry->fields[LexConfig::LEXEME] = new LexConfigMultiText();
-        $this->entry->fields[LexConfig::LEXEME]->label = "Word";
+        $this->entry->fields[LexConfig::LEXEME]->label = "Lexeme Form";
         $this->entry->fields[LexConfig::LEXEME]->inputSystems[] = "th";
 
         $this->entry->fields[LexConfig::SENSES_LIST] = new LexConfigFieldList();
-        $this->entry->fields[LexConfig::SENSES_LIST]->label = "Meaning";
+        $this->entry->fields[LexConfig::SENSES_LIST]->label = "Sense";
         $this->entry->fields[LexConfig::SENSES_LIST]->fieldOrder[] = LexConfig::GLOSS;
         $this->entry->fields[LexConfig::SENSES_LIST]->fieldOrder[] = LexConfig::DEFINITION;
         $this->entry->fields[LexConfig::SENSES_LIST]->fieldOrder[] = LexConfig::PICTURES;

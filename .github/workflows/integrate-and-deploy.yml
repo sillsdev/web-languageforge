@@ -111,7 +111,7 @@ jobs:
         uses: sillsdev/common-github-actions/install-kubectl@v1
       -
         run: |
-          kubectl --context ${{ secrets.kube-context }} set image deployment/app app=${{ needs.integrate.outputs.IMAGE_APP }}
-          kubectl --context ${{ secrets.kube-context }} set image deployment/next-proxy next-proxy=${{ needs.integrate.outputs.IMAGE_PROXY }}
-          kubectl --context ${{ secrets.kube-context }} set image deployment/next-app next-app=${{ needs.integrate.outputs.IMAGE_NEXT_APP }}
-          kubectl --context ${{ secrets.kube-context }} set image deployment/lfmerge lfmerge=${{ needs.integrate.outputs.IMAGE_LFMERGE }}
+          kubectl --context ${{ secrets.kube-context }} -n languageforge set image deployment/app app=${{ needs.integrate.outputs.IMAGE_APP }}
+          kubectl --context ${{ secrets.kube-context }} -n languageforge set image deployment/next-proxy next-proxy=${{ needs.integrate.outputs.IMAGE_PROXY }}
+          kubectl --context ${{ secrets.kube-context }} -n languageforge set image deployment/next-app next-app=${{ needs.integrate.outputs.IMAGE_NEXT_APP }}
+          kubectl --context ${{ secrets.kube-context }} -n languageforge set image deployment/lfmerge lfmerge=${{ needs.integrate.outputs.IMAGE_LFMERGE }}

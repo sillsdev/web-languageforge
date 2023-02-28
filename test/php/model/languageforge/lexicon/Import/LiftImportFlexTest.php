@@ -264,7 +264,7 @@ EOD;
         $this->assertEquals(LexMultiValue::createFromArray(["901"]), $sense00->anthropologyCategories);
         $this->assertEquals(LexMultiValue::createFromArray(["applied linguistics"]), $sense00->academicDomains);
         $this->assertEquals(new LexValue("primary"), $sense00->senseType);
-        $this->assertEquals(LexMultiValue::createFromArray(["Tentative"]), $sense00->status);
+        $this->assertEquals(new LexValue("Tentative"), $sense00->status);
         $this->assertEquals(LexMultiValue::createFromArray(["colloquial"]), $sense00->usages);
 
         $expected = new LexPicture("Desert.jpg", $sense00->pictures[0]->guid);

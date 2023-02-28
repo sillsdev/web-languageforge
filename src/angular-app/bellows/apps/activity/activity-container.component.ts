@@ -93,7 +93,7 @@ class Activity {
             if (index.includes('#examples')) {
               label = 'Example - ' + label;
             } else if (index.indexOf('#examples')) {
-              label = 'Meaning - ' + label;
+              label = 'Sense - ' + label;
             }
             return label;
           }
@@ -109,7 +109,7 @@ class Activity {
       label = 'Example ' + fieldLabel.example + (label !== 'examples' ? ' ' + label : '');
     }
     if (fieldLabel.sense) {
-      label = 'Meaning ' + fieldLabel.sense + (label !== 'senses' ? ' ' + label : '');
+      label = 'Sense ' + fieldLabel.sense + (label !== 'senses' ? ' ' + label : '');
     }
     return label;
   }

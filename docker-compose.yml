@@ -41,7 +41,6 @@ services:
       - LDAPI_BASE_URL=http://ld-api:3000/api/v2/
       - ENVIRONMENT=development
       - WEBSITE=localhost
-      # - WEBSITE=qa.languageforge.org
       - DATABASE=scriptureforge
       - MONGODB_CONN=mongodb://db:27017
       - MAIL_HOST=mail

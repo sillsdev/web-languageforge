@@ -48,7 +48,7 @@ build:
 	npm install
 
     # ensure we start with a clean ui-dist volume for every build
-	docker volume rm web-languageforge_lf-ui-dist 2>/dev/null
+	-docker volume rm web-languageforge_lf-ui-dist 2>/dev/null
 
 	docker compose build mail app lfmerge ld-api next-proxy next-app
 

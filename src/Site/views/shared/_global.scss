@@ -328,3 +328,20 @@ pui-tab {
 input::-ms-clear {
   display: none;
 }
+
+body[data-version*="develop"] nav:first-child {
+  background-color: #e95e13 !important;
+
+  &::after {
+    content: "⚠️ This is a testing environment. Data is deleted regularly! ⚠️ \a Are you looking for languageforge.org?";
+    color: #02deff;
+    position: absolute;
+    font-size: 10px;
+    left: 50%;
+    transform: translate(-50%);
+    max-height: 30px;
+    overflow: hidden;
+    white-space: pre;
+    text-align: center;
+  }
+}
