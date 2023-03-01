@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.languageforge.twa",
+      "sha256_cert_fingerprints": [
+        "B3:5E:42:37:61:88:DE:B1:3C:35:AE:0F:9F:5E:E5:76:0C:E6:7B:8A:A3:C4:59:2C:89:0D:05:A1:AF:5D:43:DB"
+      ]
+    }
+  }
+]
