@@ -12,7 +12,8 @@ COPY webpack.config.js webpack-dev.config.js webpack-prd.config.js tsconfig.json
 
 # copy in src local files
 COPY src/angular-app ./src/angular-app
-COPY src/appManifest ./src/appManifest
+COPY src/appIcons ./src/appIcons
+COPY src/manifest.json ./src/manifest.json
 COPY src/json ./src/json
 COPY src/sass ./src/sass
 COPY src/Site/views ./src/Site/views
