@@ -114,9 +114,6 @@
                     <div class="lexiconItemListContainer" data-pui-when-scrolled="$ctrl.show.more()">
                         <div class="text-center no-entries" id="noEntries">
                             <h4>Looks like there are no entries yet.</h4>
-                            <button class="btn btn-primary" data-ng-if="$ctrl.lecRights.canEditEntry()" data-ng-click="$ctrl.navigateToLiftImport()"
-                                    data-ng-hide="$ctrl.projectSettings.hasSendReceive">
-                                <i class="fa fa-upload"></i> Import entries from LIFT</button>
                             <button class="btn btn-primary" data-ng-click="$ctrl.syncProject()" data-ng-show="$ctrl.projectSettings.hasSendReceive">
                                 <i class="fa fa-refresh"></i> Synchronize project with LanguageDepot.org</button>
                             <button class="btn btn-primary" id="noEntriesNewWord" data-ng-if="$ctrl.lecRights.canEditEntry()"
