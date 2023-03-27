@@ -230,7 +230,7 @@ export class LexiconNewProjectController implements angular.IController {
             this.projectService.deleteProject([this.newProject.id]);
             break;
         }
-        this.$state.go(NewProjectChooserState.name);
+        this.$state.go(NewProjectSendReceiveCredentialsState.name);
         break;
       case SendReceiveState.Hold:
         this.gotoEditor();

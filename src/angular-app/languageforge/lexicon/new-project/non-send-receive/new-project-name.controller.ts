@@ -2,7 +2,7 @@ import * as angular from 'angular';
 
 import {LexiconNewProjectState} from '../lexicon-new-project-state.model';
 import {LexiconNewProjectController, NewProject} from '../lexicon-new-project.component';
-import {NewProjectChooserState} from '../new-project-chooser.component';
+import { NewProjectSendReceiveCredentialsState } from '../send-receive/new-project-credentials.component';
 import {NewProjectInitialDataState} from './new-project-initial-data.component';
 
 export class NewProjectNameController implements angular.IController {
@@ -73,6 +73,7 @@ export const NewProjectNameComponent: angular.IComponentOptions = {
 };
 
 export const NewProjectNameState = {
+  url: '/new-proj-nonsr-name',
   name: 'newProject.name',
   template: `
     <new-project-name npn-new-project="$ctrl.newProject"
@@ -150,7 +151,7 @@ export const NewProjectNameState = {
       controller.neutral();
     },
     goPreviousState(controller: LexiconNewProjectController): void {
-      controller.$state.go(NewProjectChooserState.name);
+      controller.$state.go(NewProjectSendReceiveCredentialsState.name);
     }
   }
 } as LexiconNewProjectState;
