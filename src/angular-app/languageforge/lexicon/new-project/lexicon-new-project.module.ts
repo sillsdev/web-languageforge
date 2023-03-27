@@ -67,7 +67,7 @@ export const LexiconNewProjectModule = angular
       $urlRouterProvider
         .when('', ['$state', ($state: angular.ui.IStateService | any) => {
           if (!$state.$current.navigable) {
-            $state.go(NewProjectChooserState.name);
+            $state.go(NewProjectSendReceiveCredentialsState.name);
           }
         }]);
 

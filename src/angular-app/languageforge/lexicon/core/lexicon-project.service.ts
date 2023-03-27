@@ -47,11 +47,6 @@ export class LexiconProjectService {
           this.linkService.projectUrl() + 'configuration'
         ));
         settings.push(new HeaderSetting(
-          'dropdown-import-data',
-          'Import Data',
-          this.linkService.projectUrl() + 'importExport'
-        ));
-        settings.push(new HeaderSetting(
           'userManagementLink',
           'Share With Others',
           '#',
