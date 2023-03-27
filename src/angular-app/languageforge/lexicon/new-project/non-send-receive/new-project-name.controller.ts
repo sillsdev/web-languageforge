@@ -73,7 +73,7 @@ export const NewProjectNameComponent: angular.IComponentOptions = {
 };
 
 export const NewProjectNameState = {
-  url: '/new-proj-nonsr-name',
+  url: '/non-send-receive',
   name: 'newProject.name',
   template: `
     <new-project-name npn-new-project="$ctrl.newProject"

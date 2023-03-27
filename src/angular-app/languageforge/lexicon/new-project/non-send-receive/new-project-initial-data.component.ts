@@ -87,7 +87,7 @@ export const NewProjectInitialDataComponent: angular.IComponentOptions = {
 };
 
 export const NewProjectInitialDataState = {
-  url: '/new-proj-nonsr-initial-data',
+  url: '/non-send-receive-initial-data',
   name: 'newProject.initialData',
   template: `
     <new-project-initial-data

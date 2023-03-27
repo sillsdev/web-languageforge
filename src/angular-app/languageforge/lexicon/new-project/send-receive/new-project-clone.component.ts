@@ -20,7 +20,7 @@ export const NewProjectSendReceiveCloneComponent: angular.IComponentOptions = {
 };
 
 export const NewProjectSendReceiveCloneState = {
-  url: '/new-project-nonsr-clone',
+  url: '/non-send-receive-clone',
   name: 'newProject.sendReceiveClone',
   template: `<new-project-send-receive-clone></new-project-send-receive-clone>`,
   data: {

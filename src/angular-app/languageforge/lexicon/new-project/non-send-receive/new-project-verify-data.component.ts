@@ -33,7 +33,7 @@ export const NewProjectVerifyDataComponent: angular.IComponentOptions = {
 };
 
 export const NewProjectVerifyDataState = {
-  url: '/new-proj-nonsr-verify-data',
+  url: '/non-send-receive-verify-data',
   name: 'newProject.verifyData',
   template: `
     <new-project-verify-data

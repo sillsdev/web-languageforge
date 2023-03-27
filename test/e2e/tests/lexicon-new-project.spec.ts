@@ -9,59 +9,18 @@ test.describe('New Project wizard', () => {
   test('Admin can get to wizard', async ({ adminTab }) => {
     const newLexProjectPageAdmin: NewLexProjectPage = new NewLexProjectPage(adminTab);
     await newLexProjectPageAdmin.goto();
-    await expect(newLexProjectPageAdmin.chooserPage.createButton).toBeVisible();
+    await expect(newLexProjectPageAdmin.nextButton).toBeVisible();
   });
 
   test('Manager can get to wizard', async ({ managerTab }) => {
     const newLexProjectPageManager: NewLexProjectPage = new NewLexProjectPage(managerTab);
     await newLexProjectPageManager.goto();
-    await expect(newLexProjectPageManager.chooserPage.createButton).toBeVisible();
+    await expect(newLexProjectPageManager.nextButton).toBeVisible();
   });
 
   test('Setup: user login and page contains a form', async ({ memberTab }) => {
     const newLexProjectPageMember = await NewLexProjectPage.goto(memberTab);
-    await expect(newLexProjectPageMember.chooserPage.createButton).toBeVisible();
-  });
-
-  // step 0: chooser
-  test.describe('Chooser page', () => {
-
-    let newLexProjectPageMember: NewLexProjectPage;
-
-    test.beforeEach(async ({ memberTab }) => {
-      newLexProjectPageMember = await NewLexProjectPage.goto(memberTab);
-    });
-
-    test('Cannot see Back or Next buttons', async () => {
-      await expect(newLexProjectPageMember.backButton).not.toBeVisible();
-      await expect(newLexProjectPageMember.nextButton).not.toBeVisible();
-      await newLexProjectPageMember.expectFormStatusHasNoError();
-    });
-
-    test('Can navigate to new project form and back', async () => {
-      await expect(newLexProjectPageMember.chooserPage.createButton).toBeEnabled();
-      await newLexProjectPageMember.chooserPage.createButton.click();
-      await expect(newLexProjectPageMember.namePage.projectNameInput).toBeVisible();
-
-      // Can go back to Chooser page
-      await expect(newLexProjectPageMember.backButton).toBeVisible();
-      await newLexProjectPageMember.backButton.click();
-      await expect(newLexProjectPageMember.chooserPage.sendReceiveButton).toBeVisible();
-    });
-
-    test('Can navigate to Send and Receive form and back', async () => {
-      await expect(newLexProjectPageMember.chooserPage.sendReceiveButton).toBeEnabled();
-      await newLexProjectPageMember.chooserPage.sendReceiveButton.click();
-      await expect(newLexProjectPageMember.srCredentialsPage.loginInput).toBeVisible();
-      await expect(newLexProjectPageMember.srCredentialsPage.loginInput).toHaveValue(users.member.username);
-      await expect(newLexProjectPageMember.srCredentialsPage.passwordInput).toBeVisible();
-      await expect(newLexProjectPageMember.srCredentialsPage.projectSelect).not.toBeVisible();
-
-      // Can go back to Chooser page
-      await expect(newLexProjectPageMember.backButton).toBeVisible();
-      await newLexProjectPageMember.backButton.click();
-      await expect(newLexProjectPageMember.chooserPage.sendReceiveButton).toBeVisible();
-    });
+    await expect(newLexProjectPageMember.nextButton).toBeVisible();
   });
 
   // step 1: send receive credentials
@@ -71,7 +30,6 @@ test.describe('New Project wizard', () => {
 
     test.beforeEach(async ({ memberTab }) => {
       newLexProjectPageMember = await NewLexProjectPage.goto(memberTab);
-      await newLexProjectPageMember.chooserPage.sendReceiveButton.click();
     });
 
     test('Cannot move on if Password is empty', async () => {
@@ -99,14 +57,6 @@ test.describe('New Project wizard', () => {
       await newLexProjectPageMember.expectFormStatusHasError();
       await expect(newLexProjectPageMember.formStatus).toContainText('The username or password isn\'t valid on LanguageDepot.org.');
 
-      // can go back to Chooser page, user and password preserved
-      await expect(newLexProjectPageMember.backButton).toBeVisible();
-      await newLexProjectPageMember.backButton.click();
-      await expect(newLexProjectPageMember.chooserPage.sendReceiveButton).toBeVisible();
-      await newLexProjectPageMember.chooserPage.sendReceiveButton.click();
-      await expect(newLexProjectPageMember.srCredentialsPage.loginInput).toBeVisible();
-      await expect(newLexProjectPageMember.srCredentialsPage.loginInput).toHaveValue(users.member.username);
-      await expect(newLexProjectPageMember.srCredentialsPage.passwordInput).toHaveValue(invalidPassword);
     });
 
     test('Cannot move on if Login is empty', async () => {
@@ -165,7 +115,6 @@ test.describe('New Project wizard', () => {
 
     test.beforeEach(async ({ memberTab }) => {
       newLexProjectPageMember = await NewLexProjectPage.goto(memberTab);
-      await newLexProjectPageMember.chooserPage.createButton.click();
     });
 
     // step 1: project name
