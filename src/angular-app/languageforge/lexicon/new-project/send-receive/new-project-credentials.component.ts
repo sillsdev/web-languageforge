@@ -89,6 +89,7 @@ export const NewProjectSendReceiveCredentialsComponent: angular.IComponentOption
 };
 
 export const NewProjectSendReceiveCredentialsState = {
+  url: '/new-project-sr-credentials',
   name: 'newProject.sendReceiveCredentials',
   template: `
     <new-project-send-receive-credentials src-project="$ctrl.project" src-validate="$ctrl.validateForm()"
