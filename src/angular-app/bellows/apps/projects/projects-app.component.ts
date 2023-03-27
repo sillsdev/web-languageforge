@@ -110,7 +110,7 @@ export class ProjectsAppController implements angular.IController {
   }
 
   startProject() {
-    this.$window.location.href = '/app/lexicon/new-project-sr-credentials';
+    this.$window.location.href = '/app/lexicon/new-project';
   }
 
 }
