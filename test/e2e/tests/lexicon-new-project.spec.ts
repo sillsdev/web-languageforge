@@ -9,18 +9,18 @@ test.describe('New Project wizard', () => {
   test('Admin can get to wizard', async ({ adminTab }) => {
     const newLexProjectPageAdmin: NewLexProjectPage = new NewLexProjectPage(adminTab);
     await newLexProjectPageAdmin.goto();
-    await expect(newLexProjectPageAdmin.nextButton).toBeVisible();
+    await expect(newLexProjectPageAdmin.srCredentialsPage.loginInput).toBeVisible();
   });
 
   test('Manager can get to wizard', async ({ managerTab }) => {
     const newLexProjectPageManager: NewLexProjectPage = new NewLexProjectPage(managerTab);
     await newLexProjectPageManager.goto();
-    await expect(newLexProjectPageManager.nextButton).toBeVisible();
+    await expect(newLexProjectPageManager.srCredentialsPage.loginInput).toBeVisible();
   });
 
   test('Setup: user login and page contains a form', async ({ memberTab }) => {
     const newLexProjectPageMember = await NewLexProjectPage.goto(memberTab);
-    await expect(newLexProjectPageMember.nextButton).toBeVisible();
+    await expect(newLexProjectPageMember.srCredentialsPage.loginInput).toBeVisible();
   });
 
   // step 1: send receive credentials
@@ -33,6 +33,7 @@ test.describe('New Project wizard', () => {
     });
 
     test('Cannot move on if Password is empty', async () => {
+      await newLexProjectPageMember.srCredentialsPage.loginInput.fill(sendReceiveMockUser.username);
       await newLexProjectPageMember.expectFormStatusHasNoError();
       await expect(newLexProjectPageMember.nextButton).toBeEnabled();
       await newLexProjectPageMember.nextButton.click();
@@ -43,7 +44,8 @@ test.describe('New Project wizard', () => {
       await expect(newLexProjectPageMember.formStatus).toContainText('Password cannot be empty.');
     });
 
-    test('Cannot move on if username is incorrect and can go back to Chooser page, user and password preserved', async () => {
+    test('Cannot move on if username is incorrect', async () => {
+      await newLexProjectPageMember.srCredentialsPage.loginInput.fill(sendReceiveMockUser.username);
       const invalidPassword = 'invalid password';
       await newLexProjectPageMember.srCredentialsPage.passwordInput.type(invalidPassword);
       // tab triggers validation of the password
@@ -56,7 +58,6 @@ test.describe('New Project wizard', () => {
       await expect(newLexProjectPageMember.srCredentialsPage.projectSelect).not.toBeVisible();
       await newLexProjectPageMember.expectFormStatusHasError();
       await expect(newLexProjectPageMember.formStatus).toContainText('The username or password isn\'t valid on LanguageDepot.org.');
-
     });
 
     test('Cannot move on if Login is empty', async () => {
