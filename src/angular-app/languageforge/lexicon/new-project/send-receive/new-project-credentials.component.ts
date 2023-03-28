@@ -4,7 +4,7 @@ import {LexiconSendReceiveApiService} from '../../core/lexicon-send-receive-api.
 import {LexiconProject, SendReceiveProject} from '../../shared/model/lexicon-project.model';
 import {LexiconNewProjectState} from '../lexicon-new-project-state.model';
 import {LexiconNewProjectController} from '../lexicon-new-project.component';
-import {NewProjectChooserState} from '../new-project-chooser.component';
+import {NewProjectAbstractState} from '../lexicon-new-project.component';
 
 export class NewProjectSendReceiveCredentialsController implements angular.IController {
   srcProject: LexiconProject;
@@ -178,7 +178,7 @@ export const NewProjectSendReceiveCredentialsState = {
       }
     },
     goPreviousState(controller: LexiconNewProjectController): void {
-      controller.$state.go(NewProjectChooserState.name);
+      controller.$state.go(NewProjectAbstractState.name);
     }
   }
 } as LexiconNewProjectState;
