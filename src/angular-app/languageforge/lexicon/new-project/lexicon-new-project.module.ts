@@ -9,7 +9,6 @@ import {SelectLanguageModule} from '../../../bellows/shared/select-language.comp
 import {PuiUtilityModule} from '../../../bellows/shared/utils/pui-utils.module';
 import {LexiconCoreModule} from '../core/lexicon-core.module';
 import {LexiconNewProjectComponent, NewProjectAbstractState} from './lexicon-new-project.component';
-import {NewProjectChooserComponent, NewProjectChooserState} from './new-project-chooser.component';
 import {
   NewProjectInitialDataComponent, NewProjectInitialDataState
 } from './non-send-receive/new-project-initial-data.component';
@@ -41,7 +40,6 @@ export const LexiconNewProjectModule = angular
     LexiconCoreModule
   ])
   .component('lexiconNewProject', LexiconNewProjectComponent)
-  .component('newProjectChooser', NewProjectChooserComponent)
   .component('newProjectSendReceiveCredentials', NewProjectSendReceiveCredentialsComponent)
   .component('newProjectSendReceiveClone', NewProjectSendReceiveCloneComponent)
   .component('newProjectName', NewProjectNameComponent)
@@ -53,7 +51,6 @@ export const LexiconNewProjectModule = angular
       // State machine from ui.router
       $stateProvider
         .state(NewProjectAbstractState)
-        .state(NewProjectChooserState)
 
         .state(NewProjectSendReceiveCredentialsState)
         .state(NewProjectSendReceiveCloneState)
