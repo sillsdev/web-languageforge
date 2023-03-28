@@ -65,7 +65,7 @@ export const NewProjectSelectPrimaryLanguageComponent: angular.IComponentOptions
 };
 
 export const NewProjectSelectPrimaryLanguageState = {
-  url: '/new-proj-non-sr-primary-lang',
+  url: '/non-send-receive-primary-lang',
   name: 'newProject.selectPrimaryLanguage',
   template: `
     <new-project-select-primary-language nps-new-project="$ctrl.newProject" nps-validate-form="$ctrl.validateForm()">
