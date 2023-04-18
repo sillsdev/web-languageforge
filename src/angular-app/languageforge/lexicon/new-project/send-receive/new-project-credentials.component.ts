@@ -99,7 +99,7 @@ export const NewProjectSendReceiveCredentialsState = {
     step: 1,
     isSRProject: true,
     show: {
-      backButton: true,
+      backButton: false,
       nextButton: true,
       step3: false
     },
