@@ -24,7 +24,6 @@ import {LexiconProjectSettings} from '../shared/model/lexicon-project-settings.m
 import {LexiconProject, SendReceive} from '../shared/model/lexicon-project.model';
 import {LexOptionList} from '../shared/model/option-list.model';
 import {SendReceiveStatus} from '../shared/model/send-receive-status.model';
-import {NewProjectChooserState} from './new-project-chooser.component';
 import {NewProjectInitialDataState} from './non-send-receive/new-project-initial-data.component';
 import {NewProjectSendReceiveCloneState} from './send-receive/new-project-clone.component';
 import {NewProjectSendReceiveCredentialsState} from './send-receive/new-project-credentials.component';
@@ -230,7 +229,7 @@ export class LexiconNewProjectController implements angular.IController {
             this.projectService.deleteProject([this.newProject.id]);
             break;
         }
-        this.$state.go(NewProjectChooserState.name);
+        this.$state.go(NewProjectSendReceiveCredentialsState.name);
         break;
       case SendReceiveState.Hold:
         this.gotoEditor();

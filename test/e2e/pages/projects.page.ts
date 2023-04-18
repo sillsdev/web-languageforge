@@ -12,7 +12,7 @@ export class ProjectsPage extends BasePage {
   readonly projectsList = this.locator('[data-ng-repeat="project in visibleProjects"]');
   readonly projectNames = this.projectsList.locator('a[href^="/app/lexicon"]');
 
-  readonly createButton = this.locator('button:has-text("Start or Join a New Project")');
+  readonly createButton = this.locator('button:has-text("Get Project from Language Depot")');
   readonly createNonSRProjectButton = this.locator('text=Create a non-send/receive project (not recommended)'); // SR - send/receive
   readonly projectNameInput = this.locator('[placeholder="eg\\:\\ My\\ Dictionary"]');
   readonly nextButton = this.locator('text=Next'); // project creation: step after project name
@@ -32,7 +32,7 @@ export class ProjectsPage extends BasePage {
   readonly addAsTechSupportBtnText = 'text=Tech Support';
 
   constructor(page: Page) {
-    super(page, '/app/projects', page.locator('button:has-text("Start or Join a New Project")'));
+    super(page, '/app/projects', page.locator('button:has-text("Get Project from Language Depot")'));
   }
 
   override async goto(): Promise<this> {

@@ -33,29 +33,35 @@
   ],
   "icons": [
     {
-      "src": "images/lf-logo-48-mdpi.png",
+      "src": "appIcons/lf-logo-48-mdpi.png",
       "type": "image/png",
       "sizes": "48x48"
     },
     {
-      "src": "images/lf-logo-96-xhdpi.png",
+      "src": "appIcons/lf-logo-96-xhdpi.png",
       "type": "image/png",
       "sizes": "96x96"
     },
     {
-      "src": "images/lf-logo-144-xxhdpi.png",
+      "src": "appIcons/lf-logo-144-xxhdpi.png",
       "type": "image/png",
       "sizes": "144x144"
     },
     {
-      "src": "images/lf-logo-circle-192-xxxhdpi.png",
+      "src": "appIcons/lf-logo-circle-192-xxxhdpi.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "images/lf-logo-circle-512-xxxxxhdpi.png",
+      "src": "appIcons/lf-logo-circle-512-xxxxxhdpi.png",
       "type": "image/png",
       "sizes": "512x512"
+    },
+    {
+      "src": "appIcons/maskable_icon.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
     }
   ]
 }

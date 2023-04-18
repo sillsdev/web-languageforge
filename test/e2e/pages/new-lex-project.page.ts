@@ -9,12 +9,6 @@ export class NewLexProjectPage extends BasePage {
   readonly formStatus = this.locator('#form-status');
   readonly progressIndicatorStep3Label = this.locator('#progress-indicator-step3-label');
 
-  // step 0: chooser
-  readonly chooserPage = {
-    sendReceiveButton: this.locator('#send-receive-button'),
-    createButton: this.locator('#create-button'),
-  };
-
   // step 1: project name
   readonly namePage = {
     projectNameInput: this.locator('#project-name'),
