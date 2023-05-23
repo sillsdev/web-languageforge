@@ -41,12 +41,12 @@ test.describe('Editor entries', () => {
     expect(editorPageManager.page.url()).not.toContain(entryIds()[0]);
   });
 
-  test('Entry 1: edit page has correct definition, grammatical category', async () => {
+  test('Entry 1: edit page has correct definition, part of speech', async () => {
     await editorPageManager.goto();
     await expect(editorPageManager.getTextarea(
       editorPageManager.senseCard, 'Definition', 'en'))
       .toHaveValue(entries.entry1.senses[0].definition.en.value);
-    expect(await editorPageManager.getSelectedValueFromSelectDropdown(editorPageManager.senseCard, 'Grammatical Category'))
+    expect(await editorPageManager.getSelectedValueFromSelectDropdown(editorPageManager.senseCard, 'Part of Speech'))
       .toEqual(entries.entry1.senses[0].partOfSpeech.displayName);
   });
 
@@ -61,8 +61,8 @@ test.describe('Editor entries', () => {
 
   test('Citation form field overrides lexeme form in dictionary citation view', async ({ managerTab }) => {
     const configurationPage = await new ConfigurationPageFieldsTab(managerTab, project()).goto();
-    await configurationPage.toggleFieldExpanded('Entry Fields', 'Lexeme Form');
-    await (await configurationPage.getFieldCheckbox('Entry Fields', 'Lexeme Form', 'ภาษาไทย (IPA)')).check();
+    await configurationPage.toggleFieldExpanded('Entry Fields', 'Word');
+    await (await configurationPage.getFieldCheckbox('Entry Fields', 'Word', 'ภาษาไทย (IPA)')).check();
     await configurationPage.applyButton.click();
 
     await editorPageManager.goto();
@@ -96,13 +96,13 @@ test.describe('Editor entries', () => {
       editorPageManager.senseCard.first(), 'Definition', 'en')).toHaveValue(entries.multipleMeaningEntry.senses[0].definition.en.value);
   });
 
-  test('Lexeme 2: edit page has correct definition, grammatical category', async () => {
+  test('Word 2: edit page has correct definition, part of speech', async () => {
     await editorPageManager.goto({ entryId: entryIds()[1] });
     await expect(editorPageManager.getTextarea(
       editorPageManager.senseCard, 'Definition', 'en'))
       .toHaveValue(entries.entry2.senses[0].definition.en.value);
 
-    expect(await editorPageManager.getSelectedValueFromSelectDropdown(editorPageManager.senseCard, 'Grammatical Category'))
+    expect(await editorPageManager.getSelectedValueFromSelectDropdown(editorPageManager.senseCard, 'Part of Speech'))
       .toEqual(entries.entry2.senses[0].partOfSpeech.displayName);
   });
 
@@ -119,7 +119,7 @@ test.describe('Editor entries', () => {
     await expect(editorPageManager.renderedDivs).toContainText([entries.multipleMeaningEntry.senses[1].examples[1].translation.en.value, entries.multipleMeaningEntry.senses[1].examples[1].translation.en.value]);
   });
 
-  test('Lexeme with multiple definitions: edit page has correct definitions, parts of speech', async () => {
+  test('Word with multiple definitions: edit page has correct definitions, parts of speech', async () => {
     await editorPageManager.goto({ entryId: entryIds()[2] });
     await expect(editorPageManager.getTextarea(
       editorPageManager.senseCard.first(), 'Definition', 'en'))
@@ -128,13 +128,13 @@ test.describe('Editor entries', () => {
       editorPageManager.senseCard.nth(1), 'Definition', 'en'))
       .toHaveValue(entries.multipleMeaningEntry.senses[1].definition.en.value);
 
-    expect(await editorPageManager.getSelectedValueFromSelectDropdown(editorPageManager.senseCard.nth(0), 'Grammatical Category'))
+    expect(await editorPageManager.getSelectedValueFromSelectDropdown(editorPageManager.senseCard.nth(0), 'Part of Speech'))
       .toEqual(entries.multipleMeaningEntry.senses[0].partOfSpeech.displayName);
-    expect(await editorPageManager.getSelectedValueFromSelectDropdown(editorPageManager.senseCard.nth(1), 'Grammatical Category'))
+    expect(await editorPageManager.getSelectedValueFromSelectDropdown(editorPageManager.senseCard.nth(1), 'Part of Speech'))
       .toEqual(entries.multipleMeaningEntry.senses[1].partOfSpeech.displayName);
   });
 
-  test('Lexeme with multiple meanings: edit page has correct example sentences, translations', async () => {
+  test('Word with multiple meanings: edit page has correct example sentences, translations', async () => {
     await editorPageManager.goto({ entryId: entryIds()[2] });
 
     await expect(editorPageManager.getTextarea(
@@ -176,7 +176,7 @@ test.describe('Editor entries', () => {
       editorPageManager.senseCard.nth(0), 'General Note', 'en')).toBeVisible();
   });
 
-  test('Lexeme with multiple meanings: edit page has correct general notes, sources', async () => {
+  test('Word with multiple meanings: edit page has correct general notes, sources', async () => {
     await editorPageManager.goto({ entryId: entryIds()[2] });
     await expect(editorPageManager.getTextarea(
       editorPageManager.senseCard.nth(0), 'General Note', 'en'))
@@ -215,12 +215,12 @@ test.describe('Editor entries', () => {
     await expect(editorPageManager.compactEntryListItem).toHaveCount(newEntryCount);
 
     // go back to editor
-    await (editorPageManager.getTextarea(editorPageManager.entryCard, 'Lexeme Form', 'th'))
+    await (editorPageManager.getTextarea(editorPageManager.entryCard, 'Word', 'th'))
       .fill(entries.entry3.lexeme.th.value);
     await (editorPageManager.getTextarea(editorPageManager.senseCard, 'Definition', 'en'))
       .fill(entries.entry3.senses[0].definition.en.value);
 
-    const partOfSpeedDropdown = editorPageManager.getDropdown(editorPageManager.senseCard, 'Grammatical Category');
+    const partOfSpeedDropdown = editorPageManager.getDropdown(editorPageManager.senseCard, 'Part of Speech');
     partOfSpeedDropdown.selectOption({ label: 'Noun (n)' });
 
     // Autosaves changes
@@ -229,14 +229,14 @@ test.describe('Editor entries', () => {
 
     await expect(partOfSpeedDropdown).toHaveSelectedOption({ label: 'Noun (n)' });
 
-    const alreadyThere: string = await editorPageManager.getTextarea(editorPageManager.entryCard, 'Lexeme Form', 'th').inputValue();
-    await (editorPageManager.getTextarea(editorPageManager.entryCard, 'Lexeme Form', 'th'))
+    const alreadyThere: string = await editorPageManager.getTextarea(editorPageManager.entryCard, 'Word', 'th').inputValue();
+    await (editorPageManager.getTextarea(editorPageManager.entryCard, 'Word', 'th'))
       .fill(alreadyThere + 'a');
     await editorPageManager.page.reload();
     await expect((editorPageManager.getTextarea(
-      editorPageManager.entryCard, 'Lexeme Form', 'th')))
+      editorPageManager.entryCard, 'Word', 'th')))
       .toHaveValue(entries.entry3.lexeme.th.value + 'a');
-    await (editorPageManager.getTextarea(editorPageManager.entryCard, 'Lexeme Form', 'th'))
+    await (editorPageManager.getTextarea(editorPageManager.entryCard, 'Word', 'th'))
       .fill(entries.entry3.lexeme.th.value);
 
     // New word is visible in list
@@ -253,7 +253,7 @@ test.describe('Editor entries', () => {
 
     // previous entry is selected after delete
     await expect(editorPageManager.getTextarea(
-      editorPageManager.entryCard, 'Lexeme Form', 'th'))
+      editorPageManager.entryCard, 'Word', 'th'))
       .toHaveValue(entries.entry1.lexeme.th.value);
   });
 });

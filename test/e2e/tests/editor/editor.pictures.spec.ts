@@ -58,8 +58,8 @@ test.describe('Editor pictures', () => {
     await test.step('Hide empty captions', async () => {
       await configurationPage.goto();
       await configurationPage.tabLinks.fields.click();
-      await configurationPage.toggleFieldExpanded('Sense Fields', 'Pictures');
-      await (await configurationPage.getFieldCheckbox('Sense Fields', 'Pictures', 'Hide Caption If Empty')).check();
+      await configurationPage.toggleFieldExpanded('Meaning Fields', 'Pictures');
+      await (await configurationPage.getFieldCheckbox('Meaning Fields', 'Pictures', 'Hide Caption If Empty')).check();
       await configurationPage.applyButton.click();
     });
 
@@ -83,8 +83,8 @@ test.describe('Editor pictures', () => {
     await test.step('Show empty captions', async () => {
       await configurationPage.goto();
       await configurationPage.tabLinks.fields.click();
-      await configurationPage.toggleFieldExpanded('Sense Fields', 'Pictures');
-      await (await configurationPage.getFieldCheckbox('Sense Fields', 'Pictures', 'Hide Caption If Empty')).uncheck();
+      await configurationPage.toggleFieldExpanded('Meaning Fields', 'Pictures');
+      await (await configurationPage.getFieldCheckbox('Meaning Fields', 'Pictures', 'Hide Caption If Empty')).uncheck();
       await configurationPage.applyButton.click();
     });
 
@@ -113,9 +113,9 @@ test.describe('Editor pictures', () => {
 
     const configurationPage = await new ConfigurationPageFieldsTab(editorPageManager.page, testProject).goto();
     await configurationPage.tabLinks.fields.click();
-    await (await configurationPage.getCheckbox('Sense Fields', 'Pictures', 'Hidden if Empty')).check();
-    await configurationPage.toggleFieldExpanded('Sense Fields', 'Pictures');
-    await (await configurationPage.getFieldCheckbox('Sense Fields', 'Pictures', 'Hide Caption If Empty')).uncheck();
+    await (await configurationPage.getCheckbox('Meaning Fields', 'Pictures', 'Hidden if Empty')).check();
+    await configurationPage.toggleFieldExpanded('Meaning Fields', 'Pictures');
+    await (await configurationPage.getFieldCheckbox('Meaning Fields', 'Pictures', 'Hide Caption If Empty')).uncheck();
     await configurationPage.applyButton.click();
 
     // can change config to hide pictures and hide captions
