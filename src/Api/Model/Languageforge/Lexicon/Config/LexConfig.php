@@ -127,14 +127,14 @@ class LexConfig extends ObjectForEncoding
      * @var array
      */
     private static $flexOptionlistNames = [
-        "grammatical-info" => "Grammatical Category",
+        "grammatical-info" => "Part of Speech",
         "semantic-domain-ddp4" => "Semantic Domain",
         "domain-type" => "Academic Domains",
         self::ENVIRONMENTS => "Environments",
         "location" => "Location",
         "usage-type" => "Usages",
         "reversal-type" => "Reversal Entries",
-        "sense-type" => "Sense Type",
+        "sense-type" => "Type",
         "anthro-code" => "Anthropology Categories",
         "do-not-publish-in" => "Publish In",
         "status" => "Status",
@@ -145,7 +145,7 @@ class LexConfig extends ObjectForEncoding
         "paradigm" => "Paradigm",
         "users" => "Users",
         "translation-type" => "Translation Type",
-        "from-part-of-speech" => "From Grammatical Category",
+        "from-part-of-speech" => "From Part of Speech",
         "morph-type" => "Morph Type",
         "noun-slot" => "Noun Slot",
         "verb-slot" => "Verb Slot",
