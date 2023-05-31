@@ -279,7 +279,7 @@ class LiftImport
 
     /**
      * Convert a LIFT range to an option list of the right code
-     * Usage example: rangeToOptionList($projectModel, 'grammatical-info', 'Grammatical Category', $liftRanges['grammatical-info'])
+     * Usage example: rangeToOptionList($projectModel, 'grammatical-info', 'Part of Speech', $liftRanges['grammatical-info'])
      * @param LexProjectModel $projectModel
      * @param string $optionListCode
      * @param string $optionListName

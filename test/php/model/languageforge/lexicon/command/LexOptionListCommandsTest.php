@@ -18,7 +18,7 @@ class LexOptionListCommandsTest extends TestCase
         // Initial project has no optionlists populated
         $this->assertEquals(0, $optionLists->count);
 
-        // Initialized project has grammatical category optionlist defined
+        // Initialized project has part of speech optionlist defined
         $project->initializeNewProject();
         $optionLists->read();
         $this->assertEquals(1, $optionLists->count);
@@ -36,7 +36,7 @@ class LexOptionListCommandsTest extends TestCase
         $newValue = $optionLists->entries[0]["items"][0]["value"];
         $this->assertEquals("Verb (v)", $newValue);
 
-        // Create grammatical category list for fruits
+        // Create part of speech list for fruits
         $fruits = [
             ["key" => "a", "value" => "apple"],
             ["key" => "b", "value" => "berry"],

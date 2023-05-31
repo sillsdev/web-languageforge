@@ -264,7 +264,7 @@ class LiftDecoder
                     );
                     break;
                 case "grammatical-info":
-                    // Grammatical Category
+                    // Part Of Speech
                     $sense->partOfSpeech->value = \Normalizer::normalize((string) $element["value"]);
                     break;
                 case "illustration":

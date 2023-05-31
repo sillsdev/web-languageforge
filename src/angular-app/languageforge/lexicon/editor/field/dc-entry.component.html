@@ -17,9 +17,9 @@
             <dc-fieldrepeat config="$ctrl.config" model="$ctrl.model" control="$ctrl.control" parent-context-guid="$ctrl.contextGuid"></dc-fieldrepeat>
         </div>
     </div>
-
-	<div data-ng-if="$ctrl.control.rights.canEditEntry() && isAtEditorEntry()" class="addItem topAddMeaning">
-        <a class="btn btn-sm btn-std" data-ng-click="$ctrl.addSense(0)"><i class="fa fa-plus"></i> Add Sense</a>
+    <!-- Place links to "Add Meaning" at the top and bottom of the senses so users can easily find them -->
+    <div data-ng-if="$ctrl.control.rights.canEditEntry() && isAtEditorEntry()" class="addItem topAddMeaning">
+        <a class="btn btn-sm btn-std" data-ng-click="$ctrl.addSense(0)"><i class="fa fa-plus"></i> Add Meaning</a>
     </div>
     <div data-ng-if="$ctrl.config.fields.senses.fieldOrder.length > 0">
         <!--suppress JSUnusedLocalSymbols -->
@@ -30,6 +30,6 @@
         </div>
     </div>
     <div data-ng-if="$ctrl.control.rights.canEditEntry() && $ctrl.isAtEditorEntry()" class="addItem">
-        <a class="btn btn-sm btn-std" data-ng-click="$ctrl.addSense()"><i class="fa fa-plus"></i> Add Sense</a>
+        <a class="btn btn-sm btn-std" data-ng-click="$ctrl.addSense()"><i class="fa fa-plus"></i> Add Meaning</a>
     </div>
 </div>
