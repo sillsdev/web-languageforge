@@ -463,14 +463,14 @@ export class LexiconEditorController implements angular.IController {
     }
   }
 
-  editEntryAndScroll(id: string): void {
-    this.editEntry(id);
+  async editEntryAndScroll(id: string): Promise<void> {
+    await this.editEntry(id);
     this.scrollListToEntry(id);
   }
 
-  editEntry(id: string): void {
+  async editEntry(id: string): Promise<void> {
     if (this.currentEntry.id !== id) {
-      this.saveCurrentEntry();
+      await this.saveCurrentEntry();
       this.setCurrentEntry(this.entries[this.editorService.getIndexInList(id, this.entries)]);
       // noinspection JSIgnoredPromiseFromCall - comments will load in the background
       this.commentService.loadEntryComments(id);
@@ -483,10 +483,10 @@ export class LexiconEditorController implements angular.IController {
     this.goToEntry(id);
   }
 
-  gotoToEntry(index: number, isValid: boolean) {
+  async gotoToEntry(index: number, isValid: boolean): Promise<void> {
     if (isValid) {
       let id = this.editorService.getIdInFilteredList(Number(index));
-      this.editEntryAndScroll(id);
+      await this.editEntryAndScroll(id);
     }
   }
 
@@ -502,9 +502,9 @@ export class LexiconEditorController implements angular.IController {
     return i >= 0 && i < this.visibleEntries.length;
   }
 
-  skipToEntry(distance: number): void {
+  async skipToEntry(distance: number): Promise<void> {
     const i = this.editorService.getIndexInList(this.currentEntry.id, this.visibleEntries) + distance;
-    this.editEntry(this.visibleEntries[i].id);
+    await this.editEntry(this.visibleEntries[i].id);
     this.scrollListToEntry(this.visibleEntries[i].id);
   }
 
@@ -525,32 +525,32 @@ export class LexiconEditorController implements angular.IController {
     });
   }
 
-  deleteEntry = (entry: LexEntry): void => {
+  deleteEntry = async (entry: LexEntry): Promise<void> => {
     const deleteMsg = 'Are you sure you want to delete the entry <b>\'' +
       LexiconUtilityService.getLexeme(this.lecConfig, this.lecConfig.entry, entry) + '\'</b>?';
-    this.modal.showModalSimple('Delete Entry', deleteMsg, 'Cancel', 'Delete Entry').then(() => {
-      let iShowList = this.editorService.getIndexInList(entry.id, this.visibleEntries);
-      this.editorService.removeEntryFromLists(entry.id);
-      if (this.entries.length > 0) {
-        if (iShowList !== 0) {
-          iShowList--;
-        }
-        this.currentEntry = new LexEntry();
-        this.pristineEntry = new LexEntry();
-        this.editEntryAndScroll(this.visibleEntries[iShowList].id);
-      } else {
-        this.returnToList();
-      }
+    await this.modal.showModalSimple('Delete Entry', deleteMsg, 'Cancel', 'Delete Entry');
 
-      if (!LexiconEditorController.entryIsNew(entry)) {
-        this.sendReceive.setStateUnsynced();
-        this.lexService.remove(entry.id, () => {
-          this.editorService.refreshEditorData();
-        });
+    let iShowList = this.editorService.getIndexInList(entry.id, this.visibleEntries);
+    this.editorService.removeEntryFromLists(entry.id);
+    if (this.entries.length > 0) {
+      if (iShowList !== 0) {
+        iShowList--;
       }
+      this.currentEntry = new LexEntry();
+      this.pristineEntry = new LexEntry();
+      await this.editEntryAndScroll(this.visibleEntries[iShowList].id);
+    } else {
+      this.returnToList();
+    }
 
-      this.hideRightPanel();
-    }, () => { });
+    if (!LexiconEditorController.entryIsNew(entry)) {
+      this.sendReceive.setStateUnsynced();
+      this.lexService.remove(entry.id, () => {
+        this.editorService.refreshEditorData();
+      });
+    }
+
+    this.hideRightPanel();
   }
 
   makeValidModelRecursive = (config: LexConfigField, data: any = {}, stopAtNodes: string | string[] = []): any => {
@@ -978,7 +978,7 @@ export class LexiconEditorController implements angular.IController {
     }
   }
 
-  private evaluateStateFromURL(): void {
+  private async evaluateStateFromURL(): Promise<void> {
     this.editorService.loadEditorData().then(async () => {
       if (this.$state.is("editor.entry")) {
 
@@ -1001,7 +1001,7 @@ export class LexiconEditorController implements angular.IController {
               }
             });
           }
-          this.editEntryAndScroll(entryId);
+          await this.editEntryAndScroll(entryId);
         } else {
           // there are no entries, go to the list view
           this.$state.go('editor.list');
