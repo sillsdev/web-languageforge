@@ -33,7 +33,7 @@ import { LexiconProject } from '../shared/model/lexicon-project.model';
 import { LexOptionList } from '../shared/model/option-list.model';
 import { FieldControl } from './field/field-control.model';
 import { OfflineCacheUtilsService } from '../../../bellows/core/offline/offline-cache-utils.service';
-import { IPromise } from 'angular';
+import { IDeferred } from 'angular';
 
 class Show {
   more: () => void;
@@ -78,7 +78,7 @@ export class LexiconEditorController implements angular.IController {
 
   private pristineEntry: LexEntry = new LexEntry();
   private warnOfUnsavedEditsId: string;
-  private saving$: IPromise<void>;
+  private saving$: IDeferred<void>;
 
   static $inject = ['$filter', '$interval',
     '$q', '$scope',
@@ -360,8 +360,10 @@ export class LexiconEditorController implements angular.IController {
     const isNewEntry = LexiconEditorController.entryIsNew(this.currentEntry);
     if (isNewEntry) {
       // We have to wait for the initial save to complete so that we have
-      await this.saving$;
+      await this.saving$.promise;
     }
+
+    this.saving$ = this.$q.defer<void>();
 
     // `doSetEntry` is mainly used for when the save button is pressed, that is when the user is saving the current
     // entry and is NOT going to a different entry (as is the case with editing another entry.
@@ -461,6 +463,7 @@ export class LexiconEditorController implements angular.IController {
     } else {
       successCallback();
     }
+    this.saving$.resolve();
   }
 
   async editEntryAndScroll(id: string): Promise<void> {
