@@ -13,7 +13,7 @@ type LegacyResult = {
 }
 
 export type Field = {
-	name: string,
+  fieldLabel?: { label: string },
 }
 
 type LegacyActivity = {

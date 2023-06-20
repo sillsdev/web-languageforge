@@ -17,6 +17,7 @@
 	export let data: DashboardData
 
 	let only_showing_subset = true
+    let loading = false;
 
 	$: project = data.project
 	$: activities = data.activities
@@ -53,8 +54,9 @@
 	].filter(({ value }) => value !== undefined)
 
 	async function load_all_activities() {
+        loading = true
 		activities = await GET({url: `/projects/${$page.params.project_code}/activities`})
-
+        loading = false
 		only_showing_subset = false
 	}
 </script>
@@ -80,8 +82,8 @@
 	<Activity { activities } />
 
 	{#if only_showing_subset}
-		<footer class='flex justify-center mt-2'>
-			<Button on:click={ load_all_activities } class='btn-outline btn-xs sm:btn-sm'>
+		<footer class='flex justify-center m-4'>
+			<Button on:click={ load_all_activities } class='btn-outline btn-xs sm:btn-sm' {loading}>
 				show all
 			</Button>
 		</footer>

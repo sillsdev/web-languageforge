@@ -104,7 +104,7 @@ class ActivityListDto
             $unreadItems = array_merge($unreadItems, self::getUnreadActivityForUserInProject($userId, $project["id"]));
         }
         $unreadItems = array_merge($unreadItems, self::getGlobalUnreadActivityForUser($userId));
-        uasort($activity, ["self", "sortActivity"]);
+        usort($activity, ["self", "sortActivity"]);
         $dto = [
             "activity" => $activity,
             "unread" => $unreadItems,
@@ -124,7 +124,7 @@ class ActivityListDto
     {
         $activity = self::getActivityForProject($projectModel, $filterParams);
         $unreadItems = self::getUnreadActivityForUserInProject($userId, $projectModel->id->asString());
-        uasort($activity, ["self", "sortActivity"]);
+        usort($activity, ["self", "sortActivity"]);
         $dto = [
             "activity" => $activity,
             "unread" => $unreadItems,
@@ -146,7 +146,7 @@ class ActivityListDto
         // TODO: handle unread items for this activity log type (single-entry). Perhaps the getUnreadActivity() functions should just take a list of items? 2018-02 RM
         //        $unreadItems = self::getUnreadActivityForUserInProject($userId, $projectModel->id->asString());
         $unreadItems = [];
-        uasort($activity, ["self", "sortActivity"]);
+        usort($activity, ["self", "sortActivity"]);
         $dto = [
             "activity" => $activity,
             "unread" => $unreadItems,
