@@ -44,9 +44,15 @@
 	}
 
 	function byDateThenUser(a: AugmentedActivity, b: AugmentedActivity) {
-		return a.date_iso === b.date_iso ? a.user === b.user ? des(a.time, b.time)
-															 : asc(a.user.username, b.user.username)
-		                                 : des(a.date_iso, b.date_iso)
+        if (a.date_iso !== b.date_iso) {
+            return des(a.date_iso, b.date_iso);
+        }
+
+        if (a.user.username !== b.user.username) {
+            return asc(a.user.username, b.user.username);
+        }
+
+        return des(a.time, b.time);
 	}
 
 	const asc = (a: string | number, b: string | number) => a > b ? 1 : -1
