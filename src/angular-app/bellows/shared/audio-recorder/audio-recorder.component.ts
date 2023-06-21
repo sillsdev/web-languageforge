@@ -2,9 +2,11 @@ import { Project } from 'src/angular-app/bellows/shared/model/project.model';
 import { Session, SessionService } from 'src/angular-app/bellows/core/session.service';
 import { webmFixDuration } from "webm-fix-duration";
 import * as angular from "angular";
+import { RecordingStateService } from 'src/angular-app/languageforge/lexicon/editor/recording-state.service';
+import { NoticeService } from '../../core/notice/notice.service';
 
 export class AudioRecorderController implements angular.IController {
-  static $inject = ["$interval", "$scope", "sessionService"];
+  static $inject = ["$interval", "$scope", "sessionService", "recordingStateService", "silNoticeService"];
 
   project: Project;
   session: Session;
@@ -20,11 +22,14 @@ export class AudioRecorderController implements angular.IController {
   callback: (blob: Blob) => void;
   durationInMilliseconds: number;
   interval: angular.IPromise<void>;
+  private hasUnresolvedRecording = false;
 
   constructor(
-    private $interval: angular.IIntervalService,
-    private $scope: angular.IScope,
-    private sessionService: SessionService
+    private readonly $interval: angular.IIntervalService,
+    private readonly $scope: angular.IScope,
+    private readonly sessionService: SessionService,
+    private readonly recordingStateService: RecordingStateService,
+    private readonly notice: NoticeService,
   ) {}
 
   $onInit(): void {
@@ -34,7 +39,13 @@ export class AudioRecorderController implements angular.IController {
     });
   }
 
-  private startRecording() {
+  private startRecording(): boolean {
+    if (!this.recordingStateService.startRecording()) {
+      this.notice.push(this.notice.WARN, "Recording is already in progress", undefined, undefined, 4000);
+      return false;
+    }
+
+    this.hasUnresolvedRecording = true;
     this.recordingTime = "0:00";
     var codecSpecs: string;
     if(this.project.audioRecordingCodec === 'webm'){
@@ -109,6 +120,7 @@ export class AudioRecorderController implements angular.IController {
         console.error(err);
       }
     );
+    return true;
   }
 
   private stopRecording() {
@@ -124,9 +136,12 @@ export class AudioRecorderController implements angular.IController {
   }
 
   toggleRecording() {
-    if (this.isRecording) this.stopRecording();
-    else this.startRecording();
-    this.isRecording = !this.isRecording;
+    if (this.isRecording) {
+      this.stopRecording();
+      this.isRecording = false;
+    } else {
+      this.isRecording = this.startRecording();
+    }
   }
 
   close() {
@@ -134,10 +149,12 @@ export class AudioRecorderController implements angular.IController {
       this.stopRecording();
     }
     this.callback(null);
+    this.resolveRecording();
   }
 
   saveAudio() {
     this.callback(this.blob);
+    this.resolveRecording();
   }
 
   recordingSupported() {
@@ -152,6 +169,14 @@ export class AudioRecorderController implements angular.IController {
   $onDestroy() {
     if (this.isRecording) {
       this.stopRecording();
+    }
+    this.resolveRecording();
+  }
+
+  private resolveRecording() {
+    if (this.hasUnresolvedRecording) {
+      this.recordingStateService.resolveRecording();
+      this.hasUnresolvedRecording = false;
     }
   }
 }

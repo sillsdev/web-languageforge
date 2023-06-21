@@ -10,6 +10,7 @@ import {LexiconCoreModule} from '../core/lexicon-core.module';
 import {EditorCommentsModule} from './comment/comment.module';
 import {LexiconEditorComponent, LexiconEditorEntryController, LexiconEditorListController} from './editor.component';
 import {EditorFieldModule} from './field/field.module';
+import { RecordingStateService } from './recording-state.service';
 
 export const LexiconEditorModule = angular
   .module('lexiconEditorModule', [
@@ -27,6 +28,7 @@ export const LexiconEditorModule = angular
   .component('lexiconEditor', LexiconEditorComponent)
   .controller('EditorListCtrl', LexiconEditorListController)
   .controller('EditorEntryCtrl', LexiconEditorEntryController)
+  .service('recordingStateService', RecordingStateService)
   .config(['$stateProvider', ($stateProvider: angular.ui.IStateProvider) => {
 
     // State machine from ui.router
