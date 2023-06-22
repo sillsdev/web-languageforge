@@ -359,8 +359,8 @@ export class LexiconEditorController implements angular.IController {
     failCallback: (reason?: any) => void = () => { }) => {
     const isNewEntry = LexiconEditorController.entryIsNew(this.currentEntry);
     if (isNewEntry) {
-      // We have to wait for the initial save to complete so that we have
-      await this.saving$.promise;
+      // We have to wait for the initial save to complete so that we save with the same entry ID
+      await this.saving$?.promise;
     }
 
     this.saving$ = this.$q.defer<void>();
