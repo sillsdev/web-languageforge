@@ -14,7 +14,7 @@ export class FieldControl {
   commentContext: { contextGuid: string };
   config: LexiconConfig;
   currentEntry: LexEntry;
-  deleteEntry: (currentEntry: LexEntry) => void;
+  deleteEntry: (currentEntry: LexEntry) => Promise<void>;
   getContextParts: (contextGuid: string) => any;
   getNewComment?: () => LexComment;
   hideRightPanel: () => void;

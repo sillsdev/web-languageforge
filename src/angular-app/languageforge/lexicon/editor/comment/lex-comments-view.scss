@@ -3,34 +3,6 @@
 @import "../../../../../../node_modules/bootstrap/scss/variables";
 @import "../../../../../../node_modules/bootstrap/scss/mixins";
 
-#lexAppEditView {
-  display: flex;
-  justify-content: center;
-  .container {
-    margin: 0;
-  }
-}
-
-.container-sticky {
-  position: sticky;
-  top: 0px;
-  z-index: 3;
-  margin-bottom: 10px;
-}
-
-.container-scroll {
-  overflow-y: scroll;
-  overflow-x: hidden;
-
-  @include media-breakpoint-up(md) {
-    height: calc(100vh - 230px);
-  }
-
-  @include media-breakpoint-down(sm) {
-    height: calc(100vh - 215px);
-  }
-}
-
 .comments-right-panel {
   color: $Eden;
   font-size: 14px;

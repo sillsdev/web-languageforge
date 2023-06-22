@@ -5,6 +5,7 @@
 
 	interface AugmentedActivity extends Activity {
 		date_locale: string,
+		date_time_locale: string,
 		date_iso: string,
 		time: number,
 		field_names: string,
@@ -36,6 +37,7 @@
 			return {
 				...activity,
 				date_locale: date.toLocaleDateString(),
+                date_time_locale: date.toLocaleString(),
 				date_iso: date.toISOString().split('T')[0],
 				time: date.getTime(),
 				field_names: to_names(activity.fields),
@@ -44,16 +46,25 @@
 	}
 
 	function byDateThenUser(a: AugmentedActivity, b: AugmentedActivity) {
-		return a.date_iso === b.date_iso ? a.user === b.user ? des(a.time, b.time)
-															 : asc(a.user.username, b.user.username)
-		                                 : des(a.date_iso, b.date_iso)
+        if (a.date_iso !== b.date_iso) {
+            return des(a.date_iso, b.date_iso);
+        }
+
+        if (a.user.username !== b.user.username) {
+            return asc(a.user.username, b.user.username);
+        }
+
+        return des(a.time, b.time);
 	}
 
 	const asc = (a: string | number, b: string | number) => a > b ? 1 : -1
 	const des = (a: string | number, b: string | number) => a < b ? 1 : -1
 
 	function to_names(fields: Field[] = []): string {
-		return fields.map(field => field.name).join(', ')
+        // This is quite rudimentary, but far better than nothing
+		return [...new Set(fields.map(field => field.fieldLabel?.label)
+            .filter(label => !!label))]
+            .join(', ')
 	}
 </script>
 
@@ -63,20 +74,20 @@
 		<thead>
 			<tr>
 				<td>user</td>
-				<th>date</th>
 				<th>action</th>
 				<th>entry</th>
 				<th>fields</th>
+				<th>date</th>
 			</tr>
 		</thead>
 		<tbody>
 			{#each sorted_activities as activity}
 				<tr>
 					<td>{ activity.user.username }</td>
-					<td>{ activity.date_locale }</td>
 					<td>{ action_display[activity.action] || activity.action }</td>
 					<td>{ activity.entry || '—' }</td>
 					<td>{ activity.field_names || '—' }</td>
+					<td>{ activity.date_time_locale }</td>
 				</tr>
 			{:else}
 				<tr><td>No activity</td></tr>

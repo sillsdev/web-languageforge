@@ -4,6 +4,35 @@
 
 @import "../../../../Site/views/languageforge/theme/default/sass/variables";
 
+#lexAppEditView {
+  display: flex;
+  justify-content: center;
+  .container {
+    margin: 0;
+  }
+}
+
+.container-sticky {
+  position: sticky;
+  top: 0px;
+  z-index: 30;
+  margin-bottom: 10px;
+  background: white;
+}
+
+.container-scroll {
+  overflow-y: scroll;
+  overflow-x: hidden;
+
+  @include media-breakpoint-up(md) {
+    height: calc(100vh - 240px);
+  }
+
+  @include media-breakpoint-down(sm) {
+    height: calc(100vh - 215px);
+  }
+}
+
 .lexAppToolbar {
   border: 1px solid $line-color;
   margin: 0 0 5px;

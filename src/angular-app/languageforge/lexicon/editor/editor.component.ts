@@ -32,7 +32,8 @@ import {
 import { LexiconProject } from '../shared/model/lexicon-project.model';
 import { LexOptionList } from '../shared/model/option-list.model';
 import { FieldControl } from './field/field-control.model';
-import {OfflineCacheUtilsService} from '../../../bellows/core/offline/offline-cache-utils.service';
+import { OfflineCacheUtilsService } from '../../../bellows/core/offline/offline-cache-utils.service';
+import { IDeferred } from 'angular';
 
 class Show {
   more: () => void;
@@ -77,6 +78,7 @@ export class LexiconEditorController implements angular.IController {
 
   private pristineEntry: LexEntry = new LexEntry();
   private warnOfUnsavedEditsId: string;
+  private saving$: IDeferred<void>;
 
   static $inject = ['$filter', '$interval',
     '$q', '$scope',
@@ -156,7 +158,7 @@ export class LexiconEditorController implements angular.IController {
         this.saveCurrentEntry();
       }
       // destroy listeners when leaving editor page
-      angular.element(window).unbind('keyup', (e: Event) => {});
+      angular.element(window).unbind('keyup', (e: Event) => { });
     };
 
     this.show.entryListModifiers = !(this.$window.localStorage.getItem('viewFilter') == null ||
@@ -223,7 +225,7 @@ export class LexiconEditorController implements angular.IController {
   $onDestroy(): void {
     this.cancelAutoSaveTimer();
     this.saveCurrentEntry();
-    angular.element(window).unbind('keydown', (e: Event) => {});
+    angular.element(window).unbind('keydown', (e: Event) => { });
   }
 
   navigateToLiftImport(): void {
@@ -353,11 +355,18 @@ export class LexiconEditorController implements angular.IController {
     return diffs && diffs.length && diffs.some((diff) => diff.kind === 'A');
   }
 
-  saveCurrentEntry = (doSetEntry: boolean = false, successCallback: () => void = () => { },
+  saveCurrentEntry = async (doSetEntry: boolean = false, successCallback: () => void = () => { },
     failCallback: (reason?: any) => void = () => { }) => {
+    const isNewEntry = LexiconEditorController.entryIsNew(this.currentEntry);
+    if (isNewEntry) {
+      // We have to wait for the initial save to complete so that we save with the same entry ID
+      await this.saving$?.promise;
+    }
+
+    this.saving$ = this.$q.defer<void>();
+
     // `doSetEntry` is mainly used for when the save button is pressed, that is when the user is saving the current
     // entry and is NOT going to a different entry (as is the case with editing another entry.
-    let isNewEntry = false;
     let newEntryTempId: string;
 
     if (this.hasUnsavedChanges() && this.lecRights.canEditEntry()) {
@@ -367,8 +376,7 @@ export class LexiconEditorController implements angular.IController {
       this.currentEntry = LexiconEditorController.normalizeStrings(this.currentEntry);
       this.control.currentEntry = this.currentEntry;
       const entryToSave = angular.copy(this.currentEntry);
-      if (LexiconEditorController.entryIsNew(entryToSave)) {
-        isNewEntry = true;
+      if (isNewEntry) {
         newEntryTempId = entryToSave.id;
         entryToSave.id = ''; // send empty id to indicate "create new"
       }
@@ -379,18 +387,20 @@ export class LexiconEditorController implements angular.IController {
         id: entryForUpdate.id,
         _update_deep_diff: diff(LexiconEditorController.normalizeStrings(pristineEntryForDiffing), entryForDiffing)
       };
+
       let entryOrDiff = isNewEntry ? entryForUpdate : diffForUpdate;
       if (!isNewEntry && this.hasArrayChange(diffForUpdate._update_deep_diff)) {
         // Updates involving adding or deleting any array item cannot be delta updates due to MongoDB limitations
         entryOrDiff = entryForUpdate;
       }
 
-      return this.$q.all({
-        entry: this.lexService.update(entryOrDiff),
-        isSR: this.sendReceive.isSendReceiveProject()
-      }).then(data => {
-        const entry = data.entry.data;
-        if (!entry && data.isSR) {
+      try {
+        const { result: { data: entry }, isSR } = await this.$q.all({
+          result: this.lexService.update(entryOrDiff),
+          isSR: this.sendReceive.isSendReceiveProject()
+        });
+
+        if (!entry && isSR) {
           this.warnOfUnsavedEdits(entryToSave);
           this.sendReceive.startSyncStatusTimer();
         }
@@ -429,41 +439,41 @@ export class LexiconEditorController implements angular.IController {
         }
 
         // refresh data will add the new entry to the entries list
-        this.editorService.refreshEditorData().then(() => {
-          this.activityService.markRefreshRequired();
-          if (entry && isNewEntry) {
-            this.setCurrentEntry(this.entries[this.editorService.getIndexInList(entry.id, this.entries)]);
-            this.editorService.removeEntryFromLists(newEntryTempId);
+        await this.editorService.refreshEditorData();
+        this.activityService.markRefreshRequired();
+        if (entry && isNewEntry) {
+          this.setCurrentEntry(this.entries[this.editorService.getIndexInList(entry.id, this.entries)]);
+          this.editorService.removeEntryFromLists(newEntryTempId);
 
-            if (doSetEntry) {
-              this.$state.go('.', {
-                entryId: entry.id,
-              }, { notify: false });
+          if (doSetEntry) {
+            this.$state.go('.', {
+              entryId: entry.id,
+            }, { notify: false });
 
-              this.scrollListToEntry(entry.id, 'top');
-            }
+            this.scrollListToEntry(entry.id, 'top');
           }
-        });
 
-        this.saveStatus = 'saved';
-        successCallback();
-      }).catch(reason => {
+          this.saveStatus = 'saved';
+          successCallback();
+        }
+      } catch (reason) {
         this.saveStatus = 'unsaved';
         failCallback(reason);
-      });
+      }
     } else {
       successCallback();
     }
+    this.saving$.resolve();
   }
 
-  editEntryAndScroll(id: string): void {
-    this.editEntry(id);
+  async editEntryAndScroll(id: string): Promise<void> {
+    await this.editEntry(id);
     this.scrollListToEntry(id);
   }
 
-  editEntry(id: string): void {
+  async editEntry(id: string): Promise<void> {
     if (this.currentEntry.id !== id) {
-      this.saveCurrentEntry();
+      await this.saveCurrentEntry();
       this.setCurrentEntry(this.entries[this.editorService.getIndexInList(id, this.entries)]);
       // noinspection JSIgnoredPromiseFromCall - comments will load in the background
       this.commentService.loadEntryComments(id);
@@ -476,10 +486,10 @@ export class LexiconEditorController implements angular.IController {
     this.goToEntry(id);
   }
 
-  gotoToEntry(index: number, isValid: boolean) {
+  async gotoToEntry(index: number, isValid: boolean): Promise<void> {
     if (isValid) {
       let id = this.editorService.getIdInFilteredList(Number(index));
-      this.editEntryAndScroll(id);
+      await this.editEntryAndScroll(id);
     }
   }
 
@@ -495,9 +505,9 @@ export class LexiconEditorController implements angular.IController {
     return i >= 0 && i < this.visibleEntries.length;
   }
 
-  skipToEntry(distance: number): void {
+  async skipToEntry(distance: number): Promise<void> {
     const i = this.editorService.getIndexInList(this.currentEntry.id, this.visibleEntries) + distance;
-    this.editEntry(this.visibleEntries[i].id);
+    await this.editEntry(this.visibleEntries[i].id);
     this.scrollListToEntry(this.visibleEntries[i].id);
   }
 
@@ -518,30 +528,32 @@ export class LexiconEditorController implements angular.IController {
     });
   }
 
-  deleteEntry = (entry: LexEntry): void => {
+  deleteEntry = async (entry: LexEntry): Promise<void> => {
     const deleteMsg = 'Are you sure you want to delete the entry <b>\'' +
       LexiconUtilityService.getLexeme(this.lecConfig, this.lecConfig.entry, entry) + '\'</b>?';
-    this.modal.showModalSimple('Delete Entry', deleteMsg, 'Cancel', 'Delete Entry').then(() => {
-      let iShowList = this.editorService.getIndexInList(entry.id, this.visibleEntries);
-      this.editorService.removeEntryFromLists(entry.id);
-      if (this.entries.length > 0) {
-        if (iShowList !== 0) {
-          iShowList--;
-        }
-        this.editEntryAndScroll(this.visibleEntries[iShowList].id);
-      } else {
-        this.returnToList();
-      }
+    await this.modal.showModalSimple('Delete Entry', deleteMsg, 'Cancel', 'Delete Entry');
 
-      if (!LexiconEditorController.entryIsNew(entry)) {
-        this.sendReceive.setStateUnsynced();
-        this.lexService.remove(entry.id, () => {
-          this.editorService.refreshEditorData();
-        });
+    let iShowList = this.editorService.getIndexInList(entry.id, this.visibleEntries);
+    this.editorService.removeEntryFromLists(entry.id);
+    if (this.entries.length > 0) {
+      if (iShowList !== 0) {
+        iShowList--;
       }
+      this.currentEntry = new LexEntry();
+      this.pristineEntry = new LexEntry();
+      await this.editEntryAndScroll(this.visibleEntries[iShowList].id);
+    } else {
+      this.returnToList();
+    }
 
-      this.hideRightPanel();
-    }, () => { });
+    if (!LexiconEditorController.entryIsNew(entry)) {
+      this.sendReceive.setStateUnsynced();
+      this.lexService.remove(entry.id, () => {
+        this.editorService.refreshEditorData();
+      });
+    }
+
+    this.hideRightPanel();
   }
 
   makeValidModelRecursive = (config: LexConfigField, data: any = {}, stopAtNodes: string | string[] = []): any => {
@@ -969,7 +981,7 @@ export class LexiconEditorController implements angular.IController {
     }
   }
 
-  private evaluateStateFromURL(): void {
+  private async evaluateStateFromURL(): Promise<void> {
     this.editorService.loadEditorData().then(async () => {
       if (this.$state.is("editor.entry")) {
 
@@ -982,7 +994,7 @@ export class LexiconEditorController implements angular.IController {
 
             // see if there is a most-recently viewed entry in the cache
             await this.offlineCacheUtils.getProjectMruEntryData().then(data => {
-              if(data && data.mruEntryId && this.editorService.getIndexInList(data.mruEntryId, this.entries) != null){
+              if (data && data.mruEntryId && this.editorService.getIndexInList(data.mruEntryId, this.entries) != null) {
                 entryId = data.mruEntryId;
               }
 
@@ -992,7 +1004,7 @@ export class LexiconEditorController implements angular.IController {
               }
             });
           }
-          this.editEntryAndScroll(entryId);
+          await this.editEntryAndScroll(entryId);
         } else {
           // there are no entries, go to the list view
           this.$state.go('editor.list');
@@ -1285,7 +1297,7 @@ export class LexiconEditorController implements angular.IController {
   }
 
   private static syncListEntryWithCurrentEntry(elementId: string, alignment: string = 'center'): void {
-	const element = document.querySelector(elementId);
+    const element = document.querySelector(elementId);
     const block = alignment !== 'top' ? 'center' : 'start';
 
     // https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView
