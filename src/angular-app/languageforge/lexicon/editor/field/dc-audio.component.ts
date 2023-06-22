@@ -11,6 +11,7 @@ import {UploadFile, UploadResponse} from '../../../../bellows/shared/model/uploa
 import {LexiconProjectService} from '../../core/lexicon-project.service';
 import {Rights} from '../../core/lexicon-rights.service';
 import {LexiconUtilityService} from '../../core/lexicon-utility.service';
+import { RecordingStateService } from '../recording-state.service';
 
 export class FieldAudioController implements angular.IController {
   dcFilename: string;
@@ -21,18 +22,27 @@ export class FieldAudioController implements angular.IController {
   showAudioUpload: boolean = false;
   showAudioRecorder: boolean = false;
 
+  private uploading$: angular.IDeferred<void>;
+
   static $inject = ['$filter', '$state',
     'Upload', 'modalService',
     'silNoticeService', 'sessionService',
-    'lexProjectService', '$scope'
+    'lexProjectService', '$scope', '$q', 'recordingStateService'
   ];
-  constructor(private $filter: angular.IFilterService, private $state: angular.ui.IStateService,
-              private Upload: any, private modalService: ModalService,
-              private notice: NoticeService, private sessionService: SessionService,
-              private lexProjectService: LexiconProjectService, private $scope: angular.IScope) {
-
-                this.$scope.$watch(() => this.dcFilename, () => this.showAudioRecorder = false);
-              }
+  constructor(
+    private $filter: angular.IFilterService,
+    private $state: angular.ui.IStateService,
+    private Upload: angular.angularFileUpload.IUploadService,
+    private modalService: ModalService,
+    private notice: NoticeService,
+    private sessionService: SessionService,
+    private lexProjectService: LexiconProjectService,
+    private $scope: angular.IScope,
+    private $q: angular.IQService,
+    private recordingStateService: RecordingStateService,
+  ) {
+    this.$scope.$watch(() => this.dcFilename, () => this.showAudioRecorder = false);
+  }
 
   hasAudio(): boolean {
     if (this.dcFilename == null) {
@@ -101,14 +111,17 @@ export class FieldAudioController implements angular.IController {
       }
 
       this.notice.setLoading('Uploading ' + file.name + '...');
-      this.Upload.upload({
+      this.uploading$ = this.$q.defer<void>();
+      this.recordingStateService.startUploading(this.uploading$.promise);
+      return this.Upload.upload<any>({
+        method: 'POST',
         url: '/upload/audio',
         data: {
           file,
           previousFilename: this.dcFilename,
           recordedInBrowser: recordedInBrowser
         }
-      }).then((response: UploadResponse) => {
+      }).then((response) => {
           this.notice.cancelLoading();
           const isUploadSuccess = response.data.result;
           if (isUploadSuccess) {
@@ -143,7 +156,7 @@ export class FieldAudioController implements angular.IController {
 
         (evt: ProgressEvent) => {
           this.notice.setPercentComplete(Math.floor(100.0 * evt.loaded / evt.total));
-        });
+        }).finally(() => this.uploading$.resolve());
     });
   }
 
@@ -170,6 +183,9 @@ export class FieldAudioController implements angular.IController {
     return filename.substr(filename.indexOf('_') + 1);
   }
 
+  $onDestroy() {
+    this.uploading$?.resolve();
+  }
 }
 
 export const FieldAudioComponent: angular.IComponentOptions = {
