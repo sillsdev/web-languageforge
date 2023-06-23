@@ -34,6 +34,7 @@ import { LexOptionList } from '../shared/model/option-list.model';
 import { FieldControl } from './field/field-control.model';
 import { OfflineCacheUtilsService } from '../../../bellows/core/offline/offline-cache-utils.service';
 import { IDeferred } from 'angular';
+import { RecordingStateService } from './recording-state.service';
 
 class Show {
   more: () => void;
@@ -94,6 +95,7 @@ export class LexiconEditorController implements angular.IController {
     'lexRightsService',
     'lexSendReceive',
     'offlineCacheUtils',
+    'recordingStateService',
   ];
 
   constructor(private readonly $filter: angular.IFilterService,
@@ -115,6 +117,7 @@ export class LexiconEditorController implements angular.IController {
     private readonly rightsService: LexiconRightsService,
     private readonly sendReceive: LexiconSendReceiveService,
     private readonly offlineCacheUtils: OfflineCacheUtilsService,
+    private readonly recordingStateService: RecordingStateService,
   ) { }
 
   $onInit(): void {
@@ -232,8 +235,8 @@ export class LexiconEditorController implements angular.IController {
     this.$state.go('importExport');
   }
 
-  returnToList(): void {
-    this.saveCurrentEntry();
+  async returnToList(): Promise<void> {
+    await this.saveCurrentEntry();
     this.setCurrentEntry();
     this.hideRightPanelWithoutAnimation();
     this.$state.go('editor.list', {
@@ -368,6 +371,10 @@ export class LexiconEditorController implements angular.IController {
     // `doSetEntry` is mainly used for when the save button is pressed, that is when the user is saving the current
     // entry and is NOT going to a different entry (as is the case with editing another entry.
     let newEntryTempId: string;
+
+    // We might be saving, because the user is navigating away from this entry,
+    // in which case we don't want to lose the upload.
+    await this.recordingStateService.uploading$();
 
     if (this.hasUnsavedChanges() && this.lecRights.canEditEntry()) {
       this.cancelAutoSaveTimer();
@@ -1125,7 +1132,15 @@ export class LexiconEditorController implements angular.IController {
     return this.lecConfig.inputSystems[inputSystemTag].abbreviation;
   }
 
-  private setCurrentEntry(entry: LexEntry = new LexEntry()): void {
+  private setCurrentEntry(entry: LexEntry = new LexEntry()): Promise<void> {
+    if (entry.id === this.currentEntry.id && this.recordingStateService.hasUnsavedChanges()) {
+      // If it's the same entry, then we're just making sure the UI is as up to date
+      // as possible. If the user is recording or has audio to save, then we can't touch
+      // the UI, because the audio will get lost.
+      // If it's a different entry, we assume the user is intentionally discarding the audio.
+      return;
+    }
+
     // align custom fields into model
     entry = this.alignCustomFieldsInData(entry);
 
