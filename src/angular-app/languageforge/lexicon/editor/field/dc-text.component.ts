@@ -29,7 +29,7 @@ export class FieldTextController implements angular.IController {
   fteMultiline: boolean;
   fteDir: string;
   fteFieldName: string;
-  
+
   fte: any = {};
   textFieldValue: string = '';
   autocapitalize: string
@@ -72,7 +72,11 @@ export class FieldTextController implements angular.IController {
   }
 
   inputChanged(): void {
-    this.fteModel = FieldTextController.escapeHTML(this.textFieldValue);
+    this.fteModel = FieldTextController
+      .escapeHTML(this.textFieldValue);
+    if (!this.fteMultiline) {
+      this.fteModel = this.fteModel.replace(/\n/g, ' ');
+    }
   }
 
   private static unescapeHTML(str: string): string {
