@@ -4,6 +4,7 @@ version: '3.5'
 services:
   ui-builder:
     build:
+      context: .
       dockerfile: docker/ui-builder/Dockerfile
     image: lf-ui-builder
     container_name: lf-ui-builder
@@ -25,6 +26,7 @@ services:
 
   app:
     build:
+      context: .
       dockerfile: docker/app/Dockerfile
       args:
         - ENVIRONMENT=development
@@ -236,6 +238,7 @@ services:
 
   e2e-app:
     build:
+      context: .
       dockerfile: docker/app/Dockerfile
       args:
         - ENVIRONMENT=development
@@ -275,6 +278,7 @@ services:
 
   test-php:
     build:
+      context: .
       dockerfile: docker/test-php/Dockerfile
     image: lf-test-php
     container_name: lf-test-php
@@ -302,6 +306,7 @@ services:
 
   composer-dev:
     build:
+      context: .
       dockerfile: docker/composer-dev/Dockerfile
     image: lf-composer-dev
     container_name: lf-composer-dev
