@@ -69,7 +69,7 @@ build-next:
 
 .PHONY: build-base-php
 build-base-php:
-	docker build -t sillsdev/web-languageforge:base-php -f docker/base-php/Dockerfile .
+	docker build -t sillsdev/web-languageforge:base-php-7.4 -f docker/base-php/Dockerfile .
 
 .PHONY: composer-dev
 composer-dev:
