@@ -1,6 +1,13 @@
 # https://docs.docker.com/compose/compose-file
 # https://github.com/compose-spec/compose-spec/blob/master/spec.md
 version: '3.5'
+
+# networks:
+#   lexbox:
+#     name: lexbox_default
+#     external: true
+#   default:
+
 services:
   ui-builder:
     build:
@@ -37,14 +44,20 @@ services:
       - mail
       - ld-api
       - lfmerge
+    # networks:
+    #   - default
+    #   - lexbox
     environment:
-      - WAIT_HOSTS=db:27017, mail:25
+      - WAIT_HOSTS=lf-db:27017, mail:25
       - XDEBUG_MODE=develop,debug
       - LDAPI_BASE_URL=http://ld-api:3000/api/v2/
+      # Uncomment this to test getting the LD project list from LexBox
+      # To use LexBox locally (in docker) you'll also need to uncomment the networks here and at the top of the file
+      #- LEX_BOX_HOST=https://staging.languagedepot.org #lexbox-api:5158
       - ENVIRONMENT=development
       - WEBSITE=localhost
       - DATABASE=scriptureforge
-      - MONGODB_CONN=mongodb://db:27017
+      - MONGODB_CONN=mongodb://lf-db:27017
       - MAIL_HOST=mail
       - GOOGLE_CLIENT_ID=bogus-development-token
       - GOOGLE_CLIENT_SECRET=bogus-development-token

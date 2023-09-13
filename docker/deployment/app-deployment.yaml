@@ -138,6 +138,11 @@ spec:
               secretKeyRef:
                 key: LANGUAGE_DEPOT_API_TOKEN
                 name: ld-api
+          - name: LEX_BOX_HOST
+            valueFrom:
+              secretKeyRef:
+                key: LEX_BOX_HOST
+                name: ld-api
           - name: FACEBOOK_CLIENT_ID
             valueFrom:
               secretKeyRef:

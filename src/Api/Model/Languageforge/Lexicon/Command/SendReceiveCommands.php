@@ -88,9 +88,12 @@ class SendReceiveCommands
         }
         $client = new Client(["handler" => $handler]);
 
-        $url = "https://admin.languagedepot.org/api/user/" . $username . "/projects";
+        $host = getenv("LEX_BOX_HOST") ?: "https://admin.languagedepot.org";
+        $url = $host . "/api/user/" . $username . "/projects";
         $postData = [
             "json" => ["password" => $password],
+            // Also supported:
+            // "form_params" => ["password" => $password],
             "headers" => ["Authorization" => "Bearer " . LANGUAGE_DEPOT_API_TOKEN],
         ];
 
