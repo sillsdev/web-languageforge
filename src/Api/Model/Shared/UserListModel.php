@@ -10,7 +10,7 @@ class UserListModel extends MapperListModel
     {
         parent::__construct(
             UserModelMongoMapper::instance(),
-            ["username" => ['$regex' => ""], "isDeleted" => ["$in" => [false, null]]],
+            ["username" => ['$regex' => ""], "isDeleted" => ['$in' => [false, null]]],
             ["username", "email", "name", "avatar_ref", "role", "projects", "active"]
         );
     }
