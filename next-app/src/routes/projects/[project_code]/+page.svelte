@@ -34,12 +34,6 @@
 			url: `/app/lexicon/${ project.id }`,
 		},
 		{
-			title: 'Entries with audio',
-			value: project.num_entries_with_audio,
-			icon: VoiceIcon,
-			url: `/app/lexicon/${ project.id }#!/editor/entry/000000?filterBy=Audio`,
-		},
-		{
 			title: 'Entries with pictures',
 			value: project.num_entries_with_pictures,
 			icon: ImagesIcon,
