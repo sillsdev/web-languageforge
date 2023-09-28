@@ -2,6 +2,7 @@
 
 namespace Api\Model\Languageforge\Lexicon\Dto;
 use Api\Model\Shared\Mapper\MongoQueries;
+use Api\Model\Shared\Mapper\MongoStore;
 
 class LexStatsDto
 {
