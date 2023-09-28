@@ -12,10 +12,10 @@ class LexStatsDto
      */
     public static function encode($project)
     {
-        $dbName = $project->databaseName();
-        $num_entries = MongoQueries::countEntries($dbName, "lexicon");
-        $num_entries_with_pictures = MongoQueries::countEntriesWithPictures($dbName, "lexicon");
-        $num_unresolved_comments = MongoQueries::countUnresolvedComments($dbName, "lexiconComments");
+        $db = MongoStore::connect($project->databaseName());
+        $num_entries = MongoQueries::countEntries($db, "lexicon");
+        $num_entries_with_pictures = MongoQueries::countEntriesWithPictures($db, "lexicon");
+        $num_unresolved_comments = MongoQueries::countUnresolvedComments($db, "lexiconComments");
         return [
             "num_entries" => $num_entries,
             "num_entries_with_pictures" => $num_entries_with_pictures,

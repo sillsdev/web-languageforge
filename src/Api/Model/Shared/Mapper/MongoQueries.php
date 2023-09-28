@@ -4,16 +4,14 @@ namespace Api\Model\Shared\Mapper;
 
 class MongoQueries
 {
-    public static function countEntries($databaseName, $collectionName)
+    public static function countEntries($db, $collectionName)
     {
-        $db = MongoStore::connect($databaseName);
         $coll = $db->selectCollection($collectionName);
         return $coll->count();
     }
 
-    public static function countEntriesWithPictures($databaseName, $collectionName)
+    public static function countEntriesWithPictures($db, $collectionName)
     {
-        $db = MongoStore::connect($databaseName);
         $coll = $db->selectCollection($collectionName);
         $query = [
             "senses" => ['$exists' => true, '$ne' => []],
@@ -22,9 +20,8 @@ class MongoQueries
         return $coll->count($query);
     }
 
-    public static function countUnresolvedComments($databaseName, $collectionName)
+    public static function countUnresolvedComments($db, $collectionName)
     {
-        $db = MongoStore::connect($databaseName);
         $coll = $db->selectCollection($collectionName);
         $query = [
             "status" => ['$exists' => true, '$ne' => "resolved"],
