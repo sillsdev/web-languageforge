@@ -468,7 +468,9 @@ dc-entry .card {
   }
   .right-panel-list {
     width: 0;
-    transition: width 0.5s ease-in-out, margin-left 0.5s ease-in-out;
+    transition:
+      width 0.5s ease-in-out,
+      margin-left 0.5s ease-in-out;
     margin-left: 0;
     position: relative;
     .right-panel {
@@ -479,7 +481,10 @@ dc-entry .card {
       top: 0;
       width: 100%;
       &.panel-closing {
-        transition: width 0.5s ease-in-out 0.5s, margin-left 0.5s ease-in-out 0.5s, opacity 0.5s;
+        transition:
+          width 0.5s ease-in-out 0.5s,
+          margin-left 0.5s ease-in-out 0.5s,
+          opacity 0.5s;
         overflow: visible !important;
         height: auto !important;
       }
@@ -507,7 +512,9 @@ dc-entry .card {
   }
   &.panel-closing {
     .right-panel-list {
-      transition: width 0.5s ease-in-out 0.5s, margin-left 0.5s ease-in-out 0.5s;
+      transition:
+        width 0.5s ease-in-out 0.5s,
+        margin-left 0.5s ease-in-out 0.5s;
       overflow: visible !important;
       height: auto !important;
     }
