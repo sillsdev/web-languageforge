@@ -20,6 +20,10 @@ export class OfflineCacheService {
     return this.$q.when(this.getStore(storeName).removeItem(key));
   }
 
+  clearEntireStore(storeName: string): angular.IPromise<any> {
+    return this.$q.when(this.getStore(storeName).clear());
+  }
+
   getAllFromStore(storeName: string, projectId?: string): angular.IPromise<any> {
     const results: any[] = [];
     return this.$q.when(this.getStore(storeName).iterate<any, any>(value => {
