@@ -4,5 +4,15 @@
         <p>Please do not change these settings unless asked to by tech support.</p>
         <label for="updateIntervalSeconds">Update interval (in seconds)</label>
         <input type="number" ng-model="$ctrl.accPollUpdateTimerSecondsDirty">
+        <br>
+        <p>If something went wrong with downloading the dictionary and it only loaded a partial copy (i.e. some dictionary entries are missing), the button below can let you reset the browser storage, removing the partial copy of the dictionary stored in your browser so that you can download it again.</p>
+        <p><strong>CAUTION:</strong> Make sure you are online before doing this, otherwise you won't be able to redownload the dictionary and you'll see an empty project until you can go online again.</p>
+        <button
+            class="btn btn-danger"
+            type="button"
+            data-ng-click="$ctrl.resetLocalStorage()"
+            >
+            Reset browser storage
+        </button>
     </div>
 </div>
