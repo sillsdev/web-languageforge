@@ -27,7 +27,7 @@ export class AdvancedOptionsConfigurationController implements angular.IControll
   async resetLocalStorage() {
     await this.editorOfflineCache.deleteAllEntries();
     await this.commentsOfflineCache.deleteAllComments();
-    window.location.reload();
+    alert('Browser storage has been reset. Please refresh the page to redownload dictionary entries.');
   }
 
   $onChanges(changes: any) {
