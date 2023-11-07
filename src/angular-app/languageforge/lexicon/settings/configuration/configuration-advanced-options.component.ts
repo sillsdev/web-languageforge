@@ -27,6 +27,7 @@ export class AdvancedOptionsConfigurationController implements angular.IControll
   async resetLocalStorage() {
     await this.editorOfflineCache.deleteAllEntries();
     await this.commentsOfflineCache.deleteAllComments();
+    window.location.reload();
   }
 
   $onChanges(changes: any) {
