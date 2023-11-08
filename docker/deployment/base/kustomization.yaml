@@ -6,6 +6,8 @@ resources:
   - app-deployment.yaml
   - db-deployment.yaml
   - lfmerge-deployment.yaml
+  - lfmerge-pvcs.yaml
   - mail-deployment.yaml
   - next-app-deployment.yaml
   - next-proxy-deployment.yaml
+  - app-config.yaml

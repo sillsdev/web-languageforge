@@ -41,7 +41,10 @@ spec:
             memory: 100Mi
         env:
           - name: SERVER_HOSTNAME
-            value: {{SERVER_HOSTNAME}}
+            valueFrom:
+              configMapKeyRef:
+                name: app-config
+                key: website
           - name: SMTP_SERVER
             valueFrom:
               secretKeyRef:

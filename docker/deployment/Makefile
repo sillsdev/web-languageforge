@@ -44,34 +44,11 @@ init-secrets:
 create-new-deployment-mail:
 	kubectl create deployment mail --image=juanluisbaptiste/postfix:1.0.0 --dry-run=client -o yaml > mail-deployment-new.yaml
 
-deploy-staging: deploy-db deploy-mail-staging deploy-app-staging deploy-lfmerge-staging deploy-next-proxy-staging deploy-next-app-staging
-deploy-mail-staging:
-	sed -e s/{{SERVER_HOSTNAME}}/staging.languageforge.org/ mail-deployment.yaml | kubectl apply -f -
-deploy-app-staging:
-	sed -e s/{{WEBSITE}}/staging.languageforge.org/ app-deployment.yaml \
-  | sed -e s/{{VERSION}}/$(VERSION_APP)/ | kubectl apply -f -
-deploy-lfmerge-staging:
-	sed -e s/{{VERSION_LFMERGE}}/$(VERSION_LFMERGE)/ lfmerge-deployment.yaml | kubectl apply -f -
-deploy-next-proxy-staging:
-	sed -e s/{{WEBSITE}}/staging.languageforge.org/ next-proxy-deployment.yaml \
-  | sed -e s/{{VERSION}}/$(VERSION_PROXY)/ | kubectl apply -f -
-deploy-next-app-staging:
-	sed -e s/{{VERSION}}/$(VERSION_NEXT_APP)/ next-app-deployment.yaml | kubectl apply -f -
-deploy-prod: deploy-db deploy-mail-prod deploy-app-prod deploy-lfmerge-prod deploy-next-proxy-prod deploy-next-app-prod
-deploy-mail-prod:
-	sed -e s/{{SERVER_HOSTNAME}}/languageforge.org/ mail-deployment.yaml | kubectl apply -f -
-deploy-app-prod:
-	sed -e s/{{WEBSITE}}/languageforge.org/ app-deployment.yaml \
-  | sed -e s/{{VERSION}}/$(VERSION_APP)/ | kubectl apply -f -
-deploy-lfmerge-prod:
-	sed -e s/{{VERSION_LFMERGE}}/$(VERSION_LFMERGE)/ lfmerge-deployment.yaml | kubectl apply -f -
-deploy-next-proxy-prod:
-	sed -e s/{{WEBSITE}}/languageforge.org/ next-proxy-deployment.yaml \
-  | sed -e s/{{VERSION}}/$(VERSION_PROXY)/ | kubectl apply -f -
-deploy-next-app-prod:
-	sed -e s/{{VERSION}}/$(VERSION_NEXT_APP)/ next-app-deployment.yaml | kubectl apply -f -
-deploy-db:
-	kubectl apply -f db-deployment.yaml
+deploy-staging:
+	kubectl --context dallas-rke apply -k staging/
+deploy-prod:
+	kubectl --context aws-rke apply -k prod/
+
 
 delete: delete-app delete-lfmerge delete-mail delete-db delete-next-proxy delete-next-app
 delete-db: # does NOT delete the volume, i.e., the data in the database

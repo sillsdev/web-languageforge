@@ -3,5 +3,5 @@ kind: ConfigMap
 metadata:
   name: app-config
 data:
-  website: "localhost"
-  hg-domain: "hg-staging.languagforge.org"
+  website: "staging.languageforge.org"
+

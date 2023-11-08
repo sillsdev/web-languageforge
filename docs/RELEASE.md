@@ -19,7 +19,9 @@ Current workflow:
 1. merge PR into or make commits on `develop` branch
 1. this will kick off the GHA (`.github/workflows/staging.yml`) to build, test and publish the necessary images to Docker Hub (https://hub.docker.com/r/sillsdev/web-languageforge/tags) and deploy this code to the staging environment.
 
-Staging deployments can be manually run with `VERSION_APP=<some-docker-tag-or-semver> VERSION_PROXY=<some-docker-tag-or-semver> VERSION_NEXT_APP=<some-docker-tag-or-semver> VERSION_LFMERGE=<some-docker-tag-or-semver> make deploy-staging`.
+Update the image tags in `staging/kustomization.yaml`
+
+Staging deployments can be manually run with `make deploy-staging`.
 
 ### Production
 
@@ -32,7 +34,9 @@ Current workflow:
 1. "Publish" the new release
 1. this will kick off the GHA (`.github/workflows/production.yml`) to build, test and publish the necessary images to Docker Hub (https://hub.docker.com/r/sillsdev/web-languageforge/tags) and deploy this code to the production environment at https://languageforge.org
 
-Production deployments can be manually run with `VERSION_APP=<some-docker-tag-or-semver> VERSION_PROXY=<some-docker-tag-or-semver> VERSION_NEXT_APP=<some-docker-tag-or-semver> VERSION_LFMERGE=<some-docker-tag-or-semver> make deploy-prod`.
+Update the image tags in `prod/kustomization.yaml`
+
+Production deployments can be manually run with `make deploy-prod`.
 
 ### Revert
 
