@@ -35,6 +35,9 @@ shell-next-app:
 shell-next-proxy:
 	kubectl exec -it deploy/next-proxy -- sh
 
+forward-db:
+	kubectl port-forward pod/db-6b494cd89f-whfr7 27018:27017 -n languageforge
+
 init-secrets:
 	kubectl apply -f secrets.yaml
 
