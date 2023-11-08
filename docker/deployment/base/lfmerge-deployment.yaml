@@ -18,36 +18,6 @@ spec:
 
 ---
 
-# https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: lf-project-assets
-spec:
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 10Gi
-  storageClassName: weekly-snapshots-retain-4 # provided by LTOps
-
----
-
-# https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: lfmerge-sendreceive-data
-spec:
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 50Gi
-  storageClassName: weekly-snapshots-retain-4 # provided by LTOps
-
----
-
 # https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#writing-a-deployment-spec
 apiVersion: apps/v1
 kind: Deployment
@@ -100,7 +70,7 @@ spec:
             name: sendreceive-data
       containers:
       - name: lfmerge
-        image: ghcr.io/sillsdev/lfmerge:{{VERSION_LFMERGE}}
+        image: ghcr.io/sillsdev/lfmerge:latest
         imagePullPolicy: Always
         # https://kubernetes.io/docs/concepts/configuration/manage-resources-containers
         resources:
@@ -133,6 +103,11 @@ spec:
             value: sf_
           - name: LFMERGE_VERBOSE_PROGRESS
             value: "true"
+          - name: LFMERGE_LANGUAGE_DEPOT_HG_PUBLIC_HOSTNAME
+            valueFrom:
+              configMapKeyRef:
+                name: app-config
+                key: hg-domain
           - name: LANGUAGE_DEPOT_TRUST_TOKEN
             valueFrom:
               secretKeyRef:

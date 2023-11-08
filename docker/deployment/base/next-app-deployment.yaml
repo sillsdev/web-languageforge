@@ -37,7 +37,9 @@ spec:
     spec:
       containers:
       - name: next-app
-        image: sillsdev/web-languageforge:{{VERSION}}
+        # this image doesn't actually exist as for some reason tags were used for different image types instead of just version number.
+        # this is a workaround because kustomize is designed to work with image names
+        image: sillsdev/web-languageforge-next-app:latest
         imagePullPolicy: Always
         # https://kubernetes.io/docs/concepts/configuration/manage-resources-containers
         resources:

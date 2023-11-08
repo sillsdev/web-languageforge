@@ -1,0 +1,30 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: languageforge
+
+resources:
+  - ../base
+
+# both next app and next proxy require their own images, but the image name web-languageforge was reused for them
+# with a different tag to select the correct image instead of making a new image name
+# because of that we have to do a bit of a workaround to allow setting the image tag for the correct container
+images:
+  - name: sillsdev/web-languageforge
+    newTag: 2023-09-21
+  - name: sillsdev/web-languageforge-next-proxy
+    newName: sillsdev/web-languageforge
+    newTag: next-proxy-2023-09-21
+  - name: sillsdev/web-languageforge-next-app
+    newName: sillsdev/web-languageforge
+    newTag: next-app-2023-09-21
+  - name: ghcr.io/sillsdev/lfmerge
+    newTag: 2.0.135
+
+patches:
+  - path: app-config-patch.yaml
+  - path: lfmerge-pvcs-patch.yaml
+  - path: ingress-config-patch.yaml
+    target:
+      kind: Ingress
+      name: languageforge-app
+      namespace: languageforge
