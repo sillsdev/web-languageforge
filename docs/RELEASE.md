@@ -22,6 +22,7 @@ Current workflow:
 Update the image tags in `staging/kustomization.yaml`
 
 Staging deployments can be manually run with `make deploy-staging`.
+Note, this command assumes that the staging k8s context is named dallas-rke
 
 ### Production
 
@@ -37,6 +38,7 @@ Current workflow:
 Update the image tags in `prod/kustomization.yaml`
 
 Production deployments can be manually run with `make deploy-prod`.
+Note, this command assumes that the staging k8s context is named aws-rke
 
 ### Revert
 
