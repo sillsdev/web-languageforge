@@ -10,13 +10,13 @@ resources:
 # because of that we have to do a bit of a workaround to allow setting the image tag for the correct container
 images:
   - name: sillsdev/web-languageforge
-    newTag: develop-20231002-a33383741406cb1823c05a3f6e00d20f35d1ec4d
+    newTag: develop-20231108-7256a1d48b45b6ea05afc954344911e786e4f61d
   - name: sillsdev/web-languageforge-next-proxy
     newName: sillsdev/web-languageforge
-    newTag: develop-next-proxy-20231002-a33383741406cb1823c05a3f6e00d20f35d1ec4d
+    newTag: develop-next-proxy-20231108-7256a1d48b45b6ea05afc954344911e786e4f61d
   - name: sillsdev/web-languageforge-next-app
     newName: sillsdev/web-languageforge
-    newTag: develop-next-app-20231002-a33383741406cb1823c05a3f6e00d20f35d1ec4d
+    newTag: develop-next-app-20231108-7256a1d48b45b6ea05afc954344911e786e4f61d
   - name: ghcr.io/sillsdev/lfmerge
     newTag: 2.0.135
 

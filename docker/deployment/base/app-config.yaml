@@ -4,4 +4,6 @@ metadata:
   name: app-config
 data:
   website: "localhost"
-  hg-domain: "hg-staging.languagforge.org"
+  hg-domain: "hg-staging.languageforge.org"
+  hg-protocol: "https"
+  hg-username: "lf-merge"

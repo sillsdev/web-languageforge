@@ -4,4 +4,5 @@ metadata:
   name: app-config
 data:
   website: "staging.languageforge.org"
-
+  hg-domain: "lexbox.languagedepot:5158" #reference lexbox service in the same cluster
+  hg-protocol: "http"

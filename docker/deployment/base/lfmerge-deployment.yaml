@@ -108,8 +108,19 @@ spec:
               configMapKeyRef:
                 name: app-config
                 key: hg-domain
+          - name: LFMERGE_LANGUAGE_DEPOT_HG_PROTOCOL
+            valueFrom:
+              configMapKeyRef:
+                name: app-config
+                key: hg-protocol
           - name: LANGUAGE_DEPOT_TRUST_TOKEN
             valueFrom:
               secretKeyRef:
                 key: LD_TRUST_TOKEN
                 name: ld-trust-token
+          - name: LANGUAGE_DEPOT_HG_USERNAME
+            valueFrom:
+              configMapKeyRef:
+                name: app-config
+                key: hg-username
+
