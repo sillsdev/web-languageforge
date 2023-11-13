@@ -13,6 +13,10 @@ export class CommentsOfflineCacheService {
     return this.offlineCache.deleteObjectInStore('comments', id);
   }
 
+  deleteAllComments(): angular.IPromise<any> {
+    return this.offlineCache.clearEntireStore('comments');
+  }
+
   getAllComments(): angular.IPromise<any> {
     return this.offlineCache.getAllFromStore('comments', this.sessionService.projectId());
   }

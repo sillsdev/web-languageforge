@@ -69,4 +69,6 @@ jobs:
           cache: "npm"
       -
         name: Run prettier check
-        run: npx prettier --check .
+        run: |
+          npx prettier -v
+          npx prettier --check .

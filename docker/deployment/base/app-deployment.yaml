@@ -18,35 +18,6 @@ spec:
 
 ---
 
-# https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: lf-project-assets
-spec:
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 10Gi
-  storageClassName: weekly-snapshots-retain-4 # provided by LTOps
-
----
-
-# https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: lfmerge-sendreceive-data
-spec:
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 50Gi
-  storageClassName: weekly-snapshots-retain-4 # provided by LTOps
-
----
 
 # https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#writing-a-deployment-spec
 apiVersion: apps/v1
@@ -93,7 +64,7 @@ spec:
             name: sendreceive-data
       containers:
       - name: app
-        image: sillsdev/web-languageforge:{{VERSION}}
+        image: sillsdev/web-languageforge:latest
         imagePullPolicy: Always
         # https://kubernetes.io/docs/concepts/configuration/manage-resources-containers
         resources:
@@ -113,7 +84,10 @@ spec:
           - name: ENVIRONMENT
             value: production
           - name: WEBSITE
-            value: {{WEBSITE}}
+            valueFrom:
+              configMapKeyRef:
+                name: app-config
+                key: website
           - name: MAIL_HOST
             value: mail
           - name: LFMERGE_LOGGING_DEST
@@ -143,6 +117,7 @@ spec:
               secretKeyRef:
                 key: LEX_BOX_HOST
                 name: ld-api
+                optional: true
           - name: FACEBOOK_CLIENT_ID
             valueFrom:
               secretKeyRef:

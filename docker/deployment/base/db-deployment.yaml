@@ -51,6 +51,18 @@ spec:
       - name: db
         image: mongo:6
         # https://kubernetes.io/docs/concepts/configuration/manage-resources-containers
+        livenessProbe:
+          exec:
+            command:
+              - mongosh
+              - '--quiet'
+              - '--eval'
+              - db.runCommand('ping')
+          failureThreshold: 3
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
         resources:
           requests:
             memory: 260Mi

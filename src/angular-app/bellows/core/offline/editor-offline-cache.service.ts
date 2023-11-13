@@ -15,6 +15,10 @@ export class EditorOfflineCacheService {
     return this.offlineCache.deleteObjectInStore('entries', id);
   }
 
+  deleteAllEntries(): angular.IPromise<any> {
+    return this.offlineCache.clearEntireStore('entries');
+  }
+
   getAllEntries(): angular.IPromise<any> {
     return this.offlineCache.getAllFromStore('entries', this.sessionService.projectId());
   }

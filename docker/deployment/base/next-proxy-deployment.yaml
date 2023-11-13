@@ -9,7 +9,7 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-body-size: 60M
 spec:
   rules:
-  - host: {{WEBSITE}}
+  - host: localhost
     http:
       paths:
       - path: /
@@ -21,7 +21,7 @@ spec:
               number: 80
   tls:
   - hosts:
-    - {{WEBSITE}}
+    - localhost
     secretName: languageforge-tls
 
 ---
@@ -64,7 +64,9 @@ spec:
     spec:
       containers:
       - name: next-proxy
-        image: sillsdev/web-languageforge:{{VERSION}}
+        # this image doesn't actually exist as for some reason tags were used for different image types instead of just version number.
+        # this is a workaround because kustomize is designed to work with image names
+        image: sillsdev/web-languageforge-next-proxy:latest
         # https://kubernetes.io/docs/concepts/configuration/manage-resources-containers
         imagePullPolicy: Always
         resources:

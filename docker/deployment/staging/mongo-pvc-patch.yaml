@@ -1,0 +1,6 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: lf-mongo-data
+spec:
+  storageClassName: xfs-weekly-snapshots-retain-4 # provided by LTOps
