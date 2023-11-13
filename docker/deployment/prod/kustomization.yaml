@@ -10,15 +10,15 @@ resources:
 # because of that we have to do a bit of a workaround to allow setting the image tag for the correct container
 images:
   - name: sillsdev/web-languageforge
-    newTag: 2023-09-21
+    newTag: 2023-11-13
   - name: sillsdev/web-languageforge-next-proxy
     newName: sillsdev/web-languageforge
-    newTag: next-proxy-2023-09-21
+    newTag: next-proxy-2023-11-13
   - name: sillsdev/web-languageforge-next-app
     newName: sillsdev/web-languageforge
-    newTag: next-app-2023-09-21
+    newTag: next-app-2023-11-13
   - name: ghcr.io/sillsdev/lfmerge
-    newTag: 2.0.135
+    newTag: 2.0.136
 
 patches:
   - path: app-config-patch.yaml
