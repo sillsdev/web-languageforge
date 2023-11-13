@@ -4,5 +4,5 @@ metadata:
   name: app-config
 data:
   website: "languageforge.org"
-  hg-domain: "hg-public.languagforge.org"
+  hg-domain: "hg-public.languageforge.org"
 
