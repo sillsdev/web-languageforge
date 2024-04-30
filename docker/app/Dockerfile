@@ -2,7 +2,7 @@
 ARG ENVIRONMENT=${ENVIRONMENT:-'production'}
 
 # UI-BUILDER
-FROM node:16.14.0-alpine3.15 AS ui-builder-base
+FROM node:20.12.2-alpine3.18 AS ui-builder-base
 
 RUN mkdir -p /data
 WORKDIR /data
