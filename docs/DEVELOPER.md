@@ -30,9 +30,7 @@ Welcome! We're glad that you are interested in helping develop Language Forge.
 
 ### Supported Development Environments
 
-Development of Language Forge is supported using [VS Code](https://code.visualstudio.com/download) on Linux, MacOS or Windows using WSL ([`wsl --install`](https://learn.microsoft.com/en-us/windows/wsl/install)).
-
-On Windows, the project should be opened with the [Remote - WSL](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl) VS Code extension, so that all commands and extensions run on WSL.
+Development of Language Forge is supported using [VS Code](https://code.visualstudio.com/download) on Linux, MacOS or Windows
 
 ### IDE Developer Experience (DX)
 
