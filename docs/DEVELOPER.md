@@ -38,7 +38,7 @@ On Windows, the project should be opened with the [Remote - WSL](https://marketp
 
 While Docker is great way to encapsulate all of the dependencies, build tools and run-time environment of the application, IDEs usually require locally installed extensions, tools and runtimes in order to provide type checking, code hints, and debugging capabilities that make for a better developer experience. To this end, the following locally installed tools/dependencies may be installed for good DX:
 
-- PHP 7.3
+- PHP 7.4
 - Composer
 - Node and npm
 - .Net SDK
