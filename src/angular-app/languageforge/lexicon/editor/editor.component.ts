@@ -680,10 +680,11 @@ export class LexiconEditorController implements angular.IController {
 
   getFontFamilyForPrimaryListItemForDisplay(entry: LexEntry) {
     if (!this.getSortableValue(this.lecConfig, entry)) return '';
+
     // FIXME this is not always accurate, given the complexity in get EditorDataService#getSortableValue
-    return this.lecConfig.inputSystems[
-      (this.lecConfig.entry.fields.lexeme as LexConfigMultiText).inputSystems[0]
-    ].cssFontFamily;
+    const lexemeField = this.lecConfig.entry.fields.lexeme as LexConfigMultiText;
+    const inputSystem = lexemeField.inputSystems.find(system => !system.includes('-audio'));
+    return this.lecConfig.inputSystems[inputSystem].cssFontFamily;
   }
 
   getSecondaryListItemForDisplay(entry: LexEntry): string {
