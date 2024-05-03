@@ -352,11 +352,10 @@ export class EditorDataService {
       if (isSpecialMultitext) {
         if ('citationForm' in config.entry.fields) {
           const citationFormField = config.entry.fields.citationForm as LexConfigMultiText;
-          const citationFormInputSystems = citationFormField.inputSystems;
-          if (entry.citationForm && citationFormInputSystems.length > 0 &&
-            citationFormInputSystems[0] in entry.citationForm
-          ) {
-            sortableValue = entry.citationForm[citationFormInputSystems[0]].value;
+          // don't sort by the first citation form if it is an "-audio" writing system
+          const inputSystem = citationFormField.inputSystems.find((system) => !system.includes('-audio'));
+          if (entry.citationForm && inputSystem && inputSystem in entry.citationForm) {
+            sortableValue = entry.citationForm[inputSystem].value;
           }
         }
 
