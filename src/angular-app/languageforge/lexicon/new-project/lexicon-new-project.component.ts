@@ -106,7 +106,6 @@ export class LexiconNewProjectController implements angular.IController {
     this.sendReceive.clearState();
     this.sendReceive.setCloneProjectStatusSuccessCallback(this.gotoEditor);
     this.sendReceive.setCloneProjectStatusFailedCallback(this.cloneFailed);
-    this.$scope.$on('$locationChangeStart', this.sendReceive.cancelCloneStatusTimer);
   }
 
   // ----- Step 2: Send Receive Clone -----
