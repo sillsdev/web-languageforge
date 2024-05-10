@@ -51,6 +51,7 @@ test.describe('Editor pictures', () => {
   });
 
   test('Showing and hiding captions', async ({ managerTab, browserName }) => {
+    test.slow(browserName === 'firefox');
     const configurationPage = new ConfigurationPageFieldsTab(managerTab, project());
 
     await test.step('Hide empty captions', async () => {
