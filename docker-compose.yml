@@ -1,6 +1,5 @@
 # https://docs.docker.com/compose/compose-file
 # https://github.com/compose-spec/compose-spec/blob/master/spec.md
-version: '3.5'
 
 # networks:
 #   lexbox:
@@ -53,7 +52,7 @@ services:
       - LDAPI_BASE_URL=http://ld-api:3000/api/v2/
       # Uncomment this to test getting the LD project list from LexBox
       # To use LexBox locally (in docker) you'll also need to uncomment the networks here and at the top of the file
-      #- LEX_BOX_HOST=https://staging.languagedepot.org #lexbox-api:5158
+      - LEX_BOX_HOST=http://admin.localhost
       - ENVIRONMENT=development
       - WEBSITE=localhost
       - DATABASE=scriptureforge
@@ -68,6 +67,7 @@ services:
     command: ["/run-with-wait.sh"]
     extra_hosts:
       - "host.docker.internal:host-gateway"
+      - "admin.localhost:host-gateway"
     volumes:
       # holds things like audio files or pictures attached to words within a project
       - lf-project-assets:/var/www/src/assets
@@ -105,6 +105,10 @@ services:
       - DATABASE=scriptureforge
       - MONGODB_CONN=mongodb://db:27017
       - LANGUAGE_DEPOT_API_TOKEN=bogus-development-token
+      - LANGUAGE_DEPOT_HG_USERNAME=admin
+      - LANGUAGE_DEPOT_TRUST_TOKEN=pass
+      - LFMERGE_LANGUAGE_DEPOT_HG_PUBLIC_HOSTNAME=hg.localhost
+      - LFMERGE_LANGUAGE_DEPOT_HG_PROTOCOL=http
       - LFMERGE_LOGGING_DEST=syslog
       - LFMERGE_BASE_DIR=/var/lib/languageforge/lexicon/sendreceive
       - LFMERGE_WEBWORK_DIR=webwork
@@ -114,6 +118,9 @@ services:
       - LFMERGE_MONGO_MAIN_DB_NAME=scriptureforge
       - LFMERGE_MONGO_DB_NAME_PREFIX=sf_
       - LFMERGE_VERBOSE_PROGRESS=true
+    extra_hosts:
+      - "hg.localhost:host-gateway"
+      - "admin.localhost:host-gateway"
     volumes:
       # holds things like audio files or pictures attached to words within a project
       - lf-project-assets:/var/www/src/assets
@@ -125,7 +132,7 @@ services:
     image: caddy
     container_name: lf-ssl
     ports:
-      - 80:80
+      - 8080:80
       - 443:443
     restart: unless-stopped
     depends_on:

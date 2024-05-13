@@ -30,15 +30,13 @@ Welcome! We're glad that you are interested in helping develop Language Forge.
 
 ### Supported Development Environments
 
-Development of Language Forge is supported using [VS Code](https://code.visualstudio.com/download) on Linux, MacOS or Windows using WSL ([`wsl --install`](https://learn.microsoft.com/en-us/windows/wsl/install)).
-
-On Windows, the project should be opened with the [Remote - WSL](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl) VS Code extension, so that all commands and extensions run on WSL.
+Development of Language Forge is supported using [VS Code](https://code.visualstudio.com/download) on Linux, MacOS or Windows
 
 ### IDE Developer Experience (DX)
 
 While Docker is great way to encapsulate all of the dependencies, build tools and run-time environment of the application, IDEs usually require locally installed extensions, tools and runtimes in order to provide type checking, code hints, and debugging capabilities that make for a better developer experience. To this end, the following locally installed tools/dependencies may be installed for good DX:
 
-- PHP 7.3
+- PHP 7.4
 - Composer
 - Node and npm
 - .Net SDK
@@ -52,9 +50,8 @@ While Docker is great way to encapsulate all of the dependencies, build tools an
       2. Permit your user (and not just "sudo") to contact the Docker daemon: `sudo usermod -aG docker yourUsername && sudo chmod 666 /var/run/docker.sock`.
       3. (Optional) Configure docker to start on boot: `printf '[boot]\ncommand="service docker start"\n' | sudo tee /etc/wsl.conf` (assuming `/etc/wsl.conf` is currently unused).
 2. Install [Make](https://www.gnu.org/software/make/): `sudo apt install make`.
-3. Install [Node 16.14.0](https://nodejs.org/en/download/). We recommend using [nvm](https://github.com/nvm-sh/nvm#installation-and-update).
+3. Install [Node 22](https://nodejs.org/en/download/). We recommend using [nvm](https://github.com/nvm-sh/nvm#installation-and-update) or [nvm on Windows](https://github.com/coreybutler/nvm-windows).
 4. Clone the repo: `git clone https://github.com/sillsdev/web-languageforge`.
-   1. Windows users, be sure to clone the project to the WSL file system (to keep VS Code, Git and the file system in sync)
 5. Run `npm install` (required for git pre-commit hook with Prettier)
 
 ### Running the App Locally
