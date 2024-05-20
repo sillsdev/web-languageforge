@@ -56,7 +56,9 @@ services:
       - ENVIRONMENT=development
       - WEBSITE=localhost
       - DATABASE=scriptureforge
-      - MONGODB_CONN=mongodb://lf-db:27017
+      - MONGODB_CONN=mongodb://lf-db:27017&authSource=admin
+      - MONGODB_USER=admin
+      - MONGODB_PASS=pass
       - MAIL_HOST=mail
       - GOOGLE_CLIENT_ID=bogus-development-token
       - GOOGLE_CLIENT_SECRET=bogus-development-token

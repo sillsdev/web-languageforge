@@ -18,9 +18,15 @@ class MongoStore
         if (static::$_mongoClient == null) {
             // MongoDB Client that will unserialize everything as PHP Arrays consistent with the legacy driver (which our code was built on)
             // see http://mongodb.github.io/mongo-php-library/classes/client/#example
+            $options = [];
+            if (defined(MONGODB_USER) && defined(MONGODB_PASS)) {
+                if (MONGODB_USER != null && MONGODB_PASS != null) {
+                    $options = [ 'username' => MONGODB_USER, 'password' => MONGODB_PASS ];
+                }
+            }
             static::$_mongoClient = new Client(
                 MONGODB_CONN,
-                [],
+                $options,
                 ["typeMap" => ["root" => "array", "document" => "array", "array" => "array"]]
             );
         }

@@ -19,6 +19,8 @@ define("SourcePath", $rootPath . "src/");
 
 define("DATABASE", Env::requireEnv("DATABASE"));
 define("MONGODB_CONN", Env::requireEnv("MONGODB_CONN"));
+define("MONGODB_USER", Env::get("MONGODB_USER"));
+define("MONGODB_PASS", Env::get("MONGODB_PASS"));
 define("SF_TESTPROJECT", "Test Project");
 define("SF_TESTPROJECTCODE", "testcode1");
 define("SF_TESTPROJECT2", "Test Project2");
