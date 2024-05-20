@@ -40,8 +40,6 @@ RUN npm run build:${NPM_BUILD_SUFFIX}
 # git - needed for composer install
 FROM sillsdev/web-languageforge:base-php AS composer-builder
 ENV COMPOSER_ALLOW_SUPERUSER=1
-RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/* \
-    && install-php-extensions @composer
 WORKDIR /composer
 COPY src/composer.json src/composer.lock /composer/
 RUN composer install
@@ -49,7 +47,8 @@ RUN composer install
 # PRODUCTION IMAGE
 FROM sillsdev/web-languageforge:base-php AS production-app
 RUN rm /usr/local/bin/install-php-extensions
-RUN apt-get remove -y gnupg2
+RUN apt-get remove -y gnupg2 git
+# TODO: remove composer - how do we do this?
 RUN mv $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini
 # had to add /wait into prod image so the prod image could be run through E2E tests.
 COPY --from=sillsdev/web-languageforge:wait-latest /wait /wait

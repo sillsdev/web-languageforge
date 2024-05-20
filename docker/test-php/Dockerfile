@@ -4,12 +4,10 @@ FROM sillsdev/web-languageforge:base-php
 # ----- LINES BELOW COPIED FROM APP DOCKERFILE ----------
 WORKDIR /var/www/html
 ENV COMPOSER_ALLOW_SUPERUSER=1
-RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/* \
-    && install-php-extensions @composer
 COPY src/composer.json src/composer.lock /var/www/html/
 RUN composer install
 
-RUN install-php-extensions xdebug
+RUN install-php-extensions xdebug-^3.1
 COPY docker/app/docker-php-ext-xdebug.ini /usr/local/etc/php/conf.d
 
 RUN mv $PHP_INI_DIR/php.ini-development $PHP_INI_DIR/php.ini
