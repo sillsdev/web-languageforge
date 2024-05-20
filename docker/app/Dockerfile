@@ -38,24 +38,22 @@ RUN npm run build:${NPM_BUILD_SUFFIX}
 # COMPOSER-BUILDER
 # download composer app dependencies
 # git - needed for composer install
-FROM sillsdev/web-languageforge:base-php-7.4 AS composer-builder
+FROM sillsdev/web-languageforge:base-php AS composer-builder
 ENV COMPOSER_ALLOW_SUPERUSER=1
-RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/* \
-    && install-php-extensions @composer
 WORKDIR /composer
 COPY src/composer.json src/composer.lock /composer/
 RUN composer install
 
 # PRODUCTION IMAGE
-FROM sillsdev/web-languageforge:base-php-7.4 AS production-app
-RUN rm /usr/local/bin/install-php-extensions
-RUN apt-get remove -y gnupg2
+FROM sillsdev/web-languageforge:base-php AS production-app
+RUN rm /usr/local/bin/install-php-extensions /usr/local/bin/composer
+RUN apt-get remove -y gnupg2 git
 RUN mv $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini
 # had to add /wait into prod image so the prod image could be run through E2E tests.
 COPY --from=sillsdev/web-languageforge:wait-latest /wait /wait
 
 # DEVELOPMENT IMAGE
-FROM sillsdev/web-languageforge:base-php-7.4 AS development-app
+FROM sillsdev/web-languageforge:base-php AS development-app
 RUN install-php-extensions xdebug-^3.1
 COPY docker/app/docker-php-ext-xdebug.ini /usr/local/etc/php/conf.d
 RUN mv $PHP_INI_DIR/php.ini-development $PHP_INI_DIR/php.ini
