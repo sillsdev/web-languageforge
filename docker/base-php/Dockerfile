@@ -15,7 +15,7 @@ RUN apt-get update && apt-get -y install gnupg git p7zip-full unzip curl tini ff
 # mongodb-org-tools - contains mongoimport/mongoexport used by LF backup/restore project commands
 # mongodb-mongosh - contains mongosh which is useful for querying the db from the app container
 RUN curl -fsSL https://www.mongodb.org/static/pgp/server-6.0.asc | gpg -o /usr/share/keyrings/mongodb-server-6.0.gpg --dearmor
-RUN echo "deb [ signed-by=/usr/share/keyrings/mongodb-server-6.0.gpg] http://repo.mongodb.org/apt/debian bullseye/mongodb-org/6.0 main" | tee /etc/apt/sources.list.d/mongodb-org-6.0.list
+RUN echo "deb [ signed-by=/usr/share/keyrings/mongodb-server-6.0.gpg ] http://repo.mongodb.org/apt/debian bullseye/mongodb-org/6.0 main" | tee /etc/apt/sources.list.d/mongodb-org-6.0.list
 RUN apt-get update && apt-get -y install mongodb-org-tools mongodb-mongosh && rm -rf /var/lib/apt/lists/*
 
 # see https://github.com/mlocati/docker-php-extension-installer
