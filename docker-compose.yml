@@ -105,7 +105,7 @@ services:
       - WAIT_HOSTS=db:27017
       - ENVIRONMENT=development
       - DATABASE=scriptureforge
-      - MONGODB_CONN=mongodb://db:27017
+      - MONGODB_CONN=mongodb://db:27017&authSource=admin
       - LANGUAGE_DEPOT_API_TOKEN=bogus-development-token
       - LANGUAGE_DEPOT_HG_USERNAME=admin
       - LANGUAGE_DEPOT_TRUST_TOKEN=pass
@@ -117,6 +117,9 @@ services:
       - LFMERGE_TEMPLATES_DIR=Templates
       - LFMERGE_MONGO_HOSTNAME=db
       - LFMERGE_MONGO_PORT=27017
+      - LFMERGE_MONGO_AUTHSOURCE=admin
+      - LFMERGE_MONGO_USER=admin
+      - LFMERGE_MONGO_PASS=pass
       - LFMERGE_MONGO_MAIN_DB_NAME=scriptureforge
       - LFMERGE_MONGO_DB_NAME_PREFIX=sf_
       - LFMERGE_VERBOSE_PROGRESS=true
@@ -278,7 +281,9 @@ services:
       - ENVIRONMENT=development
       - WEBSITE=localhost
       - DATABASE=e2e_test
-      - MONGODB_CONN=mongodb://db:27017
+      - MONGODB_CONN=mongodb://db:27017&authSource=admin
+      - MONGODB_USER=admin
+      - MONGODB_PASS=pass
       - MAIL_HOST=mail
       - REMEMBER_ME_SECRET=bogus-development-key
       - LANGUAGE_DEPOT_API_TOKEN=bogus-development-token
@@ -312,7 +317,9 @@ services:
       - ENVIRONMENT=development
       - WEBSITE=localhost.languageforge.org
       - DATABASE=scriptureforge_test
-      - MONGODB_CONN=mongodb://db:27017
+      - MONGODB_CONN=mongodb://db:27017&authSource=admin
+      - MONGODB_USER=admin
+      - MONGODB_PASS=pass
       - MAIL_HOST=mail
       - LANGUAGE_DEPOT_API_TOKEN=bogus-development-token
       - XDEBUG_MODE=develop,debug
