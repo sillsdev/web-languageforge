@@ -227,6 +227,9 @@ services:
     restart: always
     environment:
       - MONGO_INITDB_DATABASE=scriptureforge
+      # Uncomment the next two lines to require authentication (without these, the MongoDB server will be started in permit-all mode)
+      # - MONGO_INITDB_ROOT_USERNAME=admin
+      # - MONGO_INITDB_ROOT_PASSWORD=pass
 
   ld-db:
     image: mariadb:10.10
