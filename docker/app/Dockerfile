@@ -76,10 +76,6 @@ RUN    chown -R www-data:www-data /var/www/html/assets /var/www/html/cache \
 
 COPY --from=composer-builder /composer/vendor /var/www/html/vendor
 
-# patch exception handling from Symfony to actually show exceptions instead of swallowing them
-COPY docker/app/symfony-exceptions.patch /
-RUN patch -p4 -i /symfony-exceptions.patch
-
 RUN echo "${BUILD_VERSION}" > build-version.txt \
     && sed -i "s/9.9.9/${BUILD_VERSION}/" version.php
 
