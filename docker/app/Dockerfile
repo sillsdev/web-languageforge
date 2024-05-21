@@ -76,6 +76,11 @@ RUN    chown -R www-data:www-data /var/www/html/assets /var/www/html/cache \
 
 COPY --from=composer-builder /composer/vendor /var/www/html/vendor
 
+# Uncomment the two lines below if you see Symfony errors like "expected Exception, got Error instead"
+# This will allow you to see the actual underlying error, rather than the Symfony exception that hides the underlying one
+# COPY docker/app/symfony-exceptions.patch /
+# RUN patch -p4 -i /symfony-exceptions.patch
+
 RUN echo "${BUILD_VERSION}" > build-version.txt \
     && sed -i "s/9.9.9/${BUILD_VERSION}/" version.php
 
