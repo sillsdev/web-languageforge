@@ -10,6 +10,7 @@ require_once APPPATH . "vendor/autoload.php";
 
 define("DATABASE", Env::requireEnv("DATABASE"));
 define("MONGODB_CONN", Env::requireEnv("MONGODB_CONN"));
+define("MONGODB_AUTHSOURCE", Env::get("MONGODB_AUTHSOURCE"));
 define("MONGODB_USER", Env::get("MONGODB_USER"));
 define("MONGODB_PASS", Env::get("MONGODB_PASS"));
 define("BCRYPT_COST", 7);

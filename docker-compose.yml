@@ -56,7 +56,8 @@ services:
       - ENVIRONMENT=development
       - WEBSITE=localhost
       - DATABASE=scriptureforge
-      - MONGODB_CONN=mongodb://lf-db:27017&authSource=admin
+      - MONGODB_CONN=mongodb://lf-db:27017
+      - MONGODB_AUTHSOURCE=admin
       - MONGODB_USER=admin
       - MONGODB_PASS=pass
       - MAIL_HOST=mail
@@ -105,7 +106,8 @@ services:
       - WAIT_HOSTS=db:27017
       - ENVIRONMENT=development
       - DATABASE=scriptureforge
-      - MONGODB_CONN=mongodb://db:27017&authSource=admin
+      - MONGODB_CONN=mongodb://db:27017
+      - MONGODB_AUTHSOURCE=admin
       - LANGUAGE_DEPOT_API_TOKEN=bogus-development-token
       - LANGUAGE_DEPOT_HG_USERNAME=admin
       - LANGUAGE_DEPOT_TRUST_TOKEN=pass
@@ -284,7 +286,8 @@ services:
       - ENVIRONMENT=development
       - WEBSITE=localhost
       - DATABASE=e2e_test
-      - MONGODB_CONN=mongodb://db:27017&authSource=admin
+      - MONGODB_CONN=mongodb://db:27017
+      - MONGODB_AUTHSOURCE=admin
       - MONGODB_USER=admin
       - MONGODB_PASS=pass
       - MAIL_HOST=mail
@@ -320,7 +323,8 @@ services:
       - ENVIRONMENT=development
       - WEBSITE=localhost.languageforge.org
       - DATABASE=scriptureforge_test
-      - MONGODB_CONN=mongodb://db:27017&authSource=admin
+      - MONGODB_CONN=mongodb://db:27017
+      - MONGODB_AUTHSOURCE=admin
       - MONGODB_USER=admin
       - MONGODB_PASS=pass
       - MAIL_HOST=mail

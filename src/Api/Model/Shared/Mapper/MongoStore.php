@@ -24,6 +24,10 @@ class MongoStore
                     $options = [ 'username' => MONGODB_USER, 'password' => MONGODB_PASS ];
                 }
             }
+            $options['authSource'] = 'admin';
+            if (defined('MONGODB_AUTHSOURCE') && MONGODB_AUTHSOURCE != null) {
+                $options['authSource'] = MONGODB_AUTHSOURCE;
+            }
             static::$_mongoClient = new Client(
                 MONGODB_CONN,
                 $options,
