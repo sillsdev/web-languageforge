@@ -19,7 +19,7 @@ class MongoStore
             // MongoDB Client that will unserialize everything as PHP Arrays consistent with the legacy driver (which our code was built on)
             // see http://mongodb.github.io/mongo-php-library/classes/client/#example
             $options = [];
-            if (defined(MONGODB_USER) && defined(MONGODB_PASS)) {
+            if (defined('MONGODB_USER') && defined('MONGODB_PASS')) {
                 if (MONGODB_USER != null && MONGODB_PASS != null) {
                     $options = [ 'username' => MONGODB_USER, 'password' => MONGODB_PASS ];
                 }
