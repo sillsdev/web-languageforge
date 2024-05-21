@@ -99,6 +99,21 @@ spec:
             value: "27017"
           - name: LFMERGE_MONGO_MAIN_DB_NAME
             value: scriptureforge
+          - name: LFMERGE_MONGO_AUTHSOURCE
+            valueFrom:
+              secretKeyRef:
+                key: MONGODB_AUTHSOURCE
+                name: mongo-auth
+          - name: LFMERGE_MONGO_USER
+            valueFrom:
+              secretKeyRef:
+                key: MONGODB_USER
+                name: mongo-auth
+          - name: LFMERGE_MONGO_PASS
+            valueFrom:
+              secretKeyRef:
+                key: MONGODB_PASS
+                name: mongo-auth
           - name: LFMERGE_MONGO_DB_NAME_PREFIX
             value: sf_
           - name: LFMERGE_VERBOSE_PROGRESS
