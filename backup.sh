@@ -30,8 +30,7 @@ workdir=$(mktemp -d 2>/dev/null || mktemp -d -t 'sfbackup')
 
 function cleanup {
     echo "Cleaning up temporary directory ${workdir}..." >&2
-    # Commented out for now since we want to be able to examine the results
-    # [ -n "${workdir}" ] && [ -d "${workdir}" ] && rm -rf "${workdir}"
+    [ -n "${workdir}" ] && [ -d "${workdir}" ] && rm -rf "${workdir}"
 }
 
 [ -n "${workdir}" ] && [ -d "${workdir}" ] && trap cleanup EXIT
@@ -97,8 +96,6 @@ do
     echo "Rsync's exit code was $RSYNC_EXIT_CODE. Retrying..." >&2
 done
 
-echo "Verifying assets (if you see tar errors above, then it might only be a partial transfer)..." >&2
-ls -lR "${workdir}/assets"
-
+echo "Copying assets into local Docker container..." >&2
 # The /. at the end of the src tells Docker "just copy the *contents* of the directory, don't copy the directory itself"
 docker cp "${workdir}/assets/${dbname}/." "lf-app:/var/www/html/assets/lexicon/${dbname}"
