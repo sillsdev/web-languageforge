@@ -74,15 +74,15 @@ export class LexCommentsViewController implements angular.IController {
     }
 
     // get value of multi-text with specified inputSystemTag
-    if (inputSystemTag != null && model[inputSystemTag] != null) {
-      return model[inputSystemTag].value;
+    if (inputSystemTag != null && (model as LexMultiText)[inputSystemTag] != null) {
+      return (model as LexMultiText)[inputSystemTag].value;
     }
 
     // get first inputSystemTag of a multi-text (no inputSystemTag specified)
     let fieldValue: string = null;
     for (const languageTag in model as LexMultiText) {
       if (fieldValue == null) {
-        fieldValue = model[languageTag].value;
+        fieldValue = (model as LexMultiText)[languageTag].value;
         break;
       }
     }

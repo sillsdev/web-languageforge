@@ -42,10 +42,10 @@ class Activity {
   userHrefRelated: string;
   icon: string;
 
-  constructor(data: object = {}) {
+  constructor(data: Record<string, any> = {}) {
     if (data != null) {
       for (const property of Object.keys(data)) {
-        this[property] = data[property];
+        this[property as keyof Activity] = data[property];
       }
     }
   }
@@ -57,6 +57,7 @@ class Activity {
       for (const index in this.content) {
         if (this.content.hasOwnProperty(index)) {
           if (index.startsWith('oldValue')) {
+            // @ts-expect-error Typescript should understand .hasOwnProperty, but doesn't
             return Activity.parseValue(this.content[index]);
           }
         }
@@ -72,6 +73,7 @@ class Activity {
       for (const index in this.content) {
         if (this.content.hasOwnProperty(index)) {
           if (index.startsWith('newValue')) {
+            // @ts-expect-error Typescript should understand .hasOwnProperty, but doesn't
             return Activity.parseValue(this.content[index]);
           }
         }
@@ -89,6 +91,7 @@ class Activity {
       for (const index in this.content) {
         if (this.content.hasOwnProperty(index)) {
           if (index.startsWith('fieldLabel')) {
+            // @ts-expect-error Typescript should understand .hasOwnProperty, but doesn't
             let label = this.content[index];
             if (index.includes('#examples')) {
               label = 'Example - ' + label;
@@ -164,8 +167,8 @@ class ActivityUserGroup {
   getSummaryDescription(entryId: string) {
     let summary = '';
     let totalActivityTypes = 0;
-    const entryActivities = {};
-    const summaryTypes = {};
+    const entryActivities: Record<string, any> = {};
+    const summaryTypes: Record<string, any> = {};
     for (const activity of this.activities) {
       // Entries are different as multiple updates can be reflected in a single activity
       if (activity.action === 'update_entry') {
