@@ -95,12 +95,20 @@ echo "If this stalls at exactly 50% done, then it's really 100% done and hasn't 
 echo "===== IMPORTANT NOTE =====" >&2
 echo >&2
 mkdir -p "${workdir}/assets/${dbname}"
-until rsync -rLt --partial --info=progress2 --blocking-io --rsync-path="/var/www/html/assets/lexicon/${dbname}" --rsh="kubectl --context=${context} exec -i deploy/app -- " "rsync:/var/www/html/assets/lexicon/${dbname}/" "${workdir}/assets/${dbname}/"
-do
+until rsync -rLt --partial --info=progress2 --blocking-io --rsync-path="/var/www/html/assets/lexicon/${dbname}" --rsh="kubectl --context=${context} exec -i deploy/app -- " "rsync:/var/www/html/assets/lexicon/${dbname}/" "${workdir}/assets/${dbname}/"; do
     RSYNC_EXIT_CODE=$?
     echo "Rsync's exit code was $RSYNC_EXIT_CODE. Retrying..." >&2
 done
 
+echo "Conserving file permissions (you may be prompted for a sudo password)..." >&2
+
+sudo chown -R 33:33 "${workdir}/assets"
+
 echo "Copying assets into local Docker container..." >&2
-# The /. at the end of the src tells Docker "just copy the *contents* of the directory, don't copy the directory itself"
+# The /. at the end of the src tells Docker "just copy the *contents* of the directory, not the directory itself"
 docker cp "${workdir}/assets/${dbname}/." "lf-app:/var/www/html/assets/lexicon/${dbname}"
+
+echo "Resetting file permissions of assets so cleanup step will work..." >&2
+CUR_UID=$(id -u)
+CUR_GID=$(id -g)
+sudo chown -R $CUR_UID:$CUR_GID "${workdir}/assets"
