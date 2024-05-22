@@ -80,13 +80,25 @@ docker exec -i lf-db mongoimport -u admin -p pass --authenticationDatabase admin
 
 echo "Okay, ${projCode} should be available in your Language Forge installation now." >&2
 
-echo "Fetching assets (might fail or only partially transfer)..." >&2
-echo "NOTE: This may take a long time without feedback, and might fail without warning if the kubectl connection gets dropped partway through..." >&2
+echo "Setting up rsync on target container..." >&2
+kubectl exec --context="${context}" deploy/app -- bash -c "which rsync || (apt update && apt install rsync -y)"
+
+echo "Fetching assets via rsync (and retrying until success)..." >&2
+echo >&2
+echo "===== IMPORTANT NOTE =====" >&2
+echo "If this stalls at exactly 50% done, then it's really 100% done and hasn't realized it. Just hit Ctrl+C and it will succeed on the retry" >&2
+# TODO: Figure out why rsync is misidentifying the size. Is it related to the -L option (follow symlinks)?
+echo "===== IMPORTANT NOTE =====" >&2
+echo >&2
 mkdir -p "${workdir}/assets/${dbname}"
-kubectl --context="${context}" exec deploy/app -- tar chf - -C "/var/www/html/assets/lexicon/${dbname}" . | tar xf - -i -C "${workdir}/assets/${dbname}"
+until rsync -rLt --partial --info=progress2 --blocking-io --rsync-path="/var/www/html/assets/lexicon/${dbname}" --rsh="kubectl --context=${context} exec -i deploy/app -- " "rsync:/var/www/html/assets/lexicon/${dbname}/" "${workdir}/assets/${dbname}/"
+do
+    RSYNC_EXIT_CODE=$?
+    echo "Rsync's exit code was $RSYNC_EXIT_CODE. Retrying..." >&2
+done
 
 echo "Verifying assets (if you see tar errors above, then it might only be a partial transfer)..." >&2
 ls -lR "${workdir}/assets"
 
 # The /. at the end of the src tells Docker "just copy the *contents* of the directory, don't copy the directory itself"
-docker cp "${assetSrc}/." "lf-app:/var/www/html/assets/lexicon/${dbname}"
+docker cp "${workdir}/assets/${dbname}/." "lf-app:/var/www/html/assets/lexicon/${dbname}"
