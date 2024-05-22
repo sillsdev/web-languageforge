@@ -23,6 +23,13 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
+which rsync >/dev/null
+if [ $? -ne 0 ]; then
+    echo "rsync not found. This script needs it in order to copy asset files." >&2
+    echo "Try \"apt install rsync\" on Linux, ??? on Mac, or ??? on Windows." >&2
+    echo "Continuing anyway, but you may get failures on the asset-copying step..." >&2
+fi
+
 proj=$1
 
 # Create a temp dir reliably on both Linux and OS X
