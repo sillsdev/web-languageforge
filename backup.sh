@@ -79,8 +79,6 @@ kubectl --context="${context}" exec deploy/db -- mongodump -d "${dbname}" --arch
 # kubectl --context="${context}" exec deploy/db -- mongodump -u admin -p pass --authenticationDatabase admin -d "${dbname}" --archive > "${workdir}/db.archive"
 docker exec -i lf-db mongorestore -u admin -p pass --authenticationDatabase admin -d "${dbname}" --drop --archive < "${workdir}"/db.archive
 
-echo "Loaded project database ${dbname} successfully. Probably. You should check mongosh to be sure." >&2
-
 echo "Importing project record into local projects collection..." >&2
 docker exec -i lf-db mongoimport -u admin -p pass --authenticationDatabase admin -d scriptureforge -c projects --mode=upsert < "${workdir}/project-modified.json"
 
