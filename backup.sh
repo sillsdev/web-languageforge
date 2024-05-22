@@ -100,15 +100,8 @@ until rsync -rLt --partial --info=progress2 --blocking-io --rsync-path="/var/www
     echo "Rsync's exit code was $RSYNC_EXIT_CODE. Retrying..." >&2
 done
 
-echo "Conserving file permissions (you may be prompted for a sudo password)..." >&2
-
-sudo chown -R 33:33 "${workdir}/assets"
-
 echo "Copying assets into local Docker container..." >&2
 # The /. at the end of the src tells Docker "just copy the *contents* of the directory, not the directory itself"
 docker cp "${workdir}/assets/${dbname}/." "lf-app:/var/www/html/assets/lexicon/${dbname}"
-
-echo "Resetting file permissions of assets so cleanup step will work..." >&2
-CUR_UID=$(id -u)
-CUR_GID=$(id -g)
-sudo chown -R $CUR_UID:$CUR_GID "${workdir}/assets"
+# The files produced by docker cp will end up being owned by your UID on the host, so we need to set their ownership after the docker cp step
+docker exec lf-app chown -R www-data:www-data "/var/www/html/assets/lexicon/${dbname}"
