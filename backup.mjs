@@ -133,7 +133,6 @@ console.warn("Port forwarding is ready. Setting up remote Mongo connection...");
 const remoteConnStr = `mongodb://localhost:${remoteMongoPort}`;
 remoteConn = await MongoClient.connect(remoteConnStr);
 
-const remoteAdmin = await remoteConn.db("scriptureforge").collection("users").findOne({ username: "admin" });
 console.warn("Remote Mongo connection established. Fetching project record...");
 
 // Get project record
