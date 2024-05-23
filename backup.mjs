@@ -144,9 +144,13 @@ let portForwardingReady;
 const portForwardingPromise = new Promise((resolve) => {
   portForwardingReady = resolve;
 });
-portForwardProcess = spawn("kubectl", [`--context=${context}`, "port-forward", "svc/db", `${remoteMongoPort}:27017`], {
-  stdio: "pipe",
-});
+portForwardProcess = spawn(
+  "kubectl",
+  [`--context=${context}`, "port-forward", "deploy/db", `${remoteMongoPort}:27017`],
+  {
+    stdio: "pipe",
+  },
+);
 portForwardProcess.stdout.on("data", (data) => {
   portForwardingReady();
 });
