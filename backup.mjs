@@ -146,7 +146,7 @@ const portForwardingPromise = new Promise((resolve) => {
 });
 portForwardProcess = spawn(
   "kubectl",
-  [`--context=${context}`, "port-forward", "deploy/db", `${remoteMongoPort}:27017`],
+  [`--context=${context}`, "--namespace=languageforge", "port-forward", "deploy/db", `${remoteMongoPort}:27017`],
   {
     stdio: "pipe",
   },
@@ -230,7 +230,7 @@ console.warn(`${dbname} database successfully copied`);
 //   try {
 //     console.warn(`Fetching ${dbname} database...`);
 //     execSync(
-//       `kubectl --context="${context}" exec -i deploy/db -- mongodump --archive -d "${dbname}" > ${tempdir}/dump`,
+//       `kubectl --context="${context}" --namespace=languageforge exec -i deploy/db -- mongodump --archive -d "${dbname}" > ${tempdir}/dump`,
 //     );
 //     console.warn(`Uploading to local ${dbname} database...`);
 //     execSync(`docker exec -i lf-db mongorestore --archive --drop -d "${dbname}" ${localConnStr} < ${tempdir}/dump`);
@@ -241,29 +241,26 @@ console.warn(`${dbname} database successfully copied`);
 //   }
 // }
 
-console.warn("Setting up rsync on target container...");
-execSync(
-  `kubectl exec --context="${context}" -c app deploy/app -- bash -c "which rsync || (apt update && apt install rsync -y)"`,
-);
-
 console.warn("Creating assets tarball in remote...");
 execSync(
-  `kubectl --context="${context}" exec -c app deploy/app -- tar chf /tmp/assets-${dbname}.tar --owner=www-data --group=www-data -C "/var/www/html/assets/lexicon/${dbname}" .`,
+  `kubectl --context="${context}" --namespace=languageforge exec -c app deploy/app -- tar chf /tmp/assets-${dbname}.tar --owner=www-data --group=www-data -C "/var/www/html/assets/lexicon/${dbname}" .`,
 );
 const sizeStr = run(
-  `kubectl --context="${context}" exec -c app deploy/app -- sh -c 'ls -l /tmp/assets-${dbname}.tar | cut -d" " -f5'`,
+  `kubectl --context="${context}" --namespace=languageforge exec -c app deploy/app -- sh -c 'ls -l /tmp/assets-${dbname}.tar | cut -d" " -f5'`,
 );
 const correctSize = +sizeStr;
 console.warn(`Asserts tarball size is ${sizeStr}`);
 
 console.warn("Getting name of remote app pod...");
 const pod = run(
-  `kubectl --context="${context}" get pod -o jsonpath="{.items[*]['metadata.name']}" -l app=app --field-selector "status.phase=Running"`,
+  `kubectl --context="${context}" --namespace=languageforge get pod -o jsonpath="{.items[*]['metadata.name']}" -l app=app --field-selector "status.phase=Running"`,
 );
 console.warn("Trying to fetch assets tarball with kubectl cp...");
 let failed = false;
 try {
-  execSync(`kubectl  --context="${context}" cp ${pod}:/tmp/assets-${dbname}.tar ${tempdir}/assets-${dbname}.tar`);
+  execSync(
+    `kubectl --context="${context}" --namespace=languageforge cp ${pod}:/tmp/assets-${dbname}.tar ${tempdir}/assets-${dbname}.tar`,
+  );
 } catch (_) {
   console.warn("kubectl cp failed. Will try to continue with rsync...");
   failed = true;
@@ -276,16 +273,20 @@ if (!failed) {
   }
 }
 if (failed) {
+  console.warn("Ensuring rsync exists in target container...");
+  execSync(
+    `kubectl exec --context="${context}" -c app deploy/app -- bash -c "which rsync || (apt update && apt install rsync -y)"`,
+  );
   console.warn("\n===== IMPORTANT NOTE =====");
   console.warn(
-    "This may (probably will) stall at 100%. You'll have to find the rsync process and kill it. Sorry about that.",
+    "The rsync transfer may (probably will) stall at 100%. You'll have to find the rsync process and kill it. Sorry about that.",
   );
   console.warn("===== IMPORTANT NOTE =====\n");
   let done = false;
   while (!done) {
     try {
       execSync(
-        `rsync -v --partial --info=progress2 --rsync-path="/tmp/" --rsh="kubectl --context=${context} exec -i -c app deploy/app -- " "rsync:/tmp/assets-${dbname}.tar" "${tempdir}/"`,
+        `rsync -v --partial --info=progress2 --rsync-path="/tmp/" --rsh="kubectl --context=${context} --namespace=languageforge exec -i -c app deploy/app -- " "rsync:/tmp/assets-${dbname}.tar" "${tempdir}/"`,
         { stdio: "inherit" }, // Allows us to see rsync progress
       );
       done = true;
