@@ -1,10 +1,11 @@
 // TODO: Rename to backup.mjs before committing
 
-import { exec, execSync, spawn } from "child_process";
-import { existsSync, mkdirSync, mkdtempSync, rmSync } from "fs";
+import { execSync, spawn } from "child_process";
+import { existsSync, mkdtempSync, rmSync, statSync } from "fs";
 import { MongoClient, ObjectId } from "mongodb";
 import os from "os";
 import path from "path";
+import net from "net";
 
 // ===== EDIT THIS =====
 
@@ -19,15 +20,33 @@ const context = stagingContext;
 
 // Create a temp dir reliably
 const tempdir = mkdtempSync(path.join(os.tmpdir(), "lfbackup-"));
+let portForwardProcess;
+let localConn;
+let remoteConn;
 
-const cleanup = () => {
-  console.error(`Cleaning up temporary directory ${tempdir}...`);
+async function cleanup() {
   if (existsSync(tempdir)) {
+    console.warn(`Cleaning up temporary directory ${tempdir}...`);
     rmSync(tempdir, { recursive: true, force: true });
   }
-};
+  if (localConn) await localConn.close();
+  if (remoteConn) await remoteConn.close();
+  if (portForwardProcess) await portForwardProcess.kill();
+}
+
+async function randomFreePort() {
+  return new Promise((resolve) => {
+    const server = net.createServer();
+    server.listen(0, () => {
+      // Asking for port 0 makes Node automatically find a free port
+      const port = server.address().port;
+      server.close((_) => resolve(port));
+    });
+  });
+}
 
 process.on("exit", cleanup);
+process.on("uncaughtExceptionMonitor", cleanup);
 
 function run(cmd) {
   return execSync(cmd).toString().trimEnd();
@@ -38,73 +57,86 @@ function getContexts() {
   return stdout.split("\n");
 }
 
-function localSpawn(cmd, opts = {}) {
-  return spawn(`docker exec -i lf-db ${cmd}`, opts);
-}
-
-function localExec(cmd, opts = {}) {
-  return execSync(`docker exec -i lf-db ${cmd}`, opts);
-}
-
-function remoteSpawn(cmd, opts = {}) {
-  return spawn(`kubectl --context="${context}" exec -i deploy/db -- ${cmd}`, opts);
-}
-function remoteExec(cmd, opts = {}) {
-  console.log("Running: ", `kubectl --context="${context}" exec -i deploy/db -- ${cmd}`);
-  return execSync(`kubectl --context="${context}" exec -i deploy/db -- ${cmd}`, opts);
-}
 // Sanity check
 
 var contexts = getContexts();
 if (!contexts.includes(stagingContext)) {
-  console.log("Staging context not found. Tried", stagingContext, "but did not find it in", contexts);
-  console.log("Might need to edit the top level of this file and try again");
+  console.warn("Staging context not found. Tried", stagingContext, "but did not find it in", contexts);
+  console.warn("Might need to edit the top level of this file and try again");
   process.exit(1);
 }
 if (!contexts.includes(prodContext)) {
-  console.log("Prod context not found. Tried", prodContext, "but did not find it in", contexts);
-  console.log("Might need to edit the top level of this file and try again");
+  console.warn("Prod context not found. Tried", prodContext, "but did not find it in", contexts);
+  console.warn("Might need to edit the top level of this file and try again");
   process.exit(1);
 }
 
+// Process args
+
+if (process.argv.length < 3) {
+  console.warn("Please pass project ID or URL as argument, e.g. node backup.mjs 5dbf805650b51914727e06c4");
+  process.exit(2);
+}
+
+let projId;
+const arg = process.argv[2];
+if (URL.canParse(arg)) {
+  const url = new URL(arg);
+  if (url.pathname.startsWith("/app/lexicon/")) {
+    projId = url.pathname.substring("/app/lexicon/".length);
+  } else {
+    projId = url.pathname; // Will probably fail, but worth a try
+  }
+} else {
+  projId = arg;
+}
+
+projId = projId.trim();
+console.log("Project ID:", projId);
+
 // Start running
 
+console.warn("Setting up kubectl port forwarding for remote Mongo...");
+const remoteMongoPort = await randomFreePort();
 // TODO: Improve by finding a local port that's not in use, rather than hardcoding this
 let portForwardingReady;
 const portForwardingPromise = new Promise((resolve) => {
   portForwardingReady = resolve;
 });
-const portForwardProcess = spawn("kubectl", [`--context=${context}`, "port-forward", "svc/db", "27018:27017"], {
+portForwardProcess = spawn("kubectl", [`--context=${context}`, "port-forward", "svc/db", `${remoteMongoPort}:27017`], {
   stdio: "pipe",
 });
 portForwardProcess.stdout.on("data", (data) => {
   portForwardingReady();
 });
 portForwardProcess.stderr.on("data", (data) => {
-  console.log("Port forwarding failed:");
-  console.log(data.toString());
-  console.log("Exiting");
+  console.warn("Port forwarding failed:");
+  console.warn(data.toString());
+  console.warn("Exiting");
   process.exit(1);
 });
 
+console.warn("Setting up local Mongo connection...");
+
 const localMongoPort = run("docker compose port db 27017").split(":")[1];
 const localConnStr = `mongodb://admin:pass@localhost:${localMongoPort}/?authSource=admin`;
-const localConn = await MongoClient.connect(localConnStr);
+localConn = await MongoClient.connect(localConnStr);
 
 const localAdmin = await localConn.db("scriptureforge").collection("users").findOne({ username: "admin" });
 const adminId = localAdmin._id.toString();
-console.log("Local admin ID:", adminId);
+console.log(`Local admin ID: ${adminId}`);
+console.warn("If that doesn't look right, hit Ctrl+C NOW");
 
-// await portForwardingPromise
-const remoteConnStr = `mongodb://localhost:27018`;
-const remoteConn = await MongoClient.connect(remoteConnStr);
+await portForwardingPromise;
+console.warn("Port forwarding is ready. Setting up remote Mongo connection...");
+
+const remoteConnStr = `mongodb://localhost:${remoteMongoPort}`;
+remoteConn = await MongoClient.connect(remoteConnStr);
 
 const remoteAdmin = await remoteConn.db("scriptureforge").collection("users").findOne({ username: "admin" });
-console.log("Remote admin ID:", remoteAdmin._id.toString());
+console.warn("Remote Mongo connection established. Fetching project record...");
 
 // Get project record
-
-const projId = "5dbf805650b51914727e06c4"; // TODO: Get from argv
 const project = await remoteConn
   .db("scriptureforge")
   .collection("projects")
@@ -114,50 +146,115 @@ console.log("Project code:", project.projectCode);
 const dbname = `sf_${project.projectCode}`;
 project.users = { [adminId]: { role: "project_manager" } };
 project.ownerRef = new ObjectId(adminId);
-console.log(project.users);
-delete project._id; // Otherwise Mongo complains that we're trying to alter it, which is dumb
+console.warn(project.users);
 
-console.log("Copying project record...");
+// TODO: Move to after database is copied, so there's never a race condition where the project exists but its entry database doesn't
+console.warn("Copying project record...");
 await localConn
   .db("scriptureforge")
   .collection("projects")
-  .findOneAndReplace({ _id: projId }, project, { upsert: true });
+  .findOneAndReplace({ _id: new ObjectId(projId) }, project, { upsert: true });
 
 // Mongo removed the .copyDatabase method in version 4.2, whose release notes said to just use mongodump/mongorestore if you want to do that
 
-console.log(`Fetching ${dbname} database...`);
-remoteExec(`mongodump --archive -d "${dbname}" > ${tempdir}/dump`);
-localExec(`mongorestore --archive --drop -d "${dbname}" ${localConnStr} < ${tempdir}/dump`);
-
-console.log("Setting up rsync on target container...");
-execSync(
-  `kubectl exec --context="${context}" deploy/app -- bash -c "which rsync || (apt update && apt install rsync -y)"`,
-);
-
-console.log("Fetching assets via rsync (and retrying until success)...");
-console.log("\n===== IMPORTANT NOTE =====");
-console.log(
-  "If this stalls at exactly 50% done, then it's really 100% done and hasn't realized it. Just hit Ctrl+C and it will succeed on the retry",
-);
-console.log("===== IMPORTANT NOTE =====\n");
-
-// NOTE: Hitting Ctrl+C worked in the bash script, but here it kills the Node process rather than being passed through to rsync
-// TODO: Find a way to handle the "kill rsync and retry" thing gracefully, or else find a different solution than rsync
-
-mkdirSync(`${tempdir}/assets/${dbname}`, { recursive: true });
-let done = false;
-while (!done) {
+console.warn(`Copying ${dbname} database...`);
+const collections = await remoteConn.db(dbname).collections();
+for (const remoteColl of collections) {
+  const name = remoteColl.collectionName;
+  console.log(`  Copying ${name} collection...`);
+  const indexes = await remoteColl.indexes();
+  const cursor = remoteColl.find();
+  const docs = await cursor.toArray();
+  const localColl = await localConn.db(dbname).collection(name);
   try {
-    execSync(
-      `rsync -rLt --partial --info=progress2 --blocking-io --rsync-path="/var/www/html/assets/lexicon/${dbname}" --rsh="kubectl --context=${context} exec -i deploy/app -- " "rsync:/var/www/html/assets/lexicon/${dbname}/" "${tempdir}/assets/${dbname}/"`,
-      { stdio: "inherit" },
-    );
-    done = true;
-  } catch (err) {
-    console.log(`Rsync failed with error: ${err}. Retrying...`);
+    await localColl.drop();
+  } catch (_) {} // Throws if collection doesn't exist, which is fine
+  try {
+    await localColl.dropIndexes();
+  } catch (_) {} // Throws if collection doesn't exist, which is fine
+  await localColl.createIndexes(indexes);
+  await localColl.insertMany(docs);
+  console.log(`  ${docs.length} documents copied`);
+}
+console.warn(`${dbname} database successfully copied`);
+
+// NOTE: mongodump/mongorestore approach below can be revived once Kubernetes 1.30 is installed on client *and* server, so kubectl exec is finally reliable
+
+// console.warn(`About to try fetching ${dbname} database from remote, will retry until success`);
+// let done = false;
+// while (!done) {
+//   try {
+//     console.warn(`Fetching ${dbname} database...`);
+//     execSync(
+//       `kubectl --context="${context}" exec -i deploy/db -- mongodump --archive -d "${dbname}" > ${tempdir}/dump`,
+//     );
+//     console.warn(`Uploading to local ${dbname} database...`);
+//     execSync(`docker exec -i lf-db mongorestore --archive --drop -d "${dbname}" ${localConnStr} < ${tempdir}/dump`);
+//     console.warn(`Successfully uploaded ${dbname} database`);
+//     done = true;
+//   } catch (err) {
+//     console.warn("mongodump failed, retrying...");
+//   }
+// }
+
+console.warn("Setting up rsync on target container...");
+execSync(
+  `kubectl exec --context="${context}" -c app deploy/app -- bash -c "which rsync || (apt update && apt install rsync -y)"`,
+);
+
+console.warn("Creating assets tarball in remote...");
+execSync(
+  `kubectl --context="${context}" exec -c app deploy/app -- tar chf /tmp/assets-${dbname}.tar --owner=www-data --group=www-data -C "/var/www/html/assets/lexicon/${dbname}" .`,
+);
+const sizeStr = run(
+  `kubectl --context="${context}" exec -c app deploy/app -- sh -c 'ls -l /tmp/assets-${dbname}.tar | cut -d" " -f5'`,
+);
+const correctSize = +sizeStr;
+console.warn(`Asserts tarball size is ${sizeStr}`);
+
+console.warn("Getting name of remote app pod...");
+const pod = run(
+  `kubectl --context="${context}" get pod -o jsonpath="{.items[*]['metadata.name']}" -l app=app --field-selector "status.phase=Running"`,
+);
+console.warn("Trying to fetch assets tarball with kubectl cp...");
+let failed = false;
+try {
+  execSync(`kubectl  --context="${context}" cp ${pod}:/tmp/assets-${dbname}.tar ${tempdir}/assets-${dbname}.tar`);
+} catch (_) {
+  console.warn("kubectl cp failed. Will try to continue with rsync...");
+  failed = true;
+}
+if (!failed) {
+  const localSize = statSync(`${tempdir}/assets-${dbname}.tar`).size;
+  if (localSize < correctSize) {
+    console.warn(`Got only ${localSize} bytes instead of ${correctSize}. Will try to continue with rsync...`);
+    failed = true;
   }
 }
+if (failed) {
+  console.warn("\n===== IMPORTANT NOTE =====");
+  console.warn(
+    "This may (probably will) stall at 100%. You'll have to find the rsync process and kill it. Sorry about that.",
+  );
+  console.warn("===== IMPORTANT NOTE =====\n");
+  let done = false;
+  while (!done) {
+    try {
+      execSync(
+        `rsync -v --partial --info=progress2 --rsync-path="/tmp/" --rsh="kubectl --context=${context} exec -i -c app deploy/app -- " "rsync:/tmp/assets-${dbname}.tar" "${tempdir}/"`,
+        { stdio: "inherit" }, // Allows us to see rsync progress
+      );
+      done = true;
+    } catch (err) {
+      console.warn(`Rsync failed with error: ${err}. Retrying...`);
+    }
+  }
+}
+console.warn("Uploading assets tarball to local...");
+execSync(
+  `docker exec lf-app mkdir -p "/var/www/html/assets/lexicon/${dbname}" ; docker exec lf-app chown www-data:www-data "/var/www/html/assets/lexicon/${dbname}" || true`,
+);
+execSync(`docker cp - lf-app:/var/www/html/assets/lexicon/${dbname}/ < ${tempdir}/assets-${dbname}.tar`);
+console.warn("Assets successfully uploaded");
 
-await localConn.close();
-await remoteConn.close();
-await portForwardProcess.kill();
+process.exit(0);
