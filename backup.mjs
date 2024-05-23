@@ -13,8 +13,13 @@ const stagingContext = "dallas-rke";
 const prodContext = "aws-rke";
 
 // Choose one, comment out the other
-const context = stagingContext;
-// const context = prodContext
+// Alternately, pass a second argument to this script: "qa" or "staging" select staging, "live" or "prod" or "production" select production
+
+let contextName = "staging";
+let context = stagingContext;
+
+// let contextName = 'production'
+// let context = prodContext
 
 // ===== END of EDIT THIS =====
 
@@ -91,9 +96,45 @@ if (URL.canParse(arg)) {
   projId = arg;
 }
 
-projId = projId.trim();
-console.log("Project ID:", projId);
+if (process.argv.length > 3) {
+  const env = process.argv[3];
+  switch (env) {
+    case "qa":
+      context = stagingContext;
+      contextName = "staging";
+      break;
+    case "staging":
+      context = stagingContext;
+      contextName = "staging";
+      break;
 
+    case "live":
+      context = prodContext;
+      contextName = "production";
+      break;
+    case "prod":
+      context = prodContext;
+      contextName = "production";
+      break;
+    case "production":
+      context = prodContext;
+      contextName = "production";
+      break;
+
+    default:
+      console.warn(`Unknown environment ${env}`);
+      console.warn(`Valid values are qa, staging, live, prod, or production`);
+      process.exit(2);
+  }
+}
+
+projId = projId.trim();
+
+console.warn(`Fetching project with ID ${projId} from ${contextName} context, named "${context}"`);
+console.warn("If that looks wrong, hit Ctrl+C right NOW!");
+console.warn();
+console.warn("Pausing for 2 seconds to give you time to hit Ctrl+C...");
+await new Promise((resolve) => setTimeout(resolve, 2000));
 // Start running
 
 console.warn("Setting up kubectl port forwarding for remote Mongo...");
