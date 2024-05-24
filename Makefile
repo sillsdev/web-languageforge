@@ -15,21 +15,21 @@ ui-builder:
 .PHONY: e2e-tests-ci
 e2e-tests-ci:
 	pnpm install
-	$(MAKE) e2e-app
-	pnpx playwright install ${browser} --with-deps
-	pnpx playwright test -c ./test/e2e/playwright.config.ts --project=${browser} --shard=${shard}
+	"$(MAKE)" e2e-app
+	pnpm exec playwright install ${browser} --with-deps
+	pnpm exec playwright test -c ./test/e2e/playwright.config.ts --project=${browser} --shard=${shard}
 
 .PHONY: e2e-tests
 e2e-tests: ui-builder
 	pnpm install
-	$(MAKE) e2e-app
-	pnpx playwright install chromium firefox
-	pnpx playwright test -c ./test/e2e/playwright.config.ts $(params)
+	"$(MAKE)" e2e-app
+	pnpm exec playwright install chromium firefox
+	pnpm exec playwright test -c ./test/e2e/playwright.config.ts $(params)
 
 .PHONY: e2e-app
 e2e-app:
 	# delete any cached session storage state files if the service isn't running
-	docker compose ps e2e-app > /dev/null 2>&1 || $(MAKE) clean-test
+	docker compose ps e2e-app > /dev/null 2>&1 || "$(MAKE)" clean-test
 	docker compose up -d e2e-app --build
 
 .PHONY: unit-tests
@@ -87,7 +87,7 @@ clean-test:
 
 .PHONY: clean-powerwash
 clean-powerwash: clean
-	$(MAKE) clean-test
+	"$(MAKE)" clean-test
 	docker system prune -f --volumes
 	- docker rmi -f `docker images -q "lf-*"` sillsdev/web-languageforge:base-php
 	docker builder prune -f
