@@ -8,16 +8,13 @@ RUN mkdir -p /data
 WORKDIR /data
 
 # Copy in files needed for compilation, located in the repo root
-COPY typings ./typings/
-COPY package.json webpack.config.js webpack-dev.config.js webpack-prd.config.js tsconfig.json tslint.json ./
+COPY package.json pnpm-lock.yaml ./
 
-# Use built node_modules from host
-COPY node_modules ./node_modules/
-
-# node-sass is platform dependent and so must be rebuilt inside docker
 RUN corepack enable
-RUN pnpm rebuild node-sass
+RUN pnpm install
 
+COPY typings ./typings/
+COPY webpack.config.js webpack-dev.config.js webpack-prd.config.js tsconfig.json tslint.json ./
 # copy in src local files
 # Note: *.html files in src/angular-app aren't necessary for webpack compilation, however changes to HTML files will invalidate this layer
 COPY src/angular-app ./src/angular-app
