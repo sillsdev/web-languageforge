@@ -1,4 +1,4 @@
-FROM node:16.14.0-alpine3.15
+FROM node:22.2.0-alpine3.18
 
 RUN mkdir -p /data
 WORKDIR /data
@@ -18,4 +18,5 @@ COPY src/json ./src/json
 COPY src/sass ./src/sass
 COPY src/Site/views ./src/Site/views
 
-CMD npm run build:dev:watch
+RUN corepack enable
+CMD pnpm run build:dev:watch

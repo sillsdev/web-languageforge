@@ -63,12 +63,12 @@ jobs:
       -
         uses: actions/checkout@v3
       -
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: "16.14.0"
-          cache: "npm"
+          node-version: "22.2.0"
+          cache: "pnpm"
       -
         name: Run prettier check
         run: |
-          npx prettier -v
-          npx prettier --check .
+          pnpx prettier -v
+          pnpx prettier --check .

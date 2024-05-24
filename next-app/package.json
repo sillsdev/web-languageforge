@@ -2,6 +2,11 @@
   "name": "next-app",
   "version": "0.0.1",
   "type": "module",
+  "packageManager": "pnpm@9.1.2",
+  "engines": {
+    "node": ">=18",
+    "pnpm": ">=9"
+  },
   "scripts": {
     "dev": "vite dev",
     "dev-w-host": "vite dev --host",
@@ -9,7 +14,7 @@
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",
-    "clean": "rimraf .svelte-kit build node_modules && echo '🔔 reminder: you will need to reinstall deps, `npm i`'"
+    "clean": "rimraf .svelte-kit build node_modules && echo '🔔 reminder: you will need to reinstall deps, `pnpm i`'"
   },
   "devDependencies": {
     "@sveltejs/adapter-node": "^1",

@@ -2,7 +2,7 @@
 ARG ENVIRONMENT=${ENVIRONMENT:-'production'}
 
 # UI-BUILDER
-FROM node:22.0.0-alpine3.18 AS ui-builder-base
+FROM node:22.2.0-alpine3.18 AS ui-builder-base
 
 RUN mkdir -p /data
 WORKDIR /data
@@ -15,7 +15,8 @@ COPY package.json webpack.config.js webpack-dev.config.js webpack-prd.config.js 
 COPY node_modules ./node_modules/
 
 # node-sass is platform dependent and so must be rebuilt inside docker
-RUN npm rebuild node-sass
+RUN corepack enable
+RUN pnpm rebuild node-sass
 
 # copy in src local files
 # Note: *.html files in src/angular-app aren't necessary for webpack compilation, however changes to HTML files will invalidate this layer
@@ -33,7 +34,7 @@ ENV NPM_BUILD_SUFFIX=dev
 FROM ${ENVIRONMENT}-ui-builder AS ui-builder
 
 # artifacts built to /data/src/dist
-RUN npm run build:${NPM_BUILD_SUFFIX}
+RUN pnpm run build:${NPM_BUILD_SUFFIX}
 
 # COMPOSER-BUILDER
 # download composer app dependencies

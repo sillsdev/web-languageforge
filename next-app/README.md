@@ -10,4 +10,4 @@ From the project root directory, `make next-dev` and access app via http://local
 
 ### Alternate local development (limited)
 
-From within the `/next-app` directory, `npm run dev` will also start the next app and the root page can be used for simple testing, i.e., http://localhost:3000/. This approach is limited in that the backend will not be started so all development must be isolated to pages without a required backend call.
+From within the `/next-app` directory, `pnpm run dev` will also start the next app and the root page can be used for simple testing, i.e., http://localhost:3000/. This approach is limited in that the backend will not be started so all development must be isolated to pages without a required backend call.

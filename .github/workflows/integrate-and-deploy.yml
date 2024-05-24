@@ -54,12 +54,12 @@ jobs:
           TAG_LFMERGE=${TAG_LFMERGE:-latest}
           echo "TAG_LFMERGE=${TAG_LFMERGE}" >> $GITHUB_OUTPUT
       -
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '16.14.0'
-          cache: 'npm'
+          node-version: '22.2.0'
+          cache: 'pnpm'
       -
-        run: npm ci
+        run: pnpm ci
       -
         name: Build legacy app
         run: docker compose build --build-arg ENVIRONMENT=production --build-arg BUILD_VERSION=${{ steps.image.outputs.TAG_APP }} app
