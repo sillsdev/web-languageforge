@@ -42,23 +42,24 @@ WORKDIR /composer
 COPY src/composer.json src/composer.lock /composer/
 RUN composer install
 
-# PRODUCTION IMAGE
-FROM sillsdev/web-languageforge:base-php AS production-app
+# PRODUCTION BASE IMAGE
+FROM sillsdev/web-languageforge:base-php AS production-base
 RUN rm /usr/local/bin/install-php-extensions /usr/local/bin/composer
 RUN apt-get remove -y gnupg2 git
 RUN mv $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini
 # had to add /wait into prod image so the prod image could be run through E2E tests.
 COPY --from=sillsdev/web-languageforge:wait-latest /wait /wait
 
-# DEVELOPMENT IMAGE
-FROM sillsdev/web-languageforge:base-php AS development-app
+# DEVELOPMENT BASE IMAGE
+FROM sillsdev/web-languageforge:base-php AS development-base
 RUN install-php-extensions xdebug-^3.1
 COPY docker/app/docker-php-ext-xdebug.ini /usr/local/etc/php/conf.d
 RUN mv $PHP_INI_DIR/php.ini-development $PHP_INI_DIR/php.ini
 COPY --from=sillsdev/web-languageforge:wait-latest /wait /wait
 COPY docker/app/run-with-wait.sh /run-with-wait.sh
 
-FROM ${ENVIRONMENT}-app AS languageforge-app
+# COMMON BASE IMAGE
+FROM ${ENVIRONMENT}-base AS languageforge-base
 ARG BUILD_VERSION=${BUILD_VERSION:-'9.9.9'}
 
 # copy app into image
@@ -81,6 +82,15 @@ COPY --from=composer-builder /composer/vendor /var/www/html/vendor
 
 RUN echo "${BUILD_VERSION}" > build-version.txt \
     && sed -i "s/9.9.9/${BUILD_VERSION}/" version.php
+
+# Final image, to be selected with docker build --target=development
+FROM languageforge-base AS development
+
+ENTRYPOINT [ "tini", "-g", "--" ]
+CMD [ "apache2-foreground" ]
+
+# Final image, to be selected with docker build --target=production
+FROM languageforge-base AS production
 
 ENTRYPOINT [ "tini", "-g", "--" ]
 CMD [ "apache2-foreground" ]

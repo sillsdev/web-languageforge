@@ -34,6 +34,7 @@ services:
     build:
       context: .
       dockerfile: docker/app/Dockerfile
+      target: development
       args:
         - ENVIRONMENT=development
     image: lf-app
@@ -269,6 +270,7 @@ services:
     build:
       context: .
       dockerfile: docker/app/Dockerfile
+      target: development
       args:
         - ENVIRONMENT=development
     image: lf-e2e-app
