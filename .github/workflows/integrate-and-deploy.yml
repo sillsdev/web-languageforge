@@ -54,6 +54,8 @@ jobs:
           TAG_LFMERGE=${TAG_LFMERGE:-latest}
           echo "TAG_LFMERGE=${TAG_LFMERGE}" >> $GITHUB_OUTPUT
       -
+        uses: pnpm/action-setup@v4
+      -
         uses: actions/setup-node@v4
         with:
           node-version: '22.2.0'
