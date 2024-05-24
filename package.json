@@ -38,7 +38,7 @@
     "angular-ui-validate": "^1.2.3",
     "angular-zxcvbn": "^3.2.2",
     "bootstrap": "4.0.0-beta.2",
-    "date-fns": "^2.23.0",
+    "date-fns": "^3.6.0",
     "deep-diff": "^1.0.2",
     "font-awesome": "^4.7.0",
     "localforage": "^1.7.1",
