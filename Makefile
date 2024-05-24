@@ -14,7 +14,7 @@ ui-builder:
 
 .PHONY: e2e-tests-ci
 e2e-tests-ci:
-	pnpm ci
+	pnpm install
 	$(MAKE) e2e-app
 	pnpx playwright install ${browser} --with-deps
 	pnpx playwright test -c ./test/e2e/playwright.config.ts --project=${browser} --shard=${shard}
