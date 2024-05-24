@@ -38,7 +38,7 @@ While Docker is great way to encapsulate all of the dependencies, build tools an
 
 - PHP 7.4
 - Composer
-- Node and npm
+- Node and pnpm
 - .Net SDK
 
 ### Project Setup
@@ -52,7 +52,8 @@ While Docker is great way to encapsulate all of the dependencies, build tools an
 2. Install [Make](https://www.gnu.org/software/make/): `sudo apt install make`.
 3. Install [Node 22](https://nodejs.org/en/download/). We recommend using [nvm](https://github.com/nvm-sh/nvm#installation-and-update) or [nvm on Windows](https://github.com/coreybutler/nvm-windows).
 4. Clone the repo: `git clone https://github.com/sillsdev/web-languageforge`.
-5. Run `npm install` (required for git pre-commit hook with Prettier)
+5. Run `corepack enable` to download and set up PNPM if it's not alraedy installed
+6. Run `pnpm install` (required for git pre-commit hook with Prettier)
 
 ### Running the App Locally
 
