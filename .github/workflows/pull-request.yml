@@ -72,5 +72,5 @@ jobs:
       -
         name: Run prettier check
         run: |
-          pnpm exec prettier -v
-          pnpm exec prettier --check .
+          pnpm dlx prettier -v
+          pnpm dlx prettier --check .
