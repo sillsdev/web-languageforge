@@ -54,12 +54,18 @@ jobs:
           TAG_LFMERGE=${TAG_LFMERGE:-latest}
           echo "TAG_LFMERGE=${TAG_LFMERGE}" >> $GITHUB_OUTPUT
       -
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16.14.0'
-          cache: 'npm'
+        uses: pnpm/action-setup@v4
       -
-        run: npm ci
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.2.0'
+          cache: 'pnpm'
+      -
+        run: pnpm install
+      -
+        name: Prep for production build of legacy app
+        # docker compose build doesn't allow passing a `--target` parameter, so we have to replace the target in docker-compose.yml
+        run: "sed -i 's/target: development/target: production/g' docker-compose.yml"
       -
         name: Build legacy app
         run: docker compose build --build-arg ENVIRONMENT=production --build-arg BUILD_VERSION=${{ steps.image.outputs.TAG_APP }} app

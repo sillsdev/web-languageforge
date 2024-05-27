@@ -4,7 +4,11 @@ import {SemanticDomainsService} from '../../../languageforge/core/semantic-domai
 import {LexiconConfigService} from '../../../languageforge/lexicon/core/lexicon-config.service';
 import {LexiconUtilityService} from '../../../languageforge/lexicon/core/lexicon-utility.service';
 import {LexEntry} from '../../../languageforge/lexicon/shared/model/lex-entry.model';
+import {LexSense} from 'src/angular-app/languageforge/lexicon/shared/model/lex-sense.model';
+import {LexExample} from 'src/angular-app/languageforge/lexicon/shared/model/lex-example.model';
+import {LexMultiText} from 'src/angular-app/languageforge/lexicon/shared/model/lex-multi-text.model';
 import {LexMultiValue} from '../../../languageforge/lexicon/shared/model/lex-multi-value.model';
+import {LexOptionListItem} from 'src/angular-app/languageforge/lexicon/shared/model/option-list.model';
 import {
   LexConfigFieldList,
   LexConfigMultiOptionList,
@@ -534,7 +538,7 @@ export class EditorDataService {
             field = config.entry.fields.senses.fields[fieldKey];
           }
 
-          angular.forEach(config.entry.fields, (entryField, entryFieldKey:string) => {
+          angular.forEach(config.entry.fields, (entryField, entryFieldKey:keyof LexEntry) => {
             if (entryField.type === 'multitext') {
               angular.forEach(entry[entryFieldKey], (fieldNode, ws:string) => {
                   if (ws && UtilityService.isAudio(ws) && fieldNode.value !== '') {
@@ -545,7 +549,7 @@ export class EditorDataService {
 
             if (entryFieldKey === 'senses') {
               angular.forEach(entry.senses, sense => {
-                angular.forEach(config.entry.fields.senses.fields, (senseField: any, senseFieldKey: string) => {
+                angular.forEach(config.entry.fields.senses.fields, (senseField: any, senseFieldKey: keyof LexSense) => {
                   if (senseField.type === 'multitext') {
                     angular.forEach(sense[senseFieldKey], (fieldNode: any, ws: string) => {
                       if (ws && UtilityService.isAudio(ws) && fieldNode.value !== '') {
@@ -557,7 +561,7 @@ export class EditorDataService {
                   if (senseFieldKey === 'examples') {
                     angular.forEach(sense.examples, example => {
                       angular.forEach(config.entry.fields.senses.fields.examples.fields,
-                        (exampleField: any, exampleFieldKey: string) => {
+                        (exampleField: any, exampleFieldKey: keyof LexExample) => {
                           if (exampleField.type === 'multitext') {
                             angular.forEach(example[exampleFieldKey], (fieldNode: any, ws: string) => {
                               if (ws && UtilityService.isAudio(ws) && fieldNode.value !== '') {
@@ -579,25 +583,25 @@ export class EditorDataService {
       // filter by entry or sense field
       let dataNode;
       if (this.entryListModifiers.filterBy.option.level === 'entry') {
-        dataNode = entry[this.entryListModifiers.filterBy.option.value];
+        dataNode = entry[this.entryListModifiers.filterBy.option.value as keyof LexEntry];
       } else { // sense level
         if (entry.senses && entry.senses.length > 0) {
-          dataNode = entry.senses[0][this.entryListModifiers.filterBy.option.value];
+          dataNode = entry.senses[0][this.entryListModifiers.filterBy.option.value as keyof LexSense];
         }
       }
 
       if (dataNode) {
         switch (filterType) {
           case 'multitext':
-            if (dataNode[this.entryListModifiers.filterBy.option.inputSystem]) {
-              containsData = dataNode[this.entryListModifiers.filterBy.option.inputSystem].value !== '';
+            if ((dataNode as LexMultiText)[this.entryListModifiers.filterBy.option.inputSystem]) {
+              containsData = (dataNode as LexMultiText)[this.entryListModifiers.filterBy.option.inputSystem].value !== '';
             }
             break;
           case 'optionlist':
-            containsData = dataNode.value !== '';
+            containsData = (dataNode as LexOptionListItem).value !== '';
             break;
           case 'multioptionlist':
-            containsData = (dataNode.values.length > 0);
+            containsData = ((dataNode as LexMultiValue).values.length > 0);
             break;
         }
       }

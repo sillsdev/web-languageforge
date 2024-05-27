@@ -57,7 +57,7 @@ export class LexiconAppController implements angular.IController {
         if (rights.canEditProject()) {
           this.lexProjectService.users().then(result => {
             if (result.ok) {
-              const users = {};
+              const users: Record<string, User> = {};
               for (const user of (result.data.users as User[])) {
                 users[user.id] = user;
               }

@@ -14,7 +14,6 @@
     "downlevelIteration": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "ignoreDeprecations": "5.0",
     "importHelpers": true,
     "lib": ["es7", "dom"],
     "module": "es6",
@@ -26,7 +25,6 @@
     },
     "rootDir": "src/angular-app",
     "sourceMap": true,
-    "suppressImplicitAnyIndexErrors": true,
     "target": "es5",
     "typeRoots": ["node_modules/@types", "typings"]
   },

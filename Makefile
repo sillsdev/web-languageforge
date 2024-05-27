@@ -2,7 +2,7 @@
 
 .PHONY: start
 start: build
-    # starts the entire runtime infrastructure
+	# starts the entire runtime infrastructure
 	docker compose up -d ssl
 
 .PHONY: dev
@@ -14,22 +14,22 @@ ui-builder:
 
 .PHONY: e2e-tests-ci
 e2e-tests-ci:
-	npm ci
-	$(MAKE) e2e-app
-	npx playwright install ${browser} --with-deps
-	npx playwright test -c ./test/e2e/playwright.config.ts --project=${browser} --shard=${shard}
+	pnpm install
+	"$(MAKE)" e2e-app
+	pnpm exec playwright install ${browser} --with-deps
+	pnpm exec playwright test -c ./test/e2e/playwright.config.ts --project=${browser} --shard=${shard}
 
 .PHONY: e2e-tests
 e2e-tests: ui-builder
-	npm install
-	$(MAKE) e2e-app
-	npx playwright install chromium firefox
-	npx playwright test -c ./test/e2e/playwright.config.ts $(params)
+	pnpm install
+	"$(MAKE)" e2e-app
+	pnpm exec playwright install chromium firefox
+	pnpm exec playwright test -c ./test/e2e/playwright.config.ts $(params)
 
 .PHONY: e2e-app
 e2e-app:
-    # delete any cached session storage state files if the service isn't running
-	docker compose ps e2e-app > /dev/null 2>&1 || $(MAKE) clean-test
+	# delete any cached session storage state files if the service isn't running
+	docker compose ps e2e-app > /dev/null 2>&1 || "$(MAKE)" clean-test
 	docker compose up -d e2e-app --build
 
 .PHONY: unit-tests
@@ -45,9 +45,9 @@ unit-tests-ci:
 
 .PHONY: build
 build:
-	npm install
+	pnpm install
 
-    # ensure we start with a clean ui-dist volume for every build
+	# ensure we start with a clean ui-dist volume for every build
 	-docker volume rm web-languageforge_lf-ui-dist 2>/dev/null
 
 	docker compose build mail app lfmerge ld-api next-proxy next-app
@@ -83,11 +83,11 @@ clean:
 
 .PHONY: clean-test
 clean-test:
-	cd test/e2e && npx rimraf test-storage-state
+	cd test/e2e && pnpm dlx rimraf test-storage-state
 
 .PHONY: clean-powerwash
 clean-powerwash: clean
-	$(MAKE) clean-test
+	"$(MAKE)" clean-test
 	docker system prune -f --volumes
 	- docker rmi -f `docker images -q "lf-*"` sillsdev/web-languageforge:base-php
 	docker builder prune -f

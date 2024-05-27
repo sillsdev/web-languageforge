@@ -15,11 +15,7 @@ export class BreadcrumbService {
   updateCrumb(id: string, index: number, update: Crumb): void {
     this.ensureIdIsRegistered(id);
     const crumb = this.crumbStore[id][index];
-    for (const property in update) {
-      if (update.hasOwnProperty(property)) {
-        crumb[property] = update[property];
-      }
-    }
+    Object.assign(crumb, update);
   }
 
   set(id: string, crumbs: Crumb[]): void {
