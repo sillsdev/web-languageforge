@@ -83,7 +83,7 @@ clean:
 
 .PHONY: clean-test
 clean-test:
-	cd test/e2e && pnpx rimraf test-storage-state
+	cd test/e2e && pnpm dlx rimraf test-storage-state
 
 .PHONY: clean-powerwash
 clean-powerwash: clean

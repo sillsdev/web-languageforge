@@ -43,7 +43,7 @@ const config: PlaywrightTestConfig = {
     ? [['github'], ['list']]
     // Putting the HTML report in a subdirectory of the main output directory results in a warning log
     // stating that it will "lead to artifact loss" but the warning in this case is not accurate
-    // pnpx playwright show-report test-results/_html-report
+    // pnpm exec playwright show-report test-results/_html-report
     : [['html', { outputFolder: 'test-results/_html-report', open: 'never' }]],
 
   reportSlowTests: {
