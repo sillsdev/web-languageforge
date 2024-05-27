@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "description": "Language Forge",
   "private": true,
+  "packageManager": "pnpm@9.1.2",
+  "engines": {
+    "node": ">=18",
+    "pnpm": ">=9"
+  },
   "scripts": {
     "build:dev": "npm-run-all -p -l sass webpack:dev",
     "build:dev:watch": "npm-run-all -p -l sass:watch webpack:dev:watch",
@@ -15,8 +20,8 @@
     "webpack:dev:watch": "webpack -w --config webpack-dev.config.js",
     "webpack:prd": "webpack --config webpack-prd.config.js",
     "compile-test-e2e": "tsc -p test/app",
-    "test-e2e": "npx playwright test -c ./test/e2e/playwright.config.ts",
-    "test-e2e-report": "npx playwright show-report ./test/e2e/test-results/_html-report",
+    "test-e2e": "pnpm exec playwright test -c ./test/e2e/playwright.config.ts",
+    "test-e2e-report": "pnpm exec playwright show-report ./test/e2e/test-results/_html-report",
     "prepare": "husky install"
   },
   "license": "MIT",
@@ -33,7 +38,7 @@
     "angular-ui-validate": "^1.2.3",
     "angular-zxcvbn": "^3.2.2",
     "bootstrap": "4.0.0-beta.2",
-    "date-fns": "^2.23.0",
+    "date-fns": "^3.6.0",
     "deep-diff": "^1.0.2",
     "font-awesome": "^4.7.0",
     "localforage": "^1.7.1",

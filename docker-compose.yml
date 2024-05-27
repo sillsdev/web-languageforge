@@ -23,7 +23,7 @@ services:
       - ./webpack-dev.config.js:/data/webpack-dev.config.js
       - ./webpack-prd.config.js:/data/webpack-prd.config.js
       - ./package.json:/data/package.json
-      - ./package-lock.json:/data/package-lock.json
+      - ./pnpm-lock.yaml:/data/pnpm-lock.yaml
 
       # needed these volume maps so changes to typescript/scss would be reflected in running app, actually rebundled and output to dist which is then shared to the app container.
       - ./src/angular-app:/data/src/angular-app
@@ -34,6 +34,7 @@ services:
     build:
       context: .
       dockerfile: docker/app/Dockerfile
+      target: development
       args:
         - ENVIRONMENT=development
     image: lf-app
@@ -178,7 +179,7 @@ services:
     container_name: lf-next-app-dev
     environment:
       - API_HOST=http://app
-    command: npm run dev-w-host
+    command: pnpm run dev-w-host
     volumes:
       # for developer convenience
       - ./next-app/src:/app/src
@@ -269,6 +270,7 @@ services:
     build:
       context: .
       dockerfile: docker/app/Dockerfile
+      target: development
       args:
         - ENVIRONMENT=development
     image: lf-e2e-app

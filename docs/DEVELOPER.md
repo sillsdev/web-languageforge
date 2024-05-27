@@ -38,7 +38,7 @@ While Docker is great way to encapsulate all of the dependencies, build tools an
 
 - PHP 7.4
 - Composer
-- Node and npm
+- Node and pnpm
 - .Net SDK
 
 ### Project Setup
@@ -52,7 +52,8 @@ While Docker is great way to encapsulate all of the dependencies, build tools an
 2. Install [Make](https://www.gnu.org/software/make/): `sudo apt install make`.
 3. Install [Node 22](https://nodejs.org/en/download/). We recommend using [nvm](https://github.com/nvm-sh/nvm#installation-and-update) or [nvm on Windows](https://github.com/coreybutler/nvm-windows).
 4. Clone the repo: `git clone https://github.com/sillsdev/web-languageforge`.
-5. Run `npm install` (required for git pre-commit hook with Prettier)
+5. Run `corepack enable` to download and set up PNPM if it's not alraedy installed
+6. Run `pnpm install` (required for git pre-commit hook with Prettier)
 
 ### Running the App Locally
 
@@ -99,8 +100,8 @@ ngrok will return two URLs, one http and one https, that contain what is being s
 
 ### Running Playwright E2E Tests
 
-Before running Playwright tests for the first time use `npx playwright install --with-deps chromium` to install chromium with its dependencies. It will ask for root access.
-After Playwright updates, you'll likely need to run `npx playwright install` to update the browsers, but Playwright should provide fairly explicit failure logs if that's the case.
+Before running Playwright tests for the first time use `pnpm exec playwright install --with-deps chromium` to install chromium with its dependencies. It will ask for root access.
+After Playwright updates, you'll likely need to run `pnpm exec playwright install` to update the browsers, but Playwright should provide fairly explicit failure logs if that's the case.
 
 1. `make e2e-tests`
 1. Test results will appear in your terminal
