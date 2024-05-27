@@ -37,7 +37,7 @@ export class TabSetController implements angular.IController {
     this.tabs[index].onSelect();
     this.$scope.active = index;
     for (const i of Object.keys(this.tabs)) {
-      this.tabs[i].selected = (parseInt(i, 10) === index);
+      this.tabs[+i].selected = (+i === index);
     }
   }
 

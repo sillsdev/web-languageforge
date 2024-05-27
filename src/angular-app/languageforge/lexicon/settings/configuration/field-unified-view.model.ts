@@ -136,7 +136,7 @@ export class ConfigurationFieldUnifiedViewModel {
     }
   }
 
-  static selectAllRoleColumn(settings: SettingsBase[], selectAll: SettingsBase, role: string): void {
+  static selectAllRoleColumn(settings: SettingsBase[], selectAll: SettingsBase, role: RoleName): void {
     for (const setting of settings) {
       if (RequiredFields.requiredFieldList.includes(setting.fieldName)) {
         setting[role] = true;
@@ -158,7 +158,7 @@ export class ConfigurationFieldUnifiedViewModel {
     }
   }
 
-  static checkIfAllRoleColumnSelected(settings: SettingsBase[], selectAll: SettingsBase, role: string): void {
+  static checkIfAllRoleColumnSelected(settings: SettingsBase[], selectAll: SettingsBase, role: RoleName): void {
     selectAll[role] = true;
     for (const setting of settings) {
       if (!setting[role]) {
@@ -180,7 +180,7 @@ export class ConfigurationFieldUnifiedViewModel {
   }
 
   static checkIfAllRoleSelected(setting: SettingsBase, settings: SettingsBase[], selectAll: SettingsBase,
-                                role: string): void {
+                                role: RoleName): void {
     ConfigurationFieldUnifiedViewModel.checkIfAllRowSelected(setting);
     ConfigurationFieldUnifiedViewModel.checkIfAllRoleColumnSelected(settings, selectAll, role);
   }
@@ -405,7 +405,7 @@ export class ConfigurationFieldUnifiedViewModel {
     return tags;
   }
 
-  private static setInputSystemRoleSettings(tag: string, config: LexiconConfig, role: string, roleType: string,
+  private static setInputSystemRoleSettings(tag: string, config: LexiconConfig, role: RoleName, roleType: string,
                                             inputSystemSettings: InputSystemSettings): void {
     const roleView: LexRoleViewConfig = config.roleViews[roleType];
     if (roleView != null) {
@@ -546,13 +546,14 @@ export class FieldSettingsList {
   selectAllColumns: FieldSettings = new FieldSettings();
 }
 
+export type RoleName = 'observer' | 'commenter' | 'contributor' | 'manager';
 export class RoleType {
   observer: string = 'observer';
   commenter: string = 'observer_with_comment';
   contributor: string = 'contributor';
   manager: string = 'project_manager';
 
-  static roles(): string[] {
+  static roles(): RoleName[] {
     return ['observer', 'commenter', 'contributor', 'manager'];
   }
 }

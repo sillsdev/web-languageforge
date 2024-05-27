@@ -49,7 +49,7 @@ export class Session {
     return rights.indexOf(right) !== -1;
   }
 
-  getProjectSetting(setting: string) {
+  getProjectSetting(setting: keyof ProjectSettings) {
     return this.data.projectSettings[setting];
   }
 }
