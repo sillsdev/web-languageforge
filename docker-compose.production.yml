@@ -1,0 +1,27 @@
+services:
+
+  app:
+    build:
+      target: production
+      args:
+        - ENVIRONMENT=production
+    environment:
+      - ENVIRONMENT=production
+
+  lfmerge:
+    build:
+      args:
+        - ENVIRONMENT=production
+    environment:
+      - ENVIRONMENT=production
+
+  e2e-app:
+    build:
+      args:
+        - ENVIRONMENT=production
+    environment:
+      - ENVIRONMENT=production
+
+  test-php:
+    environment:
+      - ENVIRONMENT=production
