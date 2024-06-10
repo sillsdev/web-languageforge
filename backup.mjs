@@ -1,5 +1,3 @@
-// TODO: Rename to backup.mjs before committing
-
 import { execSync, spawn } from "child_process";
 import { existsSync, mkdtempSync, rmSync, statSync } from "fs";
 import { MongoClient, ObjectId } from "mongodb";
@@ -150,7 +148,6 @@ await new Promise((resolve) => setTimeout(resolve, 2000));
 
 console.warn("Setting up kubectl port forwarding for remote Mongo...");
 const remoteMongoPort = await randomFreePort();
-// TODO: Improve by finding a local port that's not in use, rather than hardcoding this
 let portForwardingReady;
 const portForwardingPromise = new Promise((resolve) => {
   portForwardingReady = resolve;
