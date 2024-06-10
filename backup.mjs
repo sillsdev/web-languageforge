@@ -64,8 +64,10 @@ function reallyExists(name) {
   // Sometimes the audio and/or pictures folders in assets are symlinks, and sometimes they're broken symlinks
   // This returns true if the name is a real file/directory *or* a symlink with a valid target, or false if it doesn't exist or is broken
   const result = execSync(
-    `kubectl --context=${context} --namespace=languageforge exec -c app deploy/app -- sh -c 'readlink -eq ${name} >/dev/null && echo -n yes || echo -n no'`,
-  ).toString();
+    `kubectl --context=${context} --namespace=languageforge exec -c app deploy/app -- sh -c 'readlink -eq ${name} >/dev/null && echo yes || echo no'`,
+  )
+    .toString()
+    .trimEnd();
   if (result === "yes") return true;
   if (result === "no") return false;
   throw new Error(`Unexpected result from readlink ${name}: ${result}`);
