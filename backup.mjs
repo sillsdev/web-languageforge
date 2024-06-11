@@ -226,8 +226,8 @@ for (const remoteColl of collections) {
   try {
     await localColl.dropIndexes();
   } catch (_) {} // Throws if collection doesn't exist, which is fine
-  await localColl.createIndexes(indexes);
-  await localColl.insertMany(docs);
+  if (indexes?.length) await localColl.createIndexes(indexes);
+  if (docs?.length) await localColl.insertMany(docs);
   console.log(`  ${docs.length} documents copied`);
 }
 console.warn(`${dbname} database successfully copied`);
