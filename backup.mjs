@@ -202,13 +202,6 @@ project.users = { [adminId]: { role: "project_manager" } };
 project.ownerRef = new ObjectId(adminId);
 console.warn(project.users);
 
-// TODO: Move to after database is copied, so there's never a race condition where the project exists but its entry database doesn't
-console.warn("Copying project record...");
-await localConn
-  .db("scriptureforge")
-  .collection("projects")
-  .findOneAndReplace({ _id: new ObjectId(projId) }, project, { upsert: true });
-
 // Mongo removed the .copyDatabase method in version 4.2, whose release notes said to just use mongodump/mongorestore if you want to do that
 
 console.warn(`Copying ${dbname} database...`);
@@ -231,6 +224,13 @@ for (const remoteColl of collections) {
   console.log(`  ${docs.length} documents copied`);
 }
 console.warn(`${dbname} database successfully copied`);
+
+// Copy project record after its database has been copied, so there's never a race condition where the project exists but its entry database doesn't
+console.warn("Copying project record...");
+await localConn
+  .db("scriptureforge")
+  .collection("projects")
+  .findOneAndReplace({ _id: new ObjectId(projId) }, project, { upsert: true });
 
 // NOTE: mongodump/mongorestore approach below can be revived once Kubernetes 1.30 is installed on client *and* server, so kubectl exec is finally reliable
 
