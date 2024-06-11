@@ -5,21 +5,19 @@ import os from "os";
 import path from "path";
 import net from "net";
 
+// Expected arguments: first arg is project ID (5dbf805650b51914727e06c4) or URL (http://localhost:8080/app/lexicon/5dbf805650b51914727e06c4)
+// Second arg is "qa" or "staging" to copy from staging, "live" or "prod" or "production" to copy from production
+// NOTE: You must edit the context names below if they don't match the context names you have (see `kubectl config get-contexts` output)
+
 // ===== EDIT THIS =====
 
 const stagingContext = "dallas-rke";
 const prodContext = "aws-rke";
 
-// Choose one, comment out the other
-// Alternately, pass a second argument to this script: "qa" or "staging" select staging, "live" or "prod" or "production" select production
-
-let contextName = "staging";
-let context = stagingContext;
-
-// let contextName = 'production'
-// let context = prodContext
-
 // ===== END of EDIT THIS =====
+
+let defaultContext = stagingContext;
+let defaultContextName = "staging";
 
 // Create a temp dir reliably
 const tempdir = mkdtempSync(path.join(os.tmpdir(), "lfbackup-"));
@@ -106,6 +104,9 @@ if (URL.canParse(arg)) {
 } else {
   projId = arg;
 }
+
+let context = defaultContext;
+let contextName = defaultContextName;
 
 if (process.argv.length > 3) {
   const env = process.argv[3];
