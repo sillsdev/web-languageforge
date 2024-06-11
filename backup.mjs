@@ -138,6 +138,9 @@ if (process.argv.length > 3) {
       console.warn(`Valid values are qa, staging, live, prod, or production`);
       process.exit(2);
   }
+} else {
+  console.warn("No environment selected. Defaulting to staging environment.");
+  console.warn('Pass "prod" or "production" as second arg to copy projects from production envrionment instead.');
 }
 
 projId = projId.trim();
