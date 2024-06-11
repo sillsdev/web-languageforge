@@ -64,7 +64,7 @@ jobs:
         run: pnpm install
       -
         name: Build legacy app
-        run: docker compose -f docker-compose.yml -f docker-compose.production.yml build --build-arg ENVIRONMENT=production --build-arg BUILD_VERSION=${{ steps.image.outputs.TAG_APP }} app
+        run: docker compose -f docker-compose.yml -f docker-compose.production.yml build --build-arg BUILD_VERSION=${{ steps.image.outputs.TAG_APP }} app
       -
         name: Verify version stamping
         run: |
