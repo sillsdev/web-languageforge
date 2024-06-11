@@ -200,7 +200,6 @@ console.log("Project code:", project.projectCode);
 const dbname = `sf_${project.projectCode}`;
 project.users = { [adminId]: { role: "project_manager" } };
 project.ownerRef = new ObjectId(adminId);
-console.warn(project.users);
 
 // Mongo removed the .copyDatabase method in version 4.2, whose release notes said to just use mongodump/mongorestore if you want to do that
 
