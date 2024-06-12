@@ -20,9 +20,9 @@ let defaultContext = stagingContext;
 let defaultContextName = "staging";
 
 // Create a temp dir reliably
-const tempdir = mkdtempSync(path.join(os.tmpdir(), "lfbackup-"));
-// TODO: Work around kubectl bug where drive letters are interpreted as pod names by kubectl cp
-// Might solve by changing C: to \\localhost\C$\
+const tempdir = mkdtempSync(path.join(os.tmpdir(), "lfbackup-"))
+  // Work around kubectl bug where Windows drive letters are interpreted as pod names by kubectl cp
+  .replace(/^C:\\/, "\\\\localhost\\C$\\");
 let portForwardProcess;
 let localConn;
 let remoteConn;
