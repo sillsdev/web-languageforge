@@ -24,15 +24,33 @@ const tempdir = mkdtempSync(path.join(os.tmpdir(), "lfbackup-"));
 let portForwardProcess;
 let localConn;
 let remoteConn;
+let remoteTarball = undefined;
+let remotePodname = undefined;
 
 async function cleanup() {
-  if (existsSync(tempdir)) {
-    console.warn(`Cleaning up temporary directory ${tempdir}...`);
-    rmSync(tempdir, { recursive: true, force: true });
-  }
-  if (localConn) await localConn.close();
-  if (remoteConn) await remoteConn.close();
-  if (portForwardProcess) await portForwardProcess.kill();
+  try {
+    if (existsSync(tempdir)) {
+      console.warn(`Cleaning up temporary directory ${tempdir}...`);
+      rmSync(tempdir, { recursive: true, force: true });
+    }
+  } catch (_) {}
+  try {
+    if (remotePodname && remoteTarball) {
+      console.warn(`Cleaning up assets tarball from remote side...`);
+      execSync(
+        `kubectl --context="${context}" --namespace=languageforge exec -c app pod/${remotePodname} -- rm -f ${remoteTarball}`,
+      );
+    }
+  } catch (_) {}
+  try {
+    if (localConn) await localConn.close();
+  } catch (_) {}
+  try {
+    if (remoteConn) await remoteConn.close();
+  } catch (_) {}
+  try {
+    if (portForwardProcess) await portForwardProcess.kill();
+  } catch (_) {}
 }
 
 async function randomFreePort() {
@@ -62,7 +80,7 @@ function reallyExists(name) {
   // Sometimes the audio and/or pictures folders in assets are symlinks, and sometimes they're broken symlinks
   // This returns true if the name is a real file/directory *or* a symlink with a valid target, or false if it doesn't exist or is broken
   const result = execSync(
-    `kubectl --context=${context} --namespace=languageforge exec -c app deploy/app -- sh -c "readlink -eq ${name} >/dev/null && echo yes || echo no"`,
+    `kubectl --context=${context} --namespace=languageforge exec -c app pod/${remotePodname} -- sh -c "readlink -eq ${name} >/dev/null && echo yes || echo no"`,
   )
     .toString()
     .trimEnd();
@@ -254,6 +272,11 @@ await localConn
 //   }
 // }
 
+console.warn("Getting name of remote app pod...");
+remotePodname = run(
+  `kubectl --context="${context}" --namespace=languageforge get pod -o jsonpath="{.items[*]['metadata.name']}" -l app=app --field-selector "status.phase=Running"`,
+);
+
 console.warn("Checking that remote assets really exist...");
 const includeAudio = reallyExists(`/var/www/html/assets/lexicon/${dbname}/audio`);
 const includePictures = reallyExists(`/var/www/html/assets/lexicon/${dbname}/pictures`);
@@ -276,24 +299,20 @@ if (filesNeeded.length === 0) {
 const tarTargets = filesNeeded.join(" ");
 
 console.warn("Creating assets tarball in remote...");
+remoteTarball = `/tmp/assets-${dbname}.tar`;
 execSync(
-  `kubectl --context="${context}" --namespace=languageforge exec -c app deploy/app -- tar chf /tmp/assets-${dbname}.tar --owner=www-data --group=www-data -C "/var/www/html/assets/lexicon/${dbname}" ${tarTargets}`,
+  `kubectl --context="${context}" --namespace=languageforge exec -c app pod/${remotePodname} -- tar chf ${remoteTarball} --owner=www-data --group=www-data -C "/var/www/html/assets/lexicon/${dbname}" ${tarTargets}`,
 );
 const sizeStr = run(
-  `kubectl --context="${context}" --namespace=languageforge exec -c app deploy/app -- sh -c "ls -l /tmp/assets-${dbname}.tar | cut -d' ' -f5"`,
+  `kubectl --context="${context}" --namespace=languageforge exec -c app pod/${remotePodname} -- sh -c "ls -l ${remoteTarball} | cut -d' ' -f5"`,
 );
 const correctSize = +sizeStr;
 console.warn(`Asserts tarball size is ${sizeStr}`);
-
-console.warn("Getting name of remote app pod...");
-const pod = run(
-  `kubectl --context="${context}" --namespace=languageforge get pod -o jsonpath="{.items[*]['metadata.name']}" -l app=app --field-selector "status.phase=Running"`,
-);
 console.warn("Trying to fetch assets tarball with kubectl cp...");
 let failed = false;
 try {
   execSync(
-    `kubectl --context="${context}" --namespace=languageforge cp ${pod}:/tmp/assets-${dbname}.tar ${tempdir}/assets-${dbname}.tar`,
+    `kubectl --context="${context}" --namespace=languageforge cp ${remotePodname}:${remoteTarball} ${tempdir}/assets-${dbname}.tar`,
   );
 } catch (_) {
   console.warn("kubectl cp failed. Will try to continue with rsync...");
@@ -309,7 +328,7 @@ if (!failed) {
 if (failed) {
   console.warn("Ensuring rsync exists in target container...");
   execSync(
-    `kubectl exec --context="${context}" -c app deploy/app -- bash -c "which rsync || (apt update && apt install rsync -y)"`,
+    `kubectl exec --context="${context}" -c app pod/${remotePodname} -- bash -c "which rsync || (apt update && apt install rsync -y)"`,
   );
   console.warn("\n===== IMPORTANT NOTE =====");
   console.warn(
@@ -320,7 +339,7 @@ if (failed) {
   while (!done) {
     try {
       execSync(
-        `rsync -v --partial --info=progress2 --rsync-path="/tmp/" --rsh="kubectl --context=${context} --namespace=languageforge exec -i -c app deploy/app -- " "rsync:/tmp/assets-${dbname}.tar" "${tempdir}/"`,
+        `rsync -v --partial --info=progress2 --rsync-path="/tmp/" --rsh="kubectl --context=${context} --namespace=languageforge exec -i -c app pod/${remotePodname} -- " "rsync:/tmp/assets-${dbname}.tar" "${tempdir}/"`,
         { stdio: "inherit" }, // Allows us to see rsync progress
       );
       done = true;
