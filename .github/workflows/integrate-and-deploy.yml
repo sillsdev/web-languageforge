@@ -34,7 +34,7 @@ jobs:
 
     steps:
       -
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       -
         run: |
           docker --version
@@ -54,15 +54,17 @@ jobs:
           TAG_LFMERGE=${TAG_LFMERGE:-latest}
           echo "TAG_LFMERGE=${TAG_LFMERGE}" >> $GITHUB_OUTPUT
       -
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16.14.0'
-          cache: 'npm'
+        uses: pnpm/action-setup@v4
       -
-        run: npm ci
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.2.0'
+          cache: 'pnpm'
+      -
+        run: pnpm install
       -
         name: Build legacy app
-        run: docker compose build --build-arg ENVIRONMENT=production --build-arg BUILD_VERSION=${{ steps.image.outputs.TAG_APP }} app
+        run: docker compose -f docker-compose.yml -f docker-compose.production.yml build --build-arg BUILD_VERSION=${{ steps.image.outputs.TAG_APP }} app
       -
         name: Verify version stamping
         run: |

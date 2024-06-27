@@ -50,7 +50,7 @@ export class FieldTextController implements angular.IController {
       this.fte.toolbar = '[[]]';
     }
 
-    this.autocapitalize = autocapitalizeHints[this.fteFieldName] || 'none'
+    this.autocapitalize = autocapitalizeHints[this.fteFieldName as keyof typeof autocapitalizeHints] || 'none'
   }
 
   disabledMsg(): string {

@@ -204,7 +204,8 @@ test.describe('Editor entries', () => {
       .toHaveValue(entries.multipleMeaningEntry.senses[0].definition.en.value);
   });
 
-  test('Create new word, modify new word, autosaves changes, new word visible in editor and list', async () => {
+  test('Create new word, modify new word, autosaves changes, new word visible in editor and list', async ({browserName}) => {
+    test.skip(browserName === 'firefox', 'locator.fill() has a bug on Firefox that is causing a false-positive test failure as of 2024-04');
     await editorPageManager.goto({ entryId: entryIds()[2] });
 
     const startEntryCount = await editorPageManager.compactEntryListItem.count();
@@ -231,7 +232,7 @@ test.describe('Editor entries', () => {
 
     const alreadyThere: string = await editorPageManager.getTextarea(editorPageManager.entryCard, 'Word', 'th').inputValue();
     await (editorPageManager.getTextarea(editorPageManager.entryCard, 'Word', 'th'))
-      .fill(alreadyThere + 'a');
+      .fill(alreadyThere + 'a'); // Failing on Firefox due to Playwright bug; remove test.skip() above once the Playwright bug is resolved
     await editorPageManager.page.reload();
     await expect((editorPageManager.getTextarea(
       editorPageManager.entryCard, 'Word', 'th')))

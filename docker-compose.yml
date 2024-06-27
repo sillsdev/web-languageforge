@@ -1,6 +1,5 @@
 # https://docs.docker.com/compose/compose-file
 # https://github.com/compose-spec/compose-spec/blob/master/spec.md
-version: '3.5'
 
 # networks:
 #   lexbox:
@@ -24,7 +23,7 @@ services:
       - ./webpack-dev.config.js:/data/webpack-dev.config.js
       - ./webpack-prd.config.js:/data/webpack-prd.config.js
       - ./package.json:/data/package.json
-      - ./package-lock.json:/data/package-lock.json
+      - ./pnpm-lock.yaml:/data/pnpm-lock.yaml
 
       # needed these volume maps so changes to typescript/scss would be reflected in running app, actually rebundled and output to dist which is then shared to the app container.
       - ./src/angular-app:/data/src/angular-app
@@ -35,6 +34,7 @@ services:
     build:
       context: .
       dockerfile: docker/app/Dockerfile
+      target: development
       args:
         - ENVIRONMENT=development
     image: lf-app
@@ -53,11 +53,14 @@ services:
       - LDAPI_BASE_URL=http://ld-api:3000/api/v2/
       # Uncomment this to test getting the LD project list from LexBox
       # To use LexBox locally (in docker) you'll also need to uncomment the networks here and at the top of the file
-      #- LEX_BOX_HOST=https://staging.languagedepot.org #lexbox-api:5158
+      - LEX_BOX_HOST=http://admin.localhost
       - ENVIRONMENT=development
       - WEBSITE=localhost
       - DATABASE=scriptureforge
       - MONGODB_CONN=mongodb://lf-db:27017
+      - MONGODB_AUTHSOURCE=admin
+      - MONGODB_USER=admin
+      - MONGODB_PASS=pass
       - MAIL_HOST=mail
       - GOOGLE_CLIENT_ID=bogus-development-token
       - GOOGLE_CLIENT_SECRET=bogus-development-token
@@ -68,6 +71,7 @@ services:
     command: ["/run-with-wait.sh"]
     extra_hosts:
       - "host.docker.internal:host-gateway"
+      - "admin.localhost:host-gateway"
     volumes:
       # holds things like audio files or pictures attached to words within a project
       - lf-project-assets:/var/www/src/assets
@@ -104,16 +108,27 @@ services:
       - ENVIRONMENT=development
       - DATABASE=scriptureforge
       - MONGODB_CONN=mongodb://db:27017
+      - MONGODB_AUTHSOURCE=admin
       - LANGUAGE_DEPOT_API_TOKEN=bogus-development-token
+      - LANGUAGE_DEPOT_HG_USERNAME=admin
+      - LANGUAGE_DEPOT_TRUST_TOKEN=pass
+      - LFMERGE_LANGUAGE_DEPOT_HG_PUBLIC_HOSTNAME=hg.localhost
+      - LFMERGE_LANGUAGE_DEPOT_HG_PROTOCOL=http
       - LFMERGE_LOGGING_DEST=syslog
       - LFMERGE_BASE_DIR=/var/lib/languageforge/lexicon/sendreceive
       - LFMERGE_WEBWORK_DIR=webwork
       - LFMERGE_TEMPLATES_DIR=Templates
       - LFMERGE_MONGO_HOSTNAME=db
       - LFMERGE_MONGO_PORT=27017
+      - LFMERGE_MONGO_AUTHSOURCE=admin
+      - LFMERGE_MONGO_USER=admin
+      - LFMERGE_MONGO_PASS=pass
       - LFMERGE_MONGO_MAIN_DB_NAME=scriptureforge
       - LFMERGE_MONGO_DB_NAME_PREFIX=sf_
       - LFMERGE_VERBOSE_PROGRESS=true
+    extra_hosts:
+      - "hg.localhost:host-gateway"
+      - "admin.localhost:host-gateway"
     volumes:
       # holds things like audio files or pictures attached to words within a project
       - lf-project-assets:/var/www/src/assets
@@ -125,7 +140,7 @@ services:
     image: caddy
     container_name: lf-ssl
     ports:
-      - 80:80
+      - 8080:80
       - 443:443
     restart: unless-stopped
     depends_on:
@@ -164,7 +179,7 @@ services:
     container_name: lf-next-app-dev
     environment:
       - API_HOST=http://app
-    command: npm run dev-w-host
+    command: pnpm run dev-w-host
     volumes:
       # for developer convenience
       - ./next-app/src:/app/src
@@ -215,6 +230,8 @@ services:
     restart: always
     environment:
       - MONGO_INITDB_DATABASE=scriptureforge
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=pass
 
   ld-db:
     image: mariadb:10.10
@@ -253,6 +270,7 @@ services:
     build:
       context: .
       dockerfile: docker/app/Dockerfile
+      target: development
       args:
         - ENVIRONMENT=development
     image: lf-e2e-app
@@ -270,6 +288,9 @@ services:
       - WEBSITE=localhost
       - DATABASE=e2e_test
       - MONGODB_CONN=mongodb://db:27017
+      - MONGODB_AUTHSOURCE=admin
+      - MONGODB_USER=admin
+      - MONGODB_PASS=pass
       - MAIL_HOST=mail
       - REMEMBER_ME_SECRET=bogus-development-key
       - LANGUAGE_DEPOT_API_TOKEN=bogus-development-token
@@ -304,6 +325,9 @@ services:
       - WEBSITE=localhost.languageforge.org
       - DATABASE=scriptureforge_test
       - MONGODB_CONN=mongodb://db:27017
+      - MONGODB_AUTHSOURCE=admin
+      - MONGODB_USER=admin
+      - MONGODB_PASS=pass
       - MAIL_HOST=mail
       - LANGUAGE_DEPOT_API_TOKEN=bogus-development-token
       - XDEBUG_MODE=develop,debug

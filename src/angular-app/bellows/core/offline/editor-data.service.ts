@@ -4,10 +4,16 @@ import {SemanticDomainsService} from '../../../languageforge/core/semantic-domai
 import {LexiconConfigService} from '../../../languageforge/lexicon/core/lexicon-config.service';
 import {LexiconUtilityService} from '../../../languageforge/lexicon/core/lexicon-utility.service';
 import {LexEntry} from '../../../languageforge/lexicon/shared/model/lex-entry.model';
+import {LexSense} from 'src/angular-app/languageforge/lexicon/shared/model/lex-sense.model';
+import {LexExample} from 'src/angular-app/languageforge/lexicon/shared/model/lex-example.model';
+import {LexMultiText} from 'src/angular-app/languageforge/lexicon/shared/model/lex-multi-text.model';
 import {LexMultiValue} from '../../../languageforge/lexicon/shared/model/lex-multi-value.model';
+import {LexOptionListItem} from 'src/angular-app/languageforge/lexicon/shared/model/option-list.model';
 import {
   LexConfigFieldList,
+  LexConfigMultiOptionList,
   LexConfigMultiText,
+  LexConfigOptionList,
   LexiconConfig
 } from '../../../languageforge/lexicon/shared/model/lexicon-config.model';
 import {LexiconProjectSettings} from '../../../languageforge/lexicon/shared/model/lexicon-project-settings.model';
@@ -327,66 +333,68 @@ export class EditorDataService {
     return meaning || '';
   }
 
-  getSortableValue = (config: any, entry: any): string => {
+  getSortableValue = (config: LexiconConfig, entry: any): string => {
     const fieldKey = this.entryListModifiers.sortBy.value === 'default' ?
                       'lexeme' : this.entryListModifiers.sortBy.value;
     let sortableValue = '';
     let field;
     let dataNode;
     const isSpecialMultitext = (fieldKey === 'lexeme' || fieldKey === 'citationForm');
+    const sensesField = config.entry.fields.senses as LexConfigFieldList;
     if (fieldKey in config.entry.fields && fieldKey in entry) {
       field = config.entry.fields[fieldKey];
       dataNode = entry[fieldKey];
-    } else if (fieldKey in config.entry.fields.senses.fields && angular.isDefined(entry.senses) &&
+    } else if (fieldKey in sensesField.fields && angular.isDefined(entry.senses) &&
       entry.senses.length > 0 && fieldKey in entry.senses[0]
     ) {
-      field = config.entry.fields.senses.fields[fieldKey];
+      field = sensesField.fields[fieldKey];
       dataNode = entry.senses[0][fieldKey];
     }
 
     if (field || isSpecialMultitext) {
-      if (isSpecialMultitext || field.type === 'multitext') {
-        // special case for lexeme form / citation form. Use citation form if available, fall back to lexeme form
-        if (fieldKey === 'lexeme' || fieldKey === 'citationForm') {
-          if (config.entry.fields.citationForm) {
-            const citationFormInputSystems = config.entry.fields.citationForm.inputSystems;
-            if (entry.citationForm && citationFormInputSystems.length > 0 &&
-              citationFormInputSystems[0] in entry.citationForm
-            ) {
-              sortableValue = entry.citationForm[citationFormInputSystems[0]].value;
-            }
-          }
-
-          if (!sortableValue) {
-            const lexemeInputSystems = config.entry.fields.lexeme.inputSystems;
-            if (entry.lexeme && lexemeInputSystems.length > 0 && lexemeInputSystems[0] in entry.lexeme) {
-              sortableValue = entry.lexeme[lexemeInputSystems[0]].value;
-            }
-          }
-
-        // regular multi-text field
-        } else {
-          if (field.inputSystems.length > 0 && field.inputSystems[0] in dataNode) {
-            sortableValue = dataNode[field.inputSystems[0]].value;
+      // special case for lexeme form / citation form. Use citation form if available, fall back to lexeme form
+      if (isSpecialMultitext) {
+        if ('citationForm' in config.entry.fields) {
+          const citationFormField = config.entry.fields.citationForm as LexConfigMultiText;
+          // don't sort by the first citation form if it is an "-audio" writing system
+          const inputSystem = citationFormField.inputSystems.find((system) => !system.includes('-audio'));
+          if (entry.citationForm && inputSystem && inputSystem in entry.citationForm) {
+            sortableValue = entry.citationForm[inputSystem].value;
           }
         }
+
+        if (!sortableValue) {
+          const lexemeField = config.entry.fields.lexeme as LexConfigMultiText;
+          // don't sort by the first lexeme form if it is an "-audio" writing system
+          const inputSystem = lexemeField.inputSystems.find((system) => !system.includes('-audio'));
+          if (entry.lexeme && inputSystem && inputSystem in entry.lexeme) {
+            sortableValue = entry.lexeme[inputSystem].value;
+          }
+        }
+      } else if (field.type === 'multitext') {
+        const inputSystems = (field as LexConfigMultiText).inputSystems;
+        if (inputSystems.length > 0 && inputSystems[0] in dataNode) {
+          sortableValue = dataNode[inputSystems[0]].value;
+        }
       } else if (field.type === 'optionlist') {
-        if (config.optionlists && config.optionlists[field.listCode]) {
+        const listCode = (field as LexConfigOptionList).listCode;
+        if (config.optionlists && config.optionlists[listCode]) {
           // something weird here with config.optionlists not being set consistently when this is called - cjh 2017-07
-          sortableValue = this.getOptionListItem(config.optionlists[field.listCode], dataNode.value).value;
+          sortableValue = this.getOptionListItem(config.optionlists[listCode], dataNode.value).value;
         } else {
           sortableValue = dataNode.value;
         }
       } else if (field.type === 'multioptionlist' && dataNode.values.length > 0) {
-        if (field.listCode === 'semantic-domain-ddp4') {
+        const listCode = (field as LexConfigMultiOptionList).listCode;
+        if (listCode === 'semantic-domain-ddp4') {
           if (this.semanticDomains.data[dataNode.values[0]]) {
             sortableValue = this.semanticDomains.data[dataNode.values[0]].value;
           } else {
             sortableValue = dataNode.values[0];
           }
         } else {
-          if (config.optionlists && config.optionlists[field.listCode]) {
-            sortableValue = this.getOptionListItem(config.optionlists[field.listCode], dataNode.values[0]).value;
+          if (config.optionlists && config.optionlists[listCode]) {
+            sortableValue = this.getOptionListItem(config.optionlists[listCode], dataNode.values[0]).value;
           } else {
             sortableValue = dataNode.values[0].value;
           }
@@ -530,7 +538,7 @@ export class EditorDataService {
             field = config.entry.fields.senses.fields[fieldKey];
           }
 
-          angular.forEach(config.entry.fields, (entryField, entryFieldKey:string) => {
+          angular.forEach(config.entry.fields, (entryField, entryFieldKey:keyof LexEntry) => {
             if (entryField.type === 'multitext') {
               angular.forEach(entry[entryFieldKey], (fieldNode, ws:string) => {
                   if (ws && UtilityService.isAudio(ws) && fieldNode.value !== '') {
@@ -541,7 +549,7 @@ export class EditorDataService {
 
             if (entryFieldKey === 'senses') {
               angular.forEach(entry.senses, sense => {
-                angular.forEach(config.entry.fields.senses.fields, (senseField: any, senseFieldKey: string) => {
+                angular.forEach(config.entry.fields.senses.fields, (senseField: any, senseFieldKey: keyof LexSense) => {
                   if (senseField.type === 'multitext') {
                     angular.forEach(sense[senseFieldKey], (fieldNode: any, ws: string) => {
                       if (ws && UtilityService.isAudio(ws) && fieldNode.value !== '') {
@@ -553,7 +561,7 @@ export class EditorDataService {
                   if (senseFieldKey === 'examples') {
                     angular.forEach(sense.examples, example => {
                       angular.forEach(config.entry.fields.senses.fields.examples.fields,
-                        (exampleField: any, exampleFieldKey: string) => {
+                        (exampleField: any, exampleFieldKey: keyof LexExample) => {
                           if (exampleField.type === 'multitext') {
                             angular.forEach(example[exampleFieldKey], (fieldNode: any, ws: string) => {
                               if (ws && UtilityService.isAudio(ws) && fieldNode.value !== '') {
@@ -575,25 +583,25 @@ export class EditorDataService {
       // filter by entry or sense field
       let dataNode;
       if (this.entryListModifiers.filterBy.option.level === 'entry') {
-        dataNode = entry[this.entryListModifiers.filterBy.option.value];
+        dataNode = entry[this.entryListModifiers.filterBy.option.value as keyof LexEntry];
       } else { // sense level
         if (entry.senses && entry.senses.length > 0) {
-          dataNode = entry.senses[0][this.entryListModifiers.filterBy.option.value];
+          dataNode = entry.senses[0][this.entryListModifiers.filterBy.option.value as keyof LexSense];
         }
       }
 
       if (dataNode) {
         switch (filterType) {
           case 'multitext':
-            if (dataNode[this.entryListModifiers.filterBy.option.inputSystem]) {
-              containsData = dataNode[this.entryListModifiers.filterBy.option.inputSystem].value !== '';
+            if ((dataNode as LexMultiText)[this.entryListModifiers.filterBy.option.inputSystem]) {
+              containsData = (dataNode as LexMultiText)[this.entryListModifiers.filterBy.option.inputSystem].value !== '';
             }
             break;
           case 'optionlist':
-            containsData = dataNode.value !== '';
+            containsData = (dataNode as LexOptionListItem).value !== '';
             break;
           case 'multioptionlist':
-            containsData = (dataNode.values.length > 0);
+            containsData = ((dataNode as LexMultiValue).values.length > 0);
             break;
         }
       }

@@ -21,6 +21,8 @@ import { LexiconRightsService, Rights } from '../core/lexicon-rights.service';
 import { LexiconSendReceiveService } from '../core/lexicon-send-receive.service';
 import { LexiconUtilityService } from '../core/lexicon-utility.service';
 import { LexEntry } from '../shared/model/lex-entry.model';
+import { LexSense } from '../shared/model/lex-sense.model';
+import { LexExample } from '../shared/model/lex-example.model';
 import { LexPicture } from '../shared/model/lex-picture.model';
 import {
   LexConfig,
@@ -680,10 +682,11 @@ export class LexiconEditorController implements angular.IController {
 
   getFontFamilyForPrimaryListItemForDisplay(entry: LexEntry) {
     if (!this.getSortableValue(this.lecConfig, entry)) return '';
+
     // FIXME this is not always accurate, given the complexity in get EditorDataService#getSortableValue
-    return this.lecConfig.inputSystems[
-      (this.lecConfig.entry.fields.lexeme as LexConfigMultiText).inputSystems[0]
-    ].cssFontFamily;
+    const lexemeField = this.lecConfig.entry.fields.lexeme as LexConfigMultiText;
+    const inputSystem = lexemeField.inputSystems.find(system => !system.includes('-audio'));
+    return this.lecConfig.inputSystems[inputSystem].cssFontFamily;
   }
 
   getSecondaryListItemForDisplay(entry: LexEntry): string {
@@ -866,13 +869,13 @@ export class LexiconEditorController implements angular.IController {
     if (senseGuid) {
       for (const a in currentEntry.senses) {
         if (currentEntry.senses.hasOwnProperty(a) && currentEntry.senses[a].guid === senseGuid) {
-          senseIndex = a;
+          senseIndex = +a;
           if (exampleGuid) {
             for (const b in currentEntry.senses[a].examples) {
               if (currentEntry.senses[a].examples.hasOwnProperty(b) &&
                 currentEntry.senses[a].examples[b].guid === exampleGuid
               ) {
-                exampleIndex = b;
+                exampleIndex = +b;
               }
             }
           }
@@ -884,20 +887,20 @@ export class LexiconEditorController implements angular.IController {
     const examples = senses.fields.examples as LexConfigFieldList;
     if (exampleGuid && exampleIndex) {
       if (currentEntry.senses[senseIndex].examples[exampleIndex].hasOwnProperty(field)) {
-        currentField = currentEntry.senses[senseIndex].examples[exampleIndex][field];
+        currentField = currentEntry.senses[senseIndex].examples[exampleIndex][field as keyof LexExample];
         if (examples.fields.hasOwnProperty(field)) {
           fieldConfig = examples.fields[field];
         }
       }
     } else if (senseGuid && senseIndex) {
       if (currentEntry.senses[senseIndex].hasOwnProperty(field)) {
-        currentField = currentEntry.senses[senseIndex][field];
+        currentField = currentEntry.senses[senseIndex][field as keyof LexSense];
         if (senses.fields.hasOwnProperty(field)) {
           fieldConfig = senses.fields[field];
         }
       }
     } else if (currentEntry.hasOwnProperty(field)) {
-      currentField = currentEntry[field];
+      currentField = currentEntry[field as keyof LexEntry];
       if (this.lecConfig.entry.fields.hasOwnProperty(field)) {
         fieldConfig = this.lecConfig.entry.fields[field];
       }
@@ -905,8 +908,10 @@ export class LexiconEditorController implements angular.IController {
 
     if (currentField !== null) {
       if (currentField.hasOwnProperty(inputSystem)) {
+        // @ts-expect-error Typescript should understand .hasOwnProperty, but doesn't
         currentValue = currentField[inputSystem].value;
       } else if (currentField.hasOwnProperty('value')) {
+        // @ts-expect-error Typescript should understand .hasOwnProperty, but doesn't
         currentValue = currentField.value;
       } else {
         currentValue = optionKey;
@@ -955,9 +960,9 @@ export class LexiconEditorController implements angular.IController {
     parts.field = field;
     parts.fieldConfig = fieldConfig;
     parts.inputSystem = inputSystem;
-    parts.sense.index = senseIndex;
+    parts.sense.index = ""+senseIndex;
     parts.sense.guid = senseGuid;
-    parts.example.index = exampleIndex;
+    parts.example.index = ""+exampleIndex;
     parts.example.guid = exampleGuid;
     return parts;
   }

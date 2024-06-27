@@ -26,8 +26,8 @@ Notice the useful options in the test side bar above:
 
 Standard usage:
 
-- From root: `npx playwright test -c ./test/e2e/playwright.config.ts [other options]`
-- Or simply: `npm run test-e2e [-- other options]`
+- From root: `pnpm exec playwright test -c ./test/e2e/playwright.config.ts [other options]`
+- Or simply: `pnpm run test-e2e [-- other options]`
 
 Tips:
 

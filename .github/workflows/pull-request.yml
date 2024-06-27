@@ -20,13 +20,13 @@ jobs:
     outputs:
       status: ${{ steps.check-labels.outputs.status }}
     steps:
-      - uses: mheap/github-action-required-labels@v3
+      - uses: mheap/github-action-required-labels@5847eef68201219cf0a4643ea7be61e77837bbce # v5.4.1
         id: check-labels
         with:
           mode: exactly
           count: 1
           labels: "bug, feature, engineering, security fix, testing"
-      - uses: mheap/github-action-required-labels@v3
+      - uses: mheap/github-action-required-labels@5847eef68201219cf0a4643ea7be61e77837bbce # v5.4.1
         with:
           mode: exactly
           count: 0
@@ -41,7 +41,7 @@ jobs:
 
     steps:
       -
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       -
         name: Unit Tests
         run: make unit-tests-ci
@@ -61,14 +61,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       -
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       -
-        uses: actions/setup-node@v3
+        uses: pnpm/action-setup@v4
+      -
+        uses: actions/setup-node@v4
         with:
-          node-version: "16.14.0"
-          cache: "npm"
+          node-version: "22.2.0"
+          cache: "pnpm"
       -
         name: Run prettier check
         run: |
-          npx prettier -v
-          npx prettier --check .
+          pnpm dlx prettier -v
+          pnpm dlx prettier --check .

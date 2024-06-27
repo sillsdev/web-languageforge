@@ -7,7 +7,7 @@ import { Project } from '../../utils';
 
 test.describe('Editor pictures', () => {
 
-  const { project } = defaultProject();
+  const { project, entryIds } = defaultProject();
   const newProject = projectPerTest(true);
 
   let editorPageManager: EditorPage;
@@ -52,7 +52,6 @@ test.describe('Editor pictures', () => {
 
   test('Showing and hiding captions', async ({ managerTab, browserName }) => {
     test.slow(browserName === 'firefox');
-
     const configurationPage = new ConfigurationPageFieldsTab(managerTab, project());
 
     await test.step('Hide empty captions', async () => {
@@ -64,7 +63,7 @@ test.describe('Editor pictures', () => {
     });
 
     const caption = await test.step('Non-empty caption is visible', async () => {
-      await editorPageManager.goto();
+      await editorPageManager.goto({ entryId: entryIds()[0] });
       await editorPageManager.showExtraFields(false);
       const picture = editorPageManager.picture(entries.entry1.senses[0].pictures[0].fileName);
       const caption = editorPageManager.caption(picture);
@@ -76,7 +75,11 @@ test.describe('Editor pictures', () => {
       await expect(caption).toBeVisible(); // it disappears immediately which could be annoying
       await caption.fill('');
       await expect(caption).not.toBeVisible(); // it disappears immediately which could be annoying
+      // Navigate away to force changes to be saved
+      await editorPageManager.goto({ entryId: entryIds()[1] });
+      // Reload page then navigate back to this entry to verify changes took effect
       await editorPageManager.reload();
+      await editorPageManager.goto({ entryId: entryIds()[0] });
       await expect(caption).not.toBeVisible();
     });
 
@@ -89,7 +92,7 @@ test.describe('Editor pictures', () => {
     });
 
     await test.step('Empty caption is visible', async () => {
-      await editorPageManager.goto();
+      await editorPageManager.goto({ entryId: entryIds()[0] });
       await editorPageManager.showExtraFields(false);
       const picture = editorPageManager.picture(entries.entry1.senses[0].pictures[0].fileName);
       const caption = editorPageManager.caption(picture);

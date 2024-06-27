@@ -74,8 +74,9 @@ export class ProjectTestService {
   async createDefaultProject(testInfo: TestInfo): Promise<TestProject> {
     const project = await this.initTestProject(testInfo.titlePath[0], undefined, users.manager, [users.member]);
     await this.addUserToProject(project, users.observer, "observer");
-    await this.addWritingSystemToProject(project, 'th-fonipa', 'tipa');
+    // add audio first to make sure editor.entries tests fail if the audio is used for the dictionary citation
     await this.addWritingSystemToProject(project, 'th-Zxxx-x-audio', 'taud');
+    await this.addWritingSystemToProject(project, 'th-fonipa', 'tipa');
     await this.addPictureFileToProject(project, entries.entry1.senses[0].pictures[0].fileName);
     await this.addAudioVisualFileToProject(project, entries.entry1.lexeme['th-Zxxx-x-audio'].value);
     const projectEntries = await Promise.all([

@@ -7,9 +7,9 @@
       "label": "npm install",
       "type": "shell",
       "windows": {
-        "command": "bash -c 'npm install'"
+        "command": "bash -c 'pnpm install'"
       },
-      "command": "npm install",
+      "command": "pnpm install",
       "presentation": {
         "reveal": "silent"
       },
