@@ -69,6 +69,17 @@ spec:
             cpu: 0.1
           limits:
             memory: 400Mi
+        emv:
+          - name: MONGO_INITDB_ROOT_USERNAME
+            valueFrom:
+              secretKeyRef:
+                key: MONGODB_USER
+                name: mongo-auth
+          - name: MONGO_INITDB_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: MONGODB_PASS
+                name: mongo-auth
         volumeMounts:
         - mountPath: /data/db
           name: data
