@@ -566,7 +566,7 @@ class UserCommands
         // Verify authority of $invitingUser to invite someone of this role
         $userIsAuthorized = false;
         $invitingUserRole = $project->users[$invitingUserId]->role;
-        $authorizedRoles = [ProjectRoles::MANAGER];
+        $authorizedRoles = [ProjectRoles::MANAGER, ProjectRoles::TECH_SUPPORT];
         if ($roleKey == ProjectRoles::MANAGER) {
             $userIsAuthorized = in_array($invitingUserRole, $authorizedRoles);
         }
