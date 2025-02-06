@@ -10,6 +10,8 @@ WORKDIR /data
 # Copy in files needed for compilation, located in the repo root
 COPY package.json pnpm-lock.yaml ./
 
+# Install latest corepack version to work around a bug with signatures
+RUN npm install -g corepack@latest
 RUN corepack enable
 RUN pnpm install
 
