@@ -1,5 +1,7 @@
 # Language Forge
 
+[Language Forge is no longer developed and is in maintenance mode](https://docs.google.com/document/d/1Op0ZEreOd2N1v8Yh85sxW0O5HgSEj8gBdBVITGdiw8k/edit). We will continue to support existing Language Forge projects and we encourage all users to try [FieldWorks Lite](https://lexbox.org/fw-lite).
+
 [Language Forge](https://languageforge.org) is an online service to collaborate on building a dictionary. Users should head on over to [languageforge.org](https://languageforge.org)
 
 ### Reporting Problems with the Language Forge Application
