@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Language Forge",
   "private": true,
-  "packageManager": "pnpm@9.1.2",
+  "packageManager": "pnpm@9.11.0",
   "engines": {
     "node": ">=18",
     "pnpm": ">=9"
@@ -51,7 +51,7 @@
     "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
-    "@playwright/test": "^1.29",
+    "@playwright/test": "^1.54",
     "@prettier/plugin-php": "^0.20.1",
     "@types/angular": "1.8.1",
     "@types/angular-mocks": "^1.7.0",

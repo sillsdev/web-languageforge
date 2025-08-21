@@ -6,6 +6,8 @@ COPY tsconfig.json pnpm-lock.yaml package.json postcss.config.cjs svelte.config.
 COPY src /app/src
 COPY static /app/static
 
+# Install latest corepack version to work around a bug with signatures
+RUN npm install -g corepack@latest
 RUN corepack enable
 RUN pnpm install
 

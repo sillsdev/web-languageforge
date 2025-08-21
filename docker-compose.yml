@@ -107,6 +107,7 @@ services:
       - WAIT_HOSTS=db:27017
       - ENVIRONMENT=development
       - DATABASE=scriptureforge
+      - CHORUS_HG_EXE=chg
       - MONGODB_CONN=mongodb://db:27017
       - MONGODB_AUTHSOURCE=admin
       - LANGUAGE_DEPOT_API_TOKEN=bogus-development-token

@@ -8,6 +8,7 @@ import net from "net";
 // Expected arguments: first arg is project ID (5dbf805650b51914727e06c4) or URL (http://localhost:8080/app/lexicon/5dbf805650b51914727e06c4)
 // Second arg is "qa" or "staging" to copy from staging, "live" or "prod" or "production" to copy from production
 // NOTE: You must edit the context names below if they don't match the context names you have (see `kubectl config get-contexts` output)
+// A MONGO_PASS env var must be available for the selected environment
 
 // ===== EDIT THIS =====
 
@@ -112,12 +113,18 @@ if (process.argv.length < 3) {
   process.exit(2);
 }
 
+const mongoPass = process.env.MONGO_PASS;
+if (!mongoPass) {
+  console.warn("Please provide a MongoDB password in the MONGO_PASS environment variable");
+  process.exit(2);
+}
+
 let projId;
 const arg = process.argv[2];
 if (URL.canParse(arg)) {
   const url = new URL(arg);
   if (url.pathname.startsWith("/app/lexicon/")) {
-    projId = url.pathname.substring("/app/lexicon/".length);
+    projId = url.pathname.substring("/app/lexicon/".length).split("/")[0];
   } else {
     projId = url.pathname; // Will probably fail, but worth a try
   }
@@ -209,7 +216,7 @@ console.warn("If that doesn't look right, hit Ctrl+C NOW");
 await portForwardingPromise;
 console.warn("Port forwarding is ready. Setting up remote Mongo connection...");
 
-const remoteConnStr = `mongodb://localhost:${remoteMongoPort}`;
+const remoteConnStr = `mongodb://admin:${mongoPass}@localhost:${remoteMongoPort}`;
 remoteConn = await MongoClient.connect(remoteConnStr);
 
 console.warn("Remote Mongo connection established. Fetching project record...");
