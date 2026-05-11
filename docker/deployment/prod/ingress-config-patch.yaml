@@ -7,3 +7,9 @@
   path: /spec/tls/0/hosts
   value:
     - languageforge.org
+# Revert base's pathType change until prod migrates from ingress-nginx to Traefik.
+# This apparently isn't necessary, but I'm being conservative.
+# Remove this op when prod migrates.
+- op: replace
+  path: /spec/rules/0/http/paths/0/pathType
+  value: ImplementationSpecific
