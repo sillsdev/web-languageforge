@@ -91,6 +91,9 @@ services:
       # needed this volume mapping so changes to partials would be reflected in running app.
       - ./src/angular-app:/var/www/src/angular-app
 
+      # To be able to run Python migration scripts from inside the container in dev mode
+      - ./scripts:/var/www/scripts
+
   lfmerge:
     build:
       context: docker/lfmerge
