@@ -19,10 +19,9 @@ Current workflow:
 1. merge PR into or make commits on `develop` branch
 1. this will kick off the GHA (`.github/workflows/staging.yml`) to build, test and publish the necessary images to Docker Hub (https://hub.docker.com/r/sillsdev/web-languageforge/tags) and deploy this code to the staging environment.
 
-Update the image tags in `staging/kustomization.yaml`
+Deployment is done the same way as LexBox: the workflow commits the new image tags to `languageforge/staging/kustomize/kustomization.yaml` in the fleet repo (the `FLEET_REPO` repository variable, pushed with the `FLEET_REPO_SSH_KEY` deploy key) and Rancher Fleet rolls the cluster forward from there.
 
-Staging deployments can be manually run with `make deploy-staging`.
-Note, this command assumes that the staging k8s context is named dallas-rke
+To deploy manually, edit the image tags in that file in the fleet repo and push to `main`.
 
 ### Production
 
@@ -35,10 +34,13 @@ Current workflow:
 1. "Publish" the new release
 1. this will kick off the GHA (`.github/workflows/production.yml`) to build, test and publish the necessary images to Docker Hub (https://hub.docker.com/r/sillsdev/web-languageforge/tags) and deploy this code to the production environment at https://languageforge.org
 
-Update the image tags in `prod/kustomization.yaml`
+Production deploys the same way as staging, via `languageforge/production/kustomize/kustomization.yaml` in the fleet repo.
 
-Production deployments can be manually run with `make deploy-prod`.
-Note, this command assumes that the staging k8s context is named aws-rke
+### Base PHP image
+
+The `app` image is built on top of `sillsdev/web-languageforge:base-php`, which is **not** rebuilt by the staging or production workflows. It is built and pushed only by the manual workflow `.github/workflows/build-and-publish-base-php.yml` (Actions, "Build and publish a base PHP image for LF", "Run workflow", pick the branch).
+
+Rebuild and publish it whenever `docker/base-php/` changes, **before** merging that change to `develop` or `master`, otherwise staging and production will be built on the old base image. The PHP interpreter itself is compiled from a pinned php-src commit in `docker/base-php/Dockerfile` (see the comments there); to pick up a newer security backport, update `PHP_SRC_REF`, re-run the base PHP workflow, then release as normal.
 
 ### Revert
 
