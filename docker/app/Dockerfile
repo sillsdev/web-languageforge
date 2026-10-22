@@ -55,6 +55,12 @@ COPY --from=sillsdev/web-languageforge:wait-latest /wait /wait
 # DEVELOPMENT BASE IMAGE
 FROM sillsdev/web-languageforge:base-php AS development-base
 RUN install-php-extensions xdebug-^3.1
+# Python for scripts/copy_project_for_migration.py, which runs in this container
+# because it needs Mongo, the project assets volume and the LFMerge sendreceive
+# volume. Development only; the production image has no need for it.
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends python3 \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 COPY docker/app/docker-php-ext-xdebug.ini /usr/local/etc/php/conf.d
 RUN mv $PHP_INI_DIR/php.ini-development $PHP_INI_DIR/php.ini
 COPY --from=sillsdev/web-languageforge:wait-latest /wait /wait
