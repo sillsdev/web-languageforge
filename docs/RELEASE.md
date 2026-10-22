@@ -40,6 +40,12 @@ Update the image tags in `prod/kustomization.yaml`
 Production deployments can be manually run with `make deploy-prod`.
 Note, this command assumes that the staging k8s context is named aws-rke
 
+### Base PHP image
+
+The `app` image is built on top of `sillsdev/web-languageforge:base-php`, which is **not** rebuilt by the staging or production workflows. It is built and pushed only by the manual workflow `.github/workflows/build-and-publish-base-php.yml` (Actions, "Build and publish a base PHP image for LF", "Run workflow", pick the branch).
+
+Rebuild and publish it whenever `docker/base-php/` changes, **before** merging that change to `develop` or `master`, otherwise staging and production will be built on the old base image. The PHP interpreter itself is compiled from a pinned php-src commit in `docker/base-php/Dockerfile` (see the comments there); to pick up a newer security backport, update `PHP_SRC_REF`, re-run the base PHP workflow, then release as normal.
+
 ### Revert
 
 Various tagged images are maintained in Docker Hub. If you need to revert to a previous version, you can do so by running the deployments scripts with the appropriate permissions or utilizing the Kubernetes UI to change the image of a deployment at any time.
