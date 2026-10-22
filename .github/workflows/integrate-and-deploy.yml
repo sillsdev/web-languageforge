@@ -104,6 +104,9 @@ jobs:
         run: docker push --all-tags ${{ steps.image.outputs.NAMESPACE }}
 
     outputs:
+      TAG_APP: ${{ steps.image.outputs.TAG_APP }}
+      TAG_PROXY: ${{ steps.image.outputs.TAG_PROXY }}
+      TAG_NEXT_APP: ${{ steps.image.outputs.TAG_NEXT_APP }}
       TAG_LFMERGE: ${{ steps.image.outputs.TAG_LFMERGE }}
       IMAGE_APP: ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG_APP }}
       IMAGE_PROXY: ${{ steps.image.outputs.NAMESPACE }}:${{ steps.image.outputs.TAG_PROXY }}
@@ -139,13 +142,17 @@ jobs:
           path: fleet
           ref: main
       -
+        # The image-tag-* inputs contain shell substitutions such as $(date +%Y%m%d).
+        # The integrate job expands them in a shell step and exposes the results as
+        # outputs; use those, never the raw inputs, or the literal "$(date ...)"
+        # ends up in the kustomization.
         name: Update image tags in fleet kustomization.yaml
         uses: mikefarah/yq@504fc38780cc46be8444ea1b72fb55919fc0bfb0 # v4.54.1
         env:
           KUSTOMIZATION: fleet/languageforge/${{ inputs.k8s-environment }}/kustomize/kustomization.yaml
-          TAG_APP: ${{ inputs.image-tag-app }}
-          TAG_PROXY: ${{ inputs.image-tag-proxy }}
-          TAG_NEXT_APP: ${{ inputs.image-tag-next-app }}
+          TAG_APP: ${{ needs.integrate.outputs.TAG_APP }}
+          TAG_PROXY: ${{ needs.integrate.outputs.TAG_PROXY }}
+          TAG_NEXT_APP: ${{ needs.integrate.outputs.TAG_NEXT_APP }}
           TAG_LFMERGE: ${{ needs.integrate.outputs.TAG_LFMERGE }}
         with:
           cmd: |
@@ -163,7 +170,7 @@ jobs:
         uses: EndBug/add-and-commit@cc9c08ba6c8df3b93a8f2db63e89b98368ae2ae8 # v11.1.1
         with:
           default_author: github_actions
-          message: "[Language Forge] Update ${{ inputs.k8s-environment }} images to ${{ inputs.image-tag-app }}"
+          message: "[Language Forge] Update ${{ inputs.k8s-environment }} images to ${{ needs.integrate.outputs.TAG_APP }}"
           cwd: "./fleet/"
           add: "languageforge/${{ inputs.k8s-environment }}/*"
           push: true
