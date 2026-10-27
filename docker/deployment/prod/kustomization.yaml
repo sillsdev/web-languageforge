@@ -28,3 +28,6 @@ patches:
       kind: Ingress
       name: languageforge-app
       namespace: languageforge
+  # Keep prod on the community ingress-nginx controller until its DNS cutover
+  # to Traefik is scheduled. Remove this once prod migrates.
+  - path: ingress-class-revert-patch.yaml

@@ -4,16 +4,15 @@ kind: Ingress
 metadata:
   name: languageforge-app
   annotations:
-    # https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/#custom-max-body-size
-    # Added this to allow large file uploads, this setting should match the php custom config, i.e., upload_max_filesize, found in the app's customizations.php.ini
-    nginx.ingress.kubernetes.io/proxy-body-size: 60M
+    traefik.ingress.kubernetes.io/router.tls: "true"
 spec:
+  ingressClassName: traefik
   rules:
   - host: localhost
     http:
       paths:
       - path: /
-        pathType: ImplementationSpecific
+        pathType: Prefix
         backend:
           service:
             name: next-proxy

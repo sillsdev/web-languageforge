@@ -1,0 +1,17 @@
+# Temporary patch: prod still runs on the (retired) community ingress-nginx
+# controller. The base manifest has been flipped to Traefik for the staging
+# cutover; this patch keeps prod on nginx until its own DNS cutover is
+# scheduled with LTOps. Delete this patch (and the kustomization entry that
+# references it) when prod migrates to Traefik.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: languageforge-app
+  annotations:
+    # https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/#custom-max-body-size
+    # Added this to allow large file uploads, this setting should match the php custom config, i.e., upload_max_filesize, found in the app's customizations.php.ini
+    nginx.ingress.kubernetes.io/proxy-body-size: 60M
+    # Strip the Traefik router annotation inherited from base; prod is still on nginx.
+    traefik.ingress.kubernetes.io/router.tls: null
+spec:
+  ingressClassName: nginx
