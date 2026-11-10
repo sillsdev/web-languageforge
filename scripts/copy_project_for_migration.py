@@ -28,8 +28,10 @@ MIGRATION SEQUENCE
        is split, because LexBox project codes must be lowercase).
     6. init_lexbox_project() logs in to LexBox (POST /api/login), calls
        POST /api/project/initFwDataProject with the writing systems taken from
-       the LF project config. A 200 from that endpoint is taken as confirmation
-       that the project exists. Every writing system the project knows about
+       the LF project config. That endpoint answers 202 at once and builds the
+       project in the background, so the script then polls
+       GET /api/project/fwDataProjectCreationStatus/{projectId} until LexBox
+       reports it Created. Every writing system the project knows about
        must be covered by the vernacular or analysis list; any that is not is
        warned about and sent as analysis.
     7. Remove any webwork clone and LFMerge state file an earlier attempt left
@@ -370,8 +372,9 @@ LCM_LIST_ROOT_GUIDS = {
 }
 LIST_ROOT_PLACEHOLDER = "FILL-IN-LIST-ROOT-GUID"
 
-# initFwDataProject builds a template .fwdata and pushes it; the LexBox test
-# allows 5 minutes and disables retries because it is NOT idempotent.
+# initFwDataProject builds a template .fwdata and pushes it, in a background job;
+# this is how long to wait for that job to finish. It is NOT idempotent, so it
+# is never retried.
 DEFAULT_LEXBOX_TIMEOUT_SECONDS = 300
 
 # How long to wait for lfmergeqm to dequeue our request before giving up, and
@@ -2467,11 +2470,17 @@ class LexboxClient:
         ws_vernacular: list[str],
         ws_analysis: list[str],
     ) -> str:
-        """POST /api/project/initFwDataProject and return the new project GUID.
+        """POST /api/project/initFwDataProject, wait for it, and return the new project GUID.
 
         Multi-valued writing systems are sent as repeated query parameters, which
-        is how ASP.NET binds `[FromQuery] string[]` (ProjectController.cs:46-47).
+        is how ASP.NET binds `[FromQuery] string[]` (ProjectController.cs).
         The endpoint is admin-only and NOT idempotent, so this never retries.
+
+        The endpoint answers 202 Accepted as soon as the project row and its empty
+        repository exist, and builds the .fwdata in a background job. This does not
+        return until wait_for_fwdata_project() has seen that job finish, so callers
+        can go on treating the project as ready, as they did when the endpoint did
+        all of its work before answering.
         """
         query: list[tuple[str, str]] = [("code", code)]
         query += [("wsVernacular", tag) for tag in ws_vernacular]
@@ -2483,11 +2492,12 @@ class LexboxClient:
             "POST", "/api/project/initFwDataProject", query=query, authenticate=True
         )
 
-        if status == 200:
-            # ActionResult<Guid> serializes as a bare JSON string.
+        if status == 202:
+            # AcceptedAtAction(..., projectId) serializes the Guid as a bare JSON string.
             guid = json.loads(body.decode("utf-8"))
             if not isinstance(guid, str) or not guid:
                 raise Fatal(f"initFwDataProject returned an unexpected body: {body[:200]!r}")
+            self.wait_for_fwdata_project(guid, code)
             return guid
 
         if status in (401, 403):
@@ -2497,6 +2507,47 @@ class LexboxClient:
                 f"(current --lexbox-auth={self.auth_mode})."
             )
         raise Fatal(f"initFwDataProject failed: {self._describe(status, body)}")
+
+    def wait_for_fwdata_project(self, project_id: str, code: str) -> None:
+        """Poll GET /api/project/fwDataProjectCreationStatus/{projectId} until creation has finished.
+
+        LexBox reports Creating while the background job runs and Created once the project is ready.
+        A failed job deletes the project again, and LexBox reports CreationFailed with the reason for
+        an hour afterwards -- or answers 404 once it has forgotten, or after a restart. The status
+        names are compared without regard to case, in case LexBox's JSON naming policy changes them.
+        """
+        deadline = time.monotonic() + self.timeout
+        last_reported = None
+        while True:
+            status, _headers, body = self._send(
+                "GET", f"/api/project/fwDataProjectCreationStatus/{project_id}", authenticate=True
+            )
+            if status == 404:
+                raise Fatal(
+                    f"LexBox has no record of creating project {code!r} ({project_id}). Its creation "
+                    "failed and LexBox no longer remembers why, or LexBox restarted."
+                )
+            if status != 200:
+                raise Fatal(f"checking on the creation of project {code!r} failed: {self._describe(status, body)}")
+            report = json.loads(body.decode("utf-8"))
+            if not isinstance(report, dict):
+                raise Fatal(f"fwDataProjectCreationStatus returned an unexpected body: {body[:200]!r}")
+            reported = str(report.get("status") or "")
+            if reported != last_reported:
+                log(f"    creation status: {reported or '(none)'}")
+                last_reported = reported
+
+            if reported.lower() == "created":
+                return
+            if reported.lower() == "creationfailed":
+                raise Fatal(f"LexBox could not create project {code!r}: {report.get('error') or 'no reason given'}")
+            if time.monotonic() > deadline:
+                raise Fatal(
+                    f"LexBox was still creating project {code!r} after {self.timeout}s (--lexbox-timeout). "
+                    "It may yet finish, or fail and be deleted. If it finishes, run again with "
+                    "--no-init; if it is deleted, just run again."
+                )
+            time.sleep(POLL_INTERVAL_SECONDS)
 
 
 def init_lexbox_project(
@@ -2796,7 +2847,10 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         type=int,
         default=DEFAULT_LEXBOX_TIMEOUT_SECONDS,
         metavar="SECONDS",
-        help=f"timeout for LexBox calls (default: {DEFAULT_LEXBOX_TIMEOUT_SECONDS})",
+        help=(
+            f"timeout for LexBox calls, and for a new project's creation to finish "
+            f"(default: {DEFAULT_LEXBOX_TIMEOUT_SECONDS})"
+        ),
     )
     lexbox.add_argument(
         "--ws-vernacular",
@@ -2817,8 +2871,9 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         action="store_true",
         help=(
             "skip the LexBox init and assume the project and its repository already exist, in a "
-            "correct state. For recovering from a 504 Gateway Timeout on initFwDataProject, which "
-            "sometimes creates the project anyway. Combines with --force, which only ever touches "
+            "correct state. For recovering when the init failed on our side (a 504 Gateway Timeout, "
+            "or giving up waiting for the creation to finish) but LexBox created the project anyway. "
+            "Combines with --force, which only ever touches "
             "the Mongo side; under --resume the init is skipped regardless"
         ),
     )
