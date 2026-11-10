@@ -375,7 +375,7 @@ LIST_ROOT_PLACEHOLDER = "FILL-IN-LIST-ROOT-GUID"
 # initFwDataProject builds a template .fwdata and pushes it, in a background job;
 # this is how long to wait for that job to finish. It is NOT idempotent, so it
 # is never retried.
-DEFAULT_LEXBOX_TIMEOUT_SECONDS = 300
+DEFAULT_LEXBOX_TIMEOUT_SECONDS = 900  # 15 minutes
 
 # How long to wait for lfmergeqm to dequeue our request before giving up, and
 # how long a whole Send/Receive may take.
