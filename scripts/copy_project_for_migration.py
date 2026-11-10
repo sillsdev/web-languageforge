@@ -2549,6 +2549,90 @@ class LexboxClient:
                 )
             time.sleep(POLL_INTERVAL_SECONDS)
 
+    def fetch_repo_file(self, code: str, rev: str, path: str) -> bytes | None:
+        """GET /hg/{code}/raw-file/{rev}/{path}: one file from LexBox's copy of the repository.
+
+        This goes through LexBox's hgweb proxy (ProxyKernel.MapSyncProxy), which accepts the login
+        cookie and lets an admin read any project. Returns None when the file is not there.
+        """
+        status, _headers, body = self._send(
+            "GET", f"/hg/{code}/raw-file/{rev}/{path}", authenticate=True
+        )
+        if status == 404:
+            return None
+        if status != 200:
+            raise Fatal(f"reading {path} from LexBox repository {code!r} failed: {self._describe(status, body)}")
+        return body
+
+
+def make_lexbox_client(args: argparse.Namespace) -> LexboxClient:
+    return LexboxClient(
+        args.lexbox_host,
+        args.lexbox_user,
+        args.lexbox_password
+        if args.lexbox_password is not None
+        else os.environ.get("LEXBOX_PASSWORD", DEFAULT_LEXBOX_PASSWORD),
+        auth_mode=args.lexbox_auth,
+        timeout=args.lexbox_timeout,
+    )
+
+
+def require_custom_properties_pushed(
+    lexbox: LexboxClient, lexbox_code: str, definitions: list[dict], lexbox_host: str
+) -> None:
+    """For --resume: refuse to go on until the custom field definitions are in LexBox.
+
+    The pause exists because LfMerge skips custom fields FieldWorks does not know about, and the
+    first Send/Receive is the only one that would have carried their data. So before that runs,
+    FLExProject.CustomProperties at the tip of LexBox's own copy of the repository -- the copy
+    LfMerge clones -- has to define every field this project needs. A commit that was made but
+    never pushed is not there, and neither is one pushed to the wrong repository.
+
+    Fields are matched by the `key` attribute, written exactly as build_custom_properties_xml()
+    writes it, so a file a human has reformatted or annotated still passes as long as every field is
+    defined. The listRoot placeholder must be gone: FieldWorks cannot use a definition that still
+    has it.
+    """
+    log(f"--resume: checking that the custom field definitions have been pushed to LexBox ({lexbox_code})")
+    lexbox.login()
+    scheme, host = split_lexbox_host(lexbox_host)
+    body = lexbox.fetch_repo_file(lexbox_code, "tip", CUSTOM_PROPERTIES_FILENAME)
+    if body is None:
+        # Every FLEx repository has this file from revision 0, so a 404 means the repository itself
+        # was not found rather than a missing commit.
+        raise Fatal(
+            f"LexBox has no {CUSTOM_PROPERTIES_FILENAME} at {scheme}://{host}/hg/{lexbox_code} (HTTP 404).\n"
+            "       Check that the LexBox project exists and that --lexbox-host is the one the first run\n"
+            "       used. Nothing has been changed."
+        )
+    text = body.decode("utf-8", errors="replace")
+
+    missing = []
+    for definition in definitions:
+        key = definition["attributes"]["key"]
+        if 'key="' + xml_escape(key, {'"': "&quot;"}) + '"' not in text:
+            missing.append(key)
+
+    if missing:
+        shown = ", ".join(missing[:5]) + (f" and {len(missing) - 5} more" if len(missing) > 5 else "")
+        raise Fatal(
+            f"the custom field definitions have not reached LexBox. {CUSTOM_PROPERTIES_FILENAME} at "
+            f"the tip of {scheme}://{host}/hg/{lexbox_code} lacks {len(missing)} of the "
+            f"{len(definitions)} field(s) this project needs ({shown}).\n"
+            f"       If you have committed the file, you probably have not pushed it yet. In your clone:\n"
+            f"           hg push\n"
+            f"       Otherwise commit the {CUSTOM_PROPERTIES_FILENAME} file the first run wrote, as it\n"
+            f"       explained, and push it. Then run with --resume again. Nothing has been changed."
+        )
+    if LIST_ROOT_PLACEHOLDER in text:
+        raise Fatal(
+            f"{CUSTOM_PROPERTIES_FILENAME} at the tip of {scheme}://{host}/hg/{lexbox_code} still "
+            f"contains {LIST_ROOT_PLACEHOLDER}.\n"
+            "       Replace it with the GUID of the list the REVIEW comment above it names, commit, and\n"
+            "       push. Then run with --resume again. Nothing has been changed."
+        )
+    log(f"  all {len(definitions)} custom field definition(s) are there")
+
 
 def init_lexbox_project(
     lexbox: LexboxClient,
@@ -2883,7 +2967,8 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         help=(
             "finish a migration that stopped because the project has custom fields: skip the copy, "
             "the project record and the LexBox init, and run only the Send/Receive steps. Use this "
-            "once the FLExProject.CustomProperties commit has been pushed to LexBox."
+            "once the FLExProject.CustomProperties commit has been pushed to LexBox; it checks, and "
+            "stops without changing anything if LexBox does not have every custom field yet."
         ),
     )
     parser.add_argument(
@@ -3090,6 +3175,12 @@ def main(argv: list[str]) -> int:
             log(f"ERROR: --resume: database '{target_db}' is empty, so the copy is not there to resume.")
             return 1
         log(f"--resume: continuing the existing copy '{new_code}' (_id {existing['id']})")
+        # Checked before anything runs, so a forgotten `hg push` costs nothing. Raises Fatal, which
+        # ends the run with its message; nothing has been changed yet to roll back.
+        if custom_field_defs and not args.no_send_receive:
+            require_custom_properties_pushed(
+                make_lexbox_client(args), new_identifier, custom_field_defs, args.lexbox_host
+            )
         log("")
     else:
         if existing is not None and not args.force:
@@ -3236,15 +3327,7 @@ def main(argv: list[str]) -> int:
                 log(f"  Expected wsAnalysis:   {', '.join(ws_analysis) or '(none)'}")
             else:
                 log("Initializing LexBox project")
-                lexbox_client = LexboxClient(
-                    args.lexbox_host,
-                    args.lexbox_user,
-                    args.lexbox_password
-                    if args.lexbox_password is not None
-                    else os.environ.get("LEXBOX_PASSWORD", DEFAULT_LEXBOX_PASSWORD),
-                    auth_mode=args.lexbox_auth,
-                    timeout=args.lexbox_timeout,
-                )
+                lexbox_client = make_lexbox_client(args)
                 lexbox_guid = init_lexbox_project(
                     lexbox_client,
                     new_identifier,
