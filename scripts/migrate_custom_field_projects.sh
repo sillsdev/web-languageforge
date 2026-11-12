@@ -246,6 +246,7 @@ print_commit_block() {
 	[[ -s $file ]] || return 0
 
 	[[ -d $repo/.hg ]] || printf 'hg clone %q %q\n' "${HG_URL[$code]}" "$repo"
+	printf "hg --cwd %q up 7500002.7000072\n" "$repo"
 	printf 'cp %q %q\n' "$file" "$repo/$CUSTOM_PROPERTIES"
 	if grep -qF "$PLACEHOLDER" "$file"; then
 		printf '# EDIT FIRST: replace %s in %s with the GUID of the list it names\n' "$PLACEHOLDER" "$repo/$CUSTOM_PROPERTIES"
